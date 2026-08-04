@@ -3,11 +3,15 @@ import { ENV } from "./config/env";
 
 export function middleware(request) {
     const { pathname } = request.nextUrl;
+
     const host = request.headers.get("host") || "";
     const hostname = host.split(":")[0];
 
-    const adminToken = request.cookies.get(ENV.ADMIN_COOKIE_NAME)?.value;
-    const clientToken = request.cookies.get(ENV.CLIENT_COOKIE_NAME)?.value;
+    const adminToken =
+        request.cookies.get(ENV.ADMIN_COOKIE_NAME)?.value;
+
+    const clientToken =
+        request.cookies.get(ENV.CLIENT_COOKIE_NAME)?.value;
 
     const clientRoutes = [
         "/dashboard",
@@ -20,19 +24,23 @@ export function middleware(request) {
         "/settings",
     ];
 
-    const isClientRoute = clientRoutes.some(route =>
+    const isClientRoute = clientRoutes.some((route) =>
         pathname.startsWith(route)
     );
 
     const isLocalhost = hostname === "localhost";
-    const isMainCRM = hostname === "crm.inquirybazaar.com";
-    const isClientCRM =
+
+    // ADMIN DOMAIN
+    const isAdminDomain = hostname === "crm.inquirybazaar.com";
+
+    // CLIENT DOMAIN
+    const isClientDomain =
         hostname.startsWith("crm.") &&
         hostname !== "crm.inquirybazaar.com";
 
-    // ==================================================
-    // LOCALHOST (Development)
-    // ==================================================
+    // ======================================================
+    // LOCALHOST
+    // ======================================================
 
     if (isLocalhost) {
 
@@ -61,11 +69,6 @@ export function middleware(request) {
 
         // ---------- CLIENT ----------
 
-        // Home page allowed
-        if (pathname === "/") {
-            return NextResponse.next();
-        }
-
         if (pathname === "/login") {
 
             if (clientToken) {
@@ -88,27 +91,44 @@ export function middleware(request) {
             return NextResponse.next();
         }
 
+        // localhost home allowed
         return NextResponse.next();
     }
 
-    // ==================================================
-    // MAIN CRM
-    // crm.inquirybazaar.com
-    // ==================================================
+    // ======================================================
+    // ADMIN DOMAIN
+    // https://crm.inquirybazaar.com
+    // ======================================================
 
-    if (isMainCRM) {
+    if (isAdminDomain) {
 
-        // Never allow admin pages
-        if (pathname.startsWith("/admin")) {
-            return NextResponse.redirect(
-                new URL("/login", request.url)
-            );
-        }
+        // Admin Login
 
-        // Home page allowed
-        if (pathname === "/") {
+        if (pathname === "/admin/login") {
+
+            if (adminToken) {
+                return NextResponse.redirect(
+                    new URL("/admin/dashboard", request.url)
+                );
+            }
+
             return NextResponse.next();
         }
+
+        // Admin Pages
+
+        if (pathname.startsWith("/admin")) {
+
+            if (!adminToken) {
+                return NextResponse.redirect(
+                    new URL("/admin/login", request.url)
+                );
+            }
+
+            return NextResponse.next();
+        }
+
+        // Client Login
 
         if (pathname === "/login") {
 
@@ -121,6 +141,8 @@ export function middleware(request) {
             return NextResponse.next();
         }
 
+        // Client Pages
+
         if (isClientRoute) {
 
             if (!clientToken) {
@@ -132,24 +154,27 @@ export function middleware(request) {
             return NextResponse.next();
         }
 
+        // Home page allowed
         return NextResponse.next();
     }
 
-    // ==================================================
-    // CLIENT CRM
-    // crm.company.com
-    // ==================================================
+    // ======================================================
+    // CLIENT DOMAIN
+    // https://crm.company.com
+    // ======================================================
 
-    if (isClientCRM) {
+    if (isClientDomain) {
 
-        // Never allow admin pages
+        // Never allow admin
+
         if (pathname.startsWith("/admin")) {
             return NextResponse.redirect(
                 new URL("/login", request.url)
             );
         }
 
-        // Home page NOT allowed
+        // Root
+
         if (pathname === "/") {
             return NextResponse.redirect(
                 new URL(
@@ -161,6 +186,8 @@ export function middleware(request) {
             );
         }
 
+        // Login
+
         if (pathname === "/login") {
 
             if (clientToken) {
@@ -172,6 +199,8 @@ export function middleware(request) {
             return NextResponse.next();
         }
 
+        // Protected Pages
+
         if (isClientRoute) {
 
             if (!clientToken) {
@@ -182,6 +211,8 @@ export function middleware(request) {
 
             return NextResponse.next();
         }
+
+        // Unknown URL
 
         return NextResponse.redirect(
             new URL(
