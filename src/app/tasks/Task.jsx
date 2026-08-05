@@ -3,46 +3,53 @@
 import React, { useState } from "react";
 import { Search, Filter, Plus, MoreVertical, ChevronDown, ChevronUp } from "lucide-react";
 
-const leads = [
+const tasks = [
     {
-        name: "John Smith",
-        phone: "+1 234 567 890",
-        stage: "New",
-        value: "$5,000",
-        source: "Website",
+        task: "Follow up with John",
+        assigned: "Alex",
+        lead: "John Smith",
+        priority: "High",
+        status: "Pending",
+        due: "Aug 08, 2026",
         created: "Aug 05, 2026",
     },
     {
-        name: "Sarah Wilson",
-        phone: "+1 987 654 321",
-        stage: "Contacted",
-        value: "$12,000",
-        source: "Facebook",
+        task: "Send quotation",
+        assigned: "Sarah",
+        lead: "David Miller",
+        priority: "Medium",
+        status: "Completed",
+        due: "Aug 06, 2026",
         created: "Aug 04, 2026",
     },
     {
-        name: "David Miller",
-        phone: "+1 555 333 222",
-        stage: "Negotiation",
-        value: "$25,000",
-        source: "Referral",
+        task: "Demo call",
+        assigned: "Mike",
+        lead: "Robert Wilson",
+        priority: "Low",
+        status: "In Progress",
+        due: "Aug 10, 2026",
         created: "Aug 03, 2026",
     },
 ];
 
-export default function Leads() {
+
+export default function Task() {
+
     const [page, setPage] = useState(1);
 
     return (
         <div className="bg-surface text-app min-h-[calc(100vh-64px)] p-6">
-            {/* Top Section */}
+
+            {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                 <div>
                     <h1 className="text-2xl font-bold">
                         CRM
                     </h1>
+
                     <p className="text-sm opacity-70">
-                        Manage your leads
+                        Manage your tasks
                     </p>
                 </div>
 
@@ -73,7 +80,7 @@ export default function Leads() {
                         className="h-10 px-4 rounded-lg btn-primary flex items-center gap-2 transition"
                     >
                         <Plus size={18} />
-                        Add Lead
+                        Add Tasks
                     </button>
                 </div>
             </div>
@@ -86,6 +93,16 @@ export default function Leads() {
                             <tr className="text-left">
                                 <th className="px-6 py-4 font-semibold">
                                     <div className="flex justify-center items-center gap-2">
+                                        Task Name
+                                        <span className="flex flex-col">
+                                            <ChevronUp size={10} />
+                                            <ChevronDown size={10} />
+                                        </span>
+                                    </div>
+                                </th>
+
+                                <th className="px-6 py-4 font-semibold">
+                                    <div className="flex justify-center items-center gap-2">
                                         Assigned To
                                         <span className="flex flex-col">
                                             <ChevronUp size={10} />
@@ -96,7 +113,7 @@ export default function Leads() {
 
                                 <th className="px-6 py-4 font-semibold">
                                     <div className="flex justify-center items-center gap-2">
-                                        Contact Name
+                                        Related Lead
                                         <span className="flex flex-col">
                                             <ChevronUp size={10} />
                                             <ChevronDown size={10} />
@@ -106,7 +123,7 @@ export default function Leads() {
 
                                 <th className="px-6 py-4 font-semibold">
                                     <div className="flex justify-center items-center gap-2">
-                                        Phone
+                                        Priority
                                         <span className="flex flex-col">
                                             <ChevronUp size={10} />
                                             <ChevronDown size={10} />
@@ -116,7 +133,7 @@ export default function Leads() {
 
                                 <th className="px-6 py-4 font-semibold">
                                     <div className="flex justify-center items-center gap-2">
-                                        Stage
+                                        Status
                                         <span className="flex flex-col">
                                             <ChevronUp size={10} />
                                             <ChevronDown size={10} />
@@ -126,17 +143,7 @@ export default function Leads() {
 
                                 <th className="px-6 py-4 font-semibold">
                                     <div className="flex justify-center items-center gap-2">
-                                        Deal Value
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Lead Source
+                                        Due Date
                                         <span className="flex flex-col">
                                             <ChevronUp size={10} />
                                             <ChevronDown size={10} />
@@ -162,40 +169,51 @@ export default function Leads() {
 
                         <tbody>
 
-                            {leads.map((lead, index) => (
+                            {tasks.map((item, index) => (
                                 <tr
                                     key={index}
                                     className="border-b border-app hover-app transition bg-surface"
                                 >
 
                                     <td className="px-6 py-4 font-medium">
-                                        {"-"}
+                                        {item.task}
                                     </td>
 
                                     <td className="px-6 py-4 font-medium">
-                                        {lead.name}
+                                        {item.assigned}
                                     </td>
 
                                     <td className="px-6 py-4">
-                                        {lead.phone}
+                                        {item.lead}
                                     </td>
 
                                     <td className="px-6 py-4">
-                                        <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500">
-                                            {lead.stage}
+                                        <span className={`px-3 py-1 rounded-full text-xs
+                                            ${item.priority === "High"
+                                                ? "bg-red-500/10 text-red-500"
+                                                :
+                                                item.priority === "Medium"
+                                                    ? "bg-yellow-500/10 text-yellow-500"
+                                                    :
+                                                    "bg-green-500/10 text-green-500"
+                                            }
+                                        `}>
+                                            {item.priority}
                                         </span>
                                     </td>
 
                                     <td className="px-6 py-4">
-                                        {lead.value}
+                                        <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500">
+                                            {item.status}
+                                        </span>
                                     </td>
 
                                     <td className="px-6 py-4">
-                                        {lead.source}
+                                        {item.due}
                                     </td>
 
                                     <td className="px-6 py-4">
-                                        {lead.created}
+                                        {item.created}
                                     </td>
 
                                     <td className="px-6 py-4">

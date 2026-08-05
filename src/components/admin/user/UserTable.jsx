@@ -6,7 +6,7 @@ export default function UserTable({
 }) {
     return (
         <div className='bg-white rounded-lg shadow-md flex flex-col gap-1'>
-            <div className='flex flex-col md:flex-row gap-2 items-center justify-between border-b py-1 px-2'>
+            <div className='flex flex-col md:flex-row gap-2 items-center justify-between border-b border-gray-300 py-1 px-2'>
                 <div>
 
                 </div>
@@ -31,7 +31,7 @@ export default function UserTable({
                 </div>
             </div>
 
-            <div className="overflow-x-auto rounded-xl border bg-white px-1">
+            <div className="overflow-x-auto rounded-xl bg-white px-1">
                 <table className="w-full border border-gray-300">
                     <thead className="bg-gray-50 text-gray-800">
                         <tr>
@@ -171,7 +171,7 @@ export default function UserTable({
                 </table>
             </div>
 
-            <div className="flex items-center justify-between border-t py-1 px-2">
+            <div className="flex items-center justify-between border-t border-gray-300 py-1 px-2">
                 <p className="text-sm text-gray-500">
                     Showing {companies.length === 0 ? 0 : (page - 1) * limit + 1} -
                     {Math.min(page * limit, total)} of {total}

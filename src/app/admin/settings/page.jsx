@@ -1,9 +1,14 @@
-import React from 'react'
+import Sidebar from "@/components/admin/Sidebar";
+import Setting from "./Setting";
 
-export default function page() {
+export default function Page() {
   return (
-    <div>
-      SETTINGS
+    <div className="flex bg-gray-100 min-h-screen">
+      <Sidebar />
+
+      <main className="flex-1 px-4 pt-15 md:p-6">
+        <Setting />
+      </main>
     </div>
-  )
+  );
 }

@@ -1,25 +1,78 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-poppins);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+    --font-sans: var(--font-poppins);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-poppins), sans-serif;
+    font-family: var(--font-poppins), sans-serif;
+}
+
+/* Dark Theme */
+:root.dark {
+    --background: #020618;
+    --surface: #0f172a;
+    --card: #111827;
+    --border: #3f4b5f;
+
+    --text: #f8fafc;
+    --text-secondary: #94a3b8;
+
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+
+    --hover: #1e293b;
+}
+
+/* Light Theme */
+:root.light {
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --card: #ffffff;
+    --border: #cbd7e7;
+
+    --text: #0f172a;
+    --text-secondary: #64748b;
+
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+
+    --hover: #f1f5f9;
+}
+
+.bg-app {
+    background: var(--background);
+}
+
+.bg-surface {
+    background: var(--surface);
+}
+
+.bg-card {
+    background: var(--card);
+}
+
+.text-app {
+    color: var(--text);
+}
+
+.text-muted {
+    color: var(--text-secondary);
+}
+
+.border-app {
+    border-color: var(--border);
+}
+
+.hover-app:hover {
+    background: var(--hover);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
 }

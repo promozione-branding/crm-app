@@ -2,7 +2,7 @@
 
 import Navbar from "@/components/user/Navbar";
 import Sidebar from "@/components/user/Sidebar";
-import Leads from "./Leads";
+import Reports from "./Reports";
 
 export default function page() {
     return (
@@ -13,7 +13,7 @@ export default function page() {
                 <Navbar />
 
                 <main className="">
-                    <Leads />
+                    <Reports />
                 </main>
             </div>
         </div>
