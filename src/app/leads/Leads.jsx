@@ -1,259 +1,110 @@
 "use client";
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, Filter, Plus, MoreVertical, ChevronDown, ChevronUp } from "lucide-react";
+import Link from "next/link";
+import DynamicTable from "@/components/user/ui/DynamicTable";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
-const leads = [
+const columns = [
+    { key: "assignedTo", label: "Assigned To", sortable: true, },
+    { key: "name", label: "Contact Name", sortable: true, },
+    { key: "phone", label: "Phone", sortable: true, },
     {
-        name: "John Smith",
-        phone: "+1 234 567 890",
-        stage: "New",
-        value: "$5,000",
-        source: "Website",
-        created: "Aug 05, 2026",
+        key: "stage", label: "Stage", sortable: true,
+        render: (lead) => (
+            <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500 capitalize">
+                {lead.stage}
+            </span>
+        ),
     },
-    {
-        name: "Sarah Wilson",
-        phone: "+1 987 654 321",
-        stage: "Contacted",
-        value: "$12,000",
-        source: "Facebook",
-        created: "Aug 04, 2026",
-    },
-    {
-        name: "David Miller",
-        phone: "+1 555 333 222",
-        stage: "Negotiation",
-        value: "$25,000",
-        source: "Referral",
-        created: "Aug 03, 2026",
-    },
+    { key: "dealValue", label: "Deal Value", sortable: true, },
+    { key: "source", label: "Lead Source", sortable: true, },
+    { key: "createdAt", type: "date", label: "Created At", sortable: true, },
 ];
 
 export default function Leads() {
+    const router = useRouter();
+    const [leads, setLeads] = useState([]);
     const [page, setPage] = useState(1);
+    const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [search, setSearch] = useState("");
+    const [rowsPerPage, setRowsPerPage] = useState(25)
+
+    const getLeads = async () => {
+        try {
+            setLoading(true);
+            const res = await axios.get(`/api/user/lead/all?page=${page}&limit=${rowsPerPage}&search=${search}`, { withCredentials: true });
+
+            setLeads(res.data.leads);
+            setTotal(res.data.pagination.total);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to load leads");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            getLeads();
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [page, rowsPerPage, search]);
 
     return (
         <div className="bg-surface text-app min-h-[calc(100vh-64px)] p-6">
             {/* Top Section */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold">
+                    <h1 className="text-base font-bold">
                         CRM
                     </h1>
-                    <p className="text-sm opacity-70">
+                    <p className="text-xs opacity-70">
                         Manage your leads
                     </p>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    {/* Search */}
-                    <div className="relative">
-                        <Search
-                            size={18}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 opacity-60"
-                        />
-
-                        <input
-                            placeholder="Search leads..."
-                            className="h-10 w-60 rounded-lg border border-app bg-app bg-transparent pl-10 pr-3 outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
+                    {/* Add Lead */}
+                    <Link href={"/leads/new"} className="h-8 text-sm px-3 rounded-lg btn-primary flex items-center gap-2 transition">
+                        <Plus size={16} />
+                        Add Lead
+                    </Link>
 
                     {/* Filter */}
-                    <button
-                        className="h-10 px-4 rounded-lg border border-app hover-app flex items-center gap-2 transition"
-                    >
-                        <Filter size={18} />
+                    <button className="h-8 px-3 text-sm rounded-lg border border-app hover-app flex items-center gap-2 transition">
+                        <Filter size={16} />
                         Filter
                     </button>
 
-                    {/* Add Lead */}
-                    <button
-                        className="h-10 px-4 rounded-lg btn-primary flex items-center gap-2 transition"
-                    >
-                        <Plus size={18} />
-                        Add Lead
-                    </button>
+                    {/* Search */}
+                    <div className="relative">
+                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 opacity-60" />
+
+                        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search leads..."
+                            className="h-9 w-60 rounded-lg text-sm border border-app bg-app bg-transparent pl-10 pr-3 outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
                 </div>
             </div>
 
             {/* Table Card */}
-            <div className=" rounded-2xl border border-app shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                        <thead className="border-b border-app bg-app">
-                            <tr className="text-left">
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Assigned To
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Contact Name
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Phone
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Stage
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Deal Value
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Lead Source
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Created At
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            {leads.map((lead, index) => (
-                                <tr
-                                    key={index}
-                                    className="border-b border-app hover-app transition bg-surface"
-                                >
-
-                                    <td className="px-6 py-4 font-medium">
-                                        {"-"}
-                                    </td>
-
-                                    <td className="px-6 py-4 font-medium">
-                                        {lead.name}
-                                    </td>
-
-                                    <td className="px-6 py-4">
-                                        {lead.phone}
-                                    </td>
-
-                                    <td className="px-6 py-4">
-                                        <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500">
-                                            {lead.stage}
-                                        </span>
-                                    </td>
-
-                                    <td className="px-6 py-4">
-                                        {lead.value}
-                                    </td>
-
-                                    <td className="px-6 py-4">
-                                        {lead.source}
-                                    </td>
-
-                                    <td className="px-6 py-4">
-                                        {lead.created}
-                                    </td>
-
-                                    <td className="px-6 py-4">
-                                        <button className="w-8 h-8 rounded-lg btn-primary flex items-center justify-center">
-                                            <MoreVertical size={18} />
-                                        </button>
-                                    </td>
-
-                                </tr>
-                            ))}
-
-                        </tbody>
-                    </table>
-                </div>
-
-                {/* Pagination */}
-                <div className="flex items-center justify-between px-6 py-4 bg-app">
-
-                    <p className="text-sm opacity-70">
-                        Showing 1-10 of 100 leads
-                    </p>
-
-
-                    <div className="flex gap-2 items-center">
-
-                        <button
-                            onClick={() => setPage(Math.max(1, page - 1))}
-                            className="px-3 h-9 rounded-lg border border-app hover-app"
-                        >
-                            Prev
-                        </button>
-
-
-                        {[1].map(num => (
-                            <button
-                                key={num}
-                                onClick={() => setPage(num)}
-                                className={`px-3 h-8 rounded-lg ${page === num
-                                    ? "bg-blue-600 text-white"
-                                    : "border border-app hover-app"
-                                    }`}
-                            >
-                                {num}
-                            </button>
-                        ))}
-
-
-                        <button
-                            onClick={() => setPage(page + 1)}
-                            className="px-3 h-9 rounded-lg border border-app hover-app"
-                        >
-                            Next
-                        </button>
-
-                    </div>
-
-                </div>
-            </div>
+            <DynamicTable
+                loading={loading}
+                columns={columns}
+                data={leads}
+                page={page}
+                setPage={setPage}
+                total={total}
+                rowsPerPage={rowsPerPage}
+                setRowsPerPage={setRowsPerPage}
+                onAction={(lead) => {
+                    router.push(`/leads/edit/${lead._id}`);
+                }}
+            />
         </div>
     );
 }
