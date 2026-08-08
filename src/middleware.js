@@ -22,8 +22,8 @@ export function middleware(request) {
         "/tasks",
         "/reports",
         "/organization-settings",
-        "team-management",
-        "integration",
+        "/team-management",
+        "/integration",
         "/settings",
     ];
 
