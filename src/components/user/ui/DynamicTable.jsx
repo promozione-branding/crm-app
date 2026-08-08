@@ -1,6 +1,11 @@
 import { ChevronDown, ChevronUp, MoreVertical } from "lucide-react";
 
 const DynamicTable = ({ loading, columns = [], data = [], page, setPage, total = 0, rowsPerPage = 25, setRowsPerPage, onAction, }) => {
+    const getNestedValue = (obj, path) => {
+        return path.split(".").reduce((value, key) => {
+            return value?.[key];
+        }, obj);
+    };
 
     return (
         <div className="rounded-2xl border border-app shadow-sm overflow-hidden">
@@ -48,7 +53,7 @@ const DynamicTable = ({ loading, columns = [], data = [], page, setPage, total =
                                 {columns.map((col) => (
                                     <td key={col.key} className="px-6 py-4 capitalize">
                                         {col.render ? col.render(row) : col.type === "date"
-                                            ? new Date(row[col.key]).toLocaleString() : row[col.key] ?? "-"}
+                                            ? new Date(row[col.key]).toLocaleString() : getNestedValue(row, col.key) ?? "-"}
                                     </td>
                                 ))}
 

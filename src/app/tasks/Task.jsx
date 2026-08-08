@@ -1,277 +1,115 @@
 "use client";
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, Filter, Plus, MoreVertical, ChevronDown, ChevronUp } from "lucide-react";
+import DynamicTable from "@/components/user/ui/DynamicTable";
+import toast from "react-hot-toast";
+import axios from "axios";
 
-const tasks = [
+const columns = [
+    { key: "title", label: "Task Title", sortable: true, },
+    { key: "leadId.name", label: "Related Lead", sortable: true, },
+    { key: "priority", label: "Priority", sortable: true, },
     {
-        task: "Follow up with John",
-        assigned: "Alex",
-        lead: "John Smith",
-        priority: "High",
-        status: "Pending",
-        due: "Aug 08, 2026",
-        created: "Aug 05, 2026",
+        key: "status", label: "Status", sortable: true,
+        render: (task) => (
+            <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500 capitalize">
+                {task.status}
+            </span>
+        ),
     },
-    {
-        task: "Send quotation",
-        assigned: "Sarah",
-        lead: "David Miller",
-        priority: "Medium",
-        status: "Completed",
-        due: "Aug 06, 2026",
-        created: "Aug 04, 2026",
-    },
-    {
-        task: "Demo call",
-        assigned: "Mike",
-        lead: "Robert Wilson",
-        priority: "Low",
-        status: "In Progress",
-        due: "Aug 10, 2026",
-        created: "Aug 03, 2026",
-    },
+    // { key: "createdBy.name", label: "Created By", sortable: true, },
+    { key: "assignedTo.name", label: "Assigned To", sortable: true, },
+    { key: "dueDate", type: "date", label: "Due Date", sortable: true, },
 ];
 
-
 export default function Task() {
-
     const [page, setPage] = useState(1);
+    const [tasks, setTasks] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [search, setSearch] = useState("");
+    const [rowsPerPage, setRowsPerPage] = useState(25)
+
+    const getTasks = async () => {
+        try {
+            setLoading(true);
+            const res = await axios.get("/api/user/task", {
+                params: { page, limit: rowsPerPage, search: search.trim() || undefined, },
+                withCredentials: true,
+            });
+
+            setTasks(res.data.data?.tasks || []);
+            setTotal(res.data.data?.pagination?.total || 0);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to load tasks.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getTasks();
+    }, [page, rowsPerPage]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setPage(1);
+            getTasks();
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [search]);
 
     return (
         <div className="bg-surface text-app min-h-[calc(100vh-64px)] p-6">
-
-            {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold">
+                    <h1 className="text-base font-bold">
                         CRM
                     </h1>
 
-                    <p className="text-sm opacity-70">
+                    <p className="text-xs opacity-70">
                         Manage your tasks
                     </p>
                 </div>
 
                 <div className="flex items-center gap-3">
                     {/* Search */}
-                    <div className="relative">
-                        <Search
-                            size={18}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 opacity-60"
-                        />
-
-                        <input
-                            placeholder="Search leads..."
-                            className="h-10 w-60 rounded-lg border border-app bg-app bg-transparent pl-10 pr-3 outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
+                    <button className="h-8 text-sm px-3 rounded-lg btn-primary flex items-center gap-2 transition">
+                        <Plus size={16} />
+                        Add Task
+                    </button>
 
                     {/* Filter */}
-                    <button
-                        className="h-10 px-4 rounded-lg border border-app hover-app flex items-center gap-2 transition"
-                    >
-                        <Filter size={18} />
+                    <button className="h-8 px-3 text-sm rounded-lg border border-app hover-app flex items-center gap-2 transition">
+                        <Filter size={16} />
                         Filter
                     </button>
 
-                    {/* Add Lead */}
-                    <button
-                        className="h-10 px-4 rounded-lg btn-primary flex items-center gap-2 transition"
-                    >
-                        <Plus size={18} />
-                        Add Tasks
-                    </button>
+                    <div className="relative">
+                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 opacity-60" />
+
+                        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search task..."
+                            className="h-9 w-60 rounded-lg text-sm border border-app bg-app bg-transparent pl-10 pr-3 outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
                 </div>
             </div>
 
             {/* Table Card */}
-            <div className=" rounded-2xl border border-app shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                        <thead className="border-b border-app bg-app">
-                            <tr className="text-left">
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Task Name
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Assigned To
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Related Lead
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Priority
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Status
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Due Date
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    <div className="flex justify-center items-center gap-2">
-                                        Created At
-                                        <span className="flex flex-col">
-                                            <ChevronUp size={10} />
-                                            <ChevronDown size={10} />
-                                        </span>
-                                    </div>
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold">
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            {tasks.map((item, index) => (
-                                <tr
-                                    key={index}
-                                    className="border-b border-app hover-app transition bg-surface"
-                                >
-
-                                    <td className="px-6 py-4 font-medium">
-                                        {item.task}
-                                    </td>
-
-                                    <td className="px-6 py-4 font-medium">
-                                        {item.assigned}
-                                    </td>
-
-                                    <td className="px-6 py-4">
-                                        {item.lead}
-                                    </td>
-
-                                    <td className="px-6 py-4">
-                                        <span className={`px-3 py-1 rounded-full text-xs
-                                            ${item.priority === "High"
-                                                ? "bg-red-500/10 text-red-500"
-                                                :
-                                                item.priority === "Medium"
-                                                    ? "bg-yellow-500/10 text-yellow-500"
-                                                    :
-                                                    "bg-green-500/10 text-green-500"
-                                            }
-                                        `}>
-                                            {item.priority}
-                                        </span>
-                                    </td>
-
-                                    <td className="px-6 py-4">
-                                        <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500">
-                                            {item.status}
-                                        </span>
-                                    </td>
-
-                                    <td className="px-6 py-4">
-                                        {item.due}
-                                    </td>
-
-                                    <td className="px-6 py-4">
-                                        {item.created}
-                                    </td>
-
-                                    <td className="px-6 py-4">
-                                        <button className="w-8 h-8 rounded-lg btn-primary flex items-center justify-center">
-                                            <MoreVertical size={18} />
-                                        </button>
-                                    </td>
-
-                                </tr>
-                            ))}
-
-                        </tbody>
-                    </table>
-                </div>
-
-                {/* Pagination */}
-                <div className="flex items-center justify-between px-6 py-4 bg-app">
-
-                    <p className="text-sm opacity-70">
-                        Showing 1-10 of 100 leads
-                    </p>
-
-
-                    <div className="flex gap-2 items-center">
-
-                        <button
-                            onClick={() => setPage(Math.max(1, page - 1))}
-                            className="px-3 h-9 rounded-lg border border-app hover-app"
-                        >
-                            Prev
-                        </button>
-
-
-                        {[1].map(num => (
-                            <button
-                                key={num}
-                                onClick={() => setPage(num)}
-                                className={`px-3 h-8 rounded-lg ${page === num
-                                    ? "bg-blue-600 text-white"
-                                    : "border border-app hover-app"
-                                    }`}
-                            >
-                                {num}
-                            </button>
-                        ))}
-
-
-                        <button
-                            onClick={() => setPage(page + 1)}
-                            className="px-3 h-9 rounded-lg border border-app hover-app"
-                        >
-                            Next
-                        </button>
-
-                    </div>
-
-                </div>
-            </div>
+            <DynamicTable
+                loading={loading}
+                columns={columns}
+                data={tasks}
+                page={page}
+                setPage={setPage}
+                total={total}
+                rowsPerPage={rowsPerPage}
+                setRowsPerPage={setRowsPerPage}
+                onAction={(task) => {
+                    console.log(task)
+                }}
+            />
         </div>
     );
 }

@@ -9,14 +9,14 @@ export default function Reports() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">CRM</h1>
-        <p className="text-sm opacity-70">
+        <h1 className="text-base font-bold">CRM</h1>
+        <p className="text-xs opacity-70">
           Reports & Analytics
         </p>
       </div>
 
       {/* Empty State */}
-      <div className="bg-app border border-app rounded-2xl min-h-[500px] flex items-center justify-center">
+      <div className="bg-app border border-app rounded-2xl min-h-[400px] flex items-center justify-center">
 
         <div className="text-center max-w-md">
 
@@ -27,17 +27,17 @@ export default function Reports() {
             />
           </div>
 
-          <h2 className="text-2xl font-semibold mb-2">
+          <h2 className="text-xl font-semibold mb-2">
             No Reports Found
           </h2>
 
-          <p className="text-sm opacity-70 leading-6">
+          <p className="text-xs opacity-70 leading-6">
             You haven't generated any reports yet.
             Once your CRM starts collecting data, your sales,
             leads, and performance reports will appear here.
           </p>
 
-          <button className="mt-6 px-5 h-11 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition">
+          <button className="mt-6 px-5 h-10 rounded-xl btn-primary transition">
             Generate Report
           </button>
 

@@ -52,7 +52,7 @@ export default function Sidebar() {
     const [open, setOpen] = useState(true);
 
     return (
-        <aside className={`bg-app hidden sticky top-0 md:flex flex-col border-r h-screen border-app text-app transition-all duration-300 ${open ? "w-64" : "w-20"}`}>
+        <aside className={`bg-app hidden sticky top-0 md:flex flex-col border-r h-screen border-app text-app transition-all duration-300 ${open ? "w-60" : "w-20"}`}>
             {/* Header */}
             <div className={`h-16 border-b border-app flex items-center ${open ? "justify-between px-5" : "justify-center"}`}>
                 {open && (
@@ -95,10 +95,10 @@ export default function Sidebar() {
                                     : "justify-center h-12"
                                 }`}
                         >
-                            <Icon size={20} />
+                            <Icon size={18} />
 
                             {open && (
-                                <span className="font-medium whitespace-nowrap">
+                                <span className="font-medium whitespace-nowrap text-sm">
                                     {item.name}
                                 </span>
                             )}

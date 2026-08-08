@@ -5,6 +5,7 @@ const LeadTaskSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Company",
         required: true,
+        index: true,
     },
 
     leadId: {
@@ -17,9 +18,14 @@ const LeadTaskSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
+        trim: true,
     },
 
-    description: String,
+    description: {
+        type: String,
+        trim: true,
+        default: "",
+    },
 
     priority: {
         type: String,
@@ -38,24 +44,41 @@ const LeadTaskSchema = new mongoose.Schema({
         required: true,
     },
 
-    reminderAt: Date,
+    reminderMinutes: {
+        type: Number,
+        enum: [0, 5, 10, 15],
+        default: 0,
+    },
+
+    reminderAt: {
+        type: Date,
+        default: null,
+    },
 
     status: {
         type: String,
-        enum: [
-            "pending",
-            "completed",
-            "cancelled",
-        ],
+        enum: ["pending", "completed", "cancelled",],
         default: "pending",
+        index: true,
     },
 
-    completedAt: Date,
+    completedAt: {
+        type: Date,
+        default: null,
+    },
 
     completedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        default: null,
+    },
+
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
     },
 }, { timestamps: true, });
 
+LeadTaskSchema.index({ companyId: 1, leadId: 1, });
 export default mongoose.models.LeadTask || mongoose.model("LeadTask", LeadTaskSchema);

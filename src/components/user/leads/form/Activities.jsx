@@ -4,7 +4,7 @@ import { Activity } from "lucide-react";
 
 export default function Activities({ activities = [] }) {
     return (
-        <div className="bg-card border border-app rounded-2xl p-5">
+        <div className="bg-card border border-app rounded-2xl p-5 overflow-hidden">
             <h3 className="uppercase tracking-widest text-xs font-semibold text-muted">
                 Activities
             </h3>
@@ -27,13 +27,14 @@ export default function Activities({ activities = [] }) {
                 </div>
             ) : (
                 <div className="space-y-5">
-                    {activities.map((activity) => (
+                    {activities.map((activity, idx) => (
                         <div
                             key={activity._id}
                             className="relative pl-8"
                         >
                             {/* Timeline */}
-                            <div className="absolute left-3 top-1.5 bottom-0 w-px border border-app" />
+                            {idx !== activities.length - 1 && (
+                                <div className="absolute left-3 top-1.5 bottom-0 w-px border border-app h-24" />)}
 
                             {/* Dot */}
                             <div className="absolute left-0 top-1.5 w-6 h-6 rounded-full border-2 border-blue-500 bg-surface flex items-center justify-center">
@@ -41,7 +42,7 @@ export default function Activities({ activities = [] }) {
                             </div>
 
                             <div className="rounded-xl border border-app bg-app p-4">
-                                <p className="text-sm text-app">
+                                <p className="text-sm text-app capitalize">
                                     {activity.description}
                                 </p>
 

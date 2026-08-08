@@ -21,6 +21,9 @@ export function middleware(request) {
         "/call-logs",
         "/tasks",
         "/reports",
+        "/organization-settings",
+        "team-management",
+        "integration",
         "/settings",
     ];
 

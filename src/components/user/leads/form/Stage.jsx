@@ -4,7 +4,7 @@ import { GitBranch } from "lucide-react";
 
 export default function Stage({ stage = [] }) {
     return (
-        <div className="bg-card border border-app rounded-2xl p-5">
+        <div className="bg-card border border-app rounded-2xl p-5 overflow-hidden">
             <h3 className="uppercase tracking-widest text-xs font-semibold text-muted">
                 Stage History
             </h3>
@@ -27,10 +27,12 @@ export default function Stage({ stage = [] }) {
                 </div>
             ) : (
                 <div className="space-y-5">
-                    {stage.map((item) => (
+                    {stage.map((item, idx) => (
                         <div key={item._id} className="relative pl-8">
                             {/* Timeline line */}
-                            <div className="absolute left-3 top-1.5 bottom-0 w-px border border-app" />
+                            {idx !== stage.length - 1 && (
+                                <div className="absolute left-3 top-1.5 bottom-0 w-px border border-app h-25" />
+                            )}
 
                             {/* Timeline dot */}
                             <div className="absolute left-0 top-1.5 w-6 h-6 rounded-full border-2 border-blue-500 bg-surface flex items-center justify-center">
@@ -49,9 +51,9 @@ export default function Stage({ stage = [] }) {
                                     </span>
                                 </div>
 
-                                <p className="mt-2 text-sm text-app">
+                                {/* <p className="mt-2 text-sm text-app">
                                     {item.description}
-                                </p>
+                                </p> */}
 
                                 <div className="mt-2 text-xs text-muted">
                                     Updated by{" "}

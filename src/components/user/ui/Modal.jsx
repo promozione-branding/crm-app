@@ -11,10 +11,7 @@ function Header({ children, onClose }) {
                 {children}
             </h2>
 
-            <button
-                onClick={onClose}
-                className="rounded-lg p-2 hover-app text-app transition"
-            >
+            <button onClick={onClose} className="rounded-lg p-2 hover-app text-app transition">
                 <X size={18} />
             </button>
         </div>
@@ -37,12 +34,7 @@ function Footer({ children }) {
     );
 }
 
-export default function Modal({
-    isOpen,
-    onClose,
-    children,
-    size = "md",
-}) {
+export default function Modal({ isOpen, onClose, children, size = "md", }) {
     const modalRef = useRef(null);
 
     const sizes = {
@@ -87,37 +79,19 @@ export default function Modal({
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                 >
-                    <motion.div
-                        ref={modalRef}
+                    <motion.div ref={modalRef}
                         className={`w-full ${sizes[size]} rounded-2xl border border-app bg-surface shadow-2xl overflow-hidden`}
-                        initial={{
-                            opacity: 0,
-                            scale: 0.95,
-                            y: 20,
-                        }}
-                        animate={{
-                            opacity: 1,
-                            scale: 1,
-                            y: 0,
-                        }}
-                        exit={{
-                            opacity: 0,
-                            scale: 0.95,
-                            y: 20,
-                        }}
-                        transition={{
-                            duration: 0.2,
-                        }}
+                        initial={{ opacity: 0, scale: 0.95, y: 20, }}
+                        animate={{ opacity: 1, scale: 1, y: 0, }}
+                        exit={{ opacity: 0, scale: 0.95, y: 20, }}
+                        transition={{ duration: 0.2, }}
                     >
                         {content.map((child, index) => {
                             if (!child) return null;
 
                             if (child.type === Header) {
                                 return (
-                                    <Header
-                                        key={index}
-                                        onClose={onClose}
-                                    >
+                                    <Header key={index} onClose={onClose}>
                                         {child.props.children}
                                     </Header>
                                 );

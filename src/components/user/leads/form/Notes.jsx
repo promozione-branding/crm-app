@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { FileText, Plus } from "lucide-react";
 import Modal from "@/components/user/ui/Modal";
-import Input from "../../ui/Input";
 import TextArea from "../../ui/TextArea";
+import toast from "react-hot-toast";
+import axios from "axios";
 
-export default function Notes({ notes: initialNotes }) {
+export default function Notes({ notes: initialNotes, leadId, getLead }) {
     const [open, setOpen] = useState(false);
     const [notes, setNotes] = useState(initialNotes);
-
     const [form, setForm] = useState({
         message: "",
     });
@@ -25,23 +25,22 @@ export default function Notes({ notes: initialNotes }) {
         }));
     };
 
-    const handleSave = () => {
-        if (!form.message.trim()) return;
+    const handleSave = async () => {
+        if (!form.message.trim()) {
+            return toast.error("Enter Message First");
+        }
 
-        setNotes((prev) => [
-            {
-                id: Date.now(),
-                message: form.message,
-                createdAt: new Date(),
-            },
-            ...prev,
-        ]);
-
-        setForm({
-            message: "",
-        });
-
-        setOpen(false);
+        const toastId = toast.loading("Adding note...");
+        try {
+            const res = await axios.post(`/api/user/lead/${leadId}/notes`, { message: form.message, }, { withCredentials: true, });
+            setNotes(res.data.data.notes);
+            setForm({ message: "", });
+            setOpen(false);
+            getLead()
+            toast.success(res.data.message, { id: toastId });
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to add note.", { id: toastId });
+        }
     };
 
     return (
@@ -79,20 +78,28 @@ export default function Notes({ notes: initialNotes }) {
                 ) : (
                     <div className="space-y-3">
                         {notes.map((note) => (
-                            <div key={note.id} className="rounded-xl border border-app bg-app p-4">
+                            <div key={note._id} className="rounded-xl border border-app bg-app p-4">
                                 <div className="flex justify-between items-start">
                                     <h4 className="font-medium text-app">
-                                        {note.title}
+                                        {note.message}
                                     </h4>
-
-                                    <span className="text-xs opacity-60">
-                                        {new Date(note.createdAt).toLocaleDateString()}
-                                    </span>
                                 </div>
 
-                                <p className="mt-2 text-sm opacity-80 whitespace-pre-wrap">
-                                    {note.message}
-                                </p>
+                                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
+                                    <span>
+                                        By <strong>{note.createdBy?.name}</strong>
+                                    </span>
+
+                                    <span>•</span>
+
+                                    <span>{note.createdBy?.email}</span>
+
+                                    <span>•</span>
+
+                                    <span>
+                                        {new Date(note.createdAt).toLocaleString()}
+                                    </span>
+                                </div>
                             </div>
                         ))}
                     </div>

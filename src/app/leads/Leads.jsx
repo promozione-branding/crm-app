@@ -7,7 +7,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 const columns = [
-    { key: "assignedTo", label: "Assigned To", sortable: true, },
+    { key: "assignedTo.name", label: "Assigned To", sortable: true, },
     { key: "name", label: "Contact Name", sortable: true, },
     { key: "phone", label: "Phone", sortable: true, },
     {

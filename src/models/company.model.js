@@ -62,6 +62,10 @@ const companySchema = new mongoose.Schema(
             default: "India",
         },
 
+        gst: {
+            type: String,
+        },
+
         plan: {
             type: String,
             enum: ["free", "starter", "growth", "pro", "elite"],

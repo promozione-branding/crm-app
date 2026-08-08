@@ -85,11 +85,9 @@ export default function NewLead() {
         }
     };
 
-    // console.log(form)
-
     return (
         <div className="bg-surface min-h-screen">
-            <div className="h-16 top-16 sticky z-50 bg-surface border-b border-app flex items-center justify-between md:px-8 px-1">
+            <div className="h-16 top-16 sticky z-40 bg-surface border-b border-app flex items-center justify-between md:px-8 px-1">
                 <div className="flex items-center md:gap-2 gap-1">
                     <Link href="/leads" className="p-2 rounded-xl border bg-app border-app hover-app text-app">
                         <ArrowLeft size={20} />

@@ -20,7 +20,10 @@ const ActivitySchema = new mongoose.Schema({
         enum: [
             "lead_created",
             "lead_updated",
+            "task_created",
+            "task_updated",
             "stage_changed",
+            "status_changed",
             "assigned",
             "note_added",
             "call",
@@ -128,10 +131,7 @@ const LeadSchema = new mongoose.Schema({
         trim: true,
     },
 
-    priceRange: {
-        min: Number,
-        max: Number,
-    },
+    priceRange: Number,
 
     dealValue: {
         type: Number,

@@ -1,8 +1,24 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import SelectInput from '../../ui/SelectInput'
 import Input from '../../ui/Input'
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 export default function DealInfo({ form, handleChange }) {
+    const [users, setUsers] = useState([])
+    const getUsers = async () => {
+        try {
+            const res = await axios.get("/api/user?limit=100", { withCredentials: true, });
+            setUsers(res.data.data || []);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to load users.");
+        }
+    };
+
+    useEffect(() => {
+        getUsers();
+    }, []);
+
     return (
         <div className="bg-card border border-app rounded-2xl p-5 mt-6">
             <h3 className="uppercase tracking-widest text-xs font-semibold text-muted">
@@ -12,14 +28,16 @@ export default function DealInfo({ form, handleChange }) {
             <div className="border-b border-app my-4" />
 
             <div className="grid md:grid-cols-2 gap-3">
-
                 <SelectInput
                     label="Assigned To"
                     name="assignedTo"
                     value={form.assignedTo}
                     onChange={handleChange}
                     options={[
-
+                        ...users.map((user) => ({
+                            label: `${user.name} (${user.role.charAt(0).toUpperCase() + user.role.slice(1)})`,
+                            value: user._id,
+                        })),
                     ]}
                 />
 

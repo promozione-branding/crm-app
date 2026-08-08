@@ -4,6 +4,7 @@ import { ChevronDown } from "lucide-react";
 
 export default function SelectInput({
     name,
+    disabled,
     label,
     required = false,
     value,
@@ -24,6 +25,7 @@ export default function SelectInput({
             <div className="relative mt-0.5">
 
                 <select
+                    disabled={disabled}
                     value={value}
                     onChange={onChange}
                     name={name}

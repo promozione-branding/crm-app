@@ -13,6 +13,7 @@ import Activities from '@/components/user/leads/form/Activities';
 import Call from '@/components/user/leads/form/Call';
 import Stage from '@/components/user/leads/form/Stage';
 import Task from '@/components/user/leads/form/Task';
+import toast from 'react-hot-toast';
 
 export default function Edit() {
   const { id } = useParams();
@@ -68,7 +69,7 @@ export default function Edit() {
       companyName: data.companyName || "",
       gstNumber: data.gstNumber || "",
 
-      assignedTo: data.assignedTo || "",
+      assignedTo: data.assignedTo?._id || "",
       stage: data.stage || "new",
       priceRange: data.priceRange || "",
       dealValue: data.dealValue || "",
@@ -96,21 +97,39 @@ export default function Edit() {
     { id: "activities", label: "Activities", icon: Activity, badge: lead?.activities?.length || "0", },
     { id: "calls", label: "Call History", icon: Phone, badge: lead?.call?.length || "0" },
     { id: "stage", label: "Stage History", icon: TrendingUp, badge: lead?.stageHistory?.length || "0" },
-    { id: "task", label: "Tasks", icon: ClipboardCheck, badge: lead?.task?.length || "0" },
+    { id: "task", label: "Tasks", icon: ClipboardCheck, badge: lead?.taskCount || "0" },
   ];
 
-  console.log(lead)
+  const handleEdit = async () => {
+    const toastId = toast.loading("Updating lead...");
+
+    try {
+      setLoading(true)
+      const res = await axios.put(`/api/user/lead/${id}`, form, { withCredentials: true, });
+      toast.success(res.data.message, { id: toastId, });
+      getLead()
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update lead", { id: toastId, });
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // console.log(lead)
 
   return (
     <div className="bg-surface min-h-screen">
-      <div className="h-16 top-16 sticky z-50 bg-surface border-b border-app flex items-center justify-between md:px-8 px-1">
+      <div className="h-16 top-16 sticky z-40 bg-surface border-b border-app flex items-center justify-between md:px-8 px-1">
         <div className="flex items-center md:gap-2 gap-1">
           <Link href="/leads" className="p-2 rounded-xl border bg-app border-app hover-app text-app">
             <ArrowLeft size={20} />
           </Link>
 
-          <h1 className="text-sm font-bold text-app">
+          <h1 className="text-sm font-bold text-app flex flex-col">
             {lead?.name || "-"}
+            <span className='text-muted text-xs flex items-center gap-1'>
+              <User size={12} /> {lead?.assignedTo?.name}
+            </span>
           </h1>
         </div>
 
@@ -119,13 +138,13 @@ export default function Edit() {
             Cancel
           </Link>
 
-          <button disabled={loading} onClick={""} className="px-3 h-8 rounded-lg btn-primary">
+          <button disabled={loading} onClick={handleEdit} className="px-3 h-8 rounded-lg btn-primary">
             {loading ? "Editing" : "Edit Lead"}
           </button>
         </div>
       </div>
 
-      <div className='h-10 top-32 sticky z-50 bg-surface border-b border-app flex items-center gap-2 justify-between md:px-8 px-1 overflow-x-auto overflow-y-hidden'>
+      <div className='h-10 top-32 sticky z-40 bg-surface border-b border-app flex items-center gap-2 justify-between md:px-8 px-1 overflow-x-auto overflow-y-hidden'>
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = active === tab.id;
@@ -169,7 +188,7 @@ export default function Edit() {
 
       {active === "notes" &&
         <div className="max-w-4xl mx-auto md:py-10 py-5 px-2 space-y-4">
-          <Notes notes={lead?.notes || []} />
+          <Notes notes={lead?.notes || []} leadId={id} getLead={getLead} />
         </div>}
 
       {active === "activities" &&
@@ -189,7 +208,7 @@ export default function Edit() {
 
       {active === "task" &&
         <div className="max-w-4xl mx-auto md:py-10 py-5 px-2 space-y-4">
-          <Task />
+          <Task lead={lead} getLead={getLead} />
         </div>}
 
     </div>
