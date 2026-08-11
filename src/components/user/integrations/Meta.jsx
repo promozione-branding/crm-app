@@ -1,34 +1,82 @@
 "use client"
 import React, { useEffect, useState } from 'react'
+import axios from "axios";
 
 export default function Meta() {
     const [loading, setLoading] = useState(true);
     const [connected, setConnected] = useState(false);
     const [integration, setIntegration] = useState(null);
+    const [pages, setPages] = useState([]);
+    const [loadingPages, setLoadingPages] = useState(false);
+    const [selectingPage, setSelectingPage] = useState(false);
 
     const handleConnect = () => {
         window.location.href = "/api/user/meta/connect";
     };
 
-    useEffect(() => {
-        const checkStatus = async () => {
-            try {
-                const response = await fetch("/api/user/meta/status");
-                const data = await response.json();
-
-                if (data.success) {
-                    setConnected(data.connected);
-                    setIntegration(data.integration);
-                }
-            } catch (error) {
-                console.error("Meta status error:", error);
-            } finally {
-                setLoading(false);
+    const checkStatus = async () => {
+        try {
+            const { data } = await axios.get("/api/user/meta/status");
+            if (data.success) {
+                setConnected(data.connected);
+                setIntegration(data.integration);
             }
-        };
+        } catch (error) {
+            console.error("Meta status error:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    const fetchPages = async () => {
+        try {
+            setLoadingPages(true);
+            const { data } = await axios.get("/api/user/meta/assets");
+            if (!data.success) {
+                throw new Error(data.message || "Failed to fetch pages");
+            }
+            const metaPages = data.assets?.pages || [];
+            console.log(metaPages)
+            setPages(metaPages);
+            if (metaPages.length === 1 && !integration?.metadata?.pageId) {
+                await handleSelectPage(metaPages[0].id);
+            }
+        } catch (error) {
+            console.error("Fetch Meta pages error:", error);
+        } finally {
+            setLoadingPages(false);
+        }
+    };
+
+    // Select Page
+    const handleSelectPage = async (pageId) => {
+        try {
+            setSelectingPage(true);
+            const { data } = await axios.post("/api/user/meta/assets/select", { pageId, });
+            if (!data.success) {
+                throw new Error(data.message || "Failed to connect Page");
+            }
+
+            console.log("META PAGE CONNECTED:", data);
+            await checkStatus();
+        } catch (error) {
+            console.error("Select Page error:", error);
+        } finally {
+            setSelectingPage(false);
+        }
+    };
+
+    // Initial status
+    useEffect(() => {
         checkStatus();
     }, []);
+
+    // Fetch pages after connected
+    useEffect(() => {
+        if (connected && !integration?.metadata?.pageId) {
+            fetchPages();
+        }
+    }, [connected, integration]);
 
     return (
         <div className="space-y-5">
@@ -75,7 +123,7 @@ export default function Meta() {
                         Connect Facebook to receive leads and messages from your business pages.
                     </p>
 
-                    {!loading && (
+                    {!loading && !connected && (
                         <button onClick={handleConnect}
                             className={`w-full cursor-pointer mt-5 h-9 rounded-lg text-white text-xs font-medium transition-colors ${connected
                                 ? "bg-gray-600 hover:bg-gray-700"
@@ -84,6 +132,83 @@ export default function Meta() {
                         >
                             {connected ? "Reconnect" : "Connect"}
                         </button>
+                    )}
+
+                    {!loading && connected && (
+                        <div className="mt- space-y-3">
+                            {/* Selected Page */}
+                            {integration?.metadata?.pageId ? (
+                                <div className="border border-app rounded-lg p-3">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-muted">
+                                                Connected Page
+                                            </p>
+
+                                            <p className="text-sm font-medium text-app mt-1">
+
+                                                {
+                                                    integration
+                                                        ?.metadata
+                                                        ?.pageName ||
+                                                    "Facebook Page"
+                                                }
+
+                                            </p>
+
+                                        </div>
+                                        <span className="text-[10px] px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-500">
+                                            Active
+                                        </span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    {/* Loading Pages */}
+                                    {loadingPages && (
+                                        <div className="text-xs text-muted">
+                                            Loading Facebook Pages...
+                                        </div>
+                                    )}
+                                    {/* Multiple Pages */}
+                                    {!loadingPages && pages.length > 1 && (
+                                        <div className="space-y-2">
+                                            <p className="text-xs font-medium text-app">
+                                                Select Facebook Page
+                                            </p>
+
+                                            {pages.map((page,idx) => (
+                                                <button key={idx} disabled={selectingPage}
+                                                    onClick={() => handleSelectPage(page.id)}
+                                                    className="w-full flex items-center justify-between border border-app rounded-lg p-3 hover:border-blue-500/50 transition-colors text-left disabled:opacity-50"
+                                                >
+                                                    <div>
+                                                        <p className="text-sm font-medium text-app">
+                                                            {page.name}
+                                                        </p>
+
+                                                        <p className="text-[10px] text-muted mt-1">
+                                                            {page.id}
+                                                        </p>
+                                                    </div>
+
+                                                    <span className="text-xs text-blue-500">
+                                                        Select
+                                                    </span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </>
+                            )}
+
+                            {/* Reconnect */}
+                            <button onClick={handleConnect}
+                                className="w-full cursor-pointer h-9 rounded-lg bg-gray-600 hover:bg-gray-700 text-white text-xs font-medium transition-colors"
+                            >
+                                Reconnect
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>

@@ -90,8 +90,7 @@ export async function GET(request) {
         );
 
         // Remove temporary OAuth cookies
-        const response = NextResponse.redirect(new URL("/dashboard", request.url));
-
+        const response = NextResponse.json({ success: true, message: "Meta connected successfully", });
         response.cookies.set("meta_oauth_state", "", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
