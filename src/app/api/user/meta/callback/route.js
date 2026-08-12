@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import Integration from "@/models/integration.model.js";
 import { connectDB } from "@/config/db";
+const META_API_VERSION = "v23.0";
 
 export async function GET(request) {
     try {
@@ -11,18 +12,16 @@ export async function GET(request) {
         const state = searchParams.get("state");
         const error = searchParams.get("error");
         const errorDescription = searchParams.get("error_description");
-
-        // Meta returned an error
         if (error) {
             return NextResponse.json({ success: false, error, errorDescription, }, { status: 400 });
         }
 
-        // Authorization code missing
+        // Validate code
         if (!code) {
             return NextResponse.json({ success: false, message: "Authorization code not received", }, { status: 400 });
         }
 
-        // State missing
+        // Validate state
         if (!state) {
             return NextResponse.json({ success: false, message: "OAuth state not received", }, { status: 400 });
         }
@@ -30,21 +29,32 @@ export async function GET(request) {
         const cookieStore = await cookies();
         const savedState = cookieStore.get("meta_oauth_state")?.value;
         const companyCookie = cookieStore.get("meta_oauth_company")?.value;
+        const crmOrigin = cookieStore.get("meta_oauth_origin")?.value;
 
+        // Check OAuth state
         if (!savedState || savedState !== state) {
             return NextResponse.json({ success: false, message: "Invalid OAuth state", }, { status: 400 });
         }
 
+        // Company information
         if (!companyCookie) {
             return NextResponse.json({ success: false, message: "Company information not found", }, { status: 401 });
         }
 
-        const { userId, companyId } = JSON.parse(companyCookie);
+        let companyData;
+
+        try {
+            companyData = JSON.parse(companyCookie);
+        } catch {
+            return NextResponse.json({ success: false, message: "Invalid company information", }, { status: 400 });
+        }
+
+        const { userId, companyId } = companyData;
         if (!userId || !companyId) {
             return NextResponse.json({ success: false, message: "Invalid company information", }, { status: 401 });
         }
 
-        // Meta credentials
+        // Meta configuration
         const appId = process.env.META_APP_ID;
         const appSecret = process.env.META_APP_SECRET;
         const redirectUri = process.env.META_REDIRECT_URI;
@@ -52,7 +62,6 @@ export async function GET(request) {
             return NextResponse.json({ success: false, message: "Meta environment configuration missing", }, { status: 500 });
         }
 
-        // Exchange authorization code for access token
         const tokenParams = new URLSearchParams({
             client_id: appId,
             client_secret: appSecret,
@@ -60,14 +69,17 @@ export async function GET(request) {
             code,
         });
 
-        const tokenResponse = await fetch(`https://graph.facebook.com/v23.0/oauth/access_token?${tokenParams.toString()}`,
-            { method: "GET", });
+        const tokenResponse = await fetch(`https://graph.facebook.com/${META_API_VERSION}/oauth/access_token?${tokenParams.toString()}`,
+            { method: "GET", }
+        );
 
         const tokenData = await tokenResponse.json();
         console.log("META TOKEN RESPONSE:", tokenResponse.ok ? { success: true } : tokenData);
         if (!tokenResponse.ok || tokenData.error) {
-            return NextResponse.json({ success: false, message: "Failed to get Meta access token", error: tokenData.error || null, },
-                { status: 400 });
+            return NextResponse.json(
+                { success: false, message: "Failed to get Meta access token", error: tokenData.error || null, },
+                { status: 400 }
+            );
         }
 
         const accessToken = tokenData.access_token;
@@ -75,7 +87,7 @@ export async function GET(request) {
             return NextResponse.json({ success: false, message: "Meta access token not received", }, { status: 400 });
         }
 
-        // Save / update Meta integration
+        // Save / update Integration
         await Integration.findOneAndUpdate(
             { companyId, provider: "meta", },
             {
@@ -86,11 +98,18 @@ export async function GET(request) {
                 connectedAt: new Date(),
                 errorMessage: null,
             },
-            { upsert: true, new: true, setDefaultsOnInsert: true, }
+            {
+                upsert: true,
+                new: true,
+                setDefaultsOnInsert: true,
+            }
         );
 
-        // Remove temporary OAuth cookies
-        const response = NextResponse.json({ success: true, message: "Meta connected successfully", });
+        // Clear OAuth cookies
+        const redirectBase = crmOrigin || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+        const redirectUrl = `${redirectBase}/integration`;
+        const response = NextResponse.redirect(redirectUrl);
+
         response.cookies.set("meta_oauth_state", "", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -100,6 +119,14 @@ export async function GET(request) {
         });
 
         response.cookies.set("meta_oauth_company", "", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+            maxAge: 0,
+        });
+
+        response.cookies.set("meta_oauth_origin", "", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
