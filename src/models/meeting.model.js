@@ -79,7 +79,6 @@ const MeetingSchema = new mongoose.Schema({
             enum: [
                 "office",
                 "client",
-                "custom",
                 "online",
             ],
             default: "custom",
@@ -103,6 +102,11 @@ const MeetingSchema = new mongoose.Schema({
     meetingLink: {
         type: String,
         trim: true,
+        default: "",
+    },
+
+    phoneNo: {
+        type: String,
         default: "",
     },
 

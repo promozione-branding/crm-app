@@ -41,6 +41,7 @@ export default function Meetings({ leadId }) {
         meetingLink: "",
         reminderMinutes: "0",
         notes: "",
+        status: "scheduled",
     });
 
     const handleChange = ({ target: { name, value } }) => {
@@ -145,6 +146,7 @@ export default function Meetings({ leadId }) {
                 meetingLink: form.meetingLink,
                 reminderMinutes: Number(form.reminderMinutes),
                 notes: form.notes,
+                status: form.status,
             };
 
             if (editingId) {
@@ -182,6 +184,7 @@ export default function Meetings({ leadId }) {
             meetingLink: meeting.meetingLink || "",
             reminderMinutes: String(meeting.reminderMinutes || 0),
             notes: meeting.notes || "",
+            status: meeting.status
         });
         setOpen(true);
     };
@@ -212,6 +215,61 @@ export default function Meetings({ leadId }) {
             hour: "2-digit",
             minute: "2-digit",
         });
+    };
+
+    const getCurrentLocation = () => {
+        if (!navigator.geolocation) {
+            toast.error("Geolocation is not supported by your browser.");
+            return;
+        }
+
+        const toastId = toast.loading("Getting your location...");
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+
+                setForm((prev) => ({
+                    ...prev,
+                    latitude: latitude.toString(),
+                    longitude: longitude.toString(),
+                }));
+
+                toast.success("Location captured successfully.", {
+                    id: toastId,
+                });
+            },
+            (error) => {
+                let message = "Unable to get your location.";
+
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        message =
+                            "Location permission denied. Please allow location access.";
+                        break;
+
+                    case error.POSITION_UNAVAILABLE:
+                        message = "Location information is unavailable.";
+                        break;
+
+                    case error.TIMEOUT:
+                        message = "Location request timed out.";
+                        break;
+
+                    default:
+                        message = "Unable to get your location.";
+                }
+
+                toast.error(message, {
+                    id: toastId,
+                });
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0,
+            }
+        );
     };
 
     return (
@@ -344,13 +402,11 @@ export default function Meetings({ leadId }) {
                 </div>
             </div>
 
-
             {/* CREATE / EDIT MODAL */}
             <Modal isOpen={open} onClose={() => { setOpen(false); resetForm(); }} size="lg">
                 <Modal.Header>
                     {editingId ? "Edit Meeting" : "Add Meeting"}
                 </Modal.Header>
-
 
                 <Modal.Body>
                     <div className="space-y-3">
@@ -374,16 +430,32 @@ export default function Meetings({ leadId }) {
                             />
                         </div>
 
-                        <SelectInput
-                            label="Assigned To"
-                            required
-                            name="assignedTo"
-                            value={form.assignedTo}
-                            onChange={handleChange}
-                            options={[...users.map(
-                                (user) => ({ label: `${user.name} (${user.roleId?.name})`, value: user._id, })
-                            ),]}
-                        />
+                        <div className="grid md:grid-cols-2 gap-3">
+                            <SelectInput
+                                label="Assigned To"
+                                required
+                                name="assignedTo"
+                                value={form.assignedTo}
+                                onChange={handleChange}
+                                options={[...users.map(
+                                    (user) => ({ label: `${user.name} (${user.roleId?.name})`, value: user._id, })
+                                ),]}
+                            />
+
+                            <SelectInput
+                                label="Status"
+                                required
+                                name="status"
+                                value={form.status}
+                                onChange={handleChange}
+                                options={[
+                                    { label: "Scheduled", value: "scheduled", },
+                                    { label: "Completed", value: "completed", },
+                                    { label: "Cancelled", value: "cancelled", },
+                                    { label: "No Show", value: "no_show", },
+                                ]}
+                            />
+                        </div>
 
                         <div className="grid md:grid-cols-2 gap-3">
                             <Input
@@ -434,49 +506,56 @@ export default function Meetings({ leadId }) {
                             />
                         </div>
 
-                        <SelectInput
-                            label="Location Type"
-                            name="locationType"
-                            value={form.locationType}
-                            onChange={handleChange}
-                            options={[
-                                { label: "Client Location", value: "client", },
-                                { label: "Office", value: "office", },
-                                { label: "Custom", value: "custom", },
-                                { label: "Online", value: "online", },
-                            ]}
-                        />
-
-                        {form.locationType !== "online" && (
+                        {form.meetingType === "in_person" && (
                             <>
-                                <Input
-                                    label="Address"
-                                    name="address"
-                                    value={form.address}
-                                    onChange={handleChange}
-                                    placeholder="Enter meeting address"
-                                />
-
                                 <div className="grid md:grid-cols-2 gap-3">
-                                    <Input
-                                        label="Latitude"
-                                        name="latitude"
-                                        value={form.latitude}
+                                    <SelectInput
+                                        label="Location Type"
+                                        name="locationType"
+                                        value={form.locationType}
                                         onChange={handleChange}
-                                        placeholder="28.6139"
+                                        options={[
+                                            { label: "Client Location", value: "client", },
+                                            { label: "Office", value: "office", },
+                                            { label: "Other", value: "other", },
+                                        ]}
                                     />
 
-                                    <Input
-                                        label="Longitude"
-                                        name="longitude"
-                                        value={form.longitude}
-                                        onChange={handleChange}
-                                        placeholder="77.2090"
-                                    />
+                                    <div className="flex justify-between items-end gap-2">
+                                        <div className="w-full">
+                                            <Input
+                                                label="Address"
+                                                name="address"
+                                                value={form.address}
+                                                onChange={handleChange}
+                                                placeholder="Enter meeting address"
+                                            />
+                                        </div>
+
+                                        <button onClick={getCurrentLocation} title="Use current location" className="p-2 rounded-lg border bg-app border-app hover-app text-app">
+                                            <MapPin size={18} />
+                                        </button>
+                                    </div>
                                 </div>
                             </>
                         )}
 
+                        {form.latitude && form.longitude && (
+                            <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-3 text-xs">
+                                <div className="flex items-center gap-1 text-green-500">
+                                    <MapPin size={14} />
+
+                                    <span className="font-medium">
+                                        Location captured
+                                    </span>
+                                </div>
+
+                                <div className="mt-1 opacity-70 flex">
+                                    Latitude: {form.latitude} {" "}
+                                    Longitude: {form.longitude}
+                                </div>
+                            </div>
+                        )}
 
                         {form.meetingType === "video" && (
                             <Input
@@ -488,6 +567,16 @@ export default function Meetings({ leadId }) {
                             />
                         )}
 
+                        {form.meetingType === "phone" && (
+                            <Input
+                                label="Phone Number"
+                                name="phoneNo"
+                                value={form.phoneNo}
+                                onChange={handleChange}
+                                placeholder="9999999999"
+                            />
+                        )}
+
                         <TextArea
                             label="Description"
                             name="description"
@@ -496,13 +585,14 @@ export default function Meetings({ leadId }) {
                             placeholder="Meeting agenda..."
                         />
 
-                        <TextArea
-                            label="Notes"
-                            name="notes"
-                            value={form.notes}
-                            onChange={handleChange}
-                            placeholder="Additional notes..."
-                        />
+                        {editingId &&
+                            <TextArea
+                                label="Notes"
+                                name="notes"
+                                value={form.notes}
+                                onChange={handleChange}
+                                placeholder="Additional notes..."
+                            />}
                     </div>
                 </Modal.Body>
 
