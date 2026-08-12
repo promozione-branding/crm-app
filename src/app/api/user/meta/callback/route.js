@@ -40,25 +40,28 @@ function verifyOAuthState(state) {
         throw new Error("Invalid OAuth state signature");
     }
 
-    const payload = JSON.parse(
-        Buffer
-            .from(data, "base64url")
-            .toString("utf8")
-    );
+    let payload;
 
-    // Expired
-    if (
-        !payload.expiresAt ||
-        Date.now() > payload.expiresAt
-    ) {
+    try {
+        payload = JSON.parse(
+            Buffer
+                .from(data, "base64url")
+                .toString("utf8")
+        );
+    } catch {
+        throw new Error("Invalid OAuth state payload");
+    }
+
+    if (!payload.expiresAt) {
+        throw new Error("OAuth state expiration missing");
+    }
+
+    if (Date.now() > payload.expiresAt) {
         throw new Error("OAuth state expired");
     }
 
-    if (
-        !payload.userId ||
-        !payload.companyId
-    ) {
-        throw new Error("Invalid OAuth state payload");
+    if (!payload.userId || !payload.companyId) {
+        throw new Error("OAuth state user/company missing");
     }
 
     return payload;
@@ -77,10 +80,13 @@ export async function GET(request) {
         const errorDescription =
             searchParams.get("error_description");
 
-        /**
-         * Meta returned an error
-         */
+        // Meta OAuth error
         if (error) {
+            console.error("META OAUTH ERROR:", {
+                error,
+                errorDescription,
+            });
+
             return NextResponse.json(
                 {
                     success: false,
@@ -91,9 +97,7 @@ export async function GET(request) {
             );
         }
 
-        /**
-         * Authorization code
-         */
+        // Code
         if (!code) {
             return NextResponse.json(
                 {
@@ -104,9 +108,7 @@ export async function GET(request) {
             );
         }
 
-        /**
-         * OAuth state
-         */
+        // State
         if (!state) {
             return NextResponse.json(
                 {
@@ -117,9 +119,7 @@ export async function GET(request) {
             );
         }
 
-        /**
-         * Verify signed state
-         */
+        // Verify state
         let oauthData;
 
         try {
@@ -144,15 +144,15 @@ export async function GET(request) {
             companyId,
         } = oauthData;
 
-        /**
-         * Get company
-         *
-         * This is how we know which
-         * client CRM to redirect to.
-         */
+        console.log("META OAUTH STATE VERIFIED:", {
+            userId,
+            companyId,
+        });
+
+        // Find company
         const company = await Company
             .findById(companyId)
-            .select("crmDomain")
+            .select("crmDomain name")
             .lean();
 
         if (!company) {
@@ -175,38 +175,27 @@ export async function GET(request) {
             );
         }
 
-        /**
-         * Normalize domain
-         */
+        // Normalize CRM domain
         const crmDomain = company.crmDomain
             .replace(/^https?:\/\//, "")
-            .replace(/\/$/, "");
+            .replace(/\/+$/, "");
 
-        /**
-         * Meta credentials
-         */
+        // Meta config
         const appId = process.env.META_APP_ID;
         const appSecret = process.env.META_APP_SECRET;
         const redirectUri = process.env.META_REDIRECT_URI;
 
-        if (
-            !appId ||
-            !appSecret ||
-            !redirectUri
-        ) {
+        if (!appId || !appSecret || !redirectUri) {
             return NextResponse.json(
                 {
                     success: false,
-                    message:
-                        "Meta environment configuration missing",
+                    message: "Meta environment configuration missing",
                 },
                 { status: 500 }
             );
         }
 
-        /**
-         * Exchange code for access token
-         */
+        // Exchange code
         const tokenParams = new URLSearchParams({
             client_id: appId,
             client_secret: appSecret,
@@ -221,8 +210,7 @@ export async function GET(request) {
             }
         );
 
-        const tokenData =
-            await tokenResponse.json();
+        const tokenData = await tokenResponse.json();
 
         console.log(
             "META TOKEN RESPONSE:",
@@ -231,39 +219,35 @@ export async function GET(request) {
                 : tokenData
         );
 
-        if (
-            !tokenResponse.ok ||
-            tokenData.error
-        ) {
+        if (!tokenResponse.ok || tokenData.error) {
+            console.error(
+                "META TOKEN ERROR:",
+                tokenData
+            );
+
             return NextResponse.json(
                 {
                     success: false,
-                    message:
-                        "Failed to get Meta access token",
-                    error:
-                        tokenData.error || null,
+                    message: "Failed to get Meta access token",
+                    error: tokenData.error || null,
                 },
                 { status: 400 }
             );
         }
 
-        const accessToken =
-            tokenData.access_token;
+        const accessToken = tokenData.access_token;
 
         if (!accessToken) {
             return NextResponse.json(
                 {
                     success: false,
-                    message:
-                        "Meta access token not received",
+                    message: "Meta access token not received",
                 },
                 { status: 400 }
             );
         }
 
-        /**
-         * Save Meta integration
-         */
+        // Save integration
         await Integration.findOneAndUpdate(
             {
                 companyId,
@@ -272,7 +256,6 @@ export async function GET(request) {
             {
                 companyId,
                 provider: "meta",
-
                 status: "connected",
 
                 credentials: {
@@ -280,7 +263,7 @@ export async function GET(request) {
                 },
 
                 connectedAt: new Date(),
-
+                lastSyncAt: null,
                 errorMessage: null,
             },
             {
@@ -299,15 +282,11 @@ export async function GET(request) {
             }
         );
 
-        /**
-         * Redirect to client's CRM
-         */
+        // Redirect to client's CRM
         const redirectUrl =
             `https://${crmDomain}/integration`;
 
-        return NextResponse.redirect(
-            redirectUrl
-        );
+        return NextResponse.redirect(redirectUrl);
 
     } catch (error) {
         console.error(
@@ -318,8 +297,11 @@ export async function GET(request) {
         return NextResponse.json(
             {
                 success: false,
-                message:
-                    "Meta connection failed",
+                message: "Meta connection failed",
+                error:
+                    process.env.NODE_ENV === "development"
+                        ? error.message
+                        : undefined,
             },
             { status: 500 }
         );
