@@ -15,7 +15,7 @@ const DynamicTable = ({ loading, columns = [], data = [], page, setPage, total =
                     <thead className="border-b border-app bg-app">
                         <tr className="">
                             {columns.map((col) => (
-                                <th key={col.key} className="px-6 py-4 font-semibold">
+                                <th key={col.key} className="px-6 py-4 font-semibold cursor-pointer">
                                     <div className="flex items-center gap-2">
                                         {col.label}
 

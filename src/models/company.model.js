@@ -108,6 +108,4 @@ const companySchema = new mongoose.Schema(
 
 companySchema.index({ createdAt: -1 });
 companySchema.index({ status: 1, plan: 1 });
-companySchema.index({ website: 1 });
-companySchema.index({ crmDomain: 1 });
 export default mongoose.models.Company || mongoose.model("Company", companySchema);

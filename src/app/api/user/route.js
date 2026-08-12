@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { connectDB } from "@/config/db";
 import { ENV } from "@/config/env";
 import { getAllUsersService, createUserService, } from "@/controllers/user/usersController";
+import { getCurrentUser } from "@/utils/auth";
 
 // GET USERS
 export async function GET(request) {
@@ -41,16 +42,11 @@ export async function GET(request) {
 export async function POST(request) {
     try {
         await connectDB();
-        const token = request.cookies.get(ENV.CLIENT_COOKIE_NAME)?.value;
-        if (!token) {
-            return NextResponse.json({ success: false, message: "Not authenticated.", }, { status: 401, });
-        }
-
-        const decoded = jwt.verify(token, ENV.JWT_CLIENT_SECRET);
+        const user = await getCurrentUser(request);
         const body = await request.json();
-        const user = await createUserService(decoded.id, body);
+        const userData = await createUserService(user, body);
         return NextResponse.json(
-            { success: true, message: "User created successfully.", data: user, },
+            { success: true, message: "User created successfully.", data: userData, },
             { status: 201, }
         );
     } catch (error) {

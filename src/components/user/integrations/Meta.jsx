@@ -31,7 +31,7 @@ export default function Meta() {
     const fetchPages = async () => {
         try {
             setLoadingPages(true);
-            const { data } = await axios.get("/api/user/meta/assets");
+            const { data } = await axios.get("/api/user/meta/assets", { withCredentials: true, });
             if (!data.success) {
                 throw new Error(data.message || "Failed to fetch pages");
             }
@@ -52,7 +52,7 @@ export default function Meta() {
     const handleSelectPage = async (pageId) => {
         try {
             setSelectingPage(true);
-            const { data } = await axios.post("/api/user/meta/assets/select", { pageId, });
+            const { data } = await axios.post("/api/user/meta/assets/select", { pageId, }, { withCredentials: true, });
             if (!data.success) {
                 throw new Error(data.message || "Failed to connect Page");
             }
@@ -177,7 +177,7 @@ export default function Meta() {
                                                 Select Facebook Page
                                             </p>
 
-                                            {pages.map((page,idx) => (
+                                            {pages.map((page, idx) => (
                                                 <button key={idx} disabled={selectingPage}
                                                     onClick={() => handleSelectPage(page.id)}
                                                     className="w-full flex items-center justify-between border border-app rounded-lg p-3 hover:border-blue-500/50 transition-colors text-left disabled:opacity-50"

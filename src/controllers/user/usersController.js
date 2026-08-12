@@ -1,5 +1,6 @@
 import User from "@/models/user.model.js";
 import { hashPassword } from "@/utils/hashPassword";
+import Role from "@/models/role.model.js";
 
 export const getAllUsersService = async (userId, query = {}) => {
     const currentUser = await User.findById(userId).select("companyId");
@@ -22,7 +23,7 @@ export const getAllUsersService = async (userId, query = {}) => {
 
     // Role filter
     if (role) {
-        filter.role = role;
+        filter.roleId = role;
     }
 
     // Status filter
@@ -34,8 +35,8 @@ export const getAllUsersService = async (userId, query = {}) => {
     const perPage = Math.min(Math.max(Number(limit) || 25, 1), 100);
     const skip = (currentPage - 1) * perPage;
     const [users, total] = await Promise.all([
-        User.find(filter).select("-password").sort({ createdAt: -1, })
-            .skip(skip).limit(perPage).lean(),
+        User.find(filter).select("-password").populate("roleId", "name description permissions isSystemRole")
+            .sort({ createdAt: -1, }).skip(skip).limit(perPage).lean(),
 
         User.countDocuments(filter),
     ]);
@@ -53,28 +54,26 @@ export const getAllUsersService = async (userId, query = {}) => {
     };
 };
 
-export const createUserService = async (userId, body) => {
-    const currentUser = await User.findById(userId).select("companyId role");
+export const createUserService = async (currentUser, body) => {
     if (!currentUser) {
         throw new Error("User not found.");
     }
 
-    // Only admin can create users
-    if (currentUser.role !== "admin") {
+    const currentUserWithRole = await User.findById(currentUser._id)
+        .populate("roleId", "name permissions isSystemRole");
+
+    if (!currentUserWithRole) {
+        throw new Error("User not found.");
+    }
+
+    const isAdmin = currentUserWithRole.roleId?.permissions?.includes("*");
+    if (!isAdmin) {
         throw new Error("You are not authorized to create users.");
     }
 
-    const {
-        name,
-        email,
-        phone,
-        password,
-        role = "employee",
-        permissions = [],
-        status = "active",
-    } = body;
+    const { name, email, phone, password, roleId, status = "active", } = body;
 
-    // Required fields
+    // VALIDATION
     if (!name?.trim()) {
         throw new Error("Name is required.");
     }
@@ -87,49 +86,45 @@ export const createUserService = async (userId, body) => {
         throw new Error("Password is required.");
     }
 
-    // Allowed roles
-    const allowedRoles = [
-        "admin",
-        "sub-admin",
-        "manager",
-        "employee",
-    ];
-
-    if (!allowedRoles.includes(role)) {
-        throw new Error("Invalid role.");
+    if (!roleId) {
+        throw new Error("Role is required.");
     }
 
-    // Don't allow another admin
-    // Remove this if you want multiple admins
-    if (role === "admin") {
-        throw new Error("Admin user cannot be created from this panel.");
+    if (password.length < 6) {
+        throw new Error("Password must be at least 6 characters.");
     }
 
+    // NORMALIZE EMAIL
     const normalizedEmail = email.trim().toLowerCase();
-
-    // Check duplicate email
     const existingUser = await User.findOne({ email: normalizedEmail, });
     if (existingUser) {
         throw new Error("A user with this email already exists.");
     }
 
-    // Password validation
-    if (password.length < 6) {
-        throw new Error("Password must be at least 6 characters.");
+    // FIND ROLE
+    const role = await Role.findOne({ _id: roleId, companyId: currentUser.companyId, });
+    if (!role) {
+        throw new Error("Invalid role or role does not belong to your company.");
+    }
+
+    // PREVENT ASSIGNING SYSTEM ADMIN ROLE
+    if (role.isSystemRole && role.permissions.includes("*")) {
+        throw new Error("Admin role cannot be assigned from this panel.");
     }
 
     const hashedPassword = await hashPassword(password);
-    const user = await User.create({
+    const newUser = await User.create({
         companyId: currentUser.companyId,
         name: name.trim(),
         email: normalizedEmail,
         phone: phone?.trim() || "",
         password: hashedPassword,
-        role,
-        permissions: Array.isArray(permissions) ? permissions : [],
+        roleId: role._id,
         status,
     });
 
-    const responseUser = await User.findById(user._id).select("-password").lean();
+    const responseUser = await User.findById(newUser._id).select("-password")
+        .populate("roleId", "name description permissions isSystemRole status").lean();
+
     return responseUser;
 };

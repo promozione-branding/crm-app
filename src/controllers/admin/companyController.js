@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import mongoose from "mongoose";
 import Company from "@/models/company.model.js";
+import Role from "@/models/role.model.js";
 import User from "@/models/user.model.js";
 import { hashPassword } from "@/utils/hashPassword";
 import jwt from "jsonwebtoken";
 import { ENV } from "@/config/env";
-import AdminUser from "@/models/adminUser.model";
+import AdminUser from "@/models/adminUser.model.js";
 
 const generateCrmDomain = (website) => {
     if (!website) {
@@ -96,6 +96,16 @@ export const createCompanyUser = async (request) => {
         });
 
         const companyId = company?._id;
+
+        const adminRole = await Role.create({
+            companyId,
+            name: "Admin",
+            description: "Full access to the company CRM",
+            permissions: ["*"],
+            isSystemRole: true,
+            createdBy: null,
+        });
+
         const hashedPassword = await hashPassword(password);
 
         // Create Company Admin
@@ -104,7 +114,7 @@ export const createCompanyUser = async (request) => {
             email: userEmail.toLowerCase(),
             phone: userPhone,
             password: hashedPassword,
-            role: role || "admin",
+            roleId: adminRole._id,
             companyId
         });
 

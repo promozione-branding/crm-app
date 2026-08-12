@@ -10,6 +10,7 @@ body {
 
 /* Dark Theme */
 :root.dark {
+    color-scheme: dark;
     --background: #020618;
     --surface: #0f172a;
     --card: #111827;
@@ -26,6 +27,7 @@ body {
 
 /* Light Theme */
 :root.light {
+    color-scheme: light;
     --background: #f8fafc;
     --surface: #ffffff;
     --card: #ffffff;
@@ -38,6 +40,30 @@ body {
     --primary-hover: #1d4ed8;
 
     --hover: #f1f5f9;
+}
+
+/* Theme-aware scrollbar */
+html {
+    scrollbar-color: var(--border) var(--background);
+    scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
 }
 
 .bg-app {

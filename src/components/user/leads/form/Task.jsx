@@ -266,7 +266,7 @@ export default function Task({ lead, getLead }) {
                             onChange={handleChange}
                             options={[
                                 ...users.map((user) => ({
-                                    label: `${user.name} (${user.role.charAt(0).toUpperCase() + user.role.slice(1)})`,
+                                    label: `${user.name} (${user.roleId?.name})`,
                                     value: user._id,
                                 })),
                             ]}

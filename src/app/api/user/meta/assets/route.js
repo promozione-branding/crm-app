@@ -9,6 +9,7 @@ export async function GET(request) {
     try {
         await connectDB();
         const user = await getCurrentUser(request);
+        console.log("META ASSETS CURRENT USER:", user);
         const companyId = user.companyId;
 
         if (!companyId) {

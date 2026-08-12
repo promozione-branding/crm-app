@@ -25,7 +25,6 @@ export default function AddUser({ userAdd, setUserAdd, getCompanies }) {
         userEmail: "",
         userPhone: "",
         password: "",
-        role: "admin",
 
         // Company
         companyName: "",
@@ -123,19 +122,6 @@ export default function AddUser({ userAdd, setUserAdd, getCompanies }) {
                         onChange={handleChange}
                         icon={Lock}
                         required
-                    />
-
-                    <SelectInput
-                        label="User Role"
-                        name="role"
-                        value={formData.role}
-                        onChange={handleChange}
-                        icon={Shield}
-                        options={[
-                            { label: "Admin", value: "admin" },
-                            { label: "Manager", value: "manager" },
-                            { label: "Employee", value: "employee" },
-                        ]}
                     />
 
                     <Input

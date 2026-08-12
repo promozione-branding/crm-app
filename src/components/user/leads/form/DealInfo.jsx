@@ -34,10 +34,7 @@ export default function DealInfo({ form, handleChange }) {
                     value={form.assignedTo}
                     onChange={handleChange}
                     options={[
-                        ...users.map((user) => ({
-                            label: `${user.name} (${user.role.charAt(0).toUpperCase() + user.role.slice(1)})`,
-                            value: user._id,
-                        })),
+                        ...users.map((user) => ({ label: `${user.name} (${user.roleId?.name})`, value: user._id, })),
                     ]}
                 />
 
