@@ -272,6 +272,15 @@ export default function Meetings({ leadId }) {
         );
     };
 
+    const openGoogleMaps = (latitude, longitude) => {
+        if (!latitude || !longitude) return;
+
+        window.open(
+            `https://www.google.com/maps?q=${latitude},${longitude}`,
+            "_blank"
+        );
+    };
+
     return (
         <>
             <div className="max-w-4xl mx-auto md:py-10 py-5 px-2 space-y-4">
@@ -387,6 +396,21 @@ export default function Meetings({ leadId }) {
                                         <span className="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-500 text-xs capitalize">
                                             {meeting.status}
                                         </span>
+
+                                        {meeting.location?.latitude &&
+                                            meeting.location?.longitude && (
+                                                <button
+                                                    onClick={() =>
+                                                        openGoogleMaps(
+                                                            meeting.location.latitude,
+                                                            meeting.location.longitude
+                                                        )
+                                                    }
+                                                    className="text-xs text-blue-500 hover:underline"
+                                                >
+                                                    View on Map
+                                                </button>
+                                            )}
 
                                         {meeting.reminderMinutes > 0 && (
                                             <span className="px-2.5 py-1 rounded-full bg-yellow-500/10 text-yellow-500 text-xs">
