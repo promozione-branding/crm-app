@@ -3,7 +3,7 @@ import CampaignInfo from '@/components/user/leads/form/CampaignInfo';
 import CompanyInfo from '@/components/user/leads/form/CompanyInfo';
 import DealInfo from '@/components/user/leads/form/DealInfo';
 import Description from '@/components/user/leads/form/Description';
-import { Activity, ArrowLeft, ClipboardCheck, Clock3, FileText, Phone, TrendingUp, User } from 'lucide-react';
+import { Activity, ArrowLeft, ClipboardCheck, Clock3, FileText, LaptopMinimalCheck, Phone, TrendingUp, User } from 'lucide-react';
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { useParams } from "next/navigation";
@@ -14,6 +14,7 @@ import Call from '@/components/user/leads/form/Call';
 import Stage from '@/components/user/leads/form/Stage';
 import Task from '@/components/user/leads/form/Task';
 import toast from 'react-hot-toast';
+import Meetings from '@/components/user/leads/form/Meetings';
 
 export default function Edit() {
   const { id } = useParams();
@@ -93,6 +94,7 @@ export default function Edit() {
 
   const tabs = [
     { id: "overview", label: "Overview", icon: User, },
+    { id: "meeting", label: "Meetings", icon: LaptopMinimalCheck, badge: lead?.meetings?.length || "0" },
     { id: "notes", label: "Notes", icon: FileText, badge: lead?.notes?.length || "0" },
     { id: "activities", label: "Activities", icon: Activity, badge: lead?.activities?.length || "0", },
     { id: "calls", label: "Call History", icon: Phone, badge: lead?.call?.length || "0" },
@@ -114,7 +116,6 @@ export default function Edit() {
       setLoading(false)
     }
   }
-
   // console.log(lead)
 
   return (
@@ -185,6 +186,11 @@ export default function Edit() {
           <CampaignInfo form={form} handleChange={handleChange} />
           <Description form={form} handleChange={handleChange} />
         </div>}
+
+      {active == "meeting" &&
+        <Meetings
+          leadId={id}
+        />}
 
       {active === "notes" &&
         <div className="max-w-4xl mx-auto md:py-10 py-5 px-2 space-y-4">
