@@ -1,32 +1,117 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { getCurrentUser } from "@/utils/auth";
+import { connectDB } from "@/config/db";
+import Company from "@/models/company.model.js";
+
+function createOAuthState(payload) {
+    const secret = process.env.META_OAUTH_STATE_SECRET;
+
+    if (!secret) {
+        throw new Error("META_OAUTH_STATE_SECRET is missing");
+    }
+
+    const data = Buffer
+        .from(JSON.stringify(payload))
+        .toString("base64url");
+
+    const signature = crypto
+        .createHmac("sha256", secret)
+        .update(data)
+        .digest("base64url");
+
+    return `${data}.${signature}`;
+}
 
 export async function GET(request) {
     try {
+        await connectDB();
+
         const appId = process.env.META_APP_ID;
         const configId = process.env.META_CONFIG_ID;
         const redirectUri = process.env.META_REDIRECT_URI;
+
         if (!appId || !configId || !redirectUri) {
-            return NextResponse.json({ success: false, message: "Meta configuration is missing", }, { status: 500 });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Meta configuration is missing",
+                },
+                { status: 500 }
+            );
         }
 
-        // Get logged-in CRM user
+        // Logged-in CRM user
         const user = await getCurrentUser(request);
+
         if (!user) {
-            return NextResponse.json({ success: false, message: "Not authenticated", }, { status: 401 });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Not authenticated",
+                },
+                { status: 401 }
+            );
         }
 
         const userId = user._id;
         const companyId = user.companyId;
+
         if (!userId || !companyId) {
-            return NextResponse.json({ success: false, message: "User or company information missing", }, { status: 401 });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "User or company information missing",
+                },
+                { status: 401 }
+            );
         }
 
-        // Generate secure OAuth state
-        const state = crypto.randomBytes(32).toString("hex");
-        const requestUrl = new URL(request.url);
-        const crmOrigin = requestUrl.origin;
+        // Get company
+        const company = await Company
+            .findById(companyId)
+            .select("crmDomain")
+            .lean();
+
+        if (!company?.crmDomain) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "CRM domain is not configured for this company",
+                },
+                { status: 400 }
+            );
+        }
+
+        /**
+         * Normalize CRM domain
+         *
+         * Example:
+         * crm.titaniumdioxideimporters.com
+         */
+        const crmDomain = company.crmDomain
+            .replace(/^https?:\/\//, "")
+            .replace(/\/$/, "");
+
+        /**
+         * Only allow HTTPS in production.
+         */
+        const returnUrl =
+            process.env.NODE_ENV === "production"
+                ? `https://${crmDomain}/integration`
+                : `http://${crmDomain}/integration`;
+
+        /**
+         * Create signed OAuth state.
+         *
+         * We don't need cookies.
+         */
+        const state = createOAuthState({
+            userId: String(userId),
+            companyId: String(companyId),
+            expiresAt: Date.now() + 10 * 60 * 1000,
+        });
+
         const params = new URLSearchParams({
             client_id: appId,
             redirect_uri: redirectUri,
@@ -35,43 +120,20 @@ export async function GET(request) {
             state,
         });
 
-        const metaUrl = `https://www.facebook.com/v23.0/dialog/oauth?${params.toString()}`;
-        const response = NextResponse.redirect(metaUrl);
+        const metaUrl =
+            `https://www.facebook.com/v23.0/dialog/oauth?${params.toString()}`;
 
-        // OAuth state
-        response.cookies.set("meta_oauth_state", state, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-            maxAge: 10 * 60,
-        });
+        return NextResponse.redirect(metaUrl);
 
-        // Store company information
-        response.cookies.set("meta_oauth_company",
-            JSON.stringify({ userId: String(userId), companyId: String(companyId), }),
-            {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "lax",
-                path: "/",
-                maxAge: 10 * 60,
-            });
-
-        // Store the CRM domain that started OAuth
-        response.cookies.set("meta_oauth_origin",
-            crmOrigin,
-            {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "lax",
-                path: "/",
-                maxAge: 10 * 60,
-            });
-
-        return response;
     } catch (error) {
         console.error("META CONNECT ERROR:", error);
-        return NextResponse.json({ success: false, message: "Unable to start Meta connection", }, { status: 500 });
+
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Unable to start Meta connection",
+            },
+            { status: 500 }
+        );
     }
 }
