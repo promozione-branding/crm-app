@@ -37,6 +37,27 @@ const companySchema = new mongoose.Schema(
             // Example: crm.astride.in
         },
 
+        webhookApiKeyHash: {
+            type: String,
+            default: null,
+        },
+
+        webhookApiKeyPrefix: {
+            type: String,
+            default: null,
+        },
+
+        webhookApiStatus: {
+            type: String,
+            enum: ["active", "inactive"],
+            default: "active",
+        },
+
+        webhookLastUsedAt: {
+            type: Date,
+            default: null,
+        },
+
         logoUrl: {
             type: String,
             default: "",

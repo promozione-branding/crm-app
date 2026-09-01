@@ -30,6 +30,6 @@ export async function getCurrentUser(request) {
     if (user.status !== "active") {
         throw new Error("User account is inactive");
     }
-
+    // console.log("user :", user)
     return user;
 }

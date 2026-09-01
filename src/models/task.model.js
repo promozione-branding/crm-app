@@ -55,6 +55,12 @@ const LeadTaskSchema = new mongoose.Schema({
         default: null,
     },
 
+    reminderSent: {
+        type: Boolean,
+        default: false,
+        index: true,
+    },
+
     status: {
         type: String,
         enum: ["pending", "completed", "cancelled",],
@@ -81,4 +87,5 @@ const LeadTaskSchema = new mongoose.Schema({
 }, { timestamps: true, });
 
 LeadTaskSchema.index({ companyId: 1, leadId: 1, });
+LeadTaskSchema.index({ reminderAt: 1, reminderSent: 1, status: 1, });
 export default mongoose.models.LeadTask || mongoose.model("LeadTask", LeadTaskSchema);

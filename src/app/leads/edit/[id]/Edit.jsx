@@ -94,7 +94,7 @@ export default function Edit() {
 
   const tabs = [
     { id: "overview", label: "Overview", icon: User, },
-    { id: "meeting", label: "Meetings", icon: LaptopMinimalCheck, badge: lead?.meetings?.length || "0" },
+    { id: "meeting", label: "Meetings", icon: LaptopMinimalCheck, badge: lead?.meetingCount || "0" },
     { id: "notes", label: "Notes", icon: FileText, badge: lead?.notes?.length || "0" },
     { id: "activities", label: "Activities", icon: Activity, badge: lead?.activities?.length || "0", },
     { id: "calls", label: "Call History", icon: Phone, badge: lead?.call?.length || "0" },

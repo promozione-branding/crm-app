@@ -58,9 +58,11 @@ export default function Stage({ stage = [] }) {
                                 <div className="mt-2 text-xs text-muted">
                                     Updated by{" "}
                                     <span className="font-medium text-app">
-                                        {item.updatedBy?.name}
+                                        {item.updatedBy?.name || "N/A"}
                                     </span>{" "}
-                                    ({item.updatedBy?.email})
+                                    {item.updatedBy?.email && <>
+                                        ({item.updatedBy?.email})
+                                    </>}
                                 </div>
                             </div>
                         </div>

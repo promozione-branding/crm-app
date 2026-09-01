@@ -42,8 +42,8 @@ export default function MarketPlaces() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {marketplaces.map((marketplace) => (
-                    <div className="group bg-app border border-app rounded-2xl p-5 transition-all duration-200 hover:border-blue-500/40 hover:shadow-lg">
+                {marketplaces.map((marketplace, idx) => (
+                    <div key={idx} className="group bg-app border border-app rounded-2xl p-5 transition-all duration-200 hover:border-blue-500/40 hover:shadow-lg">
                         <div className="flex items-start justify-between gap-4">
                             <div className="flex items-center gap-3 min-w-0">
                                 <div className=" w-12 h-12 rounded-xl border border-app bg-surface flex items-center justify-center shrink-0 overflow-hidden">

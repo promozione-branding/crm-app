@@ -48,14 +48,14 @@ export default function Activities({ activities = [] }) {
 
                                 <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
                                     <span>
-                                        By <strong>{activity.createdBy?.name}</strong>
+                                        By <strong>{activity.createdBy?.name || "N/A"}</strong>
                                     </span>
 
                                     <span>•</span>
+                                    {activity.createdBy?.email && <>
+                                        <span>{activity.createdBy?.email}</span>
 
-                                    <span>{activity.createdBy?.email}</span>
-
-                                    <span>•</span>
+                                        <span>•</span></>}
 
                                     <span>
                                         {new Date(activity.createdAt).toLocaleString()}

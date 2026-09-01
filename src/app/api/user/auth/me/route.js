@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { connectDB } from "@/config/db";
 import User from "@/models/user.model.js";
 import { ENV } from "@/config/env";
+import "@/models/role.model.js";
 
 export async function GET(req) {
     try {
@@ -17,7 +18,9 @@ export async function GET(req) {
         }
 
         const decoded = jwt.verify(token, ENV.JWT_CLIENT_SECRET);
-        const user = await User.findById(decoded.id).select("-password");
+        const user = await User.findById(decoded.id)
+            .populate("roleId", "name permissions isSystemRole companyId")
+            .select("-password");
 
         if (!user) {
             return NextResponse.json(

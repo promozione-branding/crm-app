@@ -2,6 +2,7 @@ import User from "@/models/user.model.js";
 import Lead from "@/models/leads.model.js";
 import mongoose from "mongoose";
 import LeadTask from "@/models/task.model.js";
+import Meeting from "@/models/meeting.model.js";
 
 export const createLeadService = async (userId, companyId, body) => {
     if (!userId || !companyId) {
@@ -111,10 +112,12 @@ export const getLeadByIdService = async (user, leadId) => {
     }
 
     const taskCount = await LeadTask.countDocuments({ leadId: lead._id, companyId: user.companyId, });
+    const meetingCount = await Meeting.countDocuments({ leadId: lead._id, companyId: user.companyId, });
 
     return {
         ...lead.toObject(),
         taskCount,
+        meetingCount,
     };
 };
 

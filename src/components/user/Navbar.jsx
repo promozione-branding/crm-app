@@ -88,11 +88,17 @@ export default function Navbar() {
 
                     {showNotification && (
                         <div className="absolute right-0 mt-2 w-72 bg-card border border-app rounded-xl shadow-lg overflow-hidden z-50">
-                            <div className="px-4 py-3 border-b border-app font-semibold">
-                                Notifications
+                            <div className="px-4 py-3 border-b border-app font-semibold flex justify-between items-center">
+                                <p>
+                                    Notifications
+                                </p>
+
+                                <div className="bg-blue-500 font-light px-1.5 py-0.5 rounded-md text-white text-xs">
+                                    0
+                                </div>
                             </div>
 
-                            <div className="p-6 text-center text-muted">
+                            <div className="p-6 text-center text-muted text-sm">
                                 No notifications yet.
                             </div>
                         </div>

@@ -1,10 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Search, Filter, Plus, MoreVertical, ChevronDown, ChevronUp } from "lucide-react";
+import React, { useEffect, useState, useRef } from "react";
+import { Search, Filter, Plus, EllipsisVertical, Upload, Download, } from "lucide-react";
 import Link from "next/link";
 import DynamicTable from "@/components/user/ui/DynamicTable";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import ImportLeadsModal from "@/components/user/leads/main/ImportLeadsModal";
 
 const columns = [
     { key: "assignedTo.name", label: "Assigned To", sortable: true, },
@@ -31,6 +32,23 @@ export default function Leads() {
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(25)
+    const [open, setOpen] = useState(false);
+    const menuRef = useRef(null);
+    const [showImportModal, setShowImportModal] = useState(false);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     const getLeads = async () => {
         try {
@@ -80,6 +98,40 @@ export default function Leads() {
                         Filter
                     </button>
 
+                    <div className="relative" ref={menuRef}>
+                        <button onClick={() => setOpen((prev) => !prev)}
+                            className="h-8 px-2 text-sm rounded-lg border border-app hover-app flex items-center gap-2 transition"
+                        >
+                            <EllipsisVertical size={18} />
+                        </button>
+
+                        {open && (
+                            <div className="absolute right-0 top-full mt-1 z-50 w-32 rounded-lg border border-app bg-app shadow-lg p-1">
+                                <button
+                                    onClick={() => {
+                                        // export logic
+                                        setOpen(false);
+                                    }}
+                                    className="w-full px-3 py-2 text-sm text-left rounded-md hover-app transition flex items-center gap-2"
+                                >
+                                    <Download size={16} />
+                                    <span>Export</span>
+                                </button>
+
+                                <button
+                                    onClick={() => {
+                                        setOpen(false);
+                                        setShowImportModal(true);
+                                    }}
+                                    className="w-full px-3 py-2 text-sm text-left rounded-md hover-app transition flex items-center gap-2"
+                                >
+                                    <Upload size={16} />
+                                    <span>Import</span>
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
                     {/* Search */}
                     <div className="relative">
                         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 opacity-60" />
@@ -103,6 +155,17 @@ export default function Leads() {
                 setRowsPerPage={setRowsPerPage}
                 onAction={(lead) => {
                     router.push(`/leads/edit/${lead._id}`);
+                }}
+            />
+
+            <ImportLeadsModal
+                open={showImportModal}
+                setOpen={setShowImportModal}
+                onSuccess={(data) => {
+                    console.log("Import result:", data);
+
+                    // Refresh your leads list here
+                    // fetchLeads();
                 }}
             />
         </div>

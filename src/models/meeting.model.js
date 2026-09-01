@@ -122,6 +122,12 @@ const MeetingSchema = new mongoose.Schema({
         index: true,
     },
 
+    reminderSent: {
+        type: Boolean,
+        default: false,
+        index: true,
+    },
+
     notes: {
         type: String,
         trim: true,
@@ -137,4 +143,5 @@ const MeetingSchema = new mongoose.Schema({
 
 MeetingSchema.index({ companyId: 1, leadId: 1, startAt: -1, });
 MeetingSchema.index({ companyId: 1, assignedTo: 1, startAt: 1, });
+MeetingSchema.index({ reminderAt: 1, reminderSent: 1, status: 1, });
 export default mongoose.models.Meeting || mongoose.model("Meeting", MeetingSchema);
