@@ -38,6 +38,7 @@ export async function POST(req) {
 
         // 4. Parse Body
         const body = await req.json();
+        console.log("webhook data :", body);
         const { name, email, phone, } = body;
 
         // 5. Validate Lead
