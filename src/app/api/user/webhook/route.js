@@ -22,7 +22,7 @@ export async function GET(req) {
         return NextResponse.json({
             success: true,
             webhook: {
-                url: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/leads`,
+                url: `${process.env.NEXT_PUBLIC_APP_URL}/api/user/webhook/leads`,
                 apiKeyPrefix: company.webhookApiKeyPrefix || null,
                 status: company.webhookApiStatus || "inactive",
                 lastUsedAt: company.webhookLastUsedAt || null,

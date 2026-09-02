@@ -85,6 +85,7 @@ export async function POST(req) {
             phone: body.phone,
             email: body.email,
             companyName: body.companyName,
+            gstNumber: body.gstNumber,
             place: body.place,
             product: body.product,
             message: body.message,

@@ -211,6 +211,8 @@ export async function POST(request) {
                     campaignId:
                         finalCampaignId,
 
+                    gstNumber: fields.gst_number_ || "",
+
                     stage: "new",
 
                     activities: [
