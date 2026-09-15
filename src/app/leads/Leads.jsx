@@ -1,29 +1,93 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
-import { Search, Filter, Plus, EllipsisVertical, Upload, Download, } from "lucide-react";
-import Link from "next/link";
-import DynamicTable from "@/components/user/ui/DynamicTable";
+
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
-import ImportLeadsModal from "@/components/user/leads/main/ImportLeadsModal";
 import toast from "react-hot-toast";
+import Link from "next/link";
+
+import { Search, Plus, EllipsisVertical, Upload, Download } from "lucide-react";
+
+import { useRouter } from "next/navigation";
+
+import DynamicTable from "@/components/user/ui/DynamicTable";
+
+import ImportLeadsModal from "@/components/user/leads/main/ImportLeadsModal";
+
+import MobileLeadsTable from "./components/MobileLeadsTable";
+import LeadsActiveFilter from "./components/LeadsActiveFilter";
+import LeadsFilter, { stageOptions } from "./components/LeadsFilter";
+
+/* =========================================================
+DESKTOP TABLE COLUMNS
+========================================================= */
 
 const columns = [
-    { key: "assignedTo.name", label: "Assigned To", sortable: true, },
-    { key: "name", label: "Contact Name", sortable: true, },
-    { key: "phone", label: "Phone", sortable: true, },
-    {
-        key: "stage", label: "Stage", sortable: true,
-        render: (lead) => (
-            <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500 capitalize">
-                {lead.stage}
-            </span>
-        ),
-    },
-    { key: "dealValue", label: "Deal Value", sortable: true, },
-    { key: "source", label: "Lead Source", sortable: true, },
-    { key: "createdAt", type: "date", label: "Created At", sortable: true, },
-     {
+  {
+    key: "sno",
+    label: "S.NO",
+    sortable: true,
+  },
+
+  {
+    key: "assignedTo.name",
+    label: "Assigned To",
+    sortable: true,
+  },
+
+  {
+    key: "name",
+    label: "Contact Name",
+    sortable: true,
+  },
+
+  {
+    key: "phone",
+    label: "Phone",
+    sortable: true,
+  },
+
+  {
+    key: "stage",
+    label: "Stage",
+    sortable: true,
+
+    render: (lead) => (
+      <span
+        className="
+      px-3
+      py-1
+      rounded-full
+      text-xs
+      bg-blue-500/10
+      text-blue-500
+      capitalize
+    "
+      >
+        {lead.stage || "—"}
+      </span>
+    ),
+  },
+
+  {
+    key: "dealValue",
+    label: "Deal Value",
+    sortable: true,
+  },
+
+  {
+    key: "source",
+    label: "Lead Source",
+    sortable: true,
+  },
+
+  {
+    key: "createdAt",
+    type: "date",
+    label: "Created At",
+    sortable: true,
+  },
+
+  {
     key: "updatedAt",
     type: "date",
     label: "Last Modified",
@@ -31,189 +95,456 @@ const columns = [
   },
 ];
 
+/* =========================================================
+MAIN COMPONENT
+========================================================= */
+
 export default function Leads() {
-    const router = useRouter();
-    const [leads, setLeads] = useState([]);
-    const [page, setPage] = useState(1);
-    const [total, setTotal] = useState(0);
-    const [loading, setLoading] = useState(false);
-    const [search, setSearch] = useState("");
-    const [rowsPerPage, setRowsPerPage] = useState(25)
-    const [open, setOpen] = useState(false);
-    const menuRef = useRef(null);
-    const [showImportModal, setShowImportModal] = useState(false);
+  const router = useRouter();
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
-                setOpen(false);
-            }
-        };
+  /* =====================================================
+STATE
+===================================================== */
 
-        document.addEventListener("mousedown", handleClickOutside);
+  const [leads, setLeads] = useState([]);
 
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
+  const [page, setPage] = useState(1);
 
-    const getLeads = async () => {
-        try {
-            setLoading(true);
-            const res = await axios.get(`/api/user/lead/all?page=${page}&limit=${rowsPerPage}&search=${search}`, { withCredentials: true });
+  const [total, setTotal] = useState(0);
 
-            setLeads(res.data.leads);
-            setTotal(res.data.pagination.total);
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to load leads");
-        } finally {
-            setLoading(false);
-        }
+  const [loading, setLoading] = useState(false);
+
+  const [search, setSearch] = useState("");
+
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+
+  const [selectedStage, setSelectedStage] = useState("");
+
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const [showImportModal, setShowImportModal] = useState(false);
+
+  /* =====================================================
+REFS
+===================================================== */
+
+  const filterRef = useRef(null);
+
+  const menuRef = useRef(null);
+
+  /* =====================================================
+SELECTED STAGE LABEL
+===================================================== */
+
+  const selectedStageLabel = stageOptions.find(
+    (option) => option.value === selectedStage,
+  )?.label;
+
+  /* =====================================================
+GET LEADS
+===================================================== */
+
+  const getLeads = async () => {
+    try {
+      setLoading(true);
+
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: rowsPerPage.toString(),
+        search: search,
+      });
+
+      if (selectedStage) {
+        params.append("stage", selectedStage);
+      }
+
+      const res = await axios.get(`/api/user/lead/all?${params.toString()}`, {
+        withCredentials: true,
+      });
+
+      const leadsWithSno = res.data.leads.map((lead, index) => ({
+        ...lead,
+        sno: (page - 1) * rowsPerPage + index + 1,
+      }));
+
+      setLeads(leadsWithSno);
+
+      setTotal(res.data.pagination.total);
+    } catch (error) {
+      console.error("Get leads error:", error);
+
+      toast.error(error.response?.data?.message || "Failed to load leads");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* =====================================================
+FETCH WHEN SEARCH / PAGE / FILTER CHANGES
+===================================================== */
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getLeads();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [page, rowsPerPage, search, selectedStage]);
+
+  /* =====================================================
+CLOSE DROPDOWNS
+===================================================== */
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setFilterOpen(false);
+      }
+
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
     };
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            getLeads();
-        }, 500);
+    document.addEventListener("mousedown", handleClickOutside);
 
-        return () => clearTimeout(timer);
-    }, [page, rowsPerPage, search]);
-
-    const handleExport = async () => {
-        try {
-            setLoading(true);
-
-            const response = await axios.get("/api/user/lead/export",
-                { responseType: "blob", withCredentials: true, }
-            );
-
-            // Create downloadable file
-            const blob = new Blob(
-                [response.data],
-                {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                }
-            );
-
-            const url = window.URL.createObjectURL(blob);
-
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = `leads-${new Date()
-                .toISOString()
-                .slice(0, 10)}.xlsx`;
-
-            document.body.appendChild(link);
-            link.click();
-
-            // Cleanup
-            link.remove();
-            window.URL.revokeObjectURL(url);
-        } catch (error) {
-            console.error("Export failed:", error);
-
-            toast.error(
-                error.response?.data?.message ||
-                "Failed to export leads"
-            );
-        } finally {
-            setLoading(false);
-            setOpen(false);
-        }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, []);
 
-    return (
-        <div className="bg-surface text-app min-h-[calc(100vh-64px)] p-6">
-            {/* Top Section */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-                <div>
-                    <h1 className="text-base font-bold">
-                        CRM
-                    </h1>
-                    <p className="text-xs opacity-70">
-                        Manage your leads
-                    </p>
-                </div>
+  /* =====================================================
+CLEAR FILTER
+===================================================== */
 
-                <div className="flex items-center gap-3">
-                    {/* Add Lead */}
-                    <Link href={"/leads/new"} className="h-8 text-sm px-3 rounded-lg btn-primary flex items-center gap-2 transition">
-                        <Plus size={16} />
-                        Add Lead
-                    </Link>
+  const clearFilter = () => {
+    setSelectedStage("");
 
-                    {/* Filter */}
-                    <button className="h-8 px-3 text-sm rounded-lg border border-app hover-app flex items-center gap-2 transition">
-                        <Filter size={16} />
-                        Filter
-                    </button>
+    setPage(1);
 
-                    <div className="relative" ref={menuRef}>
-                        <button onClick={() => setOpen((prev) => !prev)}
-                            className="h-8 px-2 text-sm rounded-lg border border-app hover-app flex items-center gap-2 transition"
-                        >
-                            <EllipsisVertical size={18} />
-                        </button>
+    setFilterOpen(false);
+  };
 
-                        {open && (
-                            <div className="absolute right-0 top-full mt-1 z-50 w-32 rounded-lg border border-app bg-app shadow-lg p-1">
-                                <button onClick={handleExport} disabled={loading}
-                                    className="w-full px-3 py-2 text-sm text-left rounded-md hover-app transition flex items-center gap-2"
-                                >
-                                    <Download size={16} />
-                                    <span>{loading ? "Exporting..." : "Export"}</span>
-                                </button>
+  /* =====================================================
+IMPORT
+===================================================== */
 
-                                <button
-                                    onClick={() => {
-                                        setOpen(false);
-                                        setShowImportModal(true);
-                                    }}
-                                    className="w-full px-3 py-2 text-sm text-left rounded-md hover-app transition flex items-center gap-2"
-                                >
-                                    <Upload size={16} />
-                                    <span>Import</span>
-                                </button>
-                            </div>
-                        )}
-                    </div>
+  const handleImport = () => {
+    setMenuOpen(false);
 
-                    {/* Search */}
-                    <div className="relative">
-                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 opacity-60" />
+    setShowImportModal(true);
+  };
 
-                        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search leads..."
-                            className="h-9 w-60 rounded-lg text-sm border border-app bg-app bg-transparent pl-10 pr-3 outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                </div>
+  /* =====================================================
+EXPORT
+===================================================== */
+
+  const handleExport = () => {
+    setMenuOpen(false);
+
+    // Put your existing export logic here.
+    console.log("Export leads");
+  };
+
+  /* =====================================================
+RENDER
+===================================================== */
+
+  return (
+    <div
+      className="
+     min-h-[calc(100vh-64px)]
+     bg-surface
+     text-app
+     p-3
+     sm:p-4
+     md:p-6
+   "
+    >
+      {/* =================================================
+HEADER
+================================================= */}
+
+      <div className="mb-5">
+        <div
+          className="
+        flex
+        items-center
+        justify-between
+        gap-3
+      "
+        >
+          {/* TITLE */}
+
+          <div className="min-w-0">
+            <h1 className="text-base font-bold">CRM</h1>
+
+            <p className="text-xs opacity-70">Manage your leads</p>
+          </div>
+
+          {/* DESKTOP ADD */}
+
+          <Link
+            href="/leads/new"
+            className="
+          hidden
+          sm:flex
+          h-9
+          px-3
+          rounded-lg
+          btn-primary
+          items-center
+          justify-center
+          gap-2
+          text-sm
+          shrink-0
+        "
+          >
+            <Plus size={16} />
+            Add Lead
+          </Link>
+        </div>
+
+        {/* =================================================
+        SEARCH + FILTER + MENU
+    ================================================= */}
+
+        <div className="mt-4 w-full">
+          <div
+            className="
+          flex
+          items-center
+          gap-2
+          w-full
+        "
+          >
+            {/* SEARCH */}
+
+            <div
+              className="
+            relative
+            flex-1
+            min-w-0
+          "
+            >
+              <Search
+                size={16}
+                className="
+              absolute
+              left-3
+              top-1/2
+              -translate-y-1/2
+              opacity-60
+              pointer-events-none
+            "
+              />
+
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+
+                  setPage(1);
+                }}
+                placeholder="Search leads..."
+                className="
+              h-10
+              w-full
+              rounded-lg
+              border
+              border-app
+              bg-app
+              pl-10
+              pr-3
+              text-sm
+              outline-none
+              focus:ring-2
+              focus:ring-blue-500
+            "
+              />
             </div>
 
-            {/* Table Card */}
-            <DynamicTable
-                loading={loading}
-                columns={columns}
-                data={leads}
-                page={page}
+            {/* MOBILE ADD */}
+
+            <Link
+              href="/leads/new"
+              className="
+            sm:hidden
+            shrink-0
+            h-10
+            w-10
+            rounded-lg
+            btn-primary
+            flex
+            items-center
+            justify-center
+          "
+              aria-label="Add Lead"
+            >
+              <Plus size={18} />
+            </Link>
+
+            {/* FILTER */}
+
+            <div className="shrink-0">
+              <LeadsFilter
+                selectedStage={selectedStage}
+                setSelectedStage={setSelectedStage}
                 setPage={setPage}
-                total={total}
-                rowsPerPage={rowsPerPage}
-                setRowsPerPage={setRowsPerPage}
-                onAction={(lead) => {
-                    router.push(`/leads/edit/${lead._id}`);
-                }}
-            />
+                filterOpen={filterOpen}
+                setFilterOpen={setFilterOpen}
+                filterRef={filterRef}
+              />
+            </div>
 
-            <ImportLeadsModal
-                open={showImportModal}
-                setOpen={setShowImportModal}
-                onSuccess={(data) => {
-                    console.log("Import result:", data);
+            {/* MORE MENU */}
 
-                    // Refresh your leads list here
-                    getLeads();
+            <div className="relative shrink-0" ref={menuRef}>
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen((prev) => !prev);
+
+                  setFilterOpen(false);
                 }}
-            />
+                className="
+              h-10
+              w-10
+              rounded-lg
+              border
+              border-app
+              hover-app
+              flex
+              items-center
+              justify-center
+              transition
+            "
+                aria-label="More actions"
+              >
+                <EllipsisVertical size={18} />
+              </button>
+
+              {menuOpen && (
+                <div
+                  className="
+                absolute
+                right-0
+                top-full
+                z-50
+                mt-1
+                w-36
+                rounded-lg
+                border
+                border-app
+                bg-app
+                p-1
+                shadow-lg
+              "
+                >
+                  {/* EXPORT */}
+
+                  <button
+                    type="button"
+                    onClick={handleExport}
+                    className="
+                  flex
+                  w-full
+                  items-center
+                  gap-2
+                  rounded-md
+                  px-3
+                  py-2
+                  text-left
+                  text-sm
+                  hover-app
+                "
+                  >
+                    <Download size={16} />
+                    Export
+                  </button>
+
+                  {/* IMPORT */}
+
+                  <button
+                    type="button"
+                    onClick={handleImport}
+                    className="
+                  flex
+                  w-full
+                  items-center
+                  gap-2
+                  rounded-md
+                  px-3
+                  py-2
+                  text-left
+                  text-sm
+                  hover-app
+                "
+                  >
+                    <Upload size={16} />
+                    Import
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-    );
+      </div>
+
+      {/* =================================================
+      ACTIVE FILTER
+  ================================================= */}
+
+      <LeadsActiveFilter
+        selectedStage={selectedStage}
+        selectedStageLabel={selectedStageLabel}
+        onClear={clearFilter}
+      />
+
+      {/* =================================================
+      DESKTOP TABLE
+  ================================================= */}
+
+      <div className="hidden md:block">
+        <DynamicTable
+          loading={loading}
+          columns={columns}
+          data={leads}
+          page={page}
+          setPage={setPage}
+          total={total}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
+          onAction={(lead) => {
+            router.push(`/leads/edit/${lead._id}`);
+          }}
+        />
+      </div>
+
+      {/* =================================================
+      MOBILE TABLE
+  ================================================= */}
+
+      <div className="md:hidden">
+        <MobileLeadsTable loading={loading} leads={leads} router={router} />
+      </div>
+
+      {/* =================================================
+      IMPORT MODAL
+  ================================================= */}
+
+      <ImportLeadsModal
+        open={showImportModal}
+        setOpen={setShowImportModal}
+        onSuccess={(data) => {
+          console.log("Import result:", data);
+
+          getLeads();
+        }}
+      />
+    </div>
+  );
 }
