@@ -1,5 +1,23 @@
 import mongoose from "mongoose";
 
+const PermissionSchema = new mongoose.Schema({
+    module: {
+        type: String,
+        required: true,
+    },
+
+    actions: {
+        type: [String],
+        default: [],
+    },
+
+    scope: {
+        type: String,
+        enum: ["own", "team", "all"],
+        default: "own",
+    },
+}, { _id: false, });
+
 const RoleSchema = new mongoose.Schema({
     companyId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -20,9 +38,10 @@ const RoleSchema = new mongoose.Schema({
         default: "",
     },
 
-    permissions: [
-        { type: [String], default: [], },
-    ],
+    permissions: {
+        type: [PermissionSchema],
+        default: [],
+    },
 
     isSystemRole: {
         type: Boolean,
@@ -33,7 +52,7 @@ const RoleSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
     },
-}, { timestamps: true });
+}, { timestamps: true, });
 
 RoleSchema.index({ companyId: 1, name: 1 }, { unique: true });
 export default mongoose.models.Role || mongoose.model("Role", RoleSchema);

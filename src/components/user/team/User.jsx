@@ -4,6 +4,7 @@ import DynamicTable from '../ui/DynamicTable'
 import Modal from '../ui/Modal';
 import Input from '../ui/Input';
 import SelectInput from '../ui/SelectInput';
+import { useRouter } from 'next/navigation';
 
 const columns = [
     { key: "name", label: "Name", sortable: true, },
@@ -23,7 +24,7 @@ const columns = [
 export default function Users(
     { setOpen, search, setSearch, loading, users, page, setPage, total, rowsPerPage, setRowsPerPage, handleCreateUser, form, open, setForm, roles }
 ) {
-
+    const router = useRouter();
     const handleChange = ({ target: { name, value } }) => {
         setForm((prev) => ({
             ...prev,
@@ -57,8 +58,8 @@ export default function Users(
                 total={total}
                 rowsPerPage={rowsPerPage}
                 setRowsPerPage={setRowsPerPage}
-                onAction={(lead) => {
-                    console.log(lead)
+                onAction={(user) => {
+                    router.push(`/team-management/user/${user._id}`);
                 }}
             />
 

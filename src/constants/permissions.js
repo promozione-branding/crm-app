@@ -33,6 +33,21 @@ export const PERMISSION_ACTIONS = [
     },
 ];
 
+export const PERMISSION_SCOPES = [
+    {
+        key: "own",
+        label: "Own",
+    },
+    {
+        key: "team",
+        label: "Team",
+    },
+    {
+        key: "all",
+        label: "All",
+    },
+];
+
 export const PERMISSION_MODULES = [
     {
         key: "dashboard",

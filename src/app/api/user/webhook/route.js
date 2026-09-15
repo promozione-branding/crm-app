@@ -15,7 +15,7 @@ export async function GET(req) {
             .select("webhookApiKeyPrefix webhookApiStatus webhookLastUsedAt")
             .lean();
 
-        if (!company) {
+        if (!company) { 
             return NextResponse.json({ success: false, message: "Company not found", }, { status: 404 });
         }
 

@@ -3,6 +3,9 @@ import Lead from "@/models/leads.model.js";
 import mongoose from "mongoose";
 import LeadTask from "@/models/task.model.js";
 import Meeting from "@/models/meeting.model.js";
+import { hasPermission, } from "@/utils/permissions.js";
+import { applyLeadScope, } from "@/utils/dataScope.js";
+import Role from "@/models/role.model";
 
 export const createLeadService = async (userId, companyId, body) => {
     if (!userId || !companyId) {
@@ -50,8 +53,24 @@ export const getAllLeadsService = async (user, query) => {
         limit = 10,
     } = query;
 
-    const filter = { companyId: user.companyId, };
+    const role = await Role.findById(user.roleId);
 
+    if (!role) {
+        throw new Error("User role not found");
+    }
+
+    // PERMISSION
+    if (!hasPermission(role, "leads", "access")) {
+        throw new Error("You don't have permission to access leads");
+    }
+
+    // BASE FILTER
+    let filter = { companyId: user.companyId, };
+
+    // DATA SCOPE
+    filter = applyLeadScope({ filter, user, role, });
+
+    // FILTERS
     if (stage) {
         filter.stage = stage;
     }
@@ -60,35 +79,50 @@ export const getAllLeadsService = async (user, query) => {
         filter.source = source;
     }
 
-    if (assignedTo) {
+    const leadPermission = role.permissions.find((item) => item.module === "leads");
+    if (assignedTo && leadPermission?.scope !== "own") {
         filter.assignedTo = assignedTo;
     }
 
+    // SEARCH
     if (search) {
         filter.$or = [
-            { name: { $regex: search, $options: "i" } },
-            { phone: { $regex: search, $options: "i" } },
-            { email: { $regex: search, $options: "i" } },
-            { companyName: { $regex: search, $options: "i" } }
+            { name: { $regex: search, $options: "i", }, },
+            { phone: { $regex: search, $options: "i", }, },
+            { email: { $regex: search, $options: "i", }, },
+            { companyName: { $regex: search, $options: "i", }, },
         ];
     }
 
     const skip = (page - 1) * limit;
-    const [leads, total] = await Promise.all([
-        Lead.find(filter).populate("assignedTo", "name email phone role")
-            .populate("activities.createdBy", "name email").sort({ createdAt: -1 }).skip(skip).limit(limit),
+    const [leads, total,] = await Promise.all([
+        Lead.find(filter)
+            .populate(
+                "assignedTo",
+                "name email phone"
+            )
+            .populate(
+                "activities.createdBy",
+                "name email"
+            )
+            .sort({
+                createdAt: -1,
+            })
+            .skip(skip)
+            .limit(limit),
 
-        Lead.countDocuments(filter)
+        Lead.countDocuments(filter),
     ]);
 
     return {
         leads,
+
         pagination: {
             total,
             page,
             limit,
-            totalPages: Math.ceil(total / limit)
-        }
+            totalPages: Math.ceil(total / limit),
+        },
     };
 };
 

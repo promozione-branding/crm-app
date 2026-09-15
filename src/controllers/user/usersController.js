@@ -59,21 +59,64 @@ export const createUserService = async (currentUser, body) => {
         throw new Error("User not found.");
     }
 
-    const currentUserWithRole = await User.findById(currentUser._id)
-        .populate("roleId", "name permissions isSystemRole");
+    // ---------------------------------------
+    // GET CURRENT USER + ROLE
+    // ---------------------------------------
+
+    const currentUserWithRole = await User.findById(
+        currentUser._id
+    ).populate(
+        "roleId",
+        "name permissions isSystemRole"
+    );
 
     if (!currentUserWithRole) {
         throw new Error("User not found.");
     }
 
-    const isAdmin = currentUserWithRole.roleId?.permissions?.includes("*");
-    if (!isAdmin) {
-        throw new Error("You are not authorized to create users.");
+    const role = currentUserWithRole.roleId;
+
+    if (!role) {
+        throw new Error("User role not found.");
     }
 
-    const { name, email, phone, password, roleId, status = "active", } = body;
+    // ---------------------------------------
+    // CHECK CREATE USER PERMISSION
+    // ---------------------------------------
 
+    const teamPermission = role.permissions?.find(
+        (permission) =>
+            permission.module === "team_management"
+    );
+
+    const canCreateUser =
+        role.isSystemRole ||
+        teamPermission?.actions?.includes("add");
+
+    if (!canCreateUser) {
+        throw new Error(
+            "You are not authorized to create users."
+        );
+    }
+
+    // ---------------------------------------
+    // GET BODY
+    // ---------------------------------------
+
+    const {
+        name,
+        email,
+        phone,
+        password,
+        roleId,
+        status = "active",
+        leadSources = [],
+    } = body;
+
+    // ---------------------------------------
     // VALIDATION
+    // ---------------------------------------
+
     if (!name?.trim()) {
         throw new Error("Name is required.");
     }
@@ -91,40 +134,139 @@ export const createUserService = async (currentUser, body) => {
     }
 
     if (password.length < 6) {
-        throw new Error("Password must be at least 6 characters.");
+        throw new Error(
+            "Password must be at least 6 characters."
+        );
     }
 
+    // ---------------------------------------
     // NORMALIZE EMAIL
-    const normalizedEmail = email.trim().toLowerCase();
-    const existingUser = await User.findOne({ email: normalizedEmail, });
-    if (existingUser) {
-        throw new Error("A user with this email already exists.");
-    }
+    // ---------------------------------------
 
-    // FIND ROLE
-    const role = await Role.findOne({ _id: roleId, companyId: currentUser.companyId, });
-    if (!role) {
-        throw new Error("Invalid role or role does not belong to your company.");
-    }
+    const normalizedEmail =
+        email.trim().toLowerCase();
 
-    // PREVENT ASSIGNING SYSTEM ADMIN ROLE
-    if (role.isSystemRole && role.permissions.includes("*")) {
-        throw new Error("Admin role cannot be assigned from this panel.");
-    }
-
-    const hashedPassword = await hashPassword(password);
-    const newUser = await User.create({
-        companyId: currentUser.companyId,
-        name: name.trim(),
+    const existingUser = await User.findOne({
         email: normalizedEmail,
-        phone: phone?.trim() || "",
-        password: hashedPassword,
-        roleId: role._id,
-        status,
     });
 
-    const responseUser = await User.findById(newUser._id).select("-password")
-        .populate("roleId", "name description permissions isSystemRole status").lean();
+    if (existingUser) {
+        throw new Error(
+            "A user with this email already exists."
+        );
+    }
+
+    // ---------------------------------------
+    // FIND ROLE
+    // ---------------------------------------
+
+    const assignedRole = await Role.findOne({
+        _id: roleId,
+        companyId: currentUser.companyId,
+    });
+
+    if (!assignedRole) {
+        throw new Error(
+            "Invalid role or role does not belong to your company."
+        );
+    }
+
+    // ---------------------------------------
+    // PROTECT SYSTEM ADMIN ROLE
+    // ---------------------------------------
+
+    if (assignedRole.isSystemRole) {
+        throw new Error(
+            "Admin system role cannot be assigned from this panel."
+        );
+    }
+
+    // ---------------------------------------
+    // VALIDATE STATUS
+    // ---------------------------------------
+
+    const allowedStatuses = [
+        "active",
+        "inactive",
+    ];
+
+    if (!allowedStatuses.includes(status)) {
+        throw new Error(
+            "Invalid user status."
+        );
+    }
+
+    // ---------------------------------------
+    // VALIDATE LEAD SOURCES
+    // ---------------------------------------
+
+    const allowedLeadSources = [
+        "facebook",
+        "google",
+        "website",
+        "whatsapp",
+        "manual",
+        "indiamart",
+        "tradeindia",
+        "other",
+    ];
+
+    const cleanLeadSources = Array.isArray(
+        leadSources
+    )
+        ? [
+            ...new Set(
+                leadSources.filter(
+                    (source) =>
+                        allowedLeadSources.includes(
+                            source
+                        )
+                )
+            ),
+        ]
+        : [];
+
+    // ---------------------------------------
+    // HASH PASSWORD
+    // ---------------------------------------
+
+    const hashedPassword =
+        await hashPassword(password);
+
+    // ---------------------------------------
+    // CREATE USER
+    // ---------------------------------------
+
+    const newUser = await User.create({
+        companyId: currentUser.companyId,
+
+        name: name.trim(),
+
+        email: normalizedEmail,
+
+        phone: phone?.trim() || "",
+
+        password: hashedPassword,
+
+        roleId: assignedRole._id,
+
+        status,
+
+        leadSources: cleanLeadSources,
+    });
+
+    // ---------------------------------------
+    // RETURN USER
+    // ---------------------------------------
+
+    const responseUser =
+        await User.findById(newUser._id)
+            .select("-password")
+            .populate(
+                "roleId",
+                "name description permissions isSystemRole"
+            )
+            .lean();
 
     return responseUser;
 };

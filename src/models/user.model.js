@@ -41,7 +41,23 @@ const UserSchema = new mongoose.Schema({
         type: String,
         enum: ["active", "inactive"],
         default: "active"
-    }
+    },
+
+    leadSources: {
+        type: [String],
+        enum: [
+            "facebook",
+            "google",
+            "website",
+            "whatsapp",
+            "manual",
+            "indiamart",
+            "tradeindia",
+            "other",
+        ],
+        default: [],
+        index: true,
+    },
 
 }, { timestamps: true });
 

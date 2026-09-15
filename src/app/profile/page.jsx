@@ -3,6 +3,7 @@
 import Navbar from "@/components/user/Navbar";
 import Sidebar from "@/components/user/Sidebar";
 import Profile from "./Profile";
+import Stickyfooter from "@/components/user/Stickyfooter";
 
 export default function page() {
     return (
@@ -15,6 +16,8 @@ export default function page() {
                 <main className="">
                     <Profile />
                 </main>
+
+                <Stickyfooter />
             </div>
         </div>
     );

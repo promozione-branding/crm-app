@@ -2,8 +2,8 @@
 
 import Navbar from "@/components/user/Navbar";
 import Sidebar from "@/components/user/Sidebar";
-import Task from "./Task";
 import Stickyfooter from "@/components/user/Stickyfooter";
+import User from "./User";
 
 export default function page() {
     return (
@@ -14,7 +14,7 @@ export default function page() {
                 <Navbar />
 
                 <main className="">
-                    <Task />
+                    <User />
                 </main>
 
                 <Stickyfooter />

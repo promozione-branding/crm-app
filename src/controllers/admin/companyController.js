@@ -6,6 +6,7 @@ import { hashPassword } from "@/utils/hashPassword";
 import jwt from "jsonwebtoken";
 import { ENV } from "@/config/env";
 import AdminUser from "@/models/adminUser.model.js";
+import { PERMISSION_MODULES } from "@/constants/permissions";
 
 const generateCrmDomain = (website) => {
     if (!website) {
@@ -97,11 +98,19 @@ export const createCompanyUser = async (request) => {
 
         const companyId = company?._id;
 
+        const adminPermissions = PERMISSION_MODULES.map((module) => ({
+            module: module.key,
+            actions: module.actions,
+            scope: "all",
+        }));
+
         const adminRole = await Role.create({
             companyId,
             name: "Admin",
             description: "Full access to the company CRM",
-            permissions: ["*"],
+
+            permissions: adminPermissions,
+
             isSystemRole: true,
             createdBy: null,
         });

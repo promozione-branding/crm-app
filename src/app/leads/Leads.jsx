@@ -6,6 +6,7 @@ import DynamicTable from "@/components/user/ui/DynamicTable";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import ImportLeadsModal from "@/components/user/leads/main/ImportLeadsModal";
+import toast from "react-hot-toast";
 
 const columns = [
     { key: "assignedTo.name", label: "Assigned To", sortable: true, },
@@ -72,6 +73,49 @@ export default function Leads() {
         return () => clearTimeout(timer);
     }, [page, rowsPerPage, search]);
 
+    const handleExport = async () => {
+        try {
+            setLoading(true);
+
+            const response = await axios.get("/api/user/lead/export",
+                { responseType: "blob", withCredentials: true, }
+            );
+
+            // Create downloadable file
+            const blob = new Blob(
+                [response.data],
+                {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                }
+            );
+
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `leads-${new Date()
+                .toISOString()
+                .slice(0, 10)}.xlsx`;
+
+            document.body.appendChild(link);
+            link.click();
+
+            // Cleanup
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Export failed:", error);
+
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to export leads"
+            );
+        } finally {
+            setLoading(false);
+            setOpen(false);
+        }
+    };
+
     return (
         <div className="bg-surface text-app min-h-[calc(100vh-64px)] p-6">
             {/* Top Section */}
@@ -107,15 +151,11 @@ export default function Leads() {
 
                         {open && (
                             <div className="absolute right-0 top-full mt-1 z-50 w-32 rounded-lg border border-app bg-app shadow-lg p-1">
-                                <button
-                                    onClick={() => {
-                                        // export logic
-                                        setOpen(false);
-                                    }}
+                                <button onClick={handleExport} disabled={loading}
                                     className="w-full px-3 py-2 text-sm text-left rounded-md hover-app transition flex items-center gap-2"
                                 >
                                     <Download size={16} />
-                                    <span>Export</span>
+                                    <span>{loading ? "Exporting..." : "Export"}</span>
                                 </button>
 
                                 <button
@@ -165,7 +205,7 @@ export default function Leads() {
                     console.log("Import result:", data);
 
                     // Refresh your leads list here
-                    // fetchLeads();
+                    getLeads();
                 }}
             />
         </div>
