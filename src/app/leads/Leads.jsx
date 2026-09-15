@@ -23,6 +23,12 @@ const columns = [
     { key: "dealValue", label: "Deal Value", sortable: true, },
     { key: "source", label: "Lead Source", sortable: true, },
     { key: "createdAt", type: "date", label: "Created At", sortable: true, },
+     {
+    key: "updatedAt",
+    type: "date",
+    label: "Last Modified",
+    sortable: true,
+  },
 ];
 
 export default function Leads() {

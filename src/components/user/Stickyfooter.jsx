@@ -42,9 +42,34 @@ export default function Stickyfooter() {
     const pathname = usePathname();
 
     return (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-app border-t border-app">
-            <div className="flex items-center justify-around h-16 px-2">
-
+        <nav
+            className="
+                md:hidden
+                fixed
+                bottom-0
+                left-0
+                right-0
+                z-50
+                bg-app
+                border-t
+                border-app
+                shadow-[0_-2px_10px_rgba(0,0,0,0.05)]
+                pb-[env(safe-area-inset-bottom)]
+            "
+        >
+            <div
+                className="
+                    mx-auto
+                    flex
+                    items-center
+                    justify-between
+                    h-16
+                    w-full
+                    max-w-md
+                    px-1
+                    sm:px-2
+                "
+            >
                 {menus.map((item) => {
                     const Icon = item.icon;
 
@@ -56,29 +81,74 @@ export default function Stickyfooter() {
                         <Link
                             key={item.name}
                             href={item.href}
-                            className={`flex flex-col items-center justify-center gap-1 w-full h-full rounded-lg transition ${
-                                active
-                                    ? "text-blue-600"
-                                    : "text-muted hover:text-app"
-                            }`}
+                            aria-current={active ? "page" : undefined}
+                            className={`
+                                relative
+                                flex
+                                flex-1
+                                h-16
+                                min-w-0
+                                flex-col
+                                items-center
+                                justify-center
+                                gap-1
+                                px-1
+                                rounded-lg
+                                transition-all
+                                duration-200
+                                active:scale-95
+                                ${
+                                    active
+                                        ? "text-blue-600"
+                                        : "text-muted hover:text-app"
+                                }
+                            `}
                         >
-                            <Icon size={20} />
+                            {/* Icon */}
+                            <Icon
+                                size={20}
+                                strokeWidth={active ? 2.5 : 2}
+                                className="shrink-0"
+                            />
 
+                            {/* Label */}
                             <span
-                                className={`text-[11px] font-medium ${
-                                    active ? "text-blue-600" : ""
-                                }`}
+                                className={`
+                                    max-w-full
+                                    truncate
+                                    text-[10px]
+                                    xs:text-[11px]
+                                    font-medium
+                                    leading-none
+                                    ${
+                                        active
+                                            ? "text-blue-600"
+                                            : "text-muted"
+                                    }
+                                `}
                             >
                                 {item.name}
                             </span>
 
+                            {/* Active indicator */}
                             {active && (
-                                <span className="absolute bottom-0 h-0.5 w-8 bg-blue-600 rounded-full" />
+                                <span
+                                    className="
+                                        absolute
+                                        bottom-0
+                                        left-1/2
+                                        -translate-x-1/2
+                                        h-0.5
+                                        w-7
+                                        sm:w-8
+                                        rounded-full
+                                        bg-blue-600
+                                    "
+                                />
                             )}
                         </Link>
                     );
                 })}
-
             </div>
         </nav>
     );
