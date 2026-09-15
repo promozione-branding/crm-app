@@ -1,17 +1,39 @@
-import React, { useEffect, useState } from 'react'
-import SelectInput from '../../ui/SelectInput'
-import Input from '../../ui/Input'
-import toast from 'react-hot-toast';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import SelectInput from "../../ui/SelectInput";
+import Input from "../../ui/Input";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function DealInfo({ form, handleChange }) {
-    const [users, setUsers] = useState([])
+    const [users, setUsers] = useState([]);
+    const [today, setToday] = useState("");
+
+    // Get current date from browser
+    useEffect(() => {
+        const date = new Date();
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+
+        setToday(`${year}-${month}-${day}`);
+    }, []);
+
     const getUsers = async () => {
         try {
-            const res = await axios.get("/api/user?limit=100", { withCredentials: true, });
+            const res = await axios.get(
+                "/api/user?limit=100",
+                {
+                    withCredentials: true,
+                }
+            );
+
             setUsers(res.data.data || []);
         } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to load users.");
+            toast.error(
+                error.response?.data?.message ||
+                    "Failed to load users."
+            );
         }
     };
 
@@ -28,16 +50,22 @@ export default function DealInfo({ form, handleChange }) {
             <div className="border-b border-app my-4" />
 
             <div className="grid md:grid-cols-2 gap-3">
+
+                {/* Assigned To */}
                 <SelectInput
                     label="Assigned To"
                     name="assignedTo"
                     value={form.assignedTo}
                     onChange={handleChange}
                     options={[
-                        ...users.map((user) => ({ label: `${user.name} (${user.roleId?.name})`, value: user._id, })),
+                        ...users.map((user) => ({
+                            label: `${user.name} (${user.roleId?.name})`,
+                            value: user._id,
+                        })),
                     ]}
                 />
 
+                {/* Lead Stage */}
                 <SelectInput
                     label="Lead Stage"
                     name="stage"
@@ -54,6 +82,7 @@ export default function DealInfo({ form, handleChange }) {
                     ]}
                 />
 
+                {/* Price Range */}
                 <Input
                     label="Price Range (₹)"
                     type="number"
@@ -63,6 +92,7 @@ export default function DealInfo({ form, handleChange }) {
                     placeholder="Price Range"
                 />
 
+                {/* Deal Value */}
                 <Input
                     label="Deal Value (₹)"
                     type="number"
@@ -72,15 +102,17 @@ export default function DealInfo({ form, handleChange }) {
                     placeholder="Enter deal value"
                 />
 
+                {/* Expected Closure Date */}
                 <Input
                     label="Expected Closure On"
                     type="date"
                     name="expectedClosureDate"
                     value={form.expectedClosureDate}
                     onChange={handleChange}
+                    min={today}
                 />
 
             </div>
         </div>
-    )
+    );
 }

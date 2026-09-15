@@ -1,7 +1,7 @@
 "use client";
 
 export default function Input({
-    name,   
+    name,
     label,
     required = false,
     type = "text",
@@ -10,6 +10,7 @@ export default function Input({
     placeholder,
     error,
     leftElement,
+    ...rest
 }) {
     return (
         <div className="space-y-2">
@@ -38,6 +39,7 @@ export default function Input({
                     onChange={onChange}
                     placeholder={placeholder}
                     className="w-full h-9 px-4 bg-transparent text-app outline-none placeholder:text-muted"
+                    {...rest}
                 />
 
             </div>
