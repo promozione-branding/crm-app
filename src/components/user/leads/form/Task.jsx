@@ -1,21 +1,47 @@
+
+// src/components/user/leads/form/Task.jsx
+
 "use client";
 
 import Modal from "@/components/user/ui/Modal";
-import { ClipboardCheck, Plus } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import {
+    Calendar,
+    ClipboardCheck,
+    Plus,
+    Pencil,
+} from "lucide-react";
+
+import React, {
+    useEffect,
+    useState,
+} from "react";
+
 import TextArea from "../../ui/TextArea";
 import Input from "../../ui/Input";
 import SelectInput from "../../ui/SelectInput";
+
 import toast from "react-hot-toast";
 import axios from "axios";
 
+import { useRouter } from "next/navigation";
+
 export default function Task({ lead, getLead }) {
+
+    // ================= ROUTER =================
+
+    const router = useRouter();
+
+    // ================= STATE =================
+
     const [open, setOpen] = useState(false);
+
     const [loading, setLoading] = useState(false);
+
     const [tasks, setTasks] = useState([]);
+
     const [users, setUsers] = useState([]);
 
-    const [minDateTime, setMinDateTime] = useState("");
+    // ================= FORM =================
 
     const [form, setForm] = useState({
         title: "",
@@ -27,53 +53,25 @@ export default function Task({ lead, getLead }) {
         reminderMinutes: 0,
     });
 
-    // ==========================================
-    // SET CURRENT BROWSER DATE & TIME
-    // ==========================================
+    // ================= HANDLE CHANGE =================
 
-    useEffect(() => {
-        const updateMinDateTime = () => {
-            const now = new Date();
+    const handleChange = ({
+        target: { name, value },
+    }) => {
 
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, "0");
-            const day = String(now.getDate()).padStart(2, "0");
-            const hours = String(now.getHours()).padStart(2, "0");
-            const minutes = String(now.getMinutes()).padStart(2, "0");
-
-            setMinDateTime(
-                `${year}-${month}-${day}T${hours}:${minutes}`
-            );
-        };
-
-        updateMinDateTime();
-
-        // Update every minute
-        const interval = setInterval(
-            updateMinDateTime,
-            60 * 1000
-        );
-
-        return () => clearInterval(interval);
-    }, []);
-
-    // ==========================================
-    // HANDLE FORM CHANGE
-    // ==========================================
-
-    const handleChange = ({ target: { name, value } }) => {
         setForm((prev) => ({
             ...prev,
             [name]: value,
         }));
+
     };
 
-    // ==========================================
-    // GET USERS
-    // ==========================================
+    // ================= GET USERS =================
 
     const getUsers = async () => {
+
         try {
+
             const res = await axios.get(
                 "/api/user?limit=100",
                 {
@@ -81,27 +79,37 @@ export default function Task({ lead, getLead }) {
                 }
             );
 
-            setUsers(res.data.data || []);
+            setUsers(
+                res.data.data || []
+            );
+
         } catch (error) {
+
             toast.error(
                 error.response?.data?.message ||
-                    "Failed to load users."
+                "Failed to load users."
             );
+
         }
+
     };
 
+    // ================= LOAD USERS =================
+
     useEffect(() => {
+
         getUsers();
+
     }, []);
 
-    // ==========================================
-    // GET TASKS
-    // ==========================================
+    // ================= GET TASKS =================
 
     const getTasks = async () => {
+
         if (!lead?._id) return;
 
         try {
+
             const res = await axios.get(
                 `/api/user/task?leadId=${lead._id}`,
                 {
@@ -109,31 +117,42 @@ export default function Task({ lead, getLead }) {
                 }
             );
 
-            setTasks(res.data.data.tasks || []);
+            setTasks(
+                res.data.data?.tasks || []
+            );
+
         } catch (error) {
+
             toast.error(
                 error.response?.data?.message ||
-                    "Failed to load tasks."
+                "Failed to load tasks."
             );
+
         }
+
     };
 
+    // ================= LOAD TASKS =================
+
     useEffect(() => {
+
         if (lead?._id) {
+
             setForm((prev) => ({
                 ...prev,
                 leadId: lead._id,
             }));
 
             getTasks();
+
         }
+
     }, [lead?._id]);
 
-    // ==========================================
-    // RESET FORM
-    // ==========================================
+    // ================= RESET FORM =================
 
     const resetForm = () => {
+
         setForm({
             title: "",
             priority: "medium",
@@ -143,50 +162,54 @@ export default function Task({ lead, getLead }) {
             description: "",
             reminderMinutes: 0,
         });
+
     };
 
-    // ==========================================
-    // CREATE TASK
-    // ==========================================
+    // ================= CREATE TASK =================
 
     const handleSave = async () => {
+
         if (!form.title.trim()) {
-            return toast.error("Enter task title.");
+
+            return toast.error(
+                "Enter task title."
+            );
+
         }
 
         if (!form.dueDate) {
-            return toast.error("Select due date and time.");
-        }
 
-        // Prevent past date/time
-        if (
-            minDateTime &&
-            form.dueDate < minDateTime
-        ) {
             return toast.error(
-                "Past date and time cannot be selected."
+                "Select due date and time."
             );
+
         }
 
         if (!form.assignedTo) {
-            return toast.error("Select assigned user.");
+
+            return toast.error(
+                "Select assigned user."
+            );
+
         }
 
-        const toastId = toast.loading(
-            "Creating task..."
-        );
+        const toastId =
+            toast.loading(
+                "Creating task..."
+            );
 
         try {
+
             setLoading(true);
 
-            // Existing API payload/data flow preserved
             const res = await axios.post(
                 "/api/user/task",
                 {
                     ...form,
-                    reminderMinutes: Number(
-                        form.reminderMinutes
-                    ),
+                    reminderMinutes:
+                        Number(
+                            form.reminderMinutes
+                        ),
                 },
                 {
                     withCredentials: true,
@@ -195,49 +218,59 @@ export default function Task({ lead, getLead }) {
 
             toast.success(
                 res.data.message ||
-                    "Task created successfully.",
+                "Task created successfully.",
                 {
                     id: toastId,
                 }
             );
 
             resetForm();
+
             setOpen(false);
 
             await getTasks();
+
             getLead();
+
         } catch (error) {
+
             toast.error(
                 error.response?.data?.message ||
-                    "Failed to create task.",
+                "Failed to create task.",
                 {
                     id: toastId,
                 }
             );
+
         } finally {
+
             setLoading(false);
+
         }
+
     };
 
-    // ==========================================
-    // UPDATE TASK STATUS
-    // ==========================================
+    // ================= UPDATE TASK STATUS =================
 
     const updateTaskStatus = async (
         taskId,
         status
     ) => {
-        const confirmed = window.confirm(
-            `Are you sure you want to mark this task as "${status}"?`
-        );
+
+        const confirmed =
+            window.confirm(
+                `Are you sure you want to mark this task as "${status}"?`
+            );
 
         if (!confirmed) return;
 
-        const toastId = toast.loading(
-            "Updating task..."
-        );
+        const toastId =
+            toast.loading(
+                "Updating task..."
+            );
 
         try {
+
             await axios.put(
                 `/api/user/task/${taskId}`,
                 {
@@ -248,86 +281,237 @@ export default function Task({ lead, getLead }) {
                 }
             );
 
-            toast.success("Task updated.", {
-                id: toastId,
-            });
-
-            getTasks();
-        } catch (error) {
-            toast.error(
-                error.response?.data?.message ||
-                    "Failed to update task.",
+            toast.success(
+                "Task updated.",
                 {
                     id: toastId,
                 }
             );
+
+            await getTasks();
+
+            getLead();
+
+        } catch (error) {
+
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to update task.",
+                {
+                    id: toastId,
+                }
+            );
+
         }
+
     };
+
+    // ================= EDIT TASK =================
+
+    const handleEditTask = (task) => {
+    if (!task?._id) {
+        toast.error("Task ID not found.");
+        return;
+    }
+
+    router.push(
+        `/tasks/edit/${task._id}?returnTo=${encodeURIComponent(
+            `/leads/edit/${lead._id}`
+        )}`
+    );
+};
+
+    // ================= UI =================
 
     return (
         <>
-            {/* ==========================================
-                TASK LIST
-            ========================================== */}
 
-            <div className="bg-card border border-app rounded-2xl p-5 text-app">
-                <div className="flex justify-between items-center">
-                    <h3 className="uppercase tracking-widest text-xs font-semibold text-muted">
+            {/* ================= TASK CARD ================= */}
+
+            <div className="
+                bg-card
+                border
+                border-app
+                rounded-2xl
+                p-5
+                text-app
+            ">
+
+                {/* ================= HEADER ================= */}
+
+                <div className="
+                    flex
+                    justify-between
+                    items-center
+                ">
+
+                    <h3 className="
+                        uppercase
+                        tracking-widest
+                        text-xs
+                        font-semibold
+                        text-muted
+                    ">
                         Tasks
                     </h3>
 
+                    {/* ADD TASK */}
+
                     <button
-                        onClick={() => setOpen(true)}
-                        className="p-2 rounded-lg border bg-app border-app hover-app text-app"
+                        type="button"
+                        onClick={() =>
+                            setOpen(true)
+                        }
+                        className="
+                            p-2
+                            rounded-lg
+                            border
+                            bg-app
+                            border-app
+                            hover-app
+                            text-app
+                        "
+                        title="Add Task"
                     >
                         <Plus size={16} />
                     </button>
+
                 </div>
 
-                <div className="border-b border-app my-4" />
+                {/* ================= DIVIDER ================= */}
+
+                <div className="
+                    border-b
+                    border-app
+                    my-4
+                " />
+
+                {/* ================= NO TASK ================= */}
 
                 {tasks.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-12 text-center">
-                        <div className="w-14 h-14 rounded-full bg-app border border-app flex items-center justify-center text-app">
+
+                    <div className="
+                        flex
+                        flex-col
+                        items-center
+                        justify-center
+                        py-12
+                        text-center
+                    ">
+
+                        <div className="
+                            w-14
+                            h-14
+                            rounded-full
+                            bg-app
+                            border
+                            border-app
+                            flex
+                            items-center
+                            justify-center
+                            text-app
+                        ">
+
                             <ClipboardCheck
                                 size={24}
                                 className="opacity-80"
                             />
+
                         </div>
 
-                        <h4 className="mt-4 text-sm font-medium text-app">
+                        <h4 className="
+                            mt-4
+                            text-sm
+                            font-medium
+                            text-app
+                        ">
                             No Task Found
                         </h4>
 
-                        <p className="mt-1 text-xs text-muted">
+                        <p className="
+                            mt-1
+                            text-xs
+                            text-muted
+                        ">
                             Tasks history will appear here.
                         </p>
+
                     </div>
+
                 ) : (
-                    <div className="space-y-3">
+
+                    /* ================= TASK LIST ================= */
+
+                    <div className="
+                        space-y-3
+                    ">
+
                         {tasks.map((task) => (
+
                             <div
                                 key={task._id}
-                                className="border border-app rounded-xl p-4 bg-app"
+                                className="
+                                    border
+                                    border-app
+                                    rounded-xl
+                                    p-4
+                                    bg-app
+                                "
                             >
-                                <div className="flex justify-between gap-3">
-                                    <div>
-                                        <h4 className="text-sm font-semibold">
+
+                                {/* ================= TASK HEADER ================= */}
+
+                                <div className="
+                                    flex
+                                    justify-between
+                                    gap-3
+                                ">
+
+                                    <div className="
+                                        min-w-0
+                                    ">
+
+                                        <h4 className="
+                                            text-sm
+                                            font-semibold
+                                            break-words
+                                        ">
                                             {task.title}
                                         </h4>
 
-                                        <p className="text-xs text-muted mt-1">
+                                        <p className="
+                                            text-xs
+                                            text-muted
+                                            mt-1
+                                            break-words
+                                        ">
                                             {task.description ||
                                                 "No description"}
                                         </p>
+
                                     </div>
 
-                                    <span className="text-xs capitalize">
+                                    <span className="
+                                        text-xs
+                                        capitalize
+                                        shrink-0
+                                    ">
                                         {task.priority}
                                     </span>
+
                                 </div>
 
-                                <div className="flex flex-wrap gap-3 mt-3 text-xs text-muted">
+                                {/* ================= TASK INFO ================= */}
+
+                                <div className="
+                                    flex
+                                    flex-wrap
+                                    gap-3
+                                    mt-3
+                                    text-xs
+                                    text-muted
+                                ">
+
                                     <span>
                                         Due:{" "}
                                         {new Date(
@@ -340,83 +524,175 @@ export default function Task({ lead, getLead }) {
                                         {task.assignedTo?.name ||
                                             "-"}
                                     </span>
+
                                 </div>
 
-                                <div className="flex gap-2 mt-3">
+                                {/* ================= TASK ACTIONS ================= */}
+
+                                <div className="
+                                    flex
+                                    flex-wrap
+                                    gap-2
+                                    mt-3
+                                ">
+
+                                    {/* EDIT */}
+
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            handleEditTask(
+                                                task
+                                            )
+                                        }
+                                        className="
+                                            px-3
+                                            py-1.5
+                                            text-xs
+                                            rounded-lg
+                                            border
+                                            border-app
+                                            hover-app
+                                            flex
+                                            items-center
+                                            gap-1.5
+                                            transition
+                                        "
+                                    >
+
+                                        <Pencil
+                                            size={13}
+                                        />
+
+                                        Edit
+
+                                    </button>
+
+                                    {/* COMPLETE / CANCEL */}
+
                                     {task.status ===
                                         "pending" && (
                                         <>
+
                                             <button
+                                                type="button"
                                                 onClick={() =>
                                                     updateTaskStatus(
                                                         task._id,
                                                         "completed"
                                                     )
                                                 }
-                                                className="px-3 py-1.5 text-xs rounded-lg btn-primary"
+                                                className="
+                                                    px-3
+                                                    py-1.5
+                                                    text-xs
+                                                    rounded-lg
+                                                    btn-primary
+                                                "
                                             >
                                                 Complete
                                             </button>
 
                                             <button
+                                                type="button"
                                                 onClick={() =>
                                                     updateTaskStatus(
                                                         task._id,
                                                         "cancelled"
                                                     )
                                                 }
-                                                className="px-3 py-1.5 text-xs rounded-lg border border-app hover-app"
+                                                className="
+                                                    px-3
+                                                    py-1.5
+                                                    text-xs
+                                                    rounded-lg
+                                                    border
+                                                    border-app
+                                                    hover-app
+                                                "
                                             >
                                                 Cancel
                                             </button>
+
                                         </>
                                     )}
 
+                                    {/* NON-PENDING STATUS */}
+
                                     {task.status !==
                                         "pending" && (
-                                        <span className="text-xs capitalize opacity-70">
+                                        <span className="
+                                            text-xs
+                                            capitalize
+                                            opacity-70
+                                            flex
+                                            items-center
+                                            px-2
+                                        ">
                                             {task.status}
                                         </span>
                                     )}
+
                                 </div>
+
                             </div>
+
                         ))}
+
                     </div>
+
                 )}
+
             </div>
 
-            {/* ==========================================
-                ADD TASK MODAL
-            ========================================== */}
+            {/* ================= ADD TASK MODAL ================= */}
 
             <Modal
                 isOpen={open}
-                onClose={() => setOpen(false)}
+                onClose={() =>
+                    setOpen(false)
+                }
                 size="md"
             >
+
                 <Modal.Header>
                     Add Task
                 </Modal.Header>
 
                 <Modal.Body>
-                    <div className="space-y-2">
 
-                        {/* Task Title + Priority */}
-                        <div className="grid md:grid-cols-2 gap-2">
+                    <div className="
+                        space-y-2
+                    ">
+
+                        {/* TITLE + PRIORITY */}
+
+                        <div className="
+                            grid
+                            md:grid-cols-2
+                            gap-2
+                        ">
+
                             <Input
                                 label="Task Title"
                                 required
                                 name="title"
                                 value={form.title}
-                                onChange={handleChange}
+                                onChange={
+                                    handleChange
+                                }
                                 placeholder="Enter task title"
                             />
 
                             <SelectInput
                                 label="Priority"
                                 name="priority"
-                                value={form.priority}
-                                onChange={handleChange}
+                                value={
+                                    form.priority
+                                }
+                                onChange={
+                                    handleChange
+                                }
                                 options={[
                                     {
                                         label: "Low",
@@ -436,10 +712,17 @@ export default function Task({ lead, getLead }) {
                                     },
                                 ]}
                             />
+
                         </div>
 
-                        {/* Related Lead + Assigned To */}
-                        <div className="grid md:grid-cols-2 gap-2">
+                        {/* LEAD + ASSIGNED USER */}
+
+                        <div className="
+                            grid
+                            md:grid-cols-2
+                            gap-2
+                        ">
+
                             <SelectInput
                                 label="Related Lead"
                                 required
@@ -448,12 +731,16 @@ export default function Task({ lead, getLead }) {
                                     form.leadId ||
                                     lead?._id
                                 }
-                                onChange={handleChange}
+                                onChange={
+                                    handleChange
+                                }
                                 disabled
                                 options={[
                                     {
-                                        label: lead?.name,
-                                        value: lead?._id,
+                                        label:
+                                            lead?.name,
+                                        value:
+                                            lead?._id,
                                     },
                                 ]}
                             />
@@ -462,8 +749,12 @@ export default function Task({ lead, getLead }) {
                                 label="Assigned To"
                                 required
                                 name="assignedTo"
-                                value={form.assignedTo}
-                                onChange={handleChange}
+                                value={
+                                    form.assignedTo
+                                }
+                                onChange={
+                                    handleChange
+                                }
                                 options={[
                                     ...users.map(
                                         (user) => ({
@@ -473,18 +764,29 @@ export default function Task({ lead, getLead }) {
                                     ),
                                 ]}
                             />
+
                         </div>
 
-                        {/* Due Date + Reminder */}
-                        <div className="grid md:grid-cols-2 gap-2">
+                        {/* DATE + REMINDER */}
+
+                        <div className="
+                            grid
+                            md:grid-cols-2
+                            gap-2
+                        ">
+
                             <Input
                                 label="Due Date & Time"
                                 required
                                 type="datetime-local"
                                 name="dueDate"
-                                value={form.dueDate}
-                                onChange={handleChange}
-                                min={minDateTime}
+                                value={
+                                    form.dueDate
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                placeholder="Enter task title"
                             />
 
                             <SelectInput
@@ -493,58 +795,99 @@ export default function Task({ lead, getLead }) {
                                 value={String(
                                     form.reminderMinutes
                                 )}
-                                onChange={handleChange}
+                                onChange={
+                                    handleChange
+                                }
                                 options={[
                                     {
                                         label: "None",
                                         value: "0",
                                     },
                                     {
-                                        label: "5 minutes before",
+                                        label:
+                                            "5 minutes before",
                                         value: "5",
                                     },
                                     {
-                                        label: "10 minutes before",
+                                        label:
+                                            "10 minutes before",
                                         value: "10",
                                     },
                                     {
-                                        label: "15 minutes before",
+                                        label:
+                                            "15 minutes before",
                                         value: "15",
                                     },
                                 ]}
                             />
+
                         </div>
 
-                        {/* Description */}
+                        {/* DESCRIPTION */}
+
                         <TextArea
                             label="Description"
                             name="description"
-                            value={form.description}
-                            onChange={handleChange}
+                            value={
+                                form.description
+                            }
+                            onChange={
+                                handleChange
+                            }
                             placeholder="Add task details..."
                         />
+
                     </div>
+
                 </Modal.Body>
 
+                {/* ================= MODAL FOOTER ================= */}
+
                 <Modal.Footer>
-                    <button
-                        onClick={() => setOpen(false)}
-                        className="px-4 py-2 text-xs rounded-lg border border-app hover-app text-app"
-                    >
-                        Cancel
-                    </button>
 
                     <button
+                        type="button"
+                        onClick={() =>
+                            setOpen(false)
+                        }
+                        className="
+                            px-4
+                            py-2
+                            text-xs
+                            rounded-lg
+                            border
+                            border-app
+                            hover-app
+                            text-app
+                        "
+                    >
+                        Cancel
+                    </button> 
+
+                    <button
+                        type="button"
                         onClick={handleSave}
                         disabled={loading}
-                        className="px-4 py-2 text-xs rounded-lg btn-primary"
+                        className="
+                            px-4
+                            py-2
+                            text-xs
+                            rounded-lg
+                            btn-primary
+                            disabled:opacity-50
+                            disabled:cursor-not-allowed
+                        "
                     >
                         {loading
                             ? "Saving..."
                             : "Save"}
                     </button>
+
                 </Modal.Footer>
+
             </Modal>
+
         </>
     );
 }
+
