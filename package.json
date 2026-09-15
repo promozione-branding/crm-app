@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "create-admin": "node scripts/createAdmin.js"
-  },
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next dev",
+  "lint": "eslint",
+  "create-admin": "node scripts/createAdmin.js"
+},
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
