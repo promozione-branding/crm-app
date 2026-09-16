@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import AdminUser from "../src/models/adminUser.model.js";
 dotenv.config();
 
+
 const createAdmin = async () => {
     try {
         await mongoose.connect(process.env.MONGODB_URI);
