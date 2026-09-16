@@ -1,20 +1,57 @@
 "use client";
 
-import { Provider, useDispatch } from "react-redux";
-import { store } from "@/redux/store";
-import ThemeProvider from "./ThemeProvider";
-import { getMe } from "@/redux/user/userAuthSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export default function Providers({ children }) {
+import {
+    Provider,
+    useDispatch,
+} from "react-redux";
+
+import {
+    QueryClient,
+    QueryClientProvider,
+} from "@tanstack/react-query";
+
+import { store } from "@/redux/store";
+
+import ThemeProvider from "./ThemeProvider";
+
+import {
+    getMe,
+} from "@/redux/user/userAuthSlice";
+
+export default function Providers({
+    children,
+}) {
+    const [queryClient] = useState(
+        () =>
+            new QueryClient({
+                defaultOptions: {
+                    queries: {
+                        // Data remains fresh for 30 seconds
+                        staleTime: 30 * 1000,
+
+                        // Keep unused cached data for 5 minutes
+                        gcTime: 5 * 60 * 1000,
+
+                        // Refetch when user comes back to the tab
+                        refetchOnWindowFocus: true,
+                    },
+                },
+            })
+    );
+
     return (
         <Provider store={store}>
+            <QueryClientProvider
+                client={queryClient}
+            >
+                <AuthLoader />
 
-            <AuthLoader />
-
-            <ThemeProvider>
-                {children}
-            </ThemeProvider>
+                <ThemeProvider>
+                    {children}
+                </ThemeProvider>
+            </QueryClientProvider>
         </Provider>
     );
 }
