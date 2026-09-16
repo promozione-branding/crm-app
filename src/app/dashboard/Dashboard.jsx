@@ -1,110 +1,198 @@
 "use client";
 
-import {
-    Users,
-    UserPlus,
-    Phone,
-    ClipboardList,
-} from "lucide-react";
+import { useEffect, useState } from "react";
 
-const stats = [
-    {
-        title: "Users",
-        value: 0,
-        icon: Users,
-        color: "text-blue-500",
-    },
-    {
-        title: "Leads",
-        value: 0,
-        icon: UserPlus,
-        color: "text-green-500",
-    },
-    {
-        title: "Calls",
-        value: 0,
-        icon: Phone,
-        color: "text-purple-500",
-    },
-    {
-        title: "Tasks",
-        value: 0,
-        icon: ClipboardList,
-        color: "text-orange-500",
-    },
+import { Users, UserPlus, Phone, ClipboardList } from "lucide-react";
+
+import axios from "axios";
+import toast from "react-hot-toast";
+
+const statsConfig = [
+  {
+    key: "users",
+    title: "Users",
+    icon: Users,
+    color: "text-blue-500",
+  },
+  {
+    key: "leads",
+    title: "Leads",
+    icon: UserPlus,
+    color: "text-green-500",
+  },
+  {
+    key: "calls",
+    title: "Calls", 
+    icon: Phone,
+    color: "text-purple-500",
+  },
+  {
+    key: "tasks",
+    title: "Tasks",
+    icon: ClipboardList,
+    color: "text-orange-500",
+  },
 ];
 
 export default function Dashboard() {
-    return (
-        <div className="bg-surface text-app min-h-screen p-6">
+  const [stats, setStats] = useState({
+    users: 0,
+    leads: 0,
+    calls: 0,
+    tasks: 0,
+  });
 
-            {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold">
-                    Dashboard
-                </h1>
+  const [loading, setLoading] = useState(true);
 
-                <p className="text-sm opacity-70 mt-1">
-                    Welcome to your CRM dashboard.
-                </p>
-            </div>
+  // ============================================================
+  // GET DASHBOARD STATS
+  // ============================================================
 
-            {/* Stats */}
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+  const getDashboardStats = async () => {
+    try {
+      setLoading(true);
 
-                {stats.map((item) => {
-                    const Icon = item.icon;
+      const res = await axios.get("/api/user/dashboard", {
+        withCredentials: true,
+      });
 
-                    return (
-                        <div
-                            key={item.title}
-                            className="bg-app border border-app rounded-2xl p-6 shadow-sm hover:-translate-y-1 transition-all"
-                        >
-                            <div className="flex items-center justify-between">
+      if (res.data?.success) {
+        setStats(
+          res.data.data || {
+            users: 0,
+            leads: 0,
+            calls: 0,
+            tasks: 0,
+          },
+        );
+      }
+    } catch (error) {
+      console.error("Failed to load dashboard:", error);
 
-                                <div>
+      toast.error(
+        error?.response?.data?.message || "Failed to load dashboard.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                                    <p className="text-sm opacity-70">
-                                        {item.title}
-                                    </p>
+  // ============================================================
+  // INITIAL LOAD
+  // ============================================================
 
-                                    <h2 className="text-4xl font-bold mt-3">
-                                        {item.value}
-                                    </h2>
+  useEffect(() => {
+    getDashboardStats();
+  }, []);
 
-                                </div>
+  // ============================================================
+  // UI
+  // ============================================================
 
-                                <div className="w-14 h-14 rounded-xl bg-surface flex items-center justify-center border border-app">
-                                    <Icon
-                                        size={28}
-                                        className={item.color}
-                                    />
-                                </div>
+  return (
+    <div className="bg-surface text-app min-h-screen p-6">
+      {/* ==================================================
+                HEADER
+            ================================================== */}
 
-                            </div>
-                        </div>
-                    );
-                })}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold">Dashboard</h1>
 
-            </div>
+        <p className="text-sm opacity-70 mt-1">
+          Welcome to your CRM dashboard.
+        </p>
+      </div>
 
-            {/* Charts */}
-            <div className="mt-8 bg-app border border-app rounded-2xl h-[420px] flex items-center justify-center">
+      {/* ==================================================
+                STATS
+            ================================================== */}
 
-                <div className="text-center">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        {statsConfig.map((item) => {
+          const Icon = item.icon;
 
-                    <h2 className="text-xl font-semibold">
-                        Analytics
-                    </h2>
+          return (
+            <div
+              key={item.key}
+              className="
+                                bg-app
+                                border
+                                border-app
+                                rounded-2xl
+                                p-6
+                                shadow-sm
+                                hover:-translate-y-1
+                                transition-all
+                            "
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm opacity-70">{item.title}</p>
 
-                    <p className="opacity-60 mt-2">
-                        Charts and reports will appear here.
-                    </p>
-
+                  <h2 className="text-4xl font-bold mt-3">
+                    {loading ? (
+                      <span
+                        className="
+                                                    inline-block
+                                                    h-10
+                                                    w-16
+                                                    rounded-md
+                                                    bg-surface
+                                                    animate-pulse
+                                                "
+                      />
+                    ) : (
+                      stats[item.key]
+                    )}
+                  </h2>
                 </div>
 
+                <div
+                  className="
+                                        w-14
+                                        h-14
+                                        rounded-xl
+                                        bg-surface
+                                        flex
+                                        items-center
+                                        justify-center
+                                        border
+                                        border-app
+                                    "
+                >
+                  <Icon size={28} className={item.color} />
+                </div>
+              </div>
             </div>
+          );
+        })}
+      </div>
 
+      {/* ==================================================
+                ANALYTICS
+            ================================================== */}
+
+      <div
+        className="
+                    mt-8
+                    bg-app
+                    border
+                    border-app
+                    rounded-2xl
+                    h-[420px]
+                    flex
+                    items-center
+                    justify-center
+                "
+      >
+        <div className="text-center">
+          <h2 className="text-xl font-semibold">Analytics</h2>
+
+          <p className="opacity-60 mt-2">
+            Charts and reports will appear here.
+          </p>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
