@@ -92,7 +92,7 @@ export default function SearchAndFilterTask({
                     "
                 >
                     <option value="">
-                        All Priorities
+                        All Leads
                     </option>
 
                     <option value="low">
