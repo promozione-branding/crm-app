@@ -142,7 +142,7 @@ export default function SearchAndFilterTask({
                     onChange={(e) => {
                         setSearch(e.target.value);
                     }}
-                    placeholder="Search task..."
+                    placeholder="Search task title..."
                     className="
                         h-9
                         w-full
