@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/user/Navbar";
 import Sidebar from "@/components/user/Sidebar";
+import Stickyfooter from "@/components/user/Stickyfooter";
 import Task from "./Task";
 
 export default function page() {
@@ -15,6 +16,7 @@ export default function page() {
                 <main className="">
                     <Task />
                 </main>
+                <Stickyfooter/>
             </div>
         </div>
     );
