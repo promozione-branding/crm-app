@@ -222,7 +222,7 @@ export default function DashboardAnalytics({
                         )}
 
                         {/* ==================================================
-                            CENTER TEXT
+                          CENTER TEXT
                         ================================================== */}
 
                         <div
