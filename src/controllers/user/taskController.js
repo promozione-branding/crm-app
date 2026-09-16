@@ -84,8 +84,25 @@ export const getAllTasksService = async (user, query = {}) => {
         throw new Error("User not found.");
     }
 
-    const { leadId, status, assignedTo, priority, search, page = 1, limit = 25, } = query;
-    const filter = { companyId: user.companyId, };
+    const {
+        leadId,
+        status,
+        assignedTo,
+        priority,
+        search,
+        relatedTo,
+        assignedToSearch,
+        page = 1,
+        limit = 25,
+    } = query;
+
+    const filter = {
+        companyId: user.companyId,
+    };
+
+    // ============================================================
+    // EXISTING LEAD ID FILTER
+    // ============================================================
 
     if (leadId) {
         if (!mongoose.Types.ObjectId.isValid(leadId)) {
@@ -95,9 +112,21 @@ export const getAllTasksService = async (user, query = {}) => {
         filter.leadId = leadId;
     }
 
+    // ============================================================
+    // EXISTING STATUS FILTER
+    // ============================================================
+
     if (status) {
         filter.status = status;
     }
+
+    // ============================================================
+    // EXISTING ASSIGNED USER ID FILTER
+    // ============================================================
+
+    // IMPORTANT:
+    // assignedTo remains ObjectId.
+    // Do NOT change this to a name search.
 
     if (assignedTo) {
         if (!mongoose.Types.ObjectId.isValid(assignedTo)) {
@@ -107,40 +136,181 @@ export const getAllTasksService = async (user, query = {}) => {
         filter.assignedTo = assignedTo;
     }
 
+    // ============================================================
+    // PRIORITY FILTER
+    // ============================================================
+
     if (priority) {
+        if (
+            ![
+                "low",
+                "medium",
+                "high",
+                "urgent",
+            ].includes(priority)
+        ) {
+            throw new Error("Invalid priority.");
+        }
+
         filter.priority = priority;
     }
 
-    if (search) {
+    // ============================================================
+    // EXISTING TASK SEARCH
+    // ============================================================
+
+    if (search?.trim()) {
+        const taskSearch = search.trim();
+
         filter.$or = [
-            { title: { $regex: search, $options: "i", }, },
-            { description: { $regex: search, $options: "i", }, },
+            {
+                title: {
+                    $regex: taskSearch,
+                    $options: "i",
+                },
+            },
+            {
+                description: {
+                    $regex: taskSearch,
+                    $options: "i",
+                },
+            },
         ];
     }
 
-    const currentPage = Math.max(Number(page) || 1, 1);
-    const perPage = Math.min(Math.max(Number(limit) || 25, 1), 100);
-    const skip = (currentPage - 1) * perPage;
+    // ============================================================
+    // RELATED TO SEARCH
+    // Searches Lead name
+    // ============================================================
+
+    if (relatedTo?.trim()) {
+        const relatedSearch = relatedTo.trim();
+
+        const matchingLeads = await Lead.find(
+            {
+                companyId: user.companyId,
+                name: {
+                    $regex: relatedSearch,
+                    $options: "i",
+                },
+            },
+            {
+                _id: 1,
+            }
+        ).lean();
+
+        const matchingLeadIds = matchingLeads.map(
+            (lead) => lead._id
+        );
+
+        // If no leads match the search,
+        // return zero tasks instead of ignoring the filter.
+
+        filter.leadId = {
+            $in: matchingLeadIds,
+        };
+    }
+
+    // ============================================================
+    // ASSIGNED TO SEARCH
+    // Searches User name
+    // ============================================================
+
+    if (assignedToSearch?.trim()) {
+        const assignedSearch =
+            assignedToSearch.trim();
+
+        const matchingUsers = await User.find(
+            {
+                companyId: user.companyId,
+                name: {
+                    $regex: assignedSearch,
+                    $options: "i",
+                },
+            },
+            {
+                _id: 1,
+            }
+        ).lean();
+
+        const matchingUserIds = matchingUsers.map(
+            (item) => item._id
+        );
+
+        // If no users match the search,
+        // return zero tasks instead of ignoring the filter.
+
+        filter.assignedTo = {
+            $in: matchingUserIds,
+        };
+    }
+
+    // ============================================================
+    // PAGINATION
+    // ============================================================
+
+    const currentPage = Math.max(
+        Number(page) || 1,
+        1
+    );
+
+    const perPage = Math.min(
+        Math.max(Number(limit) || 25, 1),
+        100
+    );
+
+    const skip =
+        (currentPage - 1) * perPage;
+
+    // ============================================================
+    // GET TASKS
+    // ============================================================
 
     const [tasks, total] = await Promise.all([
-        LeadTask.find(filter).populate("assignedTo", "name email phone role")
-            .populate("createdBy", "name email").populate("leadId", "name phone email")
-            .sort({ dueDate: 1, createdAt: -1, })
-            .skip(skip).limit(perPage).lean(),
+        LeadTask.find(filter)
+            .populate(
+                "assignedTo",
+                "name email phone role"
+            )
+            .populate(
+                "createdBy",
+                "name email"
+            )
+            .populate(
+                "leadId",
+                "name phone email"
+            )
+            .sort({
+                dueDate: 1,
+                createdAt: -1,
+            })
+            .skip(skip)
+            .limit(perPage)
+            .lean(),
 
         LeadTask.countDocuments(filter),
     ]);
 
-    const totalPages = Math.ceil(total / perPage);
+    // ============================================================
+    // PAGINATION RESPONSE
+    // ============================================================
+
+    const totalPages = Math.ceil(
+        total / perPage
+    );
+
     return {
         tasks,
+
         pagination: {
             page: currentPage,
             limit: perPage,
             total,
             totalPages,
-            hasNextPage: currentPage < totalPages,
-            hasPrevPage: currentPage > 1,
+            hasNextPage:
+                currentPage < totalPages,
+            hasPrevPage:
+                currentPage > 1,
         },
     };
 };

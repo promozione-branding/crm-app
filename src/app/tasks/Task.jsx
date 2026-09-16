@@ -1,18 +1,10 @@
 "use client";
 
-import React, {
-    useEffect,
-    useState,
-} from "react";
-
-import {
-    Search,
-    Filter,
-    Plus,
-} from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 import DynamicTable from "@/components/user/ui/DynamicTable";
 import TaskMobileList from "./components/TaskMobileList";
+import SearchAndFilterTask from "./components/SearchAndFilterTask";
 
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -23,54 +15,54 @@ import { useRouter } from "next/navigation";
 // ============================================================
 
 const columns = [
-    {
-        key: "title",
-        label: "Task Title",
-        sortable: true,
-    },
+  {
+    key: "title",
+    label: "Task Title",
+    sortable: true,
+  },
 
-    {
-        key: "leadId.name",
-        label: "Related Lead",
-        sortable: true,
-    },
+  {
+    key: "leadId.name",
+    label: "Related Lead",
+    sortable: true,
+  },
 
-    {
-        key: "priority",
-        label: "Priority",
-        sortable: true,
-    },
+  {
+    key: "priority",
+    label: "Priority",
+    sortable: true,
+  },
 
-    {
-        key: "status",
-        label: "Status",
-        sortable: true,
+  {
+    key: "status",
+    label: "Status",
+    sortable: true,
 
-        render: (task) => (
-            <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500 capitalize">
-                {task.status}
-            </span>
-        ),
-    },
+    render: (task) => (
+      <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500 capitalize">
+        {task.status}
+      </span>
+    ),
+  },
 
-    {
-        key: "createdBy.name",
-        label: "Created By",
-        sortable: true,
-    },
+  {
+    key: "createdBy.name",
+    label: "Created By",
+    sortable: true,
+  },
 
-    {
-        key: "assignedTo.name",
-        label: "Assigned To",
-        sortable: true,
-    },
+  {
+    key: "assignedTo.name",
+    label: "Assigned To",
+    sortable: true,
+  },
 
-    {
-        key: "dueDate",
-        type: "date",
-        label: "Due Date",
-        sortable: true,
-    },
+  {
+    key: "dueDate",
+    type: "date",
+    label: "Due Date",
+    sortable: true,
+  },
 ];
 
 // ============================================================
@@ -78,121 +70,146 @@ const columns = [
 // ============================================================
 
 export default function Task() {
-    const router = useRouter();
+  const router = useRouter();
 
-    // ========================================================
-    // STATE
-    // ========================================================
+  // ========================================================
+  // STATE
+  // ========================================================
 
-    const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1);
 
-    const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
-    const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(0);
 
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-    const [search, setSearch] = useState("");
+  // Main task title search
+  const [search, setSearch] = useState("");
 
-    const [rowsPerPage, setRowsPerPage] = useState(25);
+  // Related lead search
+  const [relatedTo, setRelatedTo] = useState("");
 
-    // ========================================================
-    // GET TASKS
-    // ========================================================
+  // Assigned user search
+  const [assignedTo, setAssignedTo] = useState("");
 
-    const getTasks = async () => {
-        try {
-            setLoading(true);
+  // Priority filter
+  const [priority, setPriority] = useState("");
 
-            const res = await axios.get(
-                "/api/user/task",
-                {
-                    params: {
-                        page,
-                        limit: rowsPerPage,
-                        search:
-                            search.trim() ||
-                            undefined,
-                    },
+  const [rowsPerPage, setRowsPerPage] = useState(25);
 
-                    withCredentials: true,
-                }
-            );
+  // ========================================================
+  // GET TASKS
+  // ========================================================
 
-            setTasks(
-                res.data.data?.tasks || []
-            );
+  const getTasks = async ({
+    requestedPage = page,
+    requestedRowsPerPage = rowsPerPage,
+    requestedSearch = search,
+    requestedRelatedTo = relatedTo,
+    requestedAssignedTo = assignedTo,
+    requestedPriority = priority,
+  } = {}) => {
+    try {
+      setLoading(true);
 
-            setTotal(
-                res.data.data
-                    ?.pagination?.total || 0
-            );
-        } catch (error) {
-            console.error(
-                "Failed to load tasks:",
-                error
-            );
+      const params = {
+        page: requestedPage,
+        limit: requestedRowsPerPage,
 
-            toast.error(
-                error?.response?.data
-                    ?.message ||
-                "Failed to load tasks."
-            );
-        } finally {
-            setLoading(false);
-        }
+        // Task title / description
+        search: requestedSearch.trim() || undefined,
+
+        // Related Lead name
+        relatedTo: requestedRelatedTo.trim() || undefined,
+
+        // Assigned User name
+        assignedToSearch: requestedAssignedTo.trim() || undefined,
+
+        // Priority
+        priority: requestedPriority || undefined,
+      };
+
+      console.log("GET TASKS PARAMS:", params);
+
+      const res = await axios.get("/api/user/task", {
+        params,
+        withCredentials: true,
+      });
+
+      const taskData = res.data?.data;
+
+      setTasks(taskData?.tasks || []);
+
+      setTotal(taskData?.pagination?.total || 0);
+    } catch (error) {
+      console.error("Failed to load tasks:", error);
+
+      toast.error(error?.response?.data?.message || "Failed to load tasks.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ========================================================
+  // INITIAL LOAD + PAGINATION
+  // ========================================================
+
+  useEffect(() => {
+    getTasks();
+  }, [page, rowsPerPage]);
+
+  // ========================================================
+  // SEARCH + FILTER
+  // ========================================================
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPage(1);
+
+      getTasks({
+        requestedPage: 1,
+        requestedRowsPerPage: rowsPerPage,
+        requestedSearch: search,
+        requestedRelatedTo: relatedTo,
+        requestedAssignedTo: assignedTo,
+        requestedPriority: priority,
+      });
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
     };
+  }, [search, relatedTo, assignedTo, priority]);
 
-    // ========================================================
-    // PAGINATION
-    // ========================================================
+  // ========================================================
+  // TASK ACTION
+  // ========================================================
 
-    useEffect(() => {
-        getTasks();
-    }, [
-        page,
-        rowsPerPage,
-    ]);
+  const handleTaskAction = (task) => {
+    router.push(`/tasks/edit/${task._id}`);
+  };
 
-    // ========================================================
-    // SEARCH
-    // ========================================================
+  // ========================================================
+  // ADD TASK
+  // ========================================================
 
-    useEffect(() => {
-        const timer =
-            setTimeout(() => {
-                setPage(1);
-                getTasks();
-            }, 500);
+  const handleAddTask = () => {
+    router.push("/tasks/add");
+  };
 
-        return () => {
-            clearTimeout(timer);
-        };
-    }, [search]);
+  // ========================================================
+  // UI
+  // ========================================================
 
-    // ========================================================
-    // TASK ACTION
-    // ========================================================
-
-    const handleTaskAction = (task) => {
-        router.push(
-            `/tasks/edit/${task._id}`
-        );
-    };
-
-    // ========================================================
-    // UI
-    // ========================================================
-
-    return (
-        <div className="bg-surface text-app min-h-[calc(100vh-64px)] p-6">
-
-            {/* ==================================================
+  return (
+    <div className="bg-surface text-app min-h-[calc(100vh-64px)] p-6">
+      {/* ==================================================
                 HEADER
             ================================================== */}
 
-            <div
-                className="
+      <div
+        className="
                     mb-5
                     flex
                     flex-col
@@ -202,166 +219,77 @@ export default function Task() {
                     md:items-center
                     md:justify-between
                 "
-            >
+      >
+        {/* ==================================================
+                    TITLE
+                ================================================== */}
 
-                {/* TITLE */}
-
-                <div>
-                    <h1
-                        className="
+        <div>
+          <h1
+            className="
                             text-base
                             font-bold
                         "
-                    >
-                        CRM
-                    </h1>
+          >
+            CRM
+          </h1>
 
-                    <p
-                        className="
+          <p
+            className="
                             text-xs
                             opacity-70
                         "
-                    >
-                        Manage your tasks
-                    </p>
-                </div>
+          >
+            Manage your tasks
+          </p>
+        </div>
 
-                {/* ACTIONS */}
+        {/* ==================================================
+                    SEARCH + FILTER
+                ================================================== */}
 
-                <div
-                    className="
-                        flex
-                        flex-wrap
-                        items-center
-                        gap-2
-                        sm:gap-3
-                    "
-                >
+        <SearchAndFilterTask
+          search={search}
+          setSearch={setSearch}
+          relatedTo={relatedTo}
+          setRelatedTo={setRelatedTo}
+          assignedTo={assignedTo}
+          setAssignedTo={setAssignedTo}
+          priority={priority}
+          setPriority={setPriority}
+          onAddTask={handleAddTask}
+        />
+      </div>
 
-                    {/* ADD TASK */}
-
-                    <button
-                        type="button"
-                        className="
-                            flex
-                            h-9
-                            items-center
-                            justify-center
-                            gap-2
-                            rounded-lg
-                            px-3
-                            text-sm
-                            btn-primary
-                        "
-                    >
-                        <Plus size={16} />
-
-                        <span>
-                            Add Task
-                        </span>
-                    </button>
-
-                    {/* FILTER */}
-
-                    <button
-                        type="button"
-                        className="
-                            flex
-                            h-9
-                            items-center
-                            justify-center
-                            gap-2
-                            rounded-lg
-                            border
-                            border-app
-                            px-3
-                            text-sm
-                            hover-app
-                        "
-                    >
-                        <Filter size={16} />
-
-                        <span>
-                            Filter
-                        </span>
-                    </button>
-
-                    {/* SEARCH */}
-
-                    <div
-                        className="
-                            relative
-                            w-full
-                            sm:w-60
-                        "
-                    >
-                        <Search
-                            size={16}
-                            className="
-                                absolute
-                                left-3
-                                top-1/2
-                                -translate-y-1/2
-                                opacity-60
-                            "
-                        />
-
-                        <input
-                            value={search}
-                            onChange={(e) =>
-                                setSearch(
-                                    e.target.value
-                                )
-                            }
-                            placeholder="Search task..."
-                            className="
-                                h-9
-                                w-full
-                                rounded-lg
-                                border
-                                border-app
-                                bg-app
-                                pl-10
-                                pr-3
-                                text-sm
-                                outline-none
-                                focus:ring-2
-                                focus:ring-blue-500
-                            "
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* ==================================================
+      {/* ==================================================
                 MOBILE
             ================================================== */}
 
-            <div className="md:hidden">
-                <TaskMobileList
-                    tasks={tasks}
-                    loading={loading}
-                    onAction={handleTaskAction}
-                />
-            </div>
+      <div className="md:hidden">
+        <TaskMobileList
+          tasks={tasks}
+          loading={loading}
+          onAction={handleTaskAction}
+        />
+      </div>
 
-            {/* ==================================================
+      {/* ==================================================
                 DESKTOP
             ================================================== */}
 
-            <div className="hidden md:block">
-                <DynamicTable
-                    loading={loading}
-                    columns={columns}
-                    data={tasks}
-                    page={page}
-                    setPage={setPage}
-                    total={total}
-                    rowsPerPage={rowsPerPage}
-                    setRowsPerPage={setRowsPerPage}
-                    onAction={handleTaskAction}
-                />
-            </div>
-        </div>
-    );
+      <div className="hidden md:block">
+        <DynamicTable
+          loading={loading}
+          columns={columns}
+          data={tasks}
+          page={page}
+          setPage={setPage}
+          total={total}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
+          onAction={handleTaskAction}
+        />
+      </div>
+    </div>
+  );
 }
