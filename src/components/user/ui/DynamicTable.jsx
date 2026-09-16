@@ -40,15 +40,34 @@ const DynamicTable = ({ loading, columns = [], data = [], page, setPage, total =
                     {/* Body */}
                     <tbody>
                         {loading ? (
-                            <tr>
-                                <td
-                                    colSpan={columns.length + 1}
-                                    className="text-center py-10"
-                                >
-                                    Loading...
-                                </td>
-                            </tr>
-                        ) : data.length > 0 ? (data.map((row, index) => (
+    <tr>
+        <td colSpan={columns.length + 1} className="py-16">
+            <div className="flex flex-col items-center justify-center gap-3">
+                {/* Spinner */}
+                <div className="relative w-9 h-9">
+                    <div className="absolute inset-0 rounded-full border-4 border-app opacity-30" />
+
+                    <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-600 animate-spin" />
+                </div>
+
+                {/* Loading Text */}
+                <div className="flex items-center gap-1 text-sm font-medium opacity-70">
+                    <span>Loading data</span>
+
+                    <span className="flex gap-0.5">
+                        <span className="animate-bounce [animation-delay:0ms]">.</span>
+                        <span className="animate-bounce [animation-delay:150ms]">.</span>
+                        <span className="animate-bounce [animation-delay:300ms]">.</span>
+                    </span>
+                </div>
+
+                <p className="text-[11px] opacity-50">
+                    Please wait a moment
+                </p>
+            </div>
+        </td>
+    </tr>
+) : data.length > 0 ? (data.map((row, index) => (
                             <tr key={row.id || index} className="border-b border-app hover-app transition bg-surface">
                                 {columns.map((col) => (
                                     <td key={col.key} className="px-6 py-4 capitalize">
