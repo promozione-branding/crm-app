@@ -8,7 +8,7 @@ import DashboardStats from "./components/DashboardStats";
 import DashboardAnalytics from "./components/DashboardAnalytics";
 
 // ============================================================
-// DEFAULT STATS
+// DEFAULT STATS 
 // ============================================================
 
 const defaultStats = {
