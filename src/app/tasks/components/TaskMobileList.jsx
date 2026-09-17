@@ -9,6 +9,8 @@ export default function TaskMobileList({
     tasks,
     loading,
     onAction,
+    page,
+    rowsPerPage,
 }) {
     // ============================================================
     // LOADING
@@ -83,16 +85,21 @@ export default function TaskMobileList({
     }
 
     // ============================================================
-    // LIST
+    // TASK LIST
     // ============================================================
 
     return (
         <div className="w-full space-y-2">
-            {tasks.map((task) => (
+            {tasks.map((task, index) => (
                 <TaskCard
                     key={task._id}
                     task={task}
                     onAction={onAction}
+                    sno={
+                        (page - 1) * rowsPerPage +
+                        index +
+                        1
+                    }
                 />
             ))}
         </div>

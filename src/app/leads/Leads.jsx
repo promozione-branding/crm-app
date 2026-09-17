@@ -474,17 +474,22 @@ export default function Leads() {
                 />
             </div>
 
-            {/* ==================================================
-                MOBILE TABLE
-            =================================================== */}
+           {/* ==================================================
+    MOBILE TABLE
+================================================== */}
 
-            <div className="md:hidden">
-                <MobileLeadsTable
-                    loading={loading}
-                    leads={leads}
-                    router={router}
-                />
-            </div>
+<div className="md:hidden">
+    <MobileLeadsTable
+        loading={loading}
+        leads={leads}
+        router={router}
+        page={page}
+        setPage={setPage}
+        total={total}
+        rowsPerPage={rowsPerPage}
+        setRowsPerPage={setRowsPerPage}
+    />
+</div>
 
             {/* ==================================================
                 IMPORT MODAL

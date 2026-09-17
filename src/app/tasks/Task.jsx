@@ -266,12 +266,17 @@ export default function Task() {
             ================================================== */}
 
       <div className="md:hidden">
-        <TaskMobileList
-          tasks={tasks}
-          loading={loading}
-          onAction={handleTaskAction}
-        />
-      </div>
+    <TaskMobileList
+        tasks={tasks}
+        loading={loading}
+        onAction={handleTaskAction}
+        page={page}
+        setPage={setPage}
+        total={total}
+        rowsPerPage={rowsPerPage}
+        setRowsPerPage={setRowsPerPage}
+    />
+</div>
 
       {/* ==================================================
                 DESKTOP
