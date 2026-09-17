@@ -103,7 +103,7 @@ export default function TaskCard({
                         <p
                             className="
                                 truncate
-                                text-xs
+                                text-[14px]
                                 font-semibold
                             "
                         >
@@ -135,8 +135,8 @@ export default function TaskCard({
                         <span
                             className="
                                 truncate
-                                text-[10px]
-                                opacity-50
+                                text-[12px]
+                                opacity-90
                             "
                         >
                             {task?.leadId?.name ||
@@ -244,12 +244,12 @@ export default function TaskCard({
 
                     <span
                         className="
-                            text-[10px]
-                            opacity-50
+                            text-[12px]
+                            opacity-80
                         "
                     >
                         Due
-                    </span>
+                    </span> 
                 </div>
 
                 <span
