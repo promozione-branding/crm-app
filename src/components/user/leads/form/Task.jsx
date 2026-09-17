@@ -1,12 +1,10 @@
 
-// src/components/user/leads/form/Task.jsx
-
 "use client";
 
 import Modal from "@/components/user/ui/Modal";
 import {
     Calendar,
-    ClipboardCheck,
+    ClipboardCheck, 
     Plus,
     Pencil,
 } from "lucide-react";
@@ -53,7 +51,25 @@ export default function Task({ lead, getLead }) {
         reminderMinutes: 0,
     });
 
-    // ================= HANDLE CHANGE =================
+    // ============================================================
+    // BROWSER CURRENT DATE/TIME
+    // ============================================================
+
+    const getBrowserDateTime = () => {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
+    // ============================================================
+    // HANDLE CHANGE
+    // ============================================================
 
     const handleChange = ({
         target: { name, value },
@@ -154,7 +170,7 @@ export default function Task({ lead, getLead }) {
     const resetForm = () => {
 
         setForm({
-            title: "",
+            title: "", 
             priority: "medium",
             dueDate: "",
             leadId: lead?._id || "",
@@ -165,9 +181,13 @@ export default function Task({ lead, getLead }) {
 
     };
 
-    // ================= CREATE TASK =================
+    // ============================================================
+    // CREATE TASK
+    // ============================================================
 
     const handleSave = async () => {
+
+        // ---------------- TITLE ----------------
 
         if (!form.title.trim()) {
 
@@ -177,6 +197,8 @@ export default function Task({ lead, getLead }) {
 
         }
 
+        // ---------------- DATE ----------------
+
         if (!form.dueDate) {
 
             return toast.error(
@@ -184,6 +206,36 @@ export default function Task({ lead, getLead }) {
             );
 
         }
+
+        // ========================================================
+        // IMPORTANT:
+        // Compare selected date/time with BROWSER CURRENT TIME.
+        // This does NOT use API/server time.
+        // ========================================================
+
+        const selectedDateTime = new Date(form.dueDate);
+        const currentBrowserTime = new Date();
+
+        if (
+            Number.isNaN(selectedDateTime.getTime())
+        ) {
+            return toast.error(
+                "Invalid due date and time."
+            );
+        }
+
+        if (
+            selectedDateTime.getTime() <
+            currentBrowserTime.getTime()
+        ) {
+
+            return toast.error(
+                "Task date and time cannot be in the past."
+            );
+
+        }
+
+        // ---------------- ASSIGNED USER ----------------
 
         if (!form.assignedTo) {
 
@@ -206,6 +258,7 @@ export default function Task({ lead, getLead }) {
                 "/api/user/task",
                 {
                     ...form,
+
                     reminderMinutes:
                         Number(
                             form.reminderMinutes
@@ -309,49 +362,63 @@ export default function Task({ lead, getLead }) {
     // ================= EDIT TASK =================
 
     const handleEditTask = (task) => {
-    if (!task?._id) {
-        toast.error("Task ID not found.");
-        return;
-    }
 
-    router.push(
-        `/tasks/edit/${task._id}?returnTo=${encodeURIComponent(
-            `/leads/edit/${lead._id}`
-        )}`
-    );
-};
+        if (!task?._id) {
 
-    // ================= UI =================
+            toast.error(
+                "Task ID not found."
+            );
+
+            return;
+
+        }
+
+        router.push(
+            `/tasks/edit/${task._id}?returnTo=${encodeURIComponent(
+                `/leads/edit/${lead._id}`
+            )}`
+        );
+
+    };
+
+    // ============================================================
+    // UI
+    // ============================================================
 
     return (
         <>
-
             {/* ================= TASK CARD ================= */}
 
-            <div className="
-                bg-card
-                border
-                border-app
-                rounded-2xl
-                p-5
-                text-app
-            ">
+            <div
+                className="
+                    bg-card
+                    border
+                    border-app
+                    rounded-2xl
+                    p-5
+                    text-app
+                "
+            >
 
                 {/* ================= HEADER ================= */}
 
-                <div className="
-                    flex
-                    justify-between
-                    items-center
-                ">
+                <div
+                    className="
+                        flex
+                        justify-between
+                        items-center
+                    "
+                >
 
-                    <h3 className="
-                        uppercase
-                        tracking-widest
-                        text-xs
-                        font-semibold
-                        text-muted
-                    ">
+                    <h3
+                        className="
+                            uppercase
+                            tracking-widest
+                            text-xs
+                            font-semibold
+                            text-muted
+                        "
+                    >
                         Tasks
                     </h3>
 
@@ -380,37 +447,43 @@ export default function Task({ lead, getLead }) {
 
                 {/* ================= DIVIDER ================= */}
 
-                <div className="
-                    border-b
-                    border-app
-                    my-4
-                " />
+                <div
+                    className="
+                        border-b
+                        border-app
+                        my-4
+                    "
+                />
 
                 {/* ================= NO TASK ================= */}
 
                 {tasks.length === 0 ? (
 
-                    <div className="
-                        flex
-                        flex-col
-                        items-center
-                        justify-center
-                        py-12
-                        text-center
-                    ">
-
-                        <div className="
-                            w-14
-                            h-14
-                            rounded-full
-                            bg-app
-                            border
-                            border-app
+                    <div
+                        className="
                             flex
+                            flex-col
                             items-center
                             justify-center
-                            text-app
-                        ">
+                            py-12
+                            text-center
+                        "
+                    >
+
+                        <div
+                            className="
+                                w-14
+                                h-14
+                                rounded-full
+                                bg-app
+                                border
+                                border-app
+                                flex
+                                items-center
+                                justify-center
+                                text-app
+                            "
+                        >
 
                             <ClipboardCheck
                                 size={24}
@@ -419,20 +492,24 @@ export default function Task({ lead, getLead }) {
 
                         </div>
 
-                        <h4 className="
-                            mt-4
-                            text-sm
-                            font-medium
-                            text-app
-                        ">
+                        <h4
+                            className="
+                                mt-4
+                                text-sm
+                                font-medium
+                                text-app
+                            "
+                        >
                             No Task Found
                         </h4>
 
-                        <p className="
-                            mt-1
-                            text-xs
-                            text-muted
-                        ">
+                        <p
+                            className="
+                                mt-1
+                                text-xs
+                                text-muted
+                            "
+                        >
                             Tasks history will appear here.
                         </p>
 
@@ -442,9 +519,11 @@ export default function Task({ lead, getLead }) {
 
                     /* ================= TASK LIST ================= */
 
-                    <div className="
-                        space-y-3
-                    ">
+                    <div
+                        className="
+                            space-y-3
+                        "
+                    >
 
                         {tasks.map((task) => (
 
@@ -461,41 +540,51 @@ export default function Task({ lead, getLead }) {
 
                                 {/* ================= TASK HEADER ================= */}
 
-                                <div className="
-                                    flex
-                                    justify-between
-                                    gap-3
-                                ">
+                                <div
+                                    className="
+                                        flex
+                                        justify-between
+                                        gap-3
+                                    "
+                                >
 
-                                    <div className="
-                                        min-w-0
-                                    ">
+                                    <div
+                                        className="
+                                            min-w-0
+                                        "
+                                    >
 
-                                        <h4 className="
-                                            text-sm
-                                            font-semibold
-                                            break-words
-                                        ">
+                                        <h4
+                                            className="
+                                                text-sm
+                                                font-semibold
+                                                break-words
+                                            "
+                                        >
                                             {task.title}
                                         </h4>
 
-                                        <p className="
-                                            text-xs
-                                            text-muted
-                                            mt-1
-                                            break-words
-                                        ">
+                                        <p
+                                            className="
+                                                text-xs
+                                                text-muted
+                                                mt-1
+                                                break-words
+                                            "
+                                        >
                                             {task.description ||
                                                 "No description"}
                                         </p>
 
                                     </div>
 
-                                    <span className="
-                                        text-xs
-                                        capitalize
-                                        shrink-0
-                                    ">
+                                    <span
+                                        className="
+                                            text-xs
+                                            capitalize
+                                            shrink-0
+                                        "
+                                    >
                                         {task.priority}
                                     </span>
 
@@ -503,14 +592,16 @@ export default function Task({ lead, getLead }) {
 
                                 {/* ================= TASK INFO ================= */}
 
-                                <div className="
-                                    flex
-                                    flex-wrap
-                                    gap-3
-                                    mt-3
-                                    text-xs
-                                    text-muted
-                                ">
+                                <div
+                                    className="
+                                        flex
+                                        flex-wrap
+                                        gap-3
+                                        mt-3
+                                        text-xs
+                                        text-muted
+                                    "
+                                >
 
                                     <span>
                                         Due:{" "}
@@ -529,12 +620,14 @@ export default function Task({ lead, getLead }) {
 
                                 {/* ================= TASK ACTIONS ================= */}
 
-                                <div className="
-                                    flex
-                                    flex-wrap
-                                    gap-2
-                                    mt-3
-                                ">
+                                <div
+                                    className="
+                                        flex
+                                        flex-wrap
+                                        gap-2
+                                        mt-3
+                                    "
+                                >
 
                                     {/* EDIT */}
 
@@ -572,66 +665,68 @@ export default function Task({ lead, getLead }) {
 
                                     {task.status ===
                                         "pending" && (
-                                        <>
+                                            <>
 
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    updateTaskStatus(
-                                                        task._id,
-                                                        "completed"
-                                                    )
-                                                }
-                                                className="
-                                                    px-3
-                                                    py-1.5
-                                                    text-xs
-                                                    rounded-lg
-                                                    btn-primary
-                                                "
-                                            >
-                                                Complete
-                                            </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        updateTaskStatus(
+                                                            task._id,
+                                                            "completed"
+                                                        )
+                                                    }
+                                                    className="
+                                                        px-3
+                                                        py-1.5
+                                                        text-xs
+                                                        rounded-lg
+                                                        btn-primary
+                                                    "
+                                                >
+                                                    Complete
+                                                </button>
 
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    updateTaskStatus(
-                                                        task._id,
-                                                        "cancelled"
-                                                    )
-                                                }
-                                                className="
-                                                    px-3
-                                                    py-1.5
-                                                    text-xs
-                                                    rounded-lg
-                                                    border
-                                                    border-app
-                                                    hover-app
-                                                "
-                                            >
-                                                Cancel
-                                            </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        updateTaskStatus(
+                                                            task._id,
+                                                            "cancelled"
+                                                        )
+                                                    }
+                                                    className="
+                                                        px-3
+                                                        py-1.5
+                                                        text-xs
+                                                        rounded-lg
+                                                        border
+                                                        border-app
+                                                        hover-app
+                                                    "
+                                                >
+                                                    Cancel
+                                                </button>
 
-                                        </>
-                                    )}
+                                            </>
+                                        )}
 
                                     {/* NON-PENDING STATUS */}
 
                                     {task.status !==
                                         "pending" && (
-                                        <span className="
-                                            text-xs
-                                            capitalize
-                                            opacity-70
-                                            flex
-                                            items-center
-                                            px-2
-                                        ">
-                                            {task.status}
-                                        </span>
-                                    )}
+                                            <span
+                                                className="
+                                                    text-xs
+                                                    capitalize
+                                                    opacity-70
+                                                    flex
+                                                    items-center
+                                                    px-2
+                                                "
+                                            >
+                                                {task.status}
+                                            </span>
+                                        )}
 
                                 </div>
 
@@ -661,17 +756,21 @@ export default function Task({ lead, getLead }) {
 
                 <Modal.Body>
 
-                    <div className="
-                        space-y-2
-                    ">
+                    <div
+                        className="
+                            space-y-2
+                        "
+                    >
 
                         {/* TITLE + PRIORITY */}
 
-                        <div className="
-                            grid
-                            md:grid-cols-2
-                            gap-2
-                        ">
+                        <div
+                            className="
+                                grid
+                                md:grid-cols-2
+                                gap-2
+                            "
+                        >
 
                             <Input
                                 label="Task Title"
@@ -717,11 +816,13 @@ export default function Task({ lead, getLead }) {
 
                         {/* LEAD + ASSIGNED USER */}
 
-                        <div className="
-                            grid
-                            md:grid-cols-2
-                            gap-2
-                        ">
+                        <div
+                            className="
+                                grid
+                                md:grid-cols-2
+                                gap-2
+                            "
+                        >
 
                             <SelectInput
                                 label="Related Lead"
@@ -769,11 +870,13 @@ export default function Task({ lead, getLead }) {
 
                         {/* DATE + REMINDER */}
 
-                        <div className="
-                            grid
-                            md:grid-cols-2
-                            gap-2
-                        ">
+                        <div
+                            className="
+                                grid
+                                md:grid-cols-2
+                                gap-2
+                            "
+                        >
 
                             <Input
                                 label="Due Date & Time"
@@ -786,7 +889,7 @@ export default function Task({ lead, getLead }) {
                                 onChange={
                                     handleChange
                                 }
-                                placeholder="Enter task title"
+                                min={getBrowserDateTime()}
                             />
 
                             <SelectInput
@@ -862,7 +965,7 @@ export default function Task({ lead, getLead }) {
                         "
                     >
                         Cancel
-                    </button> 
+                    </button>
 
                     <button
                         type="button"
@@ -886,7 +989,6 @@ export default function Task({ lead, getLead }) {
                 </Modal.Footer>
 
             </Modal>
-
         </>
     );
 }

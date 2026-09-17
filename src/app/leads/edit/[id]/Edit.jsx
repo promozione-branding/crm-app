@@ -57,9 +57,15 @@ export default function Edit() {
   };
 
   const getLead = async () => {
-    const res = await axios.get(`/api/user/lead/${id}`, { withCredentials: true, });
+  try {
+    const res = await axios.get(`/api/user/lead/${id}`, {
+      withCredentials: true,
+    });
+
     const data = res.data.data;
+
     setLead(data);
+
     setForm({
       name: data.name || "",
       email: data.email || "",
@@ -84,7 +90,23 @@ export default function Edit() {
       product: data.product || "",
       message: data.message || "",
     });
-  };
+
+    // ==========================================
+    // OPEN TASK TAB IF LEAD HAS TASK
+    // ==========================================
+    if (Number(data?.taskCount) > 0) {
+      setActive("task");
+    } else {
+      setActive("overview");
+    }
+  } catch (error) {
+    console.error("Get lead error:", error);
+
+    toast.error(
+      error.response?.data?.message || "Failed to load lead"
+    );
+  }
+};
 
   useEffect(() => {
     if (id) {
