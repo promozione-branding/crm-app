@@ -36,7 +36,9 @@ export default function RootLayout({
                 <Toaster position="top-right" />
 
                 <Providers>
-                    {children}
+                    <main className="min-h-screen pb-15 md:pb-0">
+                        {children}
+                    </main>
                 </Providers>
             </body>
         </html>

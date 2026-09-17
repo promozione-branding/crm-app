@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -104,14 +105,12 @@ export default function Stickyfooter() {
                                 }
                             `}
                         >
-                            {/* Icon */}
                             <Icon
                                 size={20}
                                 strokeWidth={active ? 2.5 : 2}
                                 className="shrink-0"
                             />
 
-                            {/* Label */}
                             <span
                                 className={`
                                     max-w-full
@@ -130,7 +129,6 @@ export default function Stickyfooter() {
                                 {item.name}
                             </span>
 
-                            {/* Active indicator */}
                             {active && (
                                 <span
                                     className="
@@ -153,3 +151,4 @@ export default function Stickyfooter() {
         </nav>
     );
 }
+
