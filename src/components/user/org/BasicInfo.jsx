@@ -1,3 +1,5 @@
+// src/components/user/org/BasicInfo.jsx
+
 import React from "react";
 import Input from "../ui/Input";
 

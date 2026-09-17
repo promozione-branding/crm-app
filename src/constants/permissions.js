@@ -1,3 +1,5 @@
+// src/constants/permissions.js
+
 export const PERMISSION_ACTIONS = [
     {
         key: "access",

@@ -1,3 +1,5 @@
+// src/app/api/admin/auth/login/route.js
+
 import { connectDB } from "@/config/db";
 import { loginAdmin } from "@/controllers/admin/adminAuthController";
 

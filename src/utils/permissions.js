@@ -1,3 +1,5 @@
+// src/utils/permissions.js
+
 export const getPermission = (role, module) => {
     if (!role) return null;
 

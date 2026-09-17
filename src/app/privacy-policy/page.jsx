@@ -1,3 +1,5 @@
+// src/app/privacy-policy/page.jsx
+
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 

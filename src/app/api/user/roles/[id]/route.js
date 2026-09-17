@@ -1,3 +1,5 @@
+// src/app/api/user/roles/[id]/route.js
+
 import { NextResponse } from "next/server";
 import { connectDB } from "@/config/db";
 import Role from "@/models/role.model.js";

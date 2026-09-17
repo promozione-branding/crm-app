@@ -1,3 +1,5 @@
+// src/app/api/user/auth/me/route.js
+
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { connectDB } from "@/config/db";

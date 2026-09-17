@@ -1,3 +1,5 @@
+// src/components/user/leads/form/Stage.jsx
+
 "use client";
 
 import { GitBranch } from "lucide-react";

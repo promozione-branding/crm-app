@@ -1,3 +1,5 @@
+// src/components/user/Stickyfooter.jsx
+
 
 "use client";
 

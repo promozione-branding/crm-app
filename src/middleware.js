@@ -1,3 +1,5 @@
+// src/middleware.js
+
 import { NextResponse } from "next/server";
 import { ENV } from "./config/env";
 

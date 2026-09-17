@@ -1,3 +1,5 @@
+// src/app/profile/components/ChangePasswordModal.jsx
+
 "use client";
 
 import React, { useState } from "react";

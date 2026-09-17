@@ -1,3 +1,5 @@
+// src/app/call-logs/CallLog.jsx
+
 "use client";
 
 import React from "react";

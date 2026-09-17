@@ -1,3 +1,5 @@
+// src/models/role.model.js
+
 import mongoose from "mongoose";
 
 const PermissionSchema = new mongoose.Schema({

@@ -1,3 +1,5 @@
+// src/app/api/user/webhook/generate/route.js
+
 import { NextResponse } from "next/server";
 import { connectDB } from "@/config/db";
 import Company from "@/models/company.model.js";

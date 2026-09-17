@@ -1,3 +1,5 @@
+// src/utils/dataScope.js
+
 export const applyLeadScope = ({ filter, user, role, }) => {
     const permission = role?.permissions?.find(
         (item) => item.module === "leads"

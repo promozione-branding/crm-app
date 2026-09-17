@@ -1,3 +1,5 @@
+// src/controllers/admin/companyController.js
+
 import { NextResponse } from "next/server";
 import Company from "@/models/company.model.js";
 import Role from "@/models/role.model.js";

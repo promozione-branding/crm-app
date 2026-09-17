@@ -1,3 +1,5 @@
+// src/components/user/team/User.jsx
+
 import { Plus, Search } from 'lucide-react'
 import React from 'react'
 import DynamicTable from '../ui/DynamicTable'

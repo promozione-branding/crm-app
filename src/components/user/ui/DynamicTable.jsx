@@ -1,3 +1,5 @@
+// src/components/user/ui/DynamicTable.jsx
+
 "use client";
 
 import { ChevronDown, ChevronUp, MoreVertical } from "lucide-react";

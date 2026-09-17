@@ -1,3 +1,5 @@
+// src/components/user/org/BusinessInfo.jsx
+
 import React from "react";
 import Input from "../ui/Input";
 import SelectInput from "../ui/SelectInput";

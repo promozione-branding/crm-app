@@ -1,3 +1,5 @@
+// src/app/integration/Integration.jsx
+
 
 import Google from "@/components/user/integrations/Google";
 import MarketPlaces from "@/components/user/integrations/MarketPlaces";

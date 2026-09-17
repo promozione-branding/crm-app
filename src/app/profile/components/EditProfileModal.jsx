@@ -1,3 +1,5 @@
+// src/app/profile/components/EditProfileModal.jsx
+
 "use client";
 
 import React from "react";

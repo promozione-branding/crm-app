@@ -1,3 +1,5 @@
+// src/app/api/user/meeting/[id]/route.js
+
 import { NextResponse } from "next/server";
 import { connectDB } from "@/config/db";
 import { getMeetingByIdService, updateMeetingService, deleteMeetingService, } from "@/controllers/user/meetingController";

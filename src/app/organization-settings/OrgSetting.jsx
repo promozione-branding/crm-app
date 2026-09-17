@@ -1,3 +1,5 @@
+// src/app/organization-settings/OrgSetting.jsx
+
 import BasicInfo from '@/components/user/org/BasicInfo';
 import BusinessInfo from '@/components/user/org/BusinessInfo';
 import axios from 'axios';

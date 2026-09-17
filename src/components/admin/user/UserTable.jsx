@@ -1,3 +1,5 @@
+// src/components/admin/user/UserTable.jsx
+
 import { ChevronLeft, ChevronRight, Eye, Filter, Search, Trash2 } from 'lucide-react';
 import React from 'react'
 

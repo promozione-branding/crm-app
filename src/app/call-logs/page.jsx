@@ -1,3 +1,5 @@
+// src/app/call-logs/page.jsx
+
 "use client";
 
 import Navbar from "@/components/user/Navbar";

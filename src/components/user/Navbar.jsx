@@ -1,3 +1,5 @@
+// src/components/user/Navbar.jsx
+
 "use client";
 
 import {

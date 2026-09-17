@@ -1,3 +1,5 @@
+// src/components/user/leads/form/Activities.jsx
+
 "use client";
 
 import { Activity } from "lucide-react";

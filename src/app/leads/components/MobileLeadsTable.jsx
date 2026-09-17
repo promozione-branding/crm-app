@@ -1,3 +1,5 @@
+// src/app/leads/components/MobileLeadsTable.jsx
+
 "use client";
 
 import React, { useState } from "react";

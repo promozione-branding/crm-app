@@ -1,3 +1,5 @@
+// src/components/user/Sidebar.jsx
+
 "use client";
 
 import Link from "next/link";

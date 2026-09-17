@@ -1,3 +1,5 @@
+// src/controllers/user/leadsController.js
+
 import User from "@/models/user.model.js";
 import Lead from "@/models/leads.model.js";
 import mongoose from "mongoose";

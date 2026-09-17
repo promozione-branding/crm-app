@@ -1,3 +1,5 @@
+// src/app/dashboard/components/DashboardStats.jsx
+
 "use client";
 
 import {

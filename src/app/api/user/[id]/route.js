@@ -1,3 +1,5 @@
+// src/app/api/user/[id]/route.js
+
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 

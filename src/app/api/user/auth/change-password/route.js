@@ -1,3 +1,5 @@
+// src/app/api/user/auth/change-password/route.js
+
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { connectDB } from "@/config/db";

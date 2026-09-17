@@ -1,3 +1,5 @@
+// src/app/leads/edit/[id]/page.jsx
+
 "use client";
 
 import Navbar from "@/components/user/Navbar";

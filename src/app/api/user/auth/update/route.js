@@ -1,3 +1,5 @@
+// src/app/api/user/auth/update/route.js
+
 import { NextResponse } from "next/server";
 import { connectDB } from "@/config/db";
 import User from "@/models/user.model.js";

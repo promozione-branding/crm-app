@@ -1,3 +1,5 @@
+// src/components/admin/SelectInput.jsx
+
 "use client";
 
 import { ChevronDown } from "lucide-react";

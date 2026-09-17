@@ -1,3 +1,5 @@
+// src/app/team-management/user/[id]/page.jsx
+
 "use client";
 
 import Navbar from "@/components/user/Navbar";

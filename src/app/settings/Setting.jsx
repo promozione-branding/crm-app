@@ -1,3 +1,5 @@
+// src/app/settings/Setting.jsx
+
 "use client";
 
 import React from "react";

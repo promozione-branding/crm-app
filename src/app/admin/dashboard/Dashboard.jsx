@@ -1,3 +1,5 @@
+// src/app/admin/dashboard/Dashboard.jsx
+
 import React from "react";
 
 export default function Dashboard() {

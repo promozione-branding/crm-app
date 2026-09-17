@@ -1,3 +1,5 @@
+// src/models/task.model.js
+
 import mongoose from "mongoose";
 
 const LeadTaskSchema = new mongoose.Schema({

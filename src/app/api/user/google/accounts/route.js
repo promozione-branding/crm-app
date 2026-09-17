@@ -1,3 +1,5 @@
+// src/app/api/user/google/accounts/route.js
+
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/utils/auth";
 import { connectDB } from "@/config/db";

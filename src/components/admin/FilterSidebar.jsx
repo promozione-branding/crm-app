@@ -1,3 +1,5 @@
+// src/components/admin/FilterSidebar.jsx
+
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";

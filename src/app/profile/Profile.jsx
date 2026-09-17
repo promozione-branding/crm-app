@@ -1,3 +1,5 @@
+// src/app/profile/Profile.jsx
+
 "use client";
 
 import React, { useState } from "react";

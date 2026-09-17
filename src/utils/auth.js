@@ -1,3 +1,5 @@
+// src/utils/auth.js
+
 import jwt from "jsonwebtoken";
 import { ENV } from "@/config/env";
 import User from "@/models/user.model.js";

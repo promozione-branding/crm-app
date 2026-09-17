@@ -1,3 +1,5 @@
+// src/app/dashboard/components/StatCard.jsx
+
 "use client";
 
 export default function StatCard({

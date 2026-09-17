@@ -1,3 +1,5 @@
+// src/app/api/user/auth/logout/route.js
+
 import { ENV } from "@/config/env";
 import { NextResponse } from "next/server";
 

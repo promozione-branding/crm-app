@@ -1,3 +1,5 @@
+// src/app/api/admin/companies/route.js
+
 import { connectDB } from "@/config/db";
 import { getAllCompanies } from "@/controllers/admin/companyController";
 

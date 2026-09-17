@@ -1,3 +1,5 @@
+// src/components/user/ui/Input.jsx
+
 "use client";
 
 export default function Input({

@@ -1,3 +1,5 @@
+// src/app/api/user/google/callback/route.js
+
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 

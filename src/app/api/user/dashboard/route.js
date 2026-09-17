@@ -1,3 +1,5 @@
+// src/app/api/user/dashboard/route.js
+
 import { NextResponse } from "next/server";
 
 import { connectDB } from "@/config/db";

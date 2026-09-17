@@ -1,3 +1,5 @@
+// src/models/adminUser.model.js
+
 import mongoose from "mongoose";
 
 const adminUserSchema = new mongoose.Schema(

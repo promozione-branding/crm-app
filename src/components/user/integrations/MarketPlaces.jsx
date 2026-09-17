@@ -1,3 +1,5 @@
+// src/components/user/integrations/MarketPlaces.jsx
+
 import React from 'react'
 
 export default function MarketPlaces() {

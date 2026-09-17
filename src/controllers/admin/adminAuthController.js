@@ -1,3 +1,5 @@
+// src/controllers/admin/adminAuthController.js
+
 import { NextResponse } from "next/server";
 import AdminUser from "@/models/adminUser.model.js";
 import jwt from "jsonwebtoken";

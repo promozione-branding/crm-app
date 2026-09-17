@@ -1,3 +1,5 @@
+// src/components/admin/Sidebar.jsx
+
 "use client";
 
 import React, { useState } from "react";

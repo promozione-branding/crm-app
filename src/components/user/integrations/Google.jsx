@@ -1,3 +1,5 @@
+// src/components/user/integrations/Google.jsx
+
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";

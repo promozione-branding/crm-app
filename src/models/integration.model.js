@@ -1,3 +1,5 @@
+// src/models/integration.model.js
+
 import mongoose from "mongoose";
 
 const IntegrationSchema = new mongoose.Schema({

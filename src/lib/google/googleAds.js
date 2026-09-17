@@ -1,3 +1,5 @@
+// src/lib/google/googleAds.js
+
 import { GoogleAdsApi } from "google-ads-api";
 
 const googleAdsClient = new GoogleAdsApi({

@@ -1,3 +1,5 @@
+// src/app/team-management/user/[id]/User.jsx
+
 "use client";
 import { ArrowLeft, Edit, Trash2, } from "lucide-react";
 import Link from "next/link";

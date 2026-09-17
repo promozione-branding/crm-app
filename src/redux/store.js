@@ -1,3 +1,5 @@
+// src/redux/store.js
+
 import { configureStore } from "@reduxjs/toolkit";
 import adminAuthReducer from "./admin/adminAuthSlice";
 import userAuthReducer from "./user/userAuthSlice";

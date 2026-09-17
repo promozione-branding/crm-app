@@ -1,3 +1,5 @@
+// src/app/dashboard/components/DashboardAnalytics.jsx
+
 "use client";
 
 // ============================================================

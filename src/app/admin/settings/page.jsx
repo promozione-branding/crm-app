@@ -1,3 +1,5 @@
+// src/app/admin/settings/page.jsx
+
 import Sidebar from "@/components/admin/Sidebar";
 import Setting from "./Setting";
 

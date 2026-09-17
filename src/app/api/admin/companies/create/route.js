@@ -1,3 +1,5 @@
+// src/app/api/admin/companies/create/route.js
+
 import { connectDB } from "@/config/db";
 import { createCompanyUser } from "@/controllers/admin/companyController";
 

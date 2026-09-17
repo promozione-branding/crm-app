@@ -1,3 +1,5 @@
+// scripts/createAdmin.js
+
 //scripts/createAdmin.js
 
 import mongoose from "mongoose";

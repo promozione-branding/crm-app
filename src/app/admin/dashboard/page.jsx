@@ -1,3 +1,5 @@
+// src/app/admin/dashboard/page.jsx
+
 import Sidebar from "@/components/admin/Sidebar";
 import Dashboard from "./Dashboard";
 

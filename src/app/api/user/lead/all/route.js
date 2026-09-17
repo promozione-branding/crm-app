@@ -1,3 +1,5 @@
+// src/app/api/user/lead/all/route.js
+
 import { NextResponse } from "next/server";
 import { ENV } from "@/config/env";
 import User from "@/models/user.model.js";

@@ -1,3 +1,5 @@
+// src/components/user/ui/Modal.jsx
+
 "use client";
 
 import { useEffect, useRef } from "react";

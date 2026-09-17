@@ -1,3 +1,5 @@
+// src/controllers/user/meetingController.js
+
 import mongoose from "mongoose";
 import Meeting from "@/models/meeting.model.js";
 import Lead from "@/models/leads.model.js";
