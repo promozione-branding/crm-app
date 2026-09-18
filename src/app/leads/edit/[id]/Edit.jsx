@@ -656,130 +656,130 @@ export default function Edit() {
                 ================================================= */}
 
                             <div
-                                className="
-                        grid
-                        grid-cols-2
-                        sm:flex
-                        sm:flex-wrap
-                        gap-2
-                        mt-6
-                    "
-                            >
-                                {/* CALL */}
-                                {lead?.phone && (
-                                    <a
-                                        href={`tel:${lead.phone}`}
-                                        className="
-                                flex
-                                items-center
-                                justify-center
-                                gap-2
-                                px-4
-                                py-2.5
-                                rounded-xl
-                                border
-                                border-app
-                                bg-surface
-                                hover-app
-                                text-sm
-                                font-medium
-                                text-app
-                                transition
-                            "
-                                    >
-                                        <Phone size={17} className="text-blue-500" />
+    className="
+        flex
+        flex-nowrap
+        justify-evenly
+        w-full
+        gap-2
+        mt-6
+    "
+>
+    {/* CALL */}
+    {lead?.phone && (
+        <a
+            href={`tel:${lead.phone}`}
+            className="
+                flex
+                items-center
+                justify-center
+                gap-2
+                px-4
+                py-2.5
+                rounded-xl
+                border
+                border-app
+                bg-surface
+                hover-app
+                text-sm
+                font-medium
+                text-app
+                transition
+            "
+        >
+            <Phone size={17} className="text-blue-500" />
 
-                                        <span>Call</span>
-                                    </a>
-                                )}
+            <span className="hidden sm:inline">Call</span>
+        </a>
+    )}
 
-                                {/* WHATSAPP */}
-                                {lead?.phone && (
-                                    <a
-                                        href={`https://wa.me/${
-                                            lead.phone.replace(/\D/g, '').length === 10 ? `91${lead.phone.replace(/\D/g, '')}` : lead.phone.replace(/\D/g, '')
-                                        }`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="
-                                flex
-                                items-center
-                                justify-center
-                                gap-2
-                                px-4
-                                py-2.5
-                                rounded-xl
-                                border
-                                border-app
-                                bg-surface
-                                hover-app
-                                text-sm
-                                font-medium
-                                text-app
-                                transition
-                            "
-                                    >
-                                        <FaWhatsapp size={19} className="text-green-500" />
+    {/* WHATSAPP */}
+    {lead?.phone && (
+        <a
+            href={`https://wa.me/${
+                lead.phone.replace(/\D/g, '').length === 10 ? `91${lead.phone.replace(/\D/g, '')}` : lead.phone.replace(/\D/g, '')
+            }`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="
+                flex
+                items-center
+                justify-center
+                gap-2
+                px-4
+                py-2.5
+                rounded-xl
+                border
+                border-app
+                bg-surface
+                hover-app
+                text-sm
+                font-medium
+                text-app
+                transition
+            "
+        >
+            <FaWhatsapp size={19} className="text-green-500" />
 
-                                        <span>WhatsApp</span>
-                                    </a>
-                                )}
+            <span className="hidden sm:inline">WhatsApp</span>
+        </a>
+    )}
 
-                                {/* EMAIL */}
-                                {lead?.email && (
-                                    <a
-                                        href={`mailto:${lead.email}`}
-                                        className="
-                                flex
-                                items-center
-                                justify-center
-                                gap-2
-                                px-4
-                                py-2.5
-                                rounded-xl
-                                border
-                                border-app
-                                bg-surface
-                                hover-app
-                                text-sm
-                                font-medium
-                                text-app
-                                transition
-                            "
-                                    >
-                                        <Mail size={17} className="text-orange-500" />
+    {/* EMAIL */}
+    {lead?.email && (
+        <a
+            href={`mailto:${lead.email}`}
+            className="
+                flex
+                items-center
+                justify-center
+                gap-2
+                px-4
+                py-2.5
+                rounded-xl
+                border
+                border-app
+                bg-surface
+                hover-app
+                text-sm
+                font-medium
+                text-app
+                transition
+            "
+        >
+            <Mail size={17} className="text-orange-500" />
 
-                                        <span>Email</span>
-                                    </a>
-                                )}
+            <span className="hidden sm:inline">Email</span>
+        </a>
+    )}
 
-                                {/* SCHEDULE */}
-                                <button
-                                    type="button"
-                                    onClick={() => setActive('meeting')}
-                                    className="
-                            flex
-                            items-center
-                            justify-center
-                            gap-2
-                            px-4
-                            py-2.5
-                            rounded-xl
-                            border
-                            border-app
-                            bg-surface
-                            hover-app
-                            text-sm
-                            font-medium
-                            text-app
-                            transition
-                        "
-                                >
-                                    <CalendarDays size={17} className="text-purple-500" />
+    {/* SCHEDULE */}
+    <button
+        type="button"
+        onClick={() => setActive('meeting')}
+        className="
+            flex
+            items-center
+            justify-center
+            gap-2
+            px-4
+            py-2.5
+            rounded-xl
+            border
+            border-app
+            bg-surface
+            hover-app
+            text-sm
+            font-medium
+            text-app
+            transition
+        "
+    >
+        <CalendarDays size={17} className="text-purple-500" />
 
-                                    <span>Schedule</span>
-                                </button>
-                            </div>
+        <span className="hidden sm:inline">Schedule</span>
+    </button>
+</div>
                         </div>
 
                         {/* =====================================================

@@ -3,7 +3,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Phone, UserRound } from 'lucide-react';
+import { ChevronDown, ChevronUp, Phone, UserRound, Package } from 'lucide-react';
 
 export default function MobileLeadsTable({
     loading,
@@ -138,18 +138,12 @@ export default function MobileLeadsTable({
                                 hover-app
                             "
                         >
-                            <div
-                                className="
-                                    flex
-                                    items-center
-                                    gap-3
-                                "
-                            >
+                            <div className="flex min-w-0 items-center gap-3">
                                 {/* S.NO */}
                                 <span
                                     className="
-                                        shrink-0
                                         w-7
+                                        shrink-0
                                         text-xs
                                         font-medium
                                         opacity-50
@@ -158,80 +152,90 @@ export default function MobileLeadsTable({
                                     #{getSerialNumber(index)}
                                 </span>
 
-                                {/* NAME + PHONE */}
+                                {/* TWO ROWS */}
                                 <div className="min-w-0 flex-1">
-                                    <h3
-                                        className="
-                                            truncate
-                                            text-sm
-                                            font-semibold
-                                        "
-                                    >
-                                        {lead.name || 'Unnamed Lead'}
-                                    </h3>
+                                    {/* ROW 1 — NAME + PHONE (PHONE RIGHT ALIGNED) */}
+                                    <div className="flex min-w-0 w-full items-center gap-2">
+                                        <h3 className="min-w-0 flex-1 truncate text-sm font-semibold">
+                                            {lead.name || 'Unnamed Lead'}
+                                        </h3>
 
-                                    {lead.phone ? (
-                                        <a
-  href={`tel:${lead.phone}`}
-  onClick={(e) => e.stopPropagation()}
-  className="
-    mt-1
-    inline-flex
-    min-w-0
-    items-center
-    gap-1.5
-    px-2.5
-    py-1
-    text-sm
-    font-medium
-    text-amber-50
-    bg-amber-900/70
-    hover:bg-amber-800
-    opacity-60
-    hover:opacity-100
-    rounded-full
-    border
-    border-amber-700/40
-    shadow-sm
-    hover:shadow-md
-    hover:shadow-amber-900/30
-    transition-all
-    duration-200
-    ease-out
-    hover:scale-105
-    active:scale-95
-    group
-  "
->
-  <Phone
-    size={12}
-    className="shrink-0 transition-transform duration-200 group-hover:rotate-12"
-  />
-  <span className="truncate">
-    {lead.phone}
-  </span>
-</a>
-                                    ) : (
-                                        <p className="mt-1 text-xs opacity-50">
-                                            No phone number
-                                        </p>
-                                    )}
+                                        {lead.phone ? (
+                                            <a
+                                                href={`tel:${lead.phone}`}
+                                                onClick={(e) => e.stopPropagation()}
+                                                className="
+                                                    ml-auto
+                                                    inline-flex
+                                                    min-w-0
+                                                    max-w-[48%]
+                                                    shrink-0
+                                                    items-center
+                                                    gap-1
+                                                    rounded-full
+                                                    border
+                                                    border-amber-700/40
+                                                    bg-amber-900/70
+                                                    px-2
+                                                    py-0.5
+                                                    text-xs
+                                                    font-medium
+                                                    text-amber-50
+                                                    opacity-70
+                                                    transition
+                                                    hover:opacity-100
+                                                "
+                                            >
+                                                <Phone size={11} className="shrink-0" />
+                                                <span className="truncate">
+                                                    {lead.phone}
+                                                </span>
+                                            </a>
+                                        ) : null}
+                                    </div>
+
+                                    {/* ROW 2 — PRODUCT */}
+                                    <div className="mt-1.5 flex min-w-0 items-center">
+                                        {lead.product ? (
+                                            <span
+                                                className="
+                                                    inline-flex
+                                                    min-w-0
+                                                    max-w-full
+                                                    items-center
+                                                    gap-1
+                                                    truncate
+                                                    rounded-full
+                                                    border
+                                                    border-purple-500/20
+                                                    bg-purple-500/10
+                                                    px-2
+                                                    py-0.5
+                                                    text-[11px]
+                                                    font-medium
+                                                    text-purple-400
+                                                "
+                                                title={lead.product}
+                                            >
+                                                <Package size={11} className="shrink-0" />
+                                                <span className="truncate">
+                                                    {lead.product}
+                                                </span>
+                                            </span>
+                                        ) : (
+                                            <span className="text-[11px] opacity-40">
+                                                No product
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
 
-                                {/* STAGE + STATUS */}
-                                <div
-                                    className="
-                                        shrink-0
-                                        flex
-                                        flex-col
-                                        items-end
-                                        gap-1
-                                    "
-                                >
+                                {/* RIGHT END — STATUS */}
+                                <div className="flex shrink-0 flex-col items-end gap-1">
                                     <span
                                         className="
                                             inline-flex
-                                            max-w-[110px]
+                                            max-w-[95px]
                                             truncate
                                             rounded-full
                                             bg-blue-500/10
