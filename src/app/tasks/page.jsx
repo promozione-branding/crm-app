@@ -1,11 +1,11 @@
 // src/app/tasks/page.jsx
 
-"use client";
+'use client';
 
-import Navbar from "@/components/user/Navbar";
-import Sidebar from "@/components/user/Sidebar";
-import Stickyfooter from "@/components/user/Stickyfooter";
-import Task from "./Task";
+import Navbar from '@/components/user/Navbar';
+import Sidebar from '@/components/user/Sidebar';
+import Stickyfooter from '@/components/user/Stickyfooter';
+import Task from './Task';
 
 export default function page() {
     return (
@@ -18,7 +18,7 @@ export default function page() {
                 <main className="">
                     <Task />
                 </main>
-                <Stickyfooter/>
+                <Stickyfooter />
             </div>
         </div>
     );

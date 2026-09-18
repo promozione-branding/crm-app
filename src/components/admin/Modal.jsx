@@ -1,20 +1,17 @@
 // src/components/admin/Modal.jsx
 
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
+import { useEffect, useRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { X } from 'lucide-react';
 
 function Header({ children, onClose }) {
     return (
         <div className="flex items-center justify-between border-b border-gray-300 px-6 py-3">
             <h2 className="text-lg font-semibold">{children}</h2>
 
-            <button
-                onClick={onClose}
-                className="rounded-lg p-2 hover:bg-gray-100"
-            >
+            <button onClick={onClose} className="rounded-lg p-2 hover:bg-gray-100">
                 <X size={20} />
             </button>
         </div>
@@ -22,34 +19,21 @@ function Header({ children, onClose }) {
 }
 
 function Body({ children }) {
-    return (
-        <div className="px-6 py-5 max-h-[70vh] overflow-y-auto">
-            {children}
-        </div>
-    );
+    return <div className="px-6 py-5 max-h-[70vh] overflow-y-auto">{children}</div>;
 }
 
 function Footer({ children }) {
-    return (
-        <div className="flex justify-end gap-3 border-t border-gray-300 bg-gray-50 px-6 py-3">
-            {children}
-        </div>
-    );
+    return <div className="flex justify-end gap-3 border-t border-gray-300 bg-gray-50 px-6 py-3">{children}</div>;
 }
 
-export default function Modal({
-    isOpen,
-    onClose,
-    children,
-    size = "md",
-}) {
+export default function Modal({ isOpen, onClose, children, size = 'md' }) {
     const modalRef = useRef(null);
 
     const sizes = {
-        sm: "max-w-md",
-        md: "max-w-lg",
-        lg: "max-w-2xl",
-        xl: "max-w-4xl",
+        sm: 'max-w-md',
+        md: 'max-w-lg',
+        lg: 'max-w-2xl',
+        xl: 'max-w-4xl',
     };
 
     useEffect(() => {
@@ -60,22 +44,22 @@ export default function Modal({
         }
 
         if (isOpen) {
-            document.addEventListener("mousedown", handleClick);
+            document.addEventListener('mousedown', handleClick);
         }
 
-        return () => document.removeEventListener("mousedown", handleClick);
+        return () => document.removeEventListener('mousedown', handleClick);
     }, [isOpen, onClose]);
 
     useEffect(() => {
         function handleKey(e) {
-            if (e.key === "Escape") onClose();
+            if (e.key === 'Escape') onClose();
         }
 
         if (isOpen) {
-            document.addEventListener("keydown", handleKey);
+            document.addEventListener('keydown', handleKey);
         }
 
-        return () => document.removeEventListener("keydown", handleKey);
+        return () => document.removeEventListener('keydown', handleKey);
     }, [isOpen, onClose]);
 
     const content = Array.isArray(children) ? children : [children];

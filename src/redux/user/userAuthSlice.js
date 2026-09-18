@@ -1,42 +1,48 @@
 // src/redux/user/userAuthSlice.js
 
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-export const getMe = createAsyncThunk("user/me", async (_, { rejectWithValue }) => {
+export const getMe = createAsyncThunk('user/me', async (_, { rejectWithValue }) => {
     try {
-        const res = await axios.get("/api/user/auth/me", { withCredentials: true });
+        const res = await axios.get('/api/user/auth/me', { withCredentials: true });
         return res.data;
     } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Unauthorized");
+        return rejectWithValue(error.response?.data?.message || 'Unauthorized');
     }
 });
 
-export const userLogin = createAsyncThunk("user/login", async (data, { rejectWithValue }) => {
+export const userLogin = createAsyncThunk('user/login', async (data, { rejectWithValue }) => {
     try {
-        const res = await axios.post("/api/user/auth/login", data, { withCredentials: true });
+        const res = await axios.post('/api/user/auth/login', data, { withCredentials: true });
         return res.data;
     } catch (error) {
-        return rejectWithValue(error.response?.data?.message || "Login failed");
+        return rejectWithValue(error.response?.data?.message || 'Login failed');
     }
 });
 
 const userAuthSlice = createSlice({
-    name: "userAuth",
+    name: 'userAuth',
     initialState: {
         user: null,
         loading: false,
         error: null,
-        isAuthenticated: false
+        isAuthenticated: false,
     },
 
     reducers: {
-        logout: (state) => { state.user = null; state.isAuthenticated = false; }
+        logout: (state) => {
+            state.user = null;
+            state.isAuthenticated = false;
+        },
     },
 
     extraReducers: (builder) => {
         // LOGIN
-        builder.addCase(userLogin.pending, (state) => { state.loading = true; state.error = null; });
+        builder.addCase(userLogin.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        });
         builder.addCase(userLogin.fulfilled, (state, action) => {
             state.loading = false;
             state.user = action.payload.data;
@@ -49,7 +55,9 @@ const userAuthSlice = createSlice({
         });
 
         // GET ME
-        builder.addCase(getMe.pending, (state) => { state.loading = true; });
+        builder.addCase(getMe.pending, (state) => {
+            state.loading = true;
+        });
         builder.addCase(getMe.fulfilled, (state, action) => {
             state.loading = false;
             state.user = action.payload.data;
@@ -61,7 +69,7 @@ const userAuthSlice = createSlice({
             state.user = null;
             state.isAuthenticated = false;
         });
-    }
+    },
 });
 
 export const { logout } = userAuthSlice.actions;

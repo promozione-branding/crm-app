@@ -1,15 +1,10 @@
 // src/app/dashboard/components/DashboardStats.jsx
 
-"use client";
+'use client';
 
-import {
-    Users,
-    UserPlus,
-    Phone,
-    ClipboardList,
-} from "lucide-react";
+import { Users, UserPlus, Phone, ClipboardList } from 'lucide-react';
 
-import StatCard from "./StatCard";
+import StatCard from './StatCard';
 
 // ============================================================
 // STATS CONFIG
@@ -17,28 +12,28 @@ import StatCard from "./StatCard";
 
 const statsConfig = [
     {
-        key: "users",
-        title: "Users",
+        key: 'users',
+        title: 'Users',
         icon: Users,
-        color: "text-blue-500",
+        color: 'text-blue-500',
     },
     {
-        key: "leads",
-        title: "Leads",
+        key: 'leads',
+        title: 'Leads',
         icon: UserPlus,
-        color: "text-green-500",
+        color: 'text-green-500',
     },
     {
-        key: "calls",
-        title: "Calls",
+        key: 'calls',
+        title: 'Calls',
         icon: Phone,
-        color: "text-purple-500",
+        color: 'text-purple-500',
     },
     {
-        key: "tasks",
-        title: "Tasks",
+        key: 'tasks',
+        title: 'Tasks',
         icon: ClipboardList,
-        color: "text-orange-500",
+        color: 'text-orange-500',
     },
 ];
 
@@ -46,10 +41,7 @@ const statsConfig = [
 // COMPONENT
 // ============================================================
 
-export default function DashboardStats({
-    stats,
-    loading,
-}) {
+export default function DashboardStats({ stats, loading }) {
     return (
         <div
             className="
@@ -65,16 +57,7 @@ export default function DashboardStats({
             {statsConfig.map((item) => {
                 const Icon = item.icon;
 
-                return (
-                    <StatCard
-                        key={item.key}
-                        title={item.title}
-                        value={stats[item.key]}
-                        icon={Icon}
-                        color={item.color}
-                        loading={loading}
-                    />
-                );
+                return <StatCard key={item.key} title={item.title} value={stats[item.key]} icon={Icon} color={item.color} loading={loading} />;
             })}
         </div>
     );

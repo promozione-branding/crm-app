@@ -1,19 +1,13 @@
 // src/components/user/leads/form/DealInfo.jsx
 
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
-import SelectInput from "../../ui/SelectInput";
-import Input from "../../ui/Input";
+import SelectInput from '../../ui/SelectInput';
+import Input from '../../ui/Input';
 
-export default function DealInfo({
-    form,
-    handleChange,
-    users = [],
-    usersLoading = false,
-}) {
-
+export default function DealInfo({ form, handleChange, users = [], usersLoading = false }) {
     // ============================================================
     // USERS NOW COME FROM PARENT
     // ============================================================
@@ -26,7 +20,6 @@ export default function DealInfo({
     // ============================================================
 
     return (
-
         <div
             className="
                 bg-card
@@ -37,7 +30,6 @@ export default function DealInfo({
                 text-app
             "
         >
-
             {/* =====================================================
                 HEADER
             ===================================================== */}
@@ -50,7 +42,6 @@ export default function DealInfo({
                     mb-4
                 "
             >
-
                 <h3
                     className="
                         uppercase
@@ -62,7 +53,6 @@ export default function DealInfo({
                 >
                     Deal Information
                 </h3>
-
             </div>
 
             {/* =====================================================
@@ -76,30 +66,19 @@ export default function DealInfo({
                     gap-3
                 "
             >
-
                 {/* ASSIGNED TO */}
 
                 <SelectInput
                     label="Assigned To"
                     name="assignedTo"
-                    value={
-                        form.assignedTo
-                    }
-                    onChange={
-                        handleChange
-                    }
-                    disabled={
-                        usersLoading
-                    }
+                    value={form.assignedTo}
+                    onChange={handleChange}
+                    disabled={usersLoading}
                     options={[
-                        ...users.map(
-                            (user) => ({
-                                label:
-                                    `${user.name} (${user.roleId?.name})`,
-                                value:
-                                    user._id,
-                            })
-                        ),
+                        ...users.map((user) => ({
+                            label: `${user.name} (${user.roleId?.name})`,
+                            value: user._id,
+                        })),
                     ]}
                 />
 
@@ -108,91 +87,52 @@ export default function DealInfo({
                 <SelectInput
                     label="Stage"
                     name="stage"
-                    value={
-                        form.stage
-                    }
-                    onChange={
-                        handleChange
-                    }
+                    value={form.stage}
+                    onChange={handleChange}
                     options={[
                         {
-                            label: "New",
-                            value: "new",
+                            label: 'New',
+                            value: 'new',
                         },
                         {
-                            label: "Contacted",
-                            value: "contacted",
+                            label: 'Contacted',
+                            value: 'contacted',
                         },
                         {
-                            label: "Qualified",
-                            value: "qualified",
+                            label: 'Qualified',
+                            value: 'qualified',
                         },
                         {
-                            label: "Proposal",
-                            value: "proposal",
+                            label: 'Proposal',
+                            value: 'proposal',
                         },
                         {
-                            label: "Negotiation",
-                            value: "negotiation",
+                            label: 'Negotiation',
+                            value: 'negotiation',
                         },
                         {
-                            label: "Won",
-                            value: "won",
+                            label: 'Won',
+                            value: 'won',
                         },
                         {
-                            label: "Lost",
-                            value: "lost",
+                            label: 'Lost',
+                            value: 'lost',
                         },
                     ]}
                 />
 
                 {/* PRICE RANGE */}
 
-                <Input
-                    label="Price Range"
-                    name="priceRange"
-                    value={
-                        form.priceRange
-                    }
-                    onChange={
-                        handleChange
-                    }
-                    placeholder="Enter price range"
-                />
+                <Input label="Price Range" name="priceRange" value={form.priceRange} onChange={handleChange} placeholder="Enter price range" />
 
                 {/* DEAL VALUE */}
 
-                <Input
-                    label="Deal Value"
-                    name="dealValue"
-                    value={
-                        form.dealValue
-                    }
-                    onChange={
-                        handleChange
-                    }
-                    placeholder="Enter deal value"
-                    type="number"
-                />
+                <Input label="Deal Value" name="dealValue" value={form.dealValue} onChange={handleChange} placeholder="Enter deal value" type="number" />
 
                 {/* EXPECTED CLOSURE DATE */}
 
-                <Input
-                    label="Expected Closure Date"
-                    name="expectedClosureDate"
-                    value={
-                        form.expectedClosureDate
-                    }
-                    onChange={
-                        handleChange
-                    }
-                    type="date"
-                />
-
+                <Input label="Expected Closure Date" name="expectedClosureDate" value={form.expectedClosureDate} onChange={handleChange} type="date" />
             </div>
-
         </div>
-
     );
-
 }

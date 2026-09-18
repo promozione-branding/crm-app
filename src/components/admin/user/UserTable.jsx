@@ -1,33 +1,29 @@
 // src/components/admin/user/UserTable.jsx
 
 import { ChevronLeft, ChevronRight, Eye, Filter, Search, Trash2 } from 'lucide-react';
-import React from 'react'
+import React from 'react';
 
-export default function UserTable({
-    search, setSearch, companies, loading, setOpenFilter, setPage, page, limit, setLimit, total, totalPages
-}) {
+export default function UserTable({ search, setSearch, companies, loading, setOpenFilter, setPage, page, limit, setLimit, total, totalPages }) {
     return (
-        <div className='bg-white rounded-lg shadow-md flex flex-col gap-1'>
-            <div className='flex flex-col md:flex-row gap-2 items-center justify-between border-b border-gray-300 py-1 px-2'>
-                <div>
-
-                </div>
-                <div className='flex gap-2 items-center'>
+        <div className="bg-white rounded-lg shadow-md flex flex-col gap-1">
+            <div className="flex flex-col md:flex-row gap-2 items-center justify-between border-b border-gray-300 py-1 px-2">
+                <div></div>
+                <div className="flex gap-2 items-center">
                     <div className="relative flex-1 text-gray-800">
-                        <Search
-                            size={18}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                        />
+                        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
 
                         <input
                             placeholder="Search company..."
                             value={search}
-                            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                            onChange={(e) => {
+                                setSearch(e.target.value);
+                                setPage(1);
+                            }}
                             className="w-full border border-gray-300 outline-none focus:border-blue-300 focus:ring-1 focus:ring-blue-300 rounded-lg pl-10 pr-4 py-2"
                         />
                     </div>
 
-                    <button onClick={() => setOpenFilter(true)} className='p-2 rounded bg-[#082c62] text-white hover:bg-[#051f48] transition-colors'>
+                    <button onClick={() => setOpenFilter(true)} className="p-2 rounded bg-[#082c62] text-white hover:bg-[#051f48] transition-colors">
                         <Filter size={18} />
                     </button>
                 </div>
@@ -49,10 +45,7 @@ export default function UserTable({
                     <tbody>
                         {loading ? (
                             Array.from({ length: 5 }).map((_, index) => (
-                                <tr
-                                    key={index}
-                                    className="border-t border-gray-300 animate-pulse"
-                                >
+                                <tr key={index} className="border-t border-gray-300 animate-pulse">
                                     <td className="px-2 py-3">
                                         <div className="flex items-center gap-2">
                                             <div className="w-11 h-11 rounded-full bg-gray-200" />
@@ -88,11 +81,10 @@ export default function UserTable({
                                         <div className="h-9 w-9 bg-gray-200 rounded-md" />
                                     </td>
                                 </tr>
-                            ))) : companies.length > 0 ? (companies.map((company) => (
-                                <tr
-                                    key={company._id}
-                                    className="border-t border-gray-300 hover:bg-gray-50 text-gray-800"
-                                >
+                            ))
+                        ) : companies.length > 0 ? (
+                            companies.map((company) => (
+                                <tr key={company._id} className="border-t border-gray-300 hover:bg-gray-50 text-gray-800">
                                     <td className="px-2 py-2">
                                         <div className="flex items-center gap-1">
                                             {company.logoUrl ? (
@@ -108,36 +100,29 @@ export default function UserTable({
                                             )}
 
                                             <div>
-                                                <p className="font-medium">
-                                                    {company.name}
-                                                </p>
+                                                <p className="font-medium">{company.name}</p>
 
-                                                <p className="text-xs text-gray-600">
-                                                    {company.email}
-                                                </p>
+                                                <p className="text-xs text-gray-600">{company.email}</p>
                                             </div>
                                         </div>
                                     </td>
 
-                                    <td className="px-2 py-2">
-                                        {company.website}
-                                    </td>
+                                    <td className="px-2 py-2">{company.website}</td>
 
                                     <td className="px-2 py-2">
-                                        <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm capitalize">
-                                            {company.plan}
-                                        </span>
+                                        <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm capitalize">{company.plan}</span>
                                     </td>
 
                                     <td className="px-2 py-2">
                                         <span
                                             className={`px-3 py-1 rounded-full text-sm capitalize
-              ${company.status === "active"
-                                                    ? "bg-green-100 text-green-700"
-                                                    : company.status === "blocked"
-                                                        ? "bg-red-100 text-red-700"
-                                                        : "bg-gray-200 text-gray-700"
-                                                }`}
+              ${
+                  company.status === 'active'
+                      ? 'bg-green-100 text-green-700'
+                      : company.status === 'blocked'
+                        ? 'bg-red-100 text-red-700'
+                        : 'bg-gray-200 text-gray-700'
+              }`}
                                         >
                                             {company.status}
                                         </span>
@@ -147,9 +132,7 @@ export default function UserTable({
                                         <div>
                                             <p>{company.createdBy?.name}</p>
 
-                                            <p className="text-xs text-gray-600">
-                                                {company.createdBy?.email}
-                                            </p>
+                                            <p className="text-xs text-gray-600">{company.createdBy?.email}</p>
                                         </div>
                                     </td>
 
@@ -162,7 +145,8 @@ export default function UserTable({
                                         </button>
                                     </td>
                                 </tr>
-                            ))) : (
+                            ))
+                        ) : (
                             <tr>
                                 <td colSpan={6} className="text-center py-10 text-gray-500">
                                     No record found
@@ -175,12 +159,18 @@ export default function UserTable({
 
             <div className="flex items-center justify-between border-t border-gray-300 py-1 px-2">
                 <p className="text-sm text-gray-500">
-                    Showing {companies.length === 0 ? 0 : (page - 1) * limit + 1} -
-                    {Math.min(page * limit, total)} of {total}
+                    Showing {companies.length === 0 ? 0 : (page - 1) * limit + 1} -{Math.min(page * limit, total)} of {total}
                 </p>
 
                 <div className="flex items-center gap-2">
-                    <select className="border text-gray-800 border-gray-300 rounded-lg p-1 outline-none" value={limit} onChange={(e) => { setLimit(Number(e.target.value)); setPage(1); }}>
+                    <select
+                        className="border text-gray-800 border-gray-300 rounded-lg p-1 outline-none"
+                        value={limit}
+                        onChange={(e) => {
+                            setLimit(Number(e.target.value));
+                            setPage(1);
+                        }}
+                    >
                         <option value="25">25</option>
                         <option value="50">50</option>
                         <option value="75">75</option>
@@ -195,9 +185,7 @@ export default function UserTable({
                         <ChevronLeft />
                     </button>
 
-                    <span className="px-3.5 py-1 bg-[#082c62] text-white rounded-lg">
-                        {page}
-                    </span>
+                    <span className="px-3.5 py-1 bg-[#082c62] text-white rounded-lg">{page}</span>
 
                     <button
                         onClick={() => setPage((p) => p + 1)}
@@ -209,5 +197,5 @@ export default function UserTable({
                 </div>
             </div>
         </div>
-    )
+    );
 }

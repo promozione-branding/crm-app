@@ -1,7 +1,7 @@
 // src/app/admin/users/page.jsx
 
-import Sidebar from "@/components/admin/Sidebar";
-import User from "./User";
+import Sidebar from '@/components/admin/Sidebar';
+import User from './User';
 
 export default function Page() {
     return (

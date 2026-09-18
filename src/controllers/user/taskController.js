@@ -1,52 +1,52 @@
 // src/controllers/user/taskController.js
 
-import mongoose from "mongoose";
-import User from "@/models/user.model.js";
-import Lead from "@/models/leads.model.js";
-import LeadTask from "@/models/task.model.js";
+import mongoose from 'mongoose';
+import User from '@/models/user.model.js';
+import Lead from '@/models/leads.model.js';
+import LeadTask from '@/models/task.model.js';
 
 // CREATE TASK
 export const createTaskService = async (user, body) => {
     if (!user) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
     if (!mongoose.Types.ObjectId.isValid(body.leadId)) {
-        throw new Error("Invalid lead id.");
+        throw new Error('Invalid lead id.');
     }
 
     if (!mongoose.Types.ObjectId.isValid(body.assignedTo)) {
-        throw new Error("Invalid assigned user.");
+        throw new Error('Invalid assigned user.');
     }
 
     if (!body.title?.trim()) {
-        throw new Error("Task title is required.");
+        throw new Error('Task title is required.');
     }
 
     if (!body.dueDate) {
-        throw new Error("Due date is required.");
+        throw new Error('Due date is required.');
     }
 
     const dueDate = new Date(body.dueDate);
     if (isNaN(dueDate.getTime())) {
-        throw new Error("Invalid due date.");
+        throw new Error('Invalid due date.');
     }
 
     // Check lead belongs to same company
-    const lead = await Lead.findOne({ _id: body.leadId, companyId: user.companyId, });
+    const lead = await Lead.findOne({ _id: body.leadId, companyId: user.companyId });
     if (!lead) {
-        throw new Error("Lead not found.");
+        throw new Error('Lead not found.');
     }
 
     // Check assigned user belongs to same company
-    const assignedUser = await User.findOne({ _id: body.assignedTo, companyId: user.companyId, status: "active", });
+    const assignedUser = await User.findOne({ _id: body.assignedTo, companyId: user.companyId, status: 'active' });
     if (!assignedUser) {
-        throw new Error("Assigned user not found.");
+        throw new Error('Assigned user not found.');
     }
 
     const reminderMinutes = Number(body.reminderMinutes || 0);
     if (![0, 5, 10, 15].includes(reminderMinutes)) {
-        throw new Error("Invalid reminder option.");
+        throw new Error('Invalid reminder option.');
     }
 
     let reminderAt = null;
@@ -58,8 +58,8 @@ export const createTaskService = async (user, body) => {
         companyId: user.companyId,
         leadId: body.leadId,
         title: body.title.trim(),
-        description: body.description?.trim() || "",
-        priority: body.priority || "medium",
+        description: body.description?.trim() || '',
+        priority: body.priority || 'medium',
         assignedTo: body.assignedTo,
         dueDate,
         reminderMinutes,
@@ -68,35 +68,27 @@ export const createTaskService = async (user, body) => {
     });
 
     lead.activities.push({
-        type: "task_created",
-        title: "Task Created",
+        type: 'task_created',
+        title: 'Task Created',
         description: `Task "${task.title}" was created and assigned to ${assignedUser.name}.`,
         createdBy: user._id,
     });
 
     await lead.save();
 
-    return await LeadTask.findById(task._id).populate("assignedTo", "name email phone role")
-        .populate("createdBy", "name email").populate("leadId", "name phone email");
+    return await LeadTask.findById(task._id)
+        .populate('assignedTo', 'name email phone role')
+        .populate('createdBy', 'name email')
+        .populate('leadId', 'name phone email');
 };
 
 // GET ALL TASKS
 export const getAllTasksService = async (user, query = {}) => {
     if (!user) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
-    const {
-        leadId,
-        status,
-        assignedTo,
-        priority,
-        search,
-        relatedTo,
-        assignedToSearch,
-        page = 1,
-        limit = 25,
-    } = query;
+    const { leadId, status, assignedTo, priority, search, relatedTo, assignedToSearch, page = 1, limit = 25 } = query;
 
     const filter = {
         companyId: user.companyId,
@@ -108,7 +100,7 @@ export const getAllTasksService = async (user, query = {}) => {
 
     if (leadId) {
         if (!mongoose.Types.ObjectId.isValid(leadId)) {
-            throw new Error("Invalid lead id.");
+            throw new Error('Invalid lead id.');
         }
 
         filter.leadId = leadId;
@@ -132,7 +124,7 @@ export const getAllTasksService = async (user, query = {}) => {
 
     if (assignedTo) {
         if (!mongoose.Types.ObjectId.isValid(assignedTo)) {
-            throw new Error("Invalid assigned user.");
+            throw new Error('Invalid assigned user.');
         }
 
         filter.assignedTo = assignedTo;
@@ -143,15 +135,8 @@ export const getAllTasksService = async (user, query = {}) => {
     // ============================================================
 
     if (priority) {
-        if (
-            ![
-                "low",
-                "medium",
-                "high",
-                "urgent",
-            ].includes(priority)
-        ) {
-            throw new Error("Invalid priority.");
+        if (!['low', 'medium', 'high', 'urgent'].includes(priority)) {
+            throw new Error('Invalid priority.');
         }
 
         filter.priority = priority;
@@ -168,13 +153,13 @@ export const getAllTasksService = async (user, query = {}) => {
             {
                 title: {
                     $regex: taskSearch,
-                    $options: "i",
+                    $options: 'i',
                 },
             },
             {
                 description: {
                     $regex: taskSearch,
-                    $options: "i",
+                    $options: 'i',
                 },
             },
         ];
@@ -193,7 +178,7 @@ export const getAllTasksService = async (user, query = {}) => {
                 companyId: user.companyId,
                 name: {
                     $regex: relatedSearch,
-                    $options: "i",
+                    $options: 'i',
                 },
             },
             {
@@ -201,9 +186,7 @@ export const getAllTasksService = async (user, query = {}) => {
             }
         ).lean();
 
-        const matchingLeadIds = matchingLeads.map(
-            (lead) => lead._id
-        );
+        const matchingLeadIds = matchingLeads.map((lead) => lead._id);
 
         // If no leads match the search,
         // return zero tasks instead of ignoring the filter.
@@ -219,15 +202,14 @@ export const getAllTasksService = async (user, query = {}) => {
     // ============================================================
 
     if (assignedToSearch?.trim()) {
-        const assignedSearch =
-            assignedToSearch.trim();
+        const assignedSearch = assignedToSearch.trim();
 
         const matchingUsers = await User.find(
             {
                 companyId: user.companyId,
                 name: {
                     $regex: assignedSearch,
-                    $options: "i",
+                    $options: 'i',
                 },
             },
             {
@@ -235,9 +217,7 @@ export const getAllTasksService = async (user, query = {}) => {
             }
         ).lean();
 
-        const matchingUserIds = matchingUsers.map(
-            (item) => item._id
-        );
+        const matchingUserIds = matchingUsers.map((item) => item._id);
 
         // If no users match the search,
         // return zero tasks instead of ignoring the filter.
@@ -251,18 +231,11 @@ export const getAllTasksService = async (user, query = {}) => {
     // PAGINATION
     // ============================================================
 
-    const currentPage = Math.max(
-        Number(page) || 1,
-        1
-    );
+    const currentPage = Math.max(Number(page) || 1, 1);
 
-    const perPage = Math.min(
-        Math.max(Number(limit) || 25, 1),
-        100
-    );
+    const perPage = Math.min(Math.max(Number(limit) || 25, 1), 100);
 
-    const skip =
-        (currentPage - 1) * perPage;
+    const skip = (currentPage - 1) * perPage;
 
     // ============================================================
     // GET TASKS
@@ -270,18 +243,9 @@ export const getAllTasksService = async (user, query = {}) => {
 
     const [tasks, total] = await Promise.all([
         LeadTask.find(filter)
-            .populate(
-                "assignedTo",
-                "name email phone role"
-            )
-            .populate(
-                "createdBy",
-                "name email"
-            )
-            .populate(
-                "leadId",
-                "name phone email"
-            )
+            .populate('assignedTo', 'name email phone role')
+            .populate('createdBy', 'name email')
+            .populate('leadId', 'name phone email')
             .sort({
                 dueDate: 1,
                 createdAt: -1,
@@ -297,9 +261,7 @@ export const getAllTasksService = async (user, query = {}) => {
     // PAGINATION RESPONSE
     // ============================================================
 
-    const totalPages = Math.ceil(
-        total / perPage
-    );
+    const totalPages = Math.ceil(total / perPage);
 
     return {
         tasks,
@@ -309,10 +271,8 @@ export const getAllTasksService = async (user, query = {}) => {
             limit: perPage,
             total,
             totalPages,
-            hasNextPage:
-                currentPage < totalPages,
-            hasPrevPage:
-                currentPage > 1,
+            hasNextPage: currentPage < totalPages,
+            hasPrevPage: currentPage > 1,
         },
     };
 };
@@ -320,19 +280,21 @@ export const getAllTasksService = async (user, query = {}) => {
 // GET SINGLE TASK
 export const getTaskByIdService = async (user, taskId) => {
     if (!user) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
     if (!mongoose.Types.ObjectId.isValid(taskId)) {
-        throw new Error("Invalid task id.");
+        throw new Error('Invalid task id.');
     }
 
-    const task = await LeadTask.findOne({ _id: taskId, companyId: user.companyId, })
-        .populate("assignedTo", "name email phone role").populate("createdBy", "name email")
-        .populate("completedBy", "name email").populate("leadId", "name phone email");
+    const task = await LeadTask.findOne({ _id: taskId, companyId: user.companyId })
+        .populate('assignedTo', 'name email phone role')
+        .populate('createdBy', 'name email')
+        .populate('completedBy', 'name email')
+        .populate('leadId', 'name phone email');
 
     if (!task) {
-        throw new Error("Task not found.");
+        throw new Error('Task not found.');
     }
     return task;
 };
@@ -340,22 +302,22 @@ export const getTaskByIdService = async (user, taskId) => {
 // UPDATE TASK
 export const updateTaskService = async (user, taskId, body) => {
     if (!user) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
     if (!mongoose.Types.ObjectId.isValid(taskId)) {
-        throw new Error("Invalid task id.");
+        throw new Error('Invalid task id.');
     }
 
-    const task = await LeadTask.findOne({ _id: taskId, companyId: user.companyId, })
+    const task = await LeadTask.findOne({ _id: taskId, companyId: user.companyId });
     if (!task) {
-        throw new Error("Task not found.");
+        throw new Error('Task not found.');
     }
 
     // Get related lead
-    const lead = await Lead.findOne({ _id: task.leadId, companyId: user.companyId, });
+    const lead = await Lead.findOne({ _id: task.leadId, companyId: user.companyId });
     if (!lead) {
-        throw new Error("Related lead not found.");
+        throw new Error('Related lead not found.');
     }
 
     const changes = [];
@@ -363,7 +325,7 @@ export const updateTaskService = async (user, taskId, body) => {
         const newTitle = body.title.trim();
 
         if (!newTitle) {
-            throw new Error("Task title is required.");
+            throw new Error('Task title is required.');
         }
 
         if (newTitle !== task.title) {
@@ -375,14 +337,14 @@ export const updateTaskService = async (user, taskId, body) => {
     if (body.description !== undefined) {
         const newDescription = body.description.trim();
         if (newDescription !== task.description) {
-            changes.push("description updated");
+            changes.push('description updated');
             task.description = newDescription;
         }
     }
 
     if (body.priority !== undefined) {
-        if (!["low", "medium", "high", "urgent"].includes(body.priority)) {
-            throw new Error("Invalid priority.");
+        if (!['low', 'medium', 'high', 'urgent'].includes(body.priority)) {
+            throw new Error('Invalid priority.');
         }
 
         if (body.priority !== task.priority) {
@@ -393,13 +355,13 @@ export const updateTaskService = async (user, taskId, body) => {
 
     if (body.assignedTo !== undefined) {
         if (!mongoose.Types.ObjectId.isValid(body.assignedTo)) {
-            throw new Error("Invalid assigned user.");
+            throw new Error('Invalid assigned user.');
         }
 
         if (body.assignedTo.toString() !== task.assignedTo.toString()) {
-            const assignedUser = await User.findOne({ _id: body.assignedTo, companyId: user.companyId, status: "active", });
+            const assignedUser = await User.findOne({ _id: body.assignedTo, companyId: user.companyId, status: 'active' });
             if (!assignedUser) {
-                throw new Error("Assigned user not found.");
+                throw new Error('Assigned user not found.');
             }
 
             task.assignedTo = body.assignedTo;
@@ -411,14 +373,14 @@ export const updateTaskService = async (user, taskId, body) => {
     if (body.dueDate !== undefined) {
         const newDueDate = new Date(body.dueDate);
         if (isNaN(newDueDate.getTime())) {
-            throw new Error("Invalid due date.");
+            throw new Error('Invalid due date.');
         }
 
         const oldTime = task.dueDate ? new Date(task.dueDate).getTime() : null;
         const newTime = newDueDate.getTime();
 
         if (oldTime !== newTime) {
-            changes.push("due date updated");
+            changes.push('due date updated');
             task.dueDate = newDueDate;
         }
     }
@@ -427,7 +389,7 @@ export const updateTaskService = async (user, taskId, body) => {
     if (body.reminderMinutes !== undefined) {
         const reminderMinutes = Number(body.reminderMinutes);
         if (![0, 5, 10, 15].includes(reminderMinutes)) {
-            throw new Error("Invalid reminder option.");
+            throw new Error('Invalid reminder option.');
         }
 
         if (reminderMinutes !== task.reminderMinutes) {
@@ -446,15 +408,15 @@ export const updateTaskService = async (user, taskId, body) => {
 
     // STATUS
     if (body.status !== undefined) {
-        if (!["pending", "completed", "cancelled",].includes(body.status)) {
-            throw new Error("Invalid task status.");
+        if (!['pending', 'completed', 'cancelled'].includes(body.status)) {
+            throw new Error('Invalid task status.');
         }
 
         if (body.status !== task.status) {
             changes.push(`status changed from "${task.status}" to "${body.status}"`);
             task.status = body.status;
 
-            if (body.status === "completed") {
+            if (body.status === 'completed') {
                 task.completedAt = new Date();
                 task.completedBy = user._id;
             } else {
@@ -466,24 +428,28 @@ export const updateTaskService = async (user, taskId, body) => {
 
     // SAVE + ACTIVITY ONLY IF SOMETHING CHANGED
     if (changes.length === 0) {
-        return await LeadTask.findById(task._id).populate("assignedTo", "name email phone role")
-            .populate("createdBy", "name email").populate("completedBy", "name email")
-            .populate("leadId", "name phone email");
+        return await LeadTask.findById(task._id)
+            .populate('assignedTo', 'name email phone role')
+            .populate('createdBy', 'name email')
+            .populate('completedBy', 'name email')
+            .populate('leadId', 'name phone email');
     }
 
     await task.save();
 
     // Lead Activity
     lead.activities.push({
-        type: "task_updated",
-        title: "Task Updated",
-        description: changes.join(", ") + ".",
+        type: 'task_updated',
+        title: 'Task Updated',
+        description: changes.join(', ') + '.',
         createdBy: user._id,
     });
 
     await lead.save();
 
-    return await LeadTask.findById(task._id).populate("assignedTo", "name email phone role")
-        .populate("createdBy", "name email").populate("completedBy", "name email")
-        .populate("leadId", "name phone email");
+    return await LeadTask.findById(task._id)
+        .populate('assignedTo', 'name email phone role')
+        .populate('createdBy', 'name email')
+        .populate('completedBy', 'name email')
+        .populate('leadId', 'name phone email');
 };

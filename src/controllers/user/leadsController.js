@@ -1,17 +1,17 @@
 // src/controllers/user/leadsController.js
 
-import User from "@/models/user.model.js";
-import Lead from "@/models/leads.model.js";
-import mongoose from "mongoose";
-import LeadTask from "@/models/task.model.js";
-import Meeting from "@/models/meeting.model.js";
-import { hasPermission, } from "@/utils/permissions.js";
-import { applyLeadScope, } from "@/utils/dataScope.js";
-import Role from "@/models/role.model";
+import User from '@/models/user.model.js';
+import Lead from '@/models/leads.model.js';
+import mongoose from 'mongoose';
+import LeadTask from '@/models/task.model.js';
+import Meeting from '@/models/meeting.model.js';
+import { hasPermission } from '@/utils/permissions.js';
+import { applyLeadScope } from '@/utils/dataScope.js';
+import Role from '@/models/role.model';
 
 export const createLeadService = async (userId, companyId, body) => {
     if (!userId || !companyId) {
-        throw new Error("User Info not found.");
+        throw new Error('User Info not found.');
     }
 
     const lead = await Lead.create({
@@ -23,16 +23,16 @@ export const createLeadService = async (userId, companyId, body) => {
 
         activities: [
             {
-                type: "lead_created",
-                description: "Lead created.",
+                type: 'lead_created',
+                description: 'Lead created.',
                 createdBy: userId,
             },
         ],
 
         stageHistory: [
             {
-                stage: body.stage || "new",
-                description: "Lead created",
+                stage: body.stage || 'new',
+                description: 'Lead created',
                 updatedBy: userId,
             },
         ],
@@ -43,34 +43,27 @@ export const createLeadService = async (userId, companyId, body) => {
 
 export const getAllLeadsService = async (user, query) => {
     if (!user) {
-        throw new Error("User not found");
+        throw new Error('User not found');
     }
 
-    const {
-        stage,
-        source,
-        assignedTo,
-        search,
-        page = 1,
-        limit = 10,
-    } = query;
+    const { stage, source, assignedTo, search, page = 1, limit = 10 } = query;
 
     const role = await Role.findById(user.roleId);
 
     if (!role) {
-        throw new Error("User role not found");
+        throw new Error('User role not found');
     }
 
     // PERMISSION
-    if (!hasPermission(role, "leads", "access")) {
+    if (!hasPermission(role, 'leads', 'access')) {
         throw new Error("You don't have permission to access leads");
     }
 
     // BASE FILTER
-    let filter = { companyId: user.companyId, };
+    let filter = { companyId: user.companyId };
 
     // DATA SCOPE
-    filter = applyLeadScope({ filter, user, role, });
+    filter = applyLeadScope({ filter, user, role });
 
     // FILTERS
     if (stage) {
@@ -81,32 +74,26 @@ export const getAllLeadsService = async (user, query) => {
         filter.source = source;
     }
 
-    const leadPermission = role.permissions.find((item) => item.module === "leads");
-    if (assignedTo && leadPermission?.scope !== "own") {
+    const leadPermission = role.permissions.find((item) => item.module === 'leads');
+    if (assignedTo && leadPermission?.scope !== 'own') {
         filter.assignedTo = assignedTo;
     }
 
     // SEARCH
     if (search) {
         filter.$or = [
-            { name: { $regex: search, $options: "i", }, },
-            { phone: { $regex: search, $options: "i", }, },
-            { email: { $regex: search, $options: "i", }, },
-            { companyName: { $regex: search, $options: "i", }, },
+            { name: { $regex: search, $options: 'i' } },
+            { phone: { $regex: search, $options: 'i' } },
+            { email: { $regex: search, $options: 'i' } },
+            { companyName: { $regex: search, $options: 'i' } },
         ];
     }
 
     const skip = (page - 1) * limit;
-    const [leads, total,] = await Promise.all([
+    const [leads, total] = await Promise.all([
         Lead.find(filter)
-            .populate(
-                "assignedTo",
-                "name email phone"
-            )
-            .populate(
-                "activities.createdBy",
-                "name email"
-            )
+            .populate('assignedTo', 'name email phone')
+            .populate('activities.createdBy', 'name email')
             .sort({
                 createdAt: -1,
             })
@@ -130,25 +117,25 @@ export const getAllLeadsService = async (user, query) => {
 
 export const getLeadByIdService = async (user, leadId) => {
     if (!mongoose.Types.ObjectId.isValid(leadId)) {
-        throw new Error("Invalid lead id.");
+        throw new Error('Invalid lead id.');
     }
 
     if (!user) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
-    const lead = await Lead.findOne({ _id: leadId, companyId: user?.companyId, })
-        .populate("assignedTo", "name email phone role")
-        .populate("activities.createdBy", "name email")
-        .populate("stageHistory.updatedBy", "name email")
-        .populate("notes.createdBy", "name email");;
+    const lead = await Lead.findOne({ _id: leadId, companyId: user?.companyId })
+        .populate('assignedTo', 'name email phone role')
+        .populate('activities.createdBy', 'name email')
+        .populate('stageHistory.updatedBy', 'name email')
+        .populate('notes.createdBy', 'name email');
 
     if (!lead) {
-        throw new Error("Lead not found.");
+        throw new Error('Lead not found.');
     }
 
-    const taskCount = await LeadTask.countDocuments({ leadId: lead._id, companyId: user.companyId, });
-    const meetingCount = await Meeting.countDocuments({ leadId: lead._id, companyId: user.companyId, });
+    const taskCount = await LeadTask.countDocuments({ leadId: lead._id, companyId: user.companyId });
+    const meetingCount = await Meeting.countDocuments({ leadId: lead._id, companyId: user.companyId });
 
     return {
         ...lead.toObject(),
@@ -159,35 +146,35 @@ export const getLeadByIdService = async (user, leadId) => {
 
 export const updateLeadService = async (user, leadId, body) => {
     if (!mongoose.Types.ObjectId.isValid(leadId)) {
-        throw new Error("Invalid lead id.");
+        throw new Error('Invalid lead id.');
     }
 
     if (!user) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
-    const lead = await Lead.findOne({ _id: leadId, companyId: user.companyId, });
+    const lead = await Lead.findOne({ _id: leadId, companyId: user.companyId });
     if (!lead) {
-        throw new Error("Lead not found.");
+        throw new Error('Lead not found.');
     }
 
     const changedFields = [];
 
-    // Basic Fields 
+    // Basic Fields
     const fields = [
-        "name",
-        "phone",
-        "email",
-        "companyName",
-        "gstNumber",
-        "place",
-        "product",
-        "message",
-        "source",
-        "dealValue",
-        "campaignId",
-        "campaignName",
-        "status",
+        'name',
+        'phone',
+        'email',
+        'companyName',
+        'gstNumber',
+        'place',
+        'product',
+        'message',
+        'source',
+        'dealValue',
+        'campaignId',
+        'campaignName',
+        'status',
     ];
 
     fields.forEach((field) => {
@@ -203,12 +190,12 @@ export const updateLeadService = async (user, leadId, body) => {
 
     // Expected Closure Date
     if (body.expectedClosureDate !== undefined) {
-        const oldDate = lead.expectedClosureDate ? new Date(lead.expectedClosureDate).toISOString() : "";
-        const newDate = body.expectedClosureDate ? new Date(body.expectedClosureDate).toISOString() : "";
+        const oldDate = lead.expectedClosureDate ? new Date(lead.expectedClosureDate).toISOString() : '';
+        const newDate = body.expectedClosureDate ? new Date(body.expectedClosureDate).toISOString() : '';
 
         if (oldDate !== newDate) {
             lead.expectedClosureDate = body.expectedClosureDate || null;
-            changedFields.push("expectedClosureDate");
+            changedFields.push('expectedClosureDate');
         }
     }
 
@@ -216,21 +203,22 @@ export const updateLeadService = async (user, leadId, body) => {
     if (body.priceRange !== undefined) {
         if (JSON.stringify(body.priceRange) !== JSON.stringify(lead.priceRange)) {
             lead.priceRange = body.priceRange;
-            changedFields.push("priceRange");
+            changedFields.push('priceRange');
         }
     }
 
     // Assigned User
-    const oldAssigned = lead.assignedTo?.toString() || "";
-    const newAssigned = body.assignedTo || "";
+    const oldAssigned = lead.assignedTo?.toString() || '';
+    const newAssigned = body.assignedTo || '';
     if (oldAssigned !== newAssigned) {
-        lead.assignedTo = newAssigned || null; lead.assignedAt = newAssigned ? new Date() : null;
-        changedFields.push("assignedTo");
+        lead.assignedTo = newAssigned || null;
+        lead.assignedAt = newAssigned ? new Date() : null;
+        changedFields.push('assignedTo');
 
         lead.activities.push({
-            type: "assigned",
-            title: "Lead Assigned",
-            description: "Lead reassigned.",
+            type: 'assigned',
+            title: 'Lead Assigned',
+            description: 'Lead reassigned.',
             createdBy: user._id,
         });
     }
@@ -239,18 +227,18 @@ export const updateLeadService = async (user, leadId, body) => {
     if (body.stage && body.stage !== lead.stage) {
         const oldStage = lead.stage;
         lead.stage = body.stage;
-        changedFields.push("stage");
+        changedFields.push('stage');
 
         lead.stageHistory.push({
             stage: body.stage,
             updatedBy: user._id,
-            reason: body.reason || "",
-            description: body.description || "",
+            reason: body.reason || '',
+            description: body.description || '',
         });
 
         lead.activities.push({
-            type: "status_changed",
-            title: "Stage Changed",
+            type: 'status_changed',
+            title: 'Stage Changed',
             description: `${oldStage} → ${body.stage}`,
             createdBy: user._id,
         });
@@ -263,33 +251,33 @@ export const updateLeadService = async (user, leadId, body) => {
 
     // Update Activity
     lead.activities.push({
-        type: "lead_updated",
-        title: "Lead Updated",
-        description: `Updated: ${changedFields.join(", ")}`,
+        type: 'lead_updated',
+        title: 'Lead Updated',
+        description: `Updated: ${changedFields.join(', ')}`,
         createdBy: user._id,
     });
 
     await lead.save();
 
     return await Lead.findById(lead._id)
-        .populate("assignedTo", "name email phone role")
-        .populate("activities.createdBy", "name email")
-        .populate("stageHistory.updatedBy", "name email");
+        .populate('assignedTo', 'name email phone role')
+        .populate('activities.createdBy', 'name email')
+        .populate('stageHistory.updatedBy', 'name email');
 };
 
 export const addLeadNoteService = async (userId, leadId, message) => {
     if (!mongoose.Types.ObjectId.isValid(leadId)) {
-        throw new Error("Invalid lead id.");
+        throw new Error('Invalid lead id.');
     }
 
     if (!message || !message.trim()) {
-        throw new Error("Note message is required.");
+        throw new Error('Note message is required.');
     }
 
-    const user = await User.findById(userId).select("companyId");
+    const user = await User.findById(userId).select('companyId');
 
     if (!user) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
     const lead = await Lead.findOne({
@@ -298,7 +286,7 @@ export const addLeadNoteService = async (userId, leadId, message) => {
     });
 
     if (!lead) {
-        throw new Error("Lead not found.");
+        throw new Error('Lead not found.');
     }
 
     // Add note
@@ -309,8 +297,8 @@ export const addLeadNoteService = async (userId, leadId, message) => {
 
     // Add activity
     lead.activities.push({
-        type: "note_added",
-        title: "Note Added",
+        type: 'note_added',
+        title: 'Note Added',
         description: `Note Added: ${message.trim()}`,
         createdBy: userId,
     });
@@ -318,7 +306,5 @@ export const addLeadNoteService = async (userId, leadId, message) => {
     await lead.save();
 
     // Return updated lead
-    return await Lead.findById(lead._id)
-        .populate("notes.createdBy", "name email")
-        .populate("activities.createdBy", "name email");
+    return await Lead.findById(lead._id).populate('notes.createdBy', 'name email').populate('activities.createdBy', 'name email');
 };

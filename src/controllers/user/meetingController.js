@@ -1,85 +1,72 @@
 // src/controllers/user/meetingController.js
 
-import mongoose from "mongoose";
-import Meeting from "@/models/meeting.model.js";
-import Lead from "@/models/leads.model.js";
-import User from "@/models/user.model.js";
+import mongoose from 'mongoose';
+import Meeting from '@/models/meeting.model.js';
+import Lead from '@/models/leads.model.js';
+import User from '@/models/user.model.js';
 
 // CREATE MEETING
 export const createMeetingService = async (user, body) => {
     if (!user) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
-    const {
-        leadId,
-        metPersonName,
-        title,
-        description,
-        assignedTo,
-        startAt,
-        endAt,
-        meetingType,
-        location,
-        meetingLink,
-        reminderMinutes,
-        notes,
-    } = body;
+    const { leadId, metPersonName, title, description, assignedTo, startAt, endAt, meetingType, location, meetingLink, reminderMinutes, notes } = body;
 
     // Validation
     if (!leadId || !mongoose.Types.ObjectId.isValid(leadId)) {
-        throw new Error("Invalid lead id.");
+        throw new Error('Invalid lead id.');
     }
 
     if (!title?.trim()) {
-        throw new Error("Meeting title is required.");
+        throw new Error('Meeting title is required.');
     }
 
     if (!metPersonName?.trim()) {
-        throw new Error("Meeting person name is required.");
+        throw new Error('Meeting person name is required.');
     }
 
     if (!assignedTo || !mongoose.Types.ObjectId.isValid(assignedTo)) {
-        throw new Error("Invalid assigned user.");
+        throw new Error('Invalid assigned user.');
     }
 
     if (!startAt) {
-        throw new Error("Meeting start date and time is required.");
+        throw new Error('Meeting start date and time is required.');
     }
 
     const startDate = new Date(startAt);
     if (isNaN(startDate.getTime())) {
-        throw new Error("Invalid start date.");
+        throw new Error('Invalid start date.');
     }
 
     let endDate = null;
     if (endAt) {
         endDate = new Date(endAt);
         if (isNaN(endDate.getTime())) {
-            throw new Error("Invalid end date.");
+            throw new Error('Invalid end date.');
         }
 
         if (endDate <= startDate) {
-            throw new Error("End time must be after start time.");
+            throw new Error('End time must be after start time.');
         }
     }
 
     // Check Lead
-    const lead = await Lead.findOne({ _id: leadId, companyId: user.companyId, });
+    const lead = await Lead.findOne({ _id: leadId, companyId: user.companyId });
     if (!lead) {
-        throw new Error("Lead not found.");
+        throw new Error('Lead not found.');
     }
 
     // Check Assigned User
-    const assignedUser = await User.findOne({ _id: assignedTo, companyId: user.companyId, status: "active", });
+    const assignedUser = await User.findOne({ _id: assignedTo, companyId: user.companyId, status: 'active' });
     if (!assignedUser) {
-        throw new Error("Assigned user not found.");
+        throw new Error('Assigned user not found.');
     }
 
     // Reminder
     const reminder = Number(reminderMinutes || 0);
     if (![0, 5, 10, 15, 30, 60].includes(reminder)) {
-        throw new Error("Invalid reminder option.");
+        throw new Error('Invalid reminder option.');
     }
 
     let reminderAt = null;
@@ -93,61 +80,62 @@ export const createMeetingService = async (user, body) => {
         leadId,
         metPersonName: metPersonName.trim(),
         title: title.trim(),
-        description: description?.trim() || "",
+        description: description?.trim() || '',
         assignedTo,
         startAt: startDate,
         endAt: endDate,
-        meetingType: meetingType || "in_person",
+        meetingType: meetingType || 'in_person',
 
         location: {
-            type: location?.type || "custom",
-            address: location?.address?.trim() || "",
-            latitude: location?.latitude !== undefined && location?.latitude !== "" ? Number(location.latitude) : undefined,
-            longitude: location?.longitude !== undefined && location?.longitude !== "" ? Number(location.longitude) : undefined,
+            type: location?.type || 'custom',
+            address: location?.address?.trim() || '',
+            latitude: location?.latitude !== undefined && location?.latitude !== '' ? Number(location.latitude) : undefined,
+            longitude: location?.longitude !== undefined && location?.longitude !== '' ? Number(location.longitude) : undefined,
         },
 
-        meetingLink: meetingLink?.trim() || "",
+        meetingLink: meetingLink?.trim() || '',
         reminderMinutes: reminder,
         reminderAt,
-        notes: notes?.trim() || "",
+        notes: notes?.trim() || '',
         createdBy: user._id,
     });
 
     // Add Lead Activity
     lead.activities.push({
-        type: "meeting",
-        title: "Meeting Scheduled",
+        type: 'meeting',
+        title: 'Meeting Scheduled',
         description: `${meeting.title} scheduled with ${meeting.metPersonName}.`,
         createdBy: user._id,
     });
 
     await lead.save();
     return await Meeting.findById(meeting._id)
-        .populate("leadId", "name phone email companyName")
-        .populate("assignedTo", "name email phone role")
-        .populate("createdBy", "name email");
+        .populate('leadId', 'name phone email companyName')
+        .populate('assignedTo', 'name email phone role')
+        .populate('createdBy', 'name email');
 };
 
 // GET ALL MEETINGS BY LEAD
 export const getMeetingsByLeadService = async (user, leadId) => {
     if (!user) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
     if (!leadId || !mongoose.Types.ObjectId.isValid(leadId)) {
-        throw new Error("Invalid lead id.");
+        throw new Error('Invalid lead id.');
     }
 
     // Make sure lead belongs to company
-    const lead = await Lead.findOne({ _id: leadId, companyId: user.companyId, });
+    const lead = await Lead.findOne({ _id: leadId, companyId: user.companyId });
     if (!lead) {
-        throw new Error("Lead not found.");
+        throw new Error('Lead not found.');
     }
 
-    const meetings = await Meeting.find({ companyId: user.companyId, leadId, })
-        .populate("assignedTo", "name email phone role")
-        .populate("createdBy", "name email")
-        .sort({ startAt: -1, }).lean();
+    const meetings = await Meeting.find({ companyId: user.companyId, leadId })
+        .populate('assignedTo', 'name email phone role')
+        .populate('createdBy', 'name email')
+        .sort({ startAt: -1 })
+        .lean();
 
     return meetings;
 };
@@ -155,20 +143,20 @@ export const getMeetingsByLeadService = async (user, leadId) => {
 // GET SINGLE MEETING
 export const getMeetingByIdService = async (user, meetingId) => {
     if (!user) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
     if (!mongoose.Types.ObjectId.isValid(meetingId)) {
-        throw new Error("Invalid meeting id.");
+        throw new Error('Invalid meeting id.');
     }
 
-    const meeting = await Meeting.findOne({ _id: meetingId, companyId: user.companyId, })
-        .populate("leadId", "name phone email companyName")
-        .populate("assignedTo", "name email phone role")
-        .populate("createdBy", "name email");
+    const meeting = await Meeting.findOne({ _id: meetingId, companyId: user.companyId })
+        .populate('leadId', 'name phone email companyName')
+        .populate('assignedTo', 'name email phone role')
+        .populate('createdBy', 'name email');
 
     if (!meeting) {
-        throw new Error("Meeting not found.");
+        throw new Error('Meeting not found.');
     }
 
     return meeting;
@@ -177,22 +165,22 @@ export const getMeetingByIdService = async (user, meetingId) => {
 // UPDATE MEETING
 export const updateMeetingService = async (user, meetingId, body) => {
     if (!user) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
     if (!mongoose.Types.ObjectId.isValid(meetingId)) {
-        throw new Error("Invalid meeting id.");
+        throw new Error('Invalid meeting id.');
     }
 
-    const meeting = await Meeting.findOne({ _id: meetingId, companyId: user.companyId, });
+    const meeting = await Meeting.findOne({ _id: meetingId, companyId: user.companyId });
     if (!meeting) {
-        throw new Error("Meeting not found.");
+        throw new Error('Meeting not found.');
     }
 
     // Basic fields
     if (body.title !== undefined) {
         if (!body.title.trim()) {
-            throw new Error("Meeting title is required.");
+            throw new Error('Meeting title is required.');
         }
 
         meeting.title = body.title.trim();
@@ -200,7 +188,7 @@ export const updateMeetingService = async (user, meetingId, body) => {
 
     if (body.metPersonName !== undefined) {
         if (!body.metPersonName.trim()) {
-            throw new Error("Meeting person name is required.");
+            throw new Error('Meeting person name is required.');
         }
 
         meeting.metPersonName = body.metPersonName.trim();
@@ -215,9 +203,9 @@ export const updateMeetingService = async (user, meetingId, body) => {
     }
 
     if (body.meetingType !== undefined) {
-        const allowed = ["in_person", "phone", "video", "other",];
+        const allowed = ['in_person', 'phone', 'video', 'other'];
         if (!allowed.includes(body.meetingType)) {
-            throw new Error("Invalid meeting type.");
+            throw new Error('Invalid meeting type.');
         }
 
         meeting.meetingType = body.meetingType;
@@ -230,12 +218,12 @@ export const updateMeetingService = async (user, meetingId, body) => {
     // Assigned User
     if (body.assignedTo !== undefined) {
         if (!mongoose.Types.ObjectId.isValid(body.assignedTo)) {
-            throw new Error("Invalid assigned user.");
+            throw new Error('Invalid assigned user.');
         }
 
-        const assignedUser = await User.findOne({ _id: body.assignedTo, companyId: user.companyId, status: "active", });
+        const assignedUser = await User.findOne({ _id: body.assignedTo, companyId: user.companyId, status: 'active' });
         if (!assignedUser) {
-            throw new Error("Assigned user not found.");
+            throw new Error('Assigned user not found.');
         }
 
         meeting.assignedTo = body.assignedTo;
@@ -245,7 +233,7 @@ export const updateMeetingService = async (user, meetingId, body) => {
     if (body.startAt !== undefined) {
         const startDate = new Date(body.startAt);
         if (isNaN(startDate.getTime())) {
-            throw new Error("Invalid start date.");
+            throw new Error('Invalid start date.');
         }
 
         meeting.startAt = startDate;
@@ -257,7 +245,7 @@ export const updateMeetingService = async (user, meetingId, body) => {
         } else {
             const endDate = new Date(body.endAt);
             if (isNaN(endDate.getTime())) {
-                throw new Error("Invalid end date.");
+                throw new Error('Invalid end date.');
             }
 
             meeting.endAt = endDate;
@@ -265,14 +253,14 @@ export const updateMeetingService = async (user, meetingId, body) => {
     }
 
     if (meeting.endAt && meeting.endAt <= meeting.startAt) {
-        throw new Error("End time must be after start time.");
+        throw new Error('End time must be after start time.');
     }
 
     // Status
     if (body.status !== undefined) {
-        const allowed = ["scheduled", "completed", "cancelled", "no_show",];
+        const allowed = ['scheduled', 'completed', 'cancelled', 'no_show'];
         if (!allowed.includes(body.status)) {
-            throw new Error("Invalid meeting status.");
+            throw new Error('Invalid meeting status.');
         }
 
         meeting.status = body.status;
@@ -281,13 +269,11 @@ export const updateMeetingService = async (user, meetingId, body) => {
     // Location
     if (body.location !== undefined) {
         meeting.location = {
-            type: body.location?.type || meeting.location?.type || "custom",
-            address: body.location?.address?.trim() || "",
-            latitude: body.location?.latitude !== undefined && body.location?.latitude !== ""
-                ? Number(body.location.latitude) : undefined,
+            type: body.location?.type || meeting.location?.type || 'custom',
+            address: body.location?.address?.trim() || '',
+            latitude: body.location?.latitude !== undefined && body.location?.latitude !== '' ? Number(body.location.latitude) : undefined,
 
-            longitude: body.location?.longitude !== undefined && body.location?.longitude !== ""
-                ? Number(body.location.longitude) : undefined,
+            longitude: body.location?.longitude !== undefined && body.location?.longitude !== '' ? Number(body.location.longitude) : undefined,
         };
     }
 
@@ -295,7 +281,7 @@ export const updateMeetingService = async (user, meetingId, body) => {
     if (body.reminderMinutes !== undefined) {
         const reminder = Number(body.reminderMinutes);
         if (![0, 5, 10, 15, 30, 60].includes(reminder)) {
-            throw new Error("Invalid reminder option.");
+            throw new Error('Invalid reminder option.');
         }
 
         meeting.reminderMinutes = reminder;
@@ -310,26 +296,26 @@ export const updateMeetingService = async (user, meetingId, body) => {
 
     await meeting.save();
     return await Meeting.findById(meeting._id)
-        .populate("leadId", "name phone email companyName")
-        .populate("assignedTo", "name email phone role")
-        .populate("createdBy", "name email");
+        .populate('leadId', 'name phone email companyName')
+        .populate('assignedTo', 'name email phone role')
+        .populate('createdBy', 'name email');
 };
 
 // DELETE MEETING
 export const deleteMeetingService = async (user, meetingId) => {
     if (!user) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
     if (!mongoose.Types.ObjectId.isValid(meetingId)) {
-        throw new Error("Invalid meeting id.");
+        throw new Error('Invalid meeting id.');
     }
 
-    const meeting = await Meeting.findOne({ _id: meetingId, companyId: user.companyId, });
+    const meeting = await Meeting.findOne({ _id: meetingId, companyId: user.companyId });
     if (!meeting) {
-        throw new Error("Meeting not found.");
+        throw new Error('Meeting not found.');
     }
 
-    await Meeting.deleteOne({ _id: meetingId, });
+    await Meeting.deleteOne({ _id: meetingId });
     return true;
 };

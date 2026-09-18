@@ -1,29 +1,28 @@
 // src/app/api/user/meta/webhook/route.js
 
-import { NextResponse } from "next/server";
-import { connectDB } from "@/config/db";
-import Integration from "@/models/integration.model.js";
-import Lead from "@/models/leads.model.js";
-import { getMetaLead } from "@/lib/meta/getMetaLead";
+import { NextResponse } from 'next/server';
+import { connectDB } from '@/config/db';
+import Integration from '@/models/integration.model.js';
+import Lead from '@/models/leads.model.js';
+import { getMetaLead } from '@/lib/meta/getMetaLead';
 
 export async function GET(request) {
     try {
         const { searchParams } = new URL(request.url);
 
-        const mode = searchParams.get("hub.mode");
-        const token = searchParams.get("hub.verify_token");
-        const challenge = searchParams.get("hub.challenge");
+        const mode = searchParams.get('hub.mode');
+        const token = searchParams.get('hub.verify_token');
+        const challenge = searchParams.get('hub.challenge');
 
-        const VERIFY_TOKEN =
-            process.env.META_WEBHOOK_VERIFY_TOKEN;
+        const VERIFY_TOKEN = process.env.META_WEBHOOK_VERIFY_TOKEN;
 
-        if (mode === "subscribe" && token === VERIFY_TOKEN) {
-            console.log("META WEBHOOK VERIFIED");
+        if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+            console.log('META WEBHOOK VERIFIED');
 
             return new Response(challenge, {
                 status: 200,
                 headers: {
-                    "Content-Type": "text/plain",
+                    'Content-Type': 'text/plain',
                 },
             });
         }
@@ -31,17 +30,17 @@ export async function GET(request) {
         return NextResponse.json(
             {
                 success: false,
-                message: "Webhook verification failed",
+                message: 'Webhook verification failed',
             },
             { status: 403 }
         );
     } catch (error) {
-        console.error("META WEBHOOK GET ERROR:", error);
+        console.error('META WEBHOOK GET ERROR:', error);
 
         return NextResponse.json(
             {
                 success: false,
-                message: "Webhook verification error",
+                message: 'Webhook verification error',
             },
             { status: 500 }
         );
@@ -54,21 +53,18 @@ export async function POST(request) {
 
         const body = await request.json();
 
-        console.log(
-            "META WEBHOOK EVENT:",
-            JSON.stringify(body, null, 2)
-        );
+        console.log('META WEBHOOK EVENT:', JSON.stringify(body, null, 2));
 
-        if (body.object !== "page") {
+        if (body.object !== 'page') {
             return NextResponse.json({
                 success: true,
-                message: "Event ignored",
+                message: 'Event ignored',
             });
         }
 
         for (const entry of body.entry || []) {
             for (const change of entry.changes || []) {
-                if (change.field !== "leadgen") {
+                if (change.field !== 'leadgen') {
                     continue;
                 }
 
@@ -81,7 +77,7 @@ export async function POST(request) {
                 const adsetId = value?.adgroup_id;
                 const campaignId = value?.campaign_id;
 
-                console.log("NEW META LEAD EVENT:", {
+                console.log('NEW META LEAD EVENT:', {
                     metaLeadId,
                     pageId,
                     formId,
@@ -91,36 +87,27 @@ export async function POST(request) {
                 });
 
                 if (!metaLeadId || !pageId) {
-                    console.error(
-                        "Missing leadgen_id or page_id"
-                    );
+                    console.error('Missing leadgen_id or page_id');
                     continue;
                 }
 
                 // 1. Find integration by Page ID
                 const integration = await Integration.findOne({
-                    provider: "meta",
-                    status: "connected",
-                    "metadata.pageId": String(pageId),
+                    provider: 'meta',
+                    status: 'connected',
+                    'metadata.pageId': String(pageId),
                 });
 
                 if (!integration) {
-                    console.error(
-                        "Meta integration not found for Page:",
-                        pageId
-                    );
+                    console.error('Meta integration not found for Page:', pageId);
                     continue;
                 }
 
                 // 2. Get Page Access Token
-                const pageAccessToken =
-                    integration.metadata?.pageAccessToken;
+                const pageAccessToken = integration.metadata?.pageAccessToken;
 
                 if (!pageAccessToken) {
-                    console.error(
-                        "Page access token missing:",
-                        pageId
-                    );
+                    console.error('Page access token missing:', pageId);
                     continue;
                 }
 
@@ -130,106 +117,67 @@ export async function POST(request) {
                 });
 
                 if (existingLead) {
-                    console.log(
-                        "Meta lead already exists:",
-                        metaLeadId
-                    );
+                    console.log('Meta lead already exists:', metaLeadId);
                     continue;
                 }
 
                 // 4. Get actual lead information
-                const metaLead = await getMetaLead(
-                    metaLeadId,
-                    pageAccessToken
-                );
+                const metaLead = await getMetaLead(metaLeadId, pageAccessToken);
 
-                console.log(
-                    "META ACTUAL LEAD:",
-                    JSON.stringify(metaLead, null, 2)
-                );
+                console.log('META ACTUAL LEAD:', JSON.stringify(metaLead, null, 2));
 
                 // 5. Convert field_data
                 const fields = {};
 
                 for (const field of metaLead.field_data || []) {
                     const name = field.name;
-                    const fieldValue =
-                        field.values?.[0] ?? "";
+                    const fieldValue = field.values?.[0] ?? '';
 
                     fields[name] = fieldValue;
                 }
 
-                console.log(
-                    "META LEAD FIELDS:",
-                    fields
-                );
+                console.log('META LEAD FIELDS:', fields);
 
                 // 6. Campaign ID
-                const finalCampaignId =
-                    campaignId ||
-                    metaLead.campaign_id ||
-                    undefined;
+                const finalCampaignId = campaignId || metaLead.campaign_id || undefined;
 
                 // 7. Create CRM Lead
                 const lead = await Lead.create({
                     companyId: integration.companyId,
 
-                    source: "facebook",
+                    source: 'facebook',
 
                     metaLeadId: String(metaLeadId),
 
-                    name:
-                        fields.full_name ||
-                        fields.name ||
-                        "",
+                    name: fields.full_name || fields.name || '',
 
-                    phone:
-                        fields.phone_number ||
-                        fields.phone ||
-                        "",
+                    phone: fields.phone_number || fields.phone || '',
 
-                    email:
-                        fields.email ||
-                        "",
+                    email: fields.email || '',
 
-                    companyName:
-                        fields.company_name ||
-                        "",
+                    companyName: fields.company_name || '',
 
-                    place:
-                        fields.city ||
-                        fields.location ||
-                        "",
+                    place: fields.city || fields.location || '',
 
-                    product:
-                        fields.product ||
-                        "",
+                    product: fields.product || '',
 
-                    message:
-                        fields.message ||
-                        fields.comments ||
-                        "",
+                    message: fields.message || fields.comments || '',
 
-                    campaignId:
-                        finalCampaignId,
+                    campaignId: finalCampaignId,
 
-                    gstNumber: fields.gst_number_ || "",
+                    gstNumber: fields.gst_number_ || '',
 
-                    stage: "new",
+                    stage: 'new',
 
                     activities: [
                         {
-                            type: "lead_created",
-                            description:
-                                "Lead received from Facebook Lead Ads",
+                            type: 'lead_created',
+                            description: 'Lead received from Facebook Lead Ads',
                         },
                     ],
                 });
 
-                console.log(
-                    "CRM LEAD CREATED:",
-                    lead._id
-                );
+                console.log('CRM LEAD CREATED:', lead._id);
             }
         }
 
@@ -237,10 +185,7 @@ export async function POST(request) {
             success: true,
         });
     } catch (error) {
-        console.error(
-            "META WEBHOOK POST ERROR:",
-            error
-        );
+        console.error('META WEBHOOK POST ERROR:', error);
 
         // Always acknowledge Meta webhook
         return NextResponse.json(

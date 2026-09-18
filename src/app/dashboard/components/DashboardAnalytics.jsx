@@ -1,6 +1,6 @@
 // src/app/dashboard/components/DashboardAnalytics.jsx
 
-"use client";
+'use client';
 
 // ============================================================
 // CHART ITEMS
@@ -8,24 +8,24 @@
 
 const chartItems = [
     {
-        key: "users",
-        label: "Users",
-        color: "#3b82f6",
+        key: 'users',
+        label: 'Users',
+        color: '#3b82f6',
     },
     {
-        key: "leads",
-        label: "Leads",
-        color: "#22c55e",
+        key: 'leads',
+        label: 'Leads',
+        color: '#22c55e',
     },
     {
-        key: "calls",
-        label: "Calls",
-        color: "#a855f7",
+        key: 'calls',
+        label: 'Calls',
+        color: '#a855f7',
     },
     {
-        key: "tasks",
-        label: "Tasks",
-        color: "#f97316",
+        key: 'tasks',
+        label: 'Tasks',
+        color: '#f97316',
     },
 ];
 
@@ -33,20 +33,12 @@ const chartItems = [
 // COMPONENT
 // ============================================================
 
-export default function DashboardAnalytics({
-    stats,
-    loading,
-}) {
-    const total =
-        Number(stats.users || 0) +
-        Number(stats.leads || 0) +
-        Number(stats.calls || 0) +
-        Number(stats.tasks || 0);
+export default function DashboardAnalytics({ stats, loading }) {
+    const total = Number(stats.users || 0) + Number(stats.leads || 0) + Number(stats.calls || 0) + Number(stats.tasks || 0);
 
     const radius = 72;
 
-    const circumference =
-        2 * Math.PI * radius;
+    const circumference = 2 * Math.PI * radius;
 
     let accumulated = 0;
 
@@ -63,19 +55,14 @@ export default function DashboardAnalytics({
                 sm:p-6
             "
         >
-
             {/* ==================================================
                 HEADER
             ================================================== */}
 
             <div className="mb-5 sm:mb-6">
-                <h2 className="text-lg sm:text-xl font-semibold">
-                    Analytics
-                </h2>
+                <h2 className="text-lg sm:text-xl font-semibold">Analytics</h2>
 
-                <p className="text-xs sm:text-sm opacity-60 mt-1">
-                    Overview of your CRM data
-                </p>
+                <p className="text-xs sm:text-sm opacity-60 mt-1">Overview of your CRM data</p>
             </div>
 
             {/* ==================================================
@@ -92,13 +79,11 @@ export default function DashboardAnalytics({
                     items-center
                 "
             >
-
                 {/* ==================================================
                     DONUT CHART
                 ================================================== */}
 
                 <div className="flex justify-center">
-
                     <div
                         className="
                             relative
@@ -108,7 +93,6 @@ export default function DashboardAnalytics({
                             sm:h-[260px]
                         "
                     >
-
                         {loading ? (
                             <div
                                 className="
@@ -141,85 +125,46 @@ export default function DashboardAnalytics({
                                     -rotate-90
                                 "
                             >
-
                                 {/* ==================================================
                                     BACKGROUND
                                 ================================================== */}
 
-                                <circle
-                                    cx="100"
-                                    cy="100"
-                                    r={radius}
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="26"
-                                    className="text-surface"
-                                />
+                                <circle cx="100" cy="100" r={radius} fill="none" stroke="currentColor" strokeWidth="26" className="text-surface" />
 
                                 {/* ==================================================
                                     DONUT SEGMENTS
                                 ================================================== */}
 
-                                {chartItems.map(
-                                    (item) => {
-                                        const value =
-                                            Number(
-                                                stats[
-                                                    item.key
-                                                ] || 0
-                                            );
+                                {chartItems.map((item) => {
+                                    const value = Number(stats[item.key] || 0);
 
-                                        if (
-                                            value <=
-                                                0 ||
-                                            total <=
-                                                0
-                                        ) {
-                                            return null;
-                                        }
-
-                                        const percentage =
-                                            value /
-                                            total;
-
-                                        const segmentLength =
-                                            percentage *
-                                            circumference;
-
-                                        const dashOffset =
-                                            -accumulated;
-
-                                        accumulated +=
-                                            segmentLength;
-
-                                        return (
-                                            <circle
-                                                key={
-                                                    item.key
-                                                }
-                                                cx="100"
-                                                cy="100"
-                                                r={
-                                                    radius
-                                                }
-                                                fill="none"
-                                                stroke={
-                                                    item.color
-                                                }
-                                                strokeWidth="26"
-                                                strokeDasharray={`${segmentLength} ${
-                                                    circumference -
-                                                    segmentLength
-                                                }`}
-                                                strokeDashoffset={
-                                                    dashOffset
-                                                }
-                                                strokeLinecap="butt"
-                                            />
-                                        );
+                                    if (value <= 0 || total <= 0) {
+                                        return null;
                                     }
-                                )}
 
+                                    const percentage = value / total;
+
+                                    const segmentLength = percentage * circumference;
+
+                                    const dashOffset = -accumulated;
+
+                                    accumulated += segmentLength;
+
+                                    return (
+                                        <circle
+                                            key={item.key}
+                                            cx="100"
+                                            cy="100"
+                                            r={radius}
+                                            fill="none"
+                                            stroke={item.color}
+                                            strokeWidth="26"
+                                            strokeDasharray={`${segmentLength} ${circumference - segmentLength}`}
+                                            strokeDashoffset={dashOffset}
+                                            strokeLinecap="butt"
+                                        />
+                                    );
+                                })}
                             </svg>
                         )}
 
@@ -237,21 +182,12 @@ export default function DashboardAnalytics({
                                 justify-center
                             "
                         >
-                            <span className="text-xs opacity-60">
-                                Total
-                            </span>
+                            <span className="text-xs opacity-60">Total</span>
 
-                            <span className="text-2xl sm:text-3xl font-bold mt-1">
-                                {loading
-                                    ? "—"
-                                    : total}
-                            </span>
+                            <span className="text-2xl sm:text-3xl font-bold mt-1">{loading ? '—' : total}</span>
 
-                            <span className="text-xs opacity-50 mt-1">
-                                Records
-                            </span>
+                            <span className="text-xs opacity-50 mt-1">Records</span>
                         </div>
-
                     </div>
                 </div>
 
@@ -260,33 +196,15 @@ export default function DashboardAnalytics({
                 ================================================== */}
 
                 <div className="space-y-3 sm:space-y-4">
+                    {chartItems.map((item) => {
+                        const value = Number(stats[item.key] || 0);
 
-                    {chartItems.map(
-                        (item) => {
-                            const value =
-                                Number(
-                                    stats[
-                                        item.key
-                                    ] || 0
-                                );
+                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
 
-                            const percentage =
-                                total > 0
-                                    ? (
-                                          (value /
-                                              total) *
-                                          100
-                                      ).toFixed(
-                                          1
-                                      )
-                                    : "0.0";
-
-                            return (
-                                <div
-                                    key={
-                                        item.key
-                                    }
-                                    className="
+                        return (
+                            <div
+                                key={item.key}
+                                className="
                                         flex
                                         items-center
                                         justify-between
@@ -297,63 +215,40 @@ export default function DashboardAnalytics({
                                         p-3
                                         sm:p-4
                                     "
-                                >
-
-                                    {/* ==================================================
+                            >
+                                {/* ==================================================
                                         LABEL
                                     ================================================== */}
 
-                                    <div className="flex items-center gap-3 min-w-0">
-
-                                        <span
-                                            className="
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <span
+                                        className="
                                                 shrink-0
                                                 w-3
                                                 h-3
                                                 rounded-full
                                             "
-                                            style={{
-                                                backgroundColor:
-                                                    item.color,
-                                            }}
-                                        />
+                                        style={{
+                                            backgroundColor: item.color,
+                                        }}
+                                    />
 
-                                        <span className="text-sm font-medium truncate">
-                                            {
-                                                item.label
-                                            }
-                                        </span>
+                                    <span className="text-sm font-medium truncate">{item.label}</span>
+                                </div>
 
-                                    </div>
-
-                                    {/* ==================================================
+                                {/* ==================================================
                                         VALUE
                                     ================================================== */}
 
-                                    <div className="flex items-center gap-3 sm:gap-5 shrink-0">
+                                <div className="flex items-center gap-3 sm:gap-5 shrink-0">
+                                    <span className="text-xs sm:text-sm opacity-60">{percentage}%</span>
 
-                                        <span className="text-xs sm:text-sm opacity-60">
-                                            {
-                                                percentage
-                                            }
-                                            %
-                                        </span>
-
-                                        <span className="font-semibold min-w-[32px] text-right">
-                                            {loading
-                                                ? "—"
-                                                : value}
-                                        </span>
-
-                                    </div>
-
+                                    <span className="font-semibold min-w-[32px] text-right">{loading ? '—' : value}</span>
                                 </div>
-                            );
-                        }
-                    )}
-
+                            </div>
+                        );
+                    })}
                 </div>
-
             </div>
         </section>
     );

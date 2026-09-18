@@ -1,27 +1,27 @@
 // src/app/api/user/webhook/leads/route.js
 
-import { NextResponse } from "next/server";
-import { connectDB } from "@/config/db";
-import Company from "@/models/company.model.js";
-import Lead from "@/models/leads.model.js";
-import { hashWebhookApiKey } from "@/lib/webhook/webhookApi.js";
+import { NextResponse } from 'next/server';
+import { connectDB } from '@/config/db';
+import Company from '@/models/company.model.js';
+import Lead from '@/models/leads.model.js';
+import { hashWebhookApiKey } from '@/lib/webhook/webhookApi.js';
 
 export async function POST(req) {
     try {
         await connectDB();
         // 1. Read Authorization Header
-        const authorization = req.headers.get("authorization");
+        const authorization = req.headers.get('authorization');
         if (!authorization) {
-            return NextResponse.json({ success: false, message: "Authorization header is required", }, { status: 401 });
+            return NextResponse.json({ success: false, message: 'Authorization header is required' }, { status: 401 });
         }
 
-        if (!authorization.startsWith("Bearer ")) {
-            return NextResponse.json({ success: false, message: "Invalid authorization format", }, { status: 401 });
+        if (!authorization.startsWith('Bearer ')) {
+            return NextResponse.json({ success: false, message: 'Invalid authorization format' }, { status: 401 });
         }
 
-        const apiKey = authorization.replace("Bearer ", "").trim();
+        const apiKey = authorization.replace('Bearer ', '').trim();
         if (!apiKey) {
-            return NextResponse.json({ success: false, message: "API key is required", }, { status: 401 });
+            return NextResponse.json({ success: false, message: 'API key is required' }, { status: 401 });
         }
 
         // 2. Hash API Key
@@ -30,25 +30,22 @@ export async function POST(req) {
         // 3. Find Company
         const company = await Company.findOne({
             webhookApiKeyHash: apiKeyHash,
-            webhookApiStatus: "active",
-            status: "active",
+            webhookApiStatus: 'active',
+            status: 'active',
         });
 
         if (!company) {
-            return NextResponse.json({ success: false, message: "Invalid or inactive API key", }, { status: 401 });
+            return NextResponse.json({ success: false, message: 'Invalid or inactive API key' }, { status: 401 });
         }
 
         // 4. Parse Body
         const body = await req.json();
-        console.log("webhook data :", body);
-        const { name, email, phone, } = body;
+        console.log('webhook data :', body);
+        const { name, email, phone } = body;
 
         // 5. Validate Lead
         if (!name && !email && !phone) {
-            return NextResponse.json(
-                { success: false, message: "At least one of name, email or phone is required", },
-                { status: 400 }
-            );
+            return NextResponse.json({ success: false, message: 'At least one of name, email or phone is required' }, { status: 400 });
         }
 
         // 6. Duplicate Check
@@ -83,7 +80,7 @@ export async function POST(req) {
 
         const lead = await Lead.create({
             companyId: company._id,
-            source: "website",
+            source: 'website',
             name: body.name,
             phone: body.phone,
             email: body.email,
@@ -93,31 +90,26 @@ export async function POST(req) {
             product: body.product,
             message: body.message,
             priceRange: body.priceRange,
-            stage: "new",
-            status: "open",
-            activities: [
-                { type: "lead_created", description: "Lead created from website webhook.", },
-            ],
-            stageHistory: [
-                { stage: "new", description: "Lead created from website webhook.", },
-            ],
+            stage: 'new',
+            status: 'open',
+            activities: [{ type: 'lead_created', description: 'Lead created from website webhook.' }],
+            stageHistory: [{ stage: 'new', description: 'Lead created from website webhook.' }],
         });
 
         // 8. Update Webhook Statistics
-        await Company.findByIdAndUpdate(company._id, { webhookLastUsedAt: new Date(), });
+        await Company.findByIdAndUpdate(company._id, { webhookLastUsedAt: new Date() });
 
         // 9. Response
-        return NextResponse.json({
-            success: true,
-            message: "Lead received successfully",
-            leadId: lead._id,
-        }, { status: 201 });
-
-    } catch (error) {
-        console.error("Lead webhook error:", error);
         return NextResponse.json(
-            { success: false, message: "Failed to process webhook", },
-            { status: 500 }
+            {
+                success: true,
+                message: 'Lead received successfully',
+                leadId: lead._id,
+            },
+            { status: 201 }
         );
+    } catch (error) {
+        console.error('Lead webhook error:', error);
+        return NextResponse.json({ success: false, message: 'Failed to process webhook' }, { status: 500 });
     }
 }

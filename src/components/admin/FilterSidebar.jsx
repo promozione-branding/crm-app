@@ -1,13 +1,12 @@
 // src/components/admin/FilterSidebar.jsx
 
-"use client";
+'use client';
 
-import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
-import SelectInput from "./SelectInput";
+import { AnimatePresence, motion } from 'framer-motion';
+import { X } from 'lucide-react';
+import SelectInput from './SelectInput';
 
-export default function FilterSidebar({ open, onClose, filters, setFilters, onApply, onReset, }) {
-
+export default function FilterSidebar({ open, onClose, filters, setFilters, onApply, onReset }) {
     return (
         <AnimatePresence>
             {open && (
@@ -31,14 +30,9 @@ export default function FilterSidebar({ open, onClose, filters, setFilters, onAp
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between border-b border-gray-300 px-4 py-2">
-                            <h2 className="text-lg font-semibold ">
-                                Filters
-                            </h2>
+                            <h2 className="text-lg font-semibold ">Filters</h2>
 
-                            <button
-                                onClick={onClose}
-                                className="p-2 rounded-lg hover:bg-gray-100"
-                            >
+                            <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100">
                                 <X size={20} />
                             </button>
                         </div>
@@ -55,10 +49,10 @@ export default function FilterSidebar({ open, onClose, filters, setFilters, onAp
                                     })
                                 }
                                 options={[
-                                    { label: "All", value: "" },
-                                    { label: "Active", value: "active" },
-                                    { label: "Inactive", value: "inactive" },
-                                    { label: "Blocked", value: "blocked" },
+                                    { label: 'All', value: '' },
+                                    { label: 'Active', value: 'active' },
+                                    { label: 'Inactive', value: 'inactive' },
+                                    { label: 'Blocked', value: 'blocked' },
                                 ]}
                             />
 
@@ -72,29 +66,23 @@ export default function FilterSidebar({ open, onClose, filters, setFilters, onAp
                                     })
                                 }
                                 options={[
-                                    { label: "All", value: "" },
-                                    { label: "Free", value: "free" },
-                                    { label: "Starter", value: "starter" },
-                                    { label: "Growth", value: "growth" },
-                                    { label: "Pro", value: "pro" },
-                                    { label: "Elite", value: "elite" },
+                                    { label: 'All', value: '' },
+                                    { label: 'Free', value: 'free' },
+                                    { label: 'Starter', value: 'starter' },
+                                    { label: 'Growth', value: 'growth' },
+                                    { label: 'Pro', value: 'pro' },
+                                    { label: 'Elite', value: 'elite' },
                                 ]}
                             />
                         </div>
 
                         {/* Footer */}
                         <div className="border-t border-gray-300 px-4 py-2 flex gap-3">
-                            <button
-                                onClick={onReset}
-                                className="flex-1 rounded-lg border border-gray-300 py-2.5 hover:bg-gray-100"
-                            >
+                            <button onClick={onReset} className="flex-1 rounded-lg border border-gray-300 py-2.5 hover:bg-gray-100">
                                 Reset
                             </button>
 
-                            <button
-                                onClick={onApply}
-                                className="flex-1 rounded-lg bg-[#082c62] text-white py-2.5 hover:bg-[#051f48]"
-                            >
+                            <button onClick={onApply} className="flex-1 rounded-lg bg-[#082c62] text-white py-2.5 hover:bg-[#051f48]">
                                 Apply
                             </button>
                         </div>

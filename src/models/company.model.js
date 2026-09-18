@@ -1,6 +1,6 @@
 // src/models/company.model.js
 
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const companySchema = new mongoose.Schema(
     {
@@ -51,8 +51,8 @@ const companySchema = new mongoose.Schema(
 
         webhookApiStatus: {
             type: String,
-            enum: ["active", "inactive"],
-            default: "active",
+            enum: ['active', 'inactive'],
+            default: 'active',
         },
 
         webhookLastUsedAt: {
@@ -62,27 +62,27 @@ const companySchema = new mongoose.Schema(
 
         logoUrl: {
             type: String,
-            default: "",
+            default: '',
         },
 
         logoField: {
             type: String,
-            default: "",
+            default: '',
         },
 
         address: {
             type: String,
-            default: "",
+            default: '',
         },
 
         state: {
             type: String,
-            default: "",
+            default: '',
         },
 
         country: {
             type: String,
-            default: "India",
+            default: 'India',
         },
 
         gst: {
@@ -91,8 +91,8 @@ const companySchema = new mongoose.Schema(
 
         plan: {
             type: String,
-            enum: ["free", "starter", "growth", "pro", "elite"],
-            default: "free",
+            enum: ['free', 'starter', 'growth', 'pro', 'elite'],
+            default: 'free',
             index: true,
         },
 
@@ -103,8 +103,8 @@ const companySchema = new mongoose.Schema(
 
         status: {
             type: String,
-            enum: ["active", "inactive", "blocked"],
-            default: "active",
+            enum: ['active', 'inactive', 'blocked'],
+            default: 'active',
             index: true,
         },
 
@@ -120,15 +120,14 @@ const companySchema = new mongoose.Schema(
 
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "AdminUser",
+            ref: 'AdminUser',
             required: true,
             index: true,
         },
     },
-    { timestamps: true, }
+    { timestamps: true }
 );
-
 
 companySchema.index({ createdAt: -1 });
 companySchema.index({ status: 1, plan: 1 });
-export default mongoose.models.Company || mongoose.model("Company", companySchema);
+export default mongoose.models.Company || mongoose.model('Company', companySchema);

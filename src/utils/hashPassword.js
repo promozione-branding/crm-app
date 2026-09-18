@@ -1,6 +1,6 @@
 // src/utils/hashPassword.js
 
-import bcrypt from "bcryptjs";
+import bcrypt from 'bcryptjs';
 
 export const hashPassword = async (password) => {
     return bcrypt.hash(password, 12);

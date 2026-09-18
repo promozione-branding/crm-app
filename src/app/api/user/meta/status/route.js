@@ -1,9 +1,9 @@
 // src/app/api/user/meta/status/route.js
 
-import { NextResponse } from "next/server";
-import { connectDB } from "@/config/db";
-import Integration from "@/models/integration.model.js";
-import { getCurrentUser } from "@/utils/auth";
+import { NextResponse } from 'next/server';
+import { connectDB } from '@/config/db';
+import Integration from '@/models/integration.model.js';
+import { getCurrentUser } from '@/utils/auth';
 
 export async function GET(request) {
     try {
@@ -12,25 +12,25 @@ export async function GET(request) {
         const companyId = user.companyId;
 
         if (!companyId) {
-            return NextResponse.json({ success: false, message: "Company not found", }, { status: 400 });
+            return NextResponse.json({ success: false, message: 'Company not found' }, { status: 400 });
         }
 
-        const integration = await Integration.findOne({ companyId, provider: "meta", }).lean();
+        const integration = await Integration.findOne({ companyId, provider: 'meta' }).lean();
 
         return NextResponse.json({
             success: true,
-            connected: integration?.status === "connected",
+            connected: integration?.status === 'connected',
             integration: integration
                 ? {
-                    status: integration.status,
-                    account: integration.account,
-                    connectedAt: integration.connectedAt,
-                    metadata: integration.metadata,
-                }
+                      status: integration.status,
+                      account: integration.account,
+                      connectedAt: integration.connectedAt,
+                      metadata: integration.metadata,
+                  }
                 : null,
         });
     } catch (error) {
-        console.error("META STATUS ERROR:", error);
-        return NextResponse.json({ success: false, message: "Failed to get Meta status", }, { status: 500 });
+        console.error('META STATUS ERROR:', error);
+        return NextResponse.json({ success: false, message: 'Failed to get Meta status' }, { status: 500 });
     }
 }

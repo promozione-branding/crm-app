@@ -1,11 +1,11 @@
 // src/app/call-logs/page.jsx
 
-"use client";
+'use client';
 
-import Navbar from "@/components/user/Navbar";
-import Sidebar from "@/components/user/Sidebar";
-import CallLog from "./CallLog";
-import Stickyfooter from "@/components/user/Stickyfooter";
+import Navbar from '@/components/user/Navbar';
+import Sidebar from '@/components/user/Sidebar';
+import CallLog from './CallLog';
+import Stickyfooter from '@/components/user/Stickyfooter';
 
 export default function page() {
     return (

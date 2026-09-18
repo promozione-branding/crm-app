@@ -1,37 +1,28 @@
 // src/components/admin/Sidebar.jsx
 
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import {
-    LayoutDashboard,
-    Users,
-    ShoppingCart,
-    Package,
-    Settings,
-    Menu,
-    X,
-    LogOut,
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import React, { useState } from 'react';
+import { LayoutDashboard, Users, ShoppingCart, Package, Settings, Menu, X, LogOut } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const menuItems = [
     {
-        title: "Dashboard",
+        title: 'Dashboard',
         icon: LayoutDashboard,
-        href: "/admin/dashboard"
+        href: '/admin/dashboard',
     },
     {
-        title: "Users",
+        title: 'Users',
         icon: Users,
-        href: "/admin/users"
+        href: '/admin/users',
     },
     {
-        title: "Settings",
+        title: 'Settings',
         icon: Settings,
-        href: "/admin/settings"
+        href: '/admin/settings',
     },
 ];
 
@@ -48,9 +39,7 @@ export default function Sidebar() {
                         <img src="/logocheck.webp" alt="logo" className="w-full h-full" />
                     </div>
                 </div>
-                <button onClick={() => setOpen(!open)}
-                    className="bg-gray-200 text-gray-800 shadow-lg rounded-lg p-2"
-                >
+                <button onClick={() => setOpen(!open)} className="bg-gray-200 text-gray-800 shadow-lg rounded-lg p-2">
                     <Menu size={24} />
                 </button>
             </div>
@@ -70,18 +59,11 @@ export default function Sidebar() {
                             const isActive = pathname === item.href;
 
                             return (
-                                <motion.div
-                                    key={item.title}
-                                    whileHover={{ x: 5 }}
-                                    whileTap={{ scale: 0.97 }}
-                                >
+                                <motion.div key={item.title} whileHover={{ x: 5 }} whileTap={{ scale: 0.97 }}>
                                     <Link
                                         href={item.href}
                                         className={`flex items-center gap-3 p-3 rounded-xl transition
-        ${isActive
-                                                ? "bg-indigo-600 text-white shadow-lg"
-                                                : "text-gray-700 hover:bg-gray-100"
-                                            }`}
+        ${isActive ? 'bg-indigo-600 text-white shadow-lg' : 'text-gray-700 hover:bg-gray-100'}`}
                                     >
                                         <Icon size={20} />
                                         {item.title}
@@ -120,7 +102,6 @@ export default function Sidebar() {
                             className="fixed left-0 top-0 w-72 h-screen bg-white z-50 shadow-xl md:hidden flex flex-col justify-between"
                         >
                             <div>
-
                                 <nav className="p-4 space-y-2 text-gray-800">
                                     {menuItems.map((item) => {
                                         const Icon = item.icon;
@@ -132,10 +113,7 @@ export default function Sidebar() {
                                                     href={item.href}
                                                     onClick={() => setOpen(false)}
                                                     className={`flex items-center gap-3 p-3 rounded-xl transition
-        ${isActive
-                                                            ? "bg-indigo-600 text-white"
-                                                            : "text-gray-700 hover:bg-gray-100"
-                                                        }`}
+        ${isActive ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100'}`}
                                                 >
                                                     <Icon size={20} />
                                                     {item.title}

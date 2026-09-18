@@ -1,13 +1,13 @@
 // src/app/api/user/dashboard/route.js
 
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
-import { connectDB } from "@/config/db";
-import { getCurrentUser } from "@/utils/auth";
+import { connectDB } from '@/config/db';
+import { getCurrentUser } from '@/utils/auth';
 
-import User from "@/models/user.model";
-import Lead from "@/models/leads.model";
-import LeadTask from "@/models/task.model";
+import User from '@/models/user.model';
+import Lead from '@/models/leads.model';
+import LeadTask from '@/models/task.model';
 
 export async function GET(request) {
     try {
@@ -19,7 +19,7 @@ export async function GET(request) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "User not found.",
+                    message: 'User not found.',
                 },
                 {
                     status: 401,
@@ -29,11 +29,7 @@ export async function GET(request) {
 
         const companyId = user.companyId;
 
-        const [
-            usersCount,
-            leadsCount,
-            tasksCount,
-        ] = await Promise.all([
+        const [usersCount, leadsCount, tasksCount] = await Promise.all([
             User.countDocuments({
                 companyId,
             }),
@@ -58,17 +54,12 @@ export async function GET(request) {
             },
         });
     } catch (error) {
-        console.error(
-            "GET DASHBOARD ERROR:",
-            error
-        );
+        console.error('GET DASHBOARD ERROR:', error);
 
         return NextResponse.json(
             {
                 success: false,
-                message:
-                    error.message ||
-                    "Failed to fetch dashboard data.",
+                message: error.message || 'Failed to fetch dashboard data.',
             },
             {
                 status: 400,

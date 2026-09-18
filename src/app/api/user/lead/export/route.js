@@ -1,11 +1,11 @@
 // src/app/api/user/lead/export/route.js
 
-import { NextResponse } from "next/server";
-import * as XLSX from "xlsx";
+import { NextResponse } from 'next/server';
+import * as XLSX from 'xlsx';
 
-import { connectDB } from "@/config/db.js";
-import Lead from "@/models/leads.model.js";
-import { getCurrentUser } from "@/utils/auth.js";
+import { connectDB } from '@/config/db.js';
+import Lead from '@/models/leads.model.js';
+import { getCurrentUser } from '@/utils/auth.js';
 
 export async function GET(request) {
     try {
@@ -17,7 +17,7 @@ export async function GET(request) {
         if (!user) {
             return NextResponse.json(
                 {
-                    message: "Unauthorized",
+                    message: 'Unauthorized',
                 },
                 {
                     status: 401,
@@ -29,7 +29,7 @@ export async function GET(request) {
         if (!user.companyId) {
             return NextResponse.json(
                 {
-                    message: "User is not associated with a company",
+                    message: 'User is not associated with a company',
                 },
                 {
                     status: 400,
@@ -47,48 +47,40 @@ export async function GET(request) {
         const leads = await Lead.find({
             companyId: user.companyId,
         })
-            .populate("assignedTo", "name")
+            .populate('assignedTo', 'name')
             .lean();
 
         // Convert leads into Excel-friendly data
         const excelData = leads.map((lead) => ({
-            "Contact Name": lead.name || "",
-            "Phone": lead.phone || "",
-            "Email": lead.email || "",
-            "Company Name": lead.companyName || "",
-            "GST Number": lead.gstNumber || "",
-            "Place": lead.place || "",
-            "Product": lead.product || "",
-            "Message": lead.message || "",
+            'Contact Name': lead.name || '',
+            Phone: lead.phone || '',
+            Email: lead.email || '',
+            'Company Name': lead.companyName || '',
+            'GST Number': lead.gstNumber || '',
+            Place: lead.place || '',
+            Product: lead.product || '',
+            Message: lead.message || '',
 
-            "Lead Source": lead.source || "",
-            "Stage": lead.stage || "",
-            "Status": lead.status || "",
+            'Lead Source': lead.source || '',
+            Stage: lead.stage || '',
+            Status: lead.status || '',
 
-            "Assigned To": lead.assignedTo?.name || "",
+            'Assigned To': lead.assignedTo?.name || '',
 
-            "Deal Value": lead.dealValue ?? 0,
-            "Price Range": lead.priceRange ?? "",
+            'Deal Value': lead.dealValue ?? 0,
+            'Price Range': lead.priceRange ?? '',
 
-            "Expected Closure Date": lead.expectedClosureDate
-                ? new Date(lead.expectedClosureDate).toLocaleDateString()
-                : "",
+            'Expected Closure Date': lead.expectedClosureDate ? new Date(lead.expectedClosureDate).toLocaleDateString() : '',
 
-            "Campaign Name": lead.campaignName || "",
-            "Campaign ID": lead.campaignId || "",
-            "Meta Lead ID": lead.metaLeadId || "",
+            'Campaign Name': lead.campaignName || '',
+            'Campaign ID': lead.campaignId || '',
+            'Meta Lead ID': lead.metaLeadId || '',
 
-            "Assigned At": lead.assignedAt
-                ? new Date(lead.assignedAt).toLocaleString()
-                : "",
+            'Assigned At': lead.assignedAt ? new Date(lead.assignedAt).toLocaleString() : '',
 
-            "Created At": lead.createdAt
-                ? new Date(lead.createdAt).toLocaleString()
-                : "",
+            'Created At': lead.createdAt ? new Date(lead.createdAt).toLocaleString() : '',
 
-            "Updated At": lead.updatedAt
-                ? new Date(lead.updatedAt).toLocaleString()
-                : "",
+            'Updated At': lead.updatedAt ? new Date(lead.updatedAt).toLocaleString() : '',
         }));
 
         // Create workbook
@@ -98,7 +90,7 @@ export async function GET(request) {
         const worksheet = XLSX.utils.json_to_sheet(excelData);
 
         // Set column widths
-        worksheet["!cols"] = [
+        worksheet['!cols'] = [
             { wch: 25 }, // Contact Name
             { wch: 18 }, // Phone
             { wch: 30 }, // Email
@@ -123,22 +115,16 @@ export async function GET(request) {
         ];
 
         // Add worksheet to workbook
-        XLSX.utils.book_append_sheet(
-            workbook,
-            worksheet,
-            "Leads"
-        );
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Leads');
 
         // Generate Excel file
         const buffer = XLSX.write(workbook, {
-            bookType: "xlsx",
-            type: "buffer",
+            bookType: 'xlsx',
+            type: 'buffer',
         });
 
         // Generate filename
-        const date = new Date()
-            .toISOString()
-            .slice(0, 10);
+        const date = new Date().toISOString().slice(0, 10);
 
         const filename = `leads-${date}.xlsx`;
 
@@ -146,22 +132,19 @@ export async function GET(request) {
         return new NextResponse(buffer, {
             status: 200,
             headers: {
-                "Content-Type":
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 
-                "Content-Disposition":
-                    `attachment; filename="${filename}"`,
+                'Content-Disposition': `attachment; filename="${filename}"`,
 
-                "Content-Length":
-                    buffer.length.toString(),
+                'Content-Length': buffer.length.toString(),
             },
         });
     } catch (error) {
-        console.error("Lead export error:", error);
+        console.error('Lead export error:', error);
 
         return NextResponse.json(
             {
-                message: "Failed to export leads",
+                message: 'Failed to export leads',
             },
             {
                 status: 500,

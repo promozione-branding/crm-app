@@ -1,14 +1,12 @@
 // src/components/user/leads/form/Call.jsx
 
-import { Phone } from 'lucide-react'
-import React from 'react'
+import { Phone } from 'lucide-react';
+import React from 'react';
 
 export default function Call() {
     return (
         <div className="bg-card border border-app rounded-2xl p-5">
-            <h3 className="uppercase tracking-widest text-xs font-semibold text-muted">
-                Call Log
-            </h3>
+            <h3 className="uppercase tracking-widest text-xs font-semibold text-muted">Call Log</h3>
 
             <div className="border-b border-app my-4" />
 
@@ -17,14 +15,10 @@ export default function Call() {
                     <Phone size={24} className="opacity-80" />
                 </div>
 
-                <h4 className="mt-4 text-sm font-medium text-app">
-                    No Call Log Found
-                </h4>
+                <h4 className="mt-4 text-sm font-medium text-app">No Call Log Found</h4>
 
-                <p className="mt-1 text-xs text-muted">
-                    Call history will appear here.
-                </p>
+                <p className="mt-1 text-xs text-muted">Call history will appear here.</p>
             </div>
         </div>
-    )
+    );
 }

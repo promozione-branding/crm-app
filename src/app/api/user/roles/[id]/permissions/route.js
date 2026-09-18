@@ -1,10 +1,10 @@
 // src/app/api/user/roles/[id]/permissions/route.js
 
-import { NextResponse } from "next/server";
-import { connectDB } from "@/config/db";
-import Role from "@/models/role.model.js";
-import { getCurrentUser } from "@/utils/auth";
-import { PERMISSION_MODULES } from "@/constants/permissions.js";
+import { NextResponse } from 'next/server';
+import { connectDB } from '@/config/db';
+import Role from '@/models/role.model.js';
+import { getCurrentUser } from '@/utils/auth';
+import { PERMISSION_MODULES } from '@/constants/permissions.js';
 
 export async function PUT(request, { params }) {
     try {
@@ -16,7 +16,7 @@ export async function PUT(request, { params }) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "Unauthorized",
+                    message: 'Unauthorized',
                 },
                 { status: 401 }
             );
@@ -35,7 +35,7 @@ export async function PUT(request, { params }) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "Permissions must be an array.",
+                    message: 'Permissions must be an array.',
                 },
                 { status: 400 }
             );
@@ -54,7 +54,7 @@ export async function PUT(request, { params }) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "Role not found.",
+                    message: 'Role not found.',
                 },
                 { status: 404 }
             );
@@ -64,15 +64,11 @@ export async function PUT(request, { params }) {
         // PROTECT SYSTEM ADMIN ROLE
         // ---------------------------------------
 
-        if (
-            role.isSystemRole ||
-            role.name?.toLowerCase() === "admin"
-        ) {
+        if (role.isSystemRole || role.name?.toLowerCase() === 'admin') {
             return NextResponse.json(
                 {
                     success: false,
-                    message:
-                        "Admin system role permissions cannot be changed.",
+                    message: 'Admin system role permissions cannot be changed.',
                 },
                 { status: 403 }
             );
@@ -82,12 +78,7 @@ export async function PUT(request, { params }) {
         // VALID MODULES
         // ---------------------------------------
 
-        const validModules = new Map(
-            PERMISSION_MODULES.map((module) => [
-                module.key,
-                module,
-            ])
-        );
+        const validModules = new Map(PERMISSION_MODULES.map((module) => [module.key, module]));
 
         // ---------------------------------------
         // CLEAN + VALIDATE PERMISSIONS
@@ -96,7 +87,7 @@ export async function PUT(request, { params }) {
         const cleanPermissions = [];
 
         for (const permission of permissions) {
-            if (!permission || typeof permission !== "object") {
+            if (!permission || typeof permission !== 'object') {
                 continue;
             }
 
@@ -113,37 +104,17 @@ export async function PUT(request, { params }) {
             // VALID ACTIONS
             // ---------------------------------------
 
-            const actions = Array.isArray(
-                permission.actions
-            )
-                ? permission.actions
-                : [];
+            const actions = Array.isArray(permission.actions) ? permission.actions : [];
 
-            const validActions = [
-                ...new Set(
-                    actions.filter(
-                        (action) =>
-                            typeof action === "string" &&
-                            module.actions.includes(action)
-                    )
-                ),
-            ];
+            const validActions = [...new Set(actions.filter((action) => typeof action === 'string' && module.actions.includes(action)))];
 
             // ---------------------------------------
             // VALID SCOPE
             // ---------------------------------------
 
-            const allowedScopes = [
-                "own",
-                "team",
-                "all",
-            ];
+            const allowedScopes = ['own', 'team', 'all'];
 
-            const scope = allowedScopes.includes(
-                permission.scope
-            )
-                ? permission.scope
-                : "own";
+            const scope = allowedScopes.includes(permission.scope) ? permission.scope : 'own';
 
             // ---------------------------------------
             // ONLY SAVE MODULE IF IT HAS ACTIONS
@@ -188,41 +159,26 @@ export async function PUT(request, { params }) {
         // RETURN UPDATED ROLE
         // ---------------------------------------
 
-        const updatedRole = await Role.findById(
-            role._id
-        )
-            .populate("createdBy", "name email")
-            .lean();
+        const updatedRole = await Role.findById(role._id).populate('createdBy', 'name email').lean();
 
         return NextResponse.json(
             {
                 success: true,
-                message:
-                    "Permissions updated successfully.",
+                message: 'Permissions updated successfully.',
                 data: updatedRole,
             },
             { status: 200 }
         );
-
     } catch (error) {
-        console.error(
-            "UPDATE ROLE PERMISSIONS ERROR:",
-            error
-        );
+        console.error('UPDATE ROLE PERMISSIONS ERROR:', error);
 
         return NextResponse.json(
             {
                 success: false,
-                message:
-                    error.message ||
-                    "Failed to update permissions.",
+                message: error.message || 'Failed to update permissions.',
             },
             {
-                status:
-                    error.name ===
-                        "JsonWebTokenError"
-                        ? 401
-                        : 400,
+                status: error.name === 'JsonWebTokenError' ? 401 : 400,
             }
         );
     }

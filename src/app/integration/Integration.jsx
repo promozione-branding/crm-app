@@ -1,23 +1,22 @@
 // src/app/integration/Integration.jsx
 
-
-import Google from "@/components/user/integrations/Google";
-import MarketPlaces from "@/components/user/integrations/MarketPlaces";
-import Meta from "@/components/user/integrations/Meta";
-import WebhookApi from "@/components/user/integrations/WebhookApi";
-import Websites from "@/components/user/integrations/Websites";
-import { ArrowLeft, Globe, Search, Share2, ShoppingBag, Webhook } from "lucide-react";
-import Link from "next/link";
-import React, { useState } from "react";
+import Google from '@/components/user/integrations/Google';
+import MarketPlaces from '@/components/user/integrations/MarketPlaces';
+import Meta from '@/components/user/integrations/Meta';
+import WebhookApi from '@/components/user/integrations/WebhookApi';
+import Websites from '@/components/user/integrations/Websites';
+import { ArrowLeft, Globe, Search, Share2, ShoppingBag, Webhook } from 'lucide-react';
+import Link from 'next/link';
+import React, { useState } from 'react';
 
 export default function Integration() {
-    const [active, setActive] = useState("market-places");
+    const [active, setActive] = useState('market-places');
     const tabs = [
-        { id: "market-places", label: "Market Places", icon: ShoppingBag, },
-        { id: "websites", label: "Websites", icon: Globe, },
-        { id: "meta", label: "Meta", icon: Share2, },
-        { id: "google", label: "Google", icon: Search, },
-        { id: "webhook-api", label: "Webhook API", icon: Webhook, },
+        { id: 'market-places', label: 'Market Places', icon: ShoppingBag },
+        { id: 'websites', label: 'Websites', icon: Globe },
+        { id: 'meta', label: 'Meta', icon: Share2 },
+        { id: 'google', label: 'Google', icon: Search },
+        { id: 'webhook-api', label: 'Webhook API', icon: Webhook },
     ];
 
     return (
@@ -25,16 +24,11 @@ export default function Integration() {
             {/* Header */}
             <div className="h-16 top-0 sticky z-40 bg-surface border-b border-app flex items-center justify-between md:px-8 px-3">
                 <div className="flex items-center md:gap-2 gap-1">
-                    <Link
-                        href="/settings"
-                        className="p-2 rounded-xl border bg-app border-app hover-app text-app"
-                    >
+                    <Link href="/settings" className="p-2 rounded-xl border bg-app border-app hover-app text-app">
                         <ArrowLeft size={20} />
                     </Link>
 
-                    <h1 className="text-sm font-bold text-app">
-                        Integrations
-                    </h1>
+                    <h1 className="text-sm font-bold text-app">Integrations</h1>
                 </div>
 
                 <div className="flex md:gap-2 gap-1 text-sm">
@@ -61,10 +55,7 @@ export default function Integration() {
                                 text-sm font-medium whitespace-nowrap
                                 transition-all duration-200
                                 border-b-2
-                                ${isActive
-                                    ? "border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-500/10"
-                                    : "border-transparent text-app hover-app"
-                                }
+                                ${isActive ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-500/10' : 'border-transparent text-app hover-app'}
                             `}
                         >
                             <Icon size={16} />
@@ -76,20 +67,15 @@ export default function Integration() {
 
             {/* Content */}
             <main className="px-3 md:px-8 py-6">
-                {active == "market-places" &&
-                    <MarketPlaces />}
+                {active == 'market-places' && <MarketPlaces />}
 
-                {active == "websites" &&
-                    <Websites />}
+                {active == 'websites' && <Websites />}
 
-                {active == "meta" &&
-                    <Meta />}
+                {active == 'meta' && <Meta />}
 
-                {active == "google" &&
-                    <Google />}
+                {active == 'google' && <Google />}
 
-                {active == "webhook-api" &&
-                    <WebhookApi />}
+                {active == 'webhook-api' && <WebhookApi />}
             </main>
         </div>
     );

@@ -1,24 +1,16 @@
 // src/components/user/Navbar.jsx
 
-"use client";
+'use client';
 
-import {
-    Bell,
-    Moon,
-    Sun,
-    UserCircle,
-    Settings,
-    User,
-    LogOut,
-} from "lucide-react";
-import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleTheme } from "@/redux/user/themeSlice";
-import { useEffect, useRef, useState } from "react";
-import { getMe } from "@/redux/user/userAuthSlice";
-import axios from "axios";
-import { logout } from "@/redux/user/userAuthSlice";
-import { useRouter } from "next/navigation";
+import { Bell, Moon, Sun, UserCircle, Settings, User, LogOut } from 'lucide-react';
+import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleTheme } from '@/redux/user/themeSlice';
+import { useEffect, useRef, useState } from 'react';
+import { getMe } from '@/redux/user/userAuthSlice';
+import axios from 'axios';
+import { logout } from '@/redux/user/userAuthSlice';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
     const router = useRouter();
@@ -40,25 +32,21 @@ export default function Navbar() {
                 setShowProfile(false);
             }
 
-            if (
-                notificationRef.current &&
-                !notificationRef.current.contains(e.target)
-            ) {
+            if (notificationRef.current && !notificationRef.current.contains(e.target)) {
                 setShowNotification(false);
             }
         };
 
-        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener('mousedown', handleClickOutside);
 
-        return () =>
-            document.removeEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
     const handleLogout = async () => {
         try {
-            await axios.post("/api/user/auth/logout", {}, { withCredentials: true });
+            await axios.post('/api/user/auth/logout', {}, { withCredentials: true });
             dispatch(logout());
-            router.push("/login");
+            router.push('/login');
         } catch (error) {
             console.log(error);
         }
@@ -75,54 +63,52 @@ export default function Navbar() {
                     onClick={() => dispatch(toggleTheme())}
                     className="w-10 h-10 rounded-xl border border-app hover-app flex items-center justify-center transition"
                 >
-                    {theme === "dark" ? (
-                        <Sun size={20} />
-                    ) : (
-                        <Moon size={20} />
-                    )}
+                    {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                 </button>
 
                 {/* Notification */}
                 <div className="relative" ref={notificationRef}>
-                    <button onClick={() => { setShowNotification((prev) => !prev); setShowProfile(false); }} className="w-10 h-10 rounded-xl border border-app hover-app flex items-center justify-center transition">
+                    <button
+                        onClick={() => {
+                            setShowNotification((prev) => !prev);
+                            setShowProfile(false);
+                        }}
+                        className="w-10 h-10 rounded-xl border border-app hover-app flex items-center justify-center transition"
+                    >
                         <Bell size={20} />
                     </button>
 
                     {showNotification && (
                         <div className="absolute right-0 mt-2 w-72 bg-card border border-app rounded-xl shadow-lg overflow-hidden z-50">
                             <div className="px-4 py-3 border-b border-app font-semibold flex justify-between items-center">
-                                <p>
-                                    Notifications
-                                </p>
+                                <p>Notifications</p>
 
-                                <div className="bg-blue-500 font-light px-1.5 py-0.5 rounded-md text-white text-xs">
-                                    0
-                                </div>
+                                <div className="bg-blue-500 font-light px-1.5 py-0.5 rounded-md text-white text-xs">0</div>
                             </div>
 
-                            <div className="p-6 text-center text-muted text-sm">
-                                No notifications yet.
-                            </div>
+                            <div className="p-6 text-center text-muted text-sm">No notifications yet.</div>
                         </div>
                     )}
                 </div>
 
                 {/* Profile */}
                 <div className="relative" ref={profileRef}>
-                    <button onClick={() => { setShowProfile((prev) => !prev); setShowNotification(false); }} className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center">
+                    <button
+                        onClick={() => {
+                            setShowProfile((prev) => !prev);
+                            setShowNotification(false);
+                        }}
+                        className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center"
+                    >
                         <UserCircle size={22} />
                     </button>
 
                     {showProfile && (
                         <div className="absolute right-0 mt-2 w-60 bg-card border border-app rounded-xl shadow-lg overflow-hidden z-50">
                             <div className="px-4 py-4 border-b border-app">
-                                <p className="font-semibold text-app">
-                                    {user?.name || ""}
-                                </p>
+                                <p className="font-semibold text-app">{user?.name || ''}</p>
 
-                                <p className="text-sm text-muted">
-                                    {user?.email || ""}
-                                </p>
+                                <p className="text-sm text-muted">{user?.email || ''}</p>
                             </div>
 
                             <Link href="/profile" className="flex items-center gap-3 px-4 py-3 hover-app transition">

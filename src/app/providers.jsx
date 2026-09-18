@@ -1,30 +1,20 @@
 // src/app/providers.jsx
 
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import {
-    Provider,
-    useDispatch,
-} from "react-redux";
+import { Provider, useDispatch } from 'react-redux';
 
-import {
-    QueryClient,
-    QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { store } from "@/redux/store";
+import { store } from '@/redux/store';
 
-import ThemeProvider from "./ThemeProvider";
+import ThemeProvider from './ThemeProvider';
 
-import {
-    getMe,
-} from "@/redux/user/userAuthSlice";
+import { getMe } from '@/redux/user/userAuthSlice';
 
-export default function Providers({
-    children,
-}) {
+export default function Providers({ children }) {
     const [queryClient] = useState(
         () =>
             new QueryClient({
@@ -45,14 +35,10 @@ export default function Providers({
 
     return (
         <Provider store={store}>
-            <QueryClientProvider
-                client={queryClient}
-            >
+            <QueryClientProvider client={queryClient}>
                 <AuthLoader />
 
-                <ThemeProvider>
-                    {children}
-                </ThemeProvider>
+                <ThemeProvider>{children}</ThemeProvider>
             </QueryClientProvider>
         </Provider>
     );

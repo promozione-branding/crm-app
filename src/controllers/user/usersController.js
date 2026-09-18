@@ -1,25 +1,25 @@
 // src/controllers/user/usersController.js
 
-import User from "@/models/user.model.js";
-import { hashPassword } from "@/utils/hashPassword";
-import Role from "@/models/role.model.js";
+import User from '@/models/user.model.js';
+import { hashPassword } from '@/utils/hashPassword';
+import Role from '@/models/role.model.js';
 
 export const getAllUsersService = async (userId, query = {}) => {
-    const currentUser = await User.findById(userId).select("companyId");
+    const currentUser = await User.findById(userId).select('companyId');
 
     if (!currentUser) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
-    const { search = "", role = "", status = "", page = 1, limit = 25, } = query;
-    const filter = { companyId: currentUser.companyId, };
+    const { search = '', role = '', status = '', page = 1, limit = 25 } = query;
+    const filter = { companyId: currentUser.companyId };
 
     // Search
     if (search.trim()) {
         filter.$or = [
-            { name: { $regex: search.trim(), $options: "i", }, },
-            { email: { $regex: search.trim(), $options: "i", }, },
-            { phone: { $regex: search.trim(), $options: "i", }, },
+            { name: { $regex: search.trim(), $options: 'i' } },
+            { email: { $regex: search.trim(), $options: 'i' } },
+            { phone: { $regex: search.trim(), $options: 'i' } },
         ];
     }
 
@@ -37,8 +37,13 @@ export const getAllUsersService = async (userId, query = {}) => {
     const perPage = Math.min(Math.max(Number(limit) || 25, 1), 100);
     const skip = (currentPage - 1) * perPage;
     const [users, total] = await Promise.all([
-        User.find(filter).select("-password").populate("roleId", "name description permissions isSystemRole")
-            .sort({ createdAt: -1, }).skip(skip).limit(perPage).lean(),
+        User.find(filter)
+            .select('-password')
+            .populate('roleId', 'name description permissions isSystemRole')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(perPage)
+            .lean(),
 
         User.countDocuments(filter),
     ]);
@@ -58,104 +63,79 @@ export const getAllUsersService = async (userId, query = {}) => {
 
 export const createUserService = async (currentUser, body) => {
     if (!currentUser) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
     // ---------------------------------------
     // GET CURRENT USER + ROLE
     // ---------------------------------------
 
-    const currentUserWithRole = await User.findById(
-        currentUser._id
-    ).populate(
-        "roleId",
-        "name permissions isSystemRole"
-    );
+    const currentUserWithRole = await User.findById(currentUser._id).populate('roleId', 'name permissions isSystemRole');
 
     if (!currentUserWithRole) {
-        throw new Error("User not found.");
+        throw new Error('User not found.');
     }
 
     const role = currentUserWithRole.roleId;
 
     if (!role) {
-        throw new Error("User role not found.");
+        throw new Error('User role not found.');
     }
 
     // ---------------------------------------
     // CHECK CREATE USER PERMISSION
     // ---------------------------------------
 
-    const teamPermission = role.permissions?.find(
-        (permission) =>
-            permission.module === "team_management"
-    );
+    const teamPermission = role.permissions?.find((permission) => permission.module === 'team_management');
 
-    const canCreateUser =
-        role.isSystemRole ||
-        teamPermission?.actions?.includes("add");
+    const canCreateUser = role.isSystemRole || teamPermission?.actions?.includes('add');
 
     if (!canCreateUser) {
-        throw new Error(
-            "You are not authorized to create users."
-        );
+        throw new Error('You are not authorized to create users.');
     }
 
     // ---------------------------------------
     // GET BODY
     // ---------------------------------------
 
-    const {
-        name,
-        email,
-        phone,
-        password,
-        roleId,
-        status = "active",
-        leadSources = [],
-    } = body;
+    const { name, email, phone, password, roleId, status = 'active', leadSources = [] } = body;
 
     // ---------------------------------------
     // VALIDATION
     // ---------------------------------------
 
     if (!name?.trim()) {
-        throw new Error("Name is required.");
+        throw new Error('Name is required.');
     }
 
     if (!email?.trim()) {
-        throw new Error("Email is required.");
+        throw new Error('Email is required.');
     }
 
     if (!password) {
-        throw new Error("Password is required.");
+        throw new Error('Password is required.');
     }
 
     if (!roleId) {
-        throw new Error("Role is required.");
+        throw new Error('Role is required.');
     }
 
     if (password.length < 6) {
-        throw new Error(
-            "Password must be at least 6 characters."
-        );
+        throw new Error('Password must be at least 6 characters.');
     }
 
     // ---------------------------------------
     // NORMALIZE EMAIL
     // ---------------------------------------
 
-    const normalizedEmail =
-        email.trim().toLowerCase();
+    const normalizedEmail = email.trim().toLowerCase();
 
     const existingUser = await User.findOne({
         email: normalizedEmail,
     });
 
     if (existingUser) {
-        throw new Error(
-            "A user with this email already exists."
-        );
+        throw new Error('A user with this email already exists.');
     }
 
     // ---------------------------------------
@@ -168,9 +148,7 @@ export const createUserService = async (currentUser, body) => {
     });
 
     if (!assignedRole) {
-        throw new Error(
-            "Invalid role or role does not belong to your company."
-        );
+        throw new Error('Invalid role or role does not belong to your company.');
     }
 
     // ---------------------------------------
@@ -178,62 +156,32 @@ export const createUserService = async (currentUser, body) => {
     // ---------------------------------------
 
     if (assignedRole.isSystemRole) {
-        throw new Error(
-            "Admin system role cannot be assigned from this panel."
-        );
+        throw new Error('Admin system role cannot be assigned from this panel.');
     }
 
     // ---------------------------------------
     // VALIDATE STATUS
     // ---------------------------------------
 
-    const allowedStatuses = [
-        "active",
-        "inactive",
-    ];
+    const allowedStatuses = ['active', 'inactive'];
 
     if (!allowedStatuses.includes(status)) {
-        throw new Error(
-            "Invalid user status."
-        );
+        throw new Error('Invalid user status.');
     }
 
     // ---------------------------------------
     // VALIDATE LEAD SOURCES
     // ---------------------------------------
 
-    const allowedLeadSources = [
-        "facebook",
-        "google",
-        "website",
-        "whatsapp",
-        "manual",
-        "indiamart",
-        "tradeindia",
-        "other",
-    ];
+    const allowedLeadSources = ['facebook', 'google', 'website', 'whatsapp', 'manual', 'indiamart', 'tradeindia', 'other'];
 
-    const cleanLeadSources = Array.isArray(
-        leadSources
-    )
-        ? [
-            ...new Set(
-                leadSources.filter(
-                    (source) =>
-                        allowedLeadSources.includes(
-                            source
-                        )
-                )
-            ),
-        ]
-        : [];
+    const cleanLeadSources = Array.isArray(leadSources) ? [...new Set(leadSources.filter((source) => allowedLeadSources.includes(source)))] : [];
 
     // ---------------------------------------
     // HASH PASSWORD
     // ---------------------------------------
 
-    const hashedPassword =
-        await hashPassword(password);
+    const hashedPassword = await hashPassword(password);
 
     // ---------------------------------------
     // CREATE USER
@@ -246,7 +194,7 @@ export const createUserService = async (currentUser, body) => {
 
         email: normalizedEmail,
 
-        phone: phone?.trim() || "",
+        phone: phone?.trim() || '',
 
         password: hashedPassword,
 
@@ -261,14 +209,7 @@ export const createUserService = async (currentUser, body) => {
     // RETURN USER
     // ---------------------------------------
 
-    const responseUser =
-        await User.findById(newUser._id)
-            .select("-password")
-            .populate(
-                "roleId",
-                "name description permissions isSystemRole"
-            )
-            .lean();
+    const responseUser = await User.findById(newUser._id).select('-password').populate('roleId', 'name description permissions isSystemRole').lean();
 
     return responseUser;
 };

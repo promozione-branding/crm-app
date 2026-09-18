@@ -1,20 +1,20 @@
 // src/app/leads/Leads.jsx
 
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import axios from "axios";
-import toast from "react-hot-toast";
-import Link from "next/link";
-import { Search, Plus, EllipsisVertical, Upload, Download } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import Link from 'next/link';
+import { Search, Plus, EllipsisVertical, Upload, Download } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
-import DynamicTable from "@/components/user/ui/DynamicTable";
-import ImportLeadsModal from "@/components/user/leads/main/ImportLeadsModal";
+import DynamicTable from '@/components/user/ui/DynamicTable';
+import ImportLeadsModal from '@/components/user/leads/main/ImportLeadsModal';
 
-import MobileLeadsTable from "./components/MobileLeadsTable";
-import LeadsActiveFilter from "./components/LeadsActiveFilter";
-import LeadsFilter, { stageOptions } from "./components/LeadsFilter";
+import MobileLeadsTable from './components/MobileLeadsTable';
+import LeadsActiveFilter from './components/LeadsActiveFilter';
+import LeadsFilter, { stageOptions } from './components/LeadsFilter';
 
 // ============================================================
 // DESKTOP TABLE COLUMNS
@@ -22,50 +22,46 @@ import LeadsFilter, { stageOptions } from "./components/LeadsFilter";
 
 const columns = [
     {
-        key: "assignedTo.name",
-        label: "Assigned To",
+        key: 'assignedTo.name',
+        label: 'Assigned To',
         sortable: true,
     },
     {
-        key: "name",
-        label: "Contact Name",
+        key: 'name',
+        label: 'Contact Name',
         sortable: true,
     },
     {
-        key: "phone",
-        label: "Phone",
+        key: 'phone',
+        label: 'Phone',
         sortable: true,
     },
     {
-        key: "stage",
-        label: "Stage",
+        key: 'stage',
+        label: 'Stage',
         sortable: true,
-        render: (lead) => (
-            <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500 capitalize">
-                {lead.stage || "—"}
-            </span>
-        ),
+        render: (lead) => <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500 capitalize">{lead.stage || '—'}</span>,
     },
     {
-        key: "dealValue",
-        label: "Deal Value",
+        key: 'dealValue',
+        label: 'Deal Value',
         sortable: true,
     },
     {
-        key: "source",
-        label: "Lead Source",
+        key: 'source',
+        label: 'Lead Source',
         sortable: true,
     },
     {
-        key: "createdAt",
-        type: "date",
-        label: "Created At",
+        key: 'createdAt',
+        type: 'date',
+        label: 'Created At',
         sortable: true,
     },
     {
-        key: "updatedAt",
-        type: "date",
-        label: "Last Modified",
+        key: 'updatedAt',
+        type: 'date',
+        label: 'Last Modified',
         sortable: true,
     },
 ];
@@ -86,9 +82,9 @@ export default function Leads() {
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(false);
 
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(25);
-    const [selectedStage, setSelectedStage] = useState("");
+    const [selectedStage, setSelectedStage] = useState('');
 
     const [filterOpen, setFilterOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -105,9 +101,7 @@ export default function Leads() {
     // SELECTED STAGE LABEL
     // ========================================================
 
-    const selectedStageLabel = stageOptions.find(
-        (option) => option.value === selectedStage
-    )?.label;
+    const selectedStageLabel = stageOptions.find((option) => option.value === selectedStage)?.label;
 
     // ========================================================
     // GET LEADS
@@ -124,25 +118,19 @@ export default function Leads() {
             });
 
             if (selectedStage) {
-                params.append("stage", selectedStage);
+                params.append('stage', selectedStage);
             }
 
-            const res = await axios.get(
-                `/api/user/lead/all?${params.toString()}`,
-                {
-                    withCredentials: true,
-                }
-            );
+            const res = await axios.get(`/api/user/lead/all?${params.toString()}`, {
+                withCredentials: true,
+            });
 
             setLeads(res.data?.leads || []);
             setTotal(res.data?.pagination?.total || 0);
         } catch (error) {
-            console.error("Get leads error:", error);
+            console.error('Get leads error:', error);
 
-            toast.error(
-                error.response?.data?.message ||
-                "Failed to load leads"
-            );
+            toast.error(error.response?.data?.message || 'Failed to load leads');
         } finally {
             setLoading(false);
         }
@@ -166,28 +154,19 @@ export default function Leads() {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (
-                filterRef.current &&
-                !filterRef.current.contains(event.target)
-            ) {
+            if (filterRef.current && !filterRef.current.contains(event.target)) {
                 setFilterOpen(false);
             }
 
-            if (
-                menuRef.current &&
-                !menuRef.current.contains(event.target)
-            ) {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
                 setMenuOpen(false);
             }
         };
 
-        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener('mousedown', handleClickOutside);
 
         return () => {
-            document.removeEventListener(
-                "mousedown",
-                handleClickOutside
-            );
+            document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
 
@@ -196,7 +175,7 @@ export default function Leads() {
     // ========================================================
 
     const clearFilter = () => {
-        setSelectedStage("");
+        setSelectedStage('');
         setPage(1);
         setFilterOpen(false);
     };
@@ -218,7 +197,7 @@ export default function Leads() {
         setMenuOpen(false);
 
         // Add your existing export logic here.
-        console.log("Export leads");
+        console.log('Export leads');
     };
 
     // ========================================================
@@ -241,18 +220,12 @@ export default function Leads() {
             =================================================== */}
 
             <div className="mb-5">
-
                 {/* TITLE + DESKTOP ADD */}
                 <div className="flex items-center justify-between gap-3">
-
                     <div className="min-w-0">
-                        <h1 className="text-base font-bold">
-                            CRM
-                        </h1>
+                        <h1 className="text-base font-bold">CRM</h1>
 
-                        <p className="text-xs opacity-70">
-                            Manage your leads
-                        </p>
+                        <p className="text-xs opacity-70">Manage your leads</p>
                     </div>
 
                     {/* DESKTOP ADD */}
@@ -279,12 +252,9 @@ export default function Leads() {
 
                 {/* SEARCH + FILTER + MENU */}
                 <div className="mt-4 w-full">
-
                     <div className="flex items-center gap-2 w-full">
-
                         {/* SEARCH */}
                         <div className="relative flex-1 min-w-0">
-
                             <Search
                                 size={16}
                                 className="
@@ -354,10 +324,7 @@ export default function Leads() {
                         </div>
 
                         {/* MORE MENU */}
-                        <div
-                            className="relative shrink-0"
-                            ref={menuRef}
-                        >
+                        <div className="relative shrink-0" ref={menuRef}>
                             <button
                                 type="button"
                                 onClick={() => {
@@ -450,11 +417,7 @@ export default function Leads() {
                 ACTIVE FILTER
             =================================================== */}
 
-            <LeadsActiveFilter
-                selectedStage={selectedStage}
-                selectedStageLabel={selectedStageLabel}
-                onClear={clearFilter}
-            />
+            <LeadsActiveFilter selectedStage={selectedStage} selectedStageLabel={selectedStageLabel} onClear={clearFilter} />
 
             {/* ==================================================
                 DESKTOP TABLE
@@ -476,22 +439,22 @@ export default function Leads() {
                 />
             </div>
 
-           {/* ==================================================
+            {/* ==================================================
     MOBILE TABLE
 ================================================== */}
 
-<div className="md:hidden">
-    <MobileLeadsTable
-        loading={loading}
-        leads={leads}
-        router={router}
-        page={page}
-        setPage={setPage}
-        total={total}
-        rowsPerPage={rowsPerPage}
-        setRowsPerPage={setRowsPerPage}
-    />
-</div>
+            <div className="md:hidden">
+                <MobileLeadsTable
+                    loading={loading}
+                    leads={leads}
+                    router={router}
+                    page={page}
+                    setPage={setPage}
+                    total={total}
+                    rowsPerPage={rowsPerPage}
+                    setRowsPerPage={setRowsPerPage}
+                />
+            </div>
 
             {/* ==================================================
                 IMPORT MODAL

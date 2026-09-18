@@ -1,38 +1,30 @@
 // src/components/user/team/PermissionModal.jsx
 
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { Pencil, Check } from "lucide-react";
-import axios from "axios";
-import toast from "react-hot-toast";
-import Modal from "../ui/Modal";
-import {
-    PERMISSION_ACTIONS,
-    PERMISSION_MODULES,
-} from "@/constants/permissions.js";
+import React, { useEffect, useState } from 'react';
+import { Pencil, Check } from 'lucide-react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import Modal from '../ui/Modal';
+import { PERMISSION_ACTIONS, PERMISSION_MODULES } from '@/constants/permissions.js';
 
 const SCOPES = [
     {
-        key: "own",
-        label: "Own",
+        key: 'own',
+        label: 'Own',
     },
     {
-        key: "team",
-        label: "Team",
+        key: 'team',
+        label: 'Team',
     },
     {
-        key: "all",
-        label: "All",
+        key: 'all',
+        label: 'All',
     },
 ];
 
-export default function PermissionModal({
-    role,
-    isOpen,
-    onClose,
-    fetchRoles,
-}) {
+export default function PermissionModal({ role, isOpen, onClose, fetchRoles }) {
     const [editing, setEditing] = useState(false);
     const [saving, setSaving] = useState(false);
     const [permissions, setPermissions] = useState({});
@@ -65,21 +57,14 @@ export default function PermissionModal({
         const state = {};
 
         PERMISSION_MODULES.forEach((module) => {
-            const existingPermission = rolePermissions.find(
-                (permission) =>
-                    permission?.module === module.key
-            );
+            const existingPermission = rolePermissions.find((permission) => permission?.module === module.key);
 
             state[module.key] = {
-                scope:
-                    existingPermission?.scope || "own",
+                scope: existingPermission?.scope || 'own',
             };
 
             PERMISSION_ACTIONS.forEach((action) => {
-                state[module.key][action.key] =
-                    existingPermission?.actions?.includes(
-                        action.key
-                    ) || false;
+                state[module.key][action.key] = existingPermission?.actions?.includes(action.key) || false;
             });
         });
 
@@ -93,16 +78,11 @@ export default function PermissionModal({
             return;
         }
 
-        setPermissions(
-            buildPermissionState(role.permissions)
-        );
+        setPermissions(buildPermissionState(role.permissions));
     }, [role]);
 
     // TOGGLE ACTION
-    const togglePermission = (
-        moduleKey,
-        actionKey
-    ) => {
+    const togglePermission = (moduleKey, actionKey) => {
         if (!editing) return;
 
         setPermissions((prev) => ({
@@ -111,17 +91,13 @@ export default function PermissionModal({
             [moduleKey]: {
                 ...prev[moduleKey],
 
-                [actionKey]:
-                    !prev[moduleKey]?.[actionKey],
+                [actionKey]: !prev[moduleKey]?.[actionKey],
             },
         }));
     };
 
     // CHANGE SCOPE
-    const changeScope = (
-        moduleKey,
-        scope
-    ) => {
+    const changeScope = (moduleKey, scope) => {
         if (!editing) return;
 
         setPermissions((prev) => ({
@@ -138,9 +114,7 @@ export default function PermissionModal({
     const handleSave = async () => {
         if (!role?._id) return;
 
-        const toastId = toast.loading(
-            "Updating permissions..."
-        );
+        const toastId = toast.loading('Updating permissions...');
 
         try {
             setSaving(true);
@@ -148,25 +122,13 @@ export default function PermissionModal({
             const permissionArray = [];
 
             PERMISSION_MODULES.forEach((module) => {
-                const modulePermission =
-                    permissions[module.key];
+                const modulePermission = permissions[module.key];
 
                 if (!modulePermission) return;
 
-                const actions =
-                    PERMISSION_ACTIONS
-                        .filter(
-                            (action) =>
-                                module.actions.includes(
-                                    action.key
-                                ) &&
-                                modulePermission[
-                                action.key
-                                ]
-                        )
-                        .map(
-                            (action) => action.key
-                        );
+                const actions = PERMISSION_ACTIONS.filter((action) => module.actions.includes(action.key) && modulePermission[action.key]).map(
+                    (action) => action.key
+                );
 
                 /*
                  * Only save modules that have at least
@@ -176,9 +138,7 @@ export default function PermissionModal({
                     permissionArray.push({
                         module: module.key,
                         actions,
-                        scope:
-                            modulePermission.scope ||
-                            "own",
+                        scope: modulePermission.scope || 'own',
                     });
                 }
             });
@@ -194,40 +154,24 @@ export default function PermissionModal({
             );
 
             if (!response.data.success) {
-                throw new Error(
-                    response.data.message ||
-                    "Failed to update permissions."
-                );
+                throw new Error(response.data.message || 'Failed to update permissions.');
             }
 
-            toast.success(
-                response.data.message ||
-                "Permissions updated successfully.",
-                {
-                    id: toastId,
-                }
-            );
+            toast.success(response.data.message || 'Permissions updated successfully.', {
+                id: toastId,
+            });
 
             setEditing(false);
 
             await fetchRoles();
 
             onClose();
-
         } catch (error) {
-            console.error(
-                "UPDATE PERMISSIONS ERROR:",
-                error
-            );
+            console.error('UPDATE PERMISSIONS ERROR:', error);
 
-            toast.error(
-                error?.response?.data?.message ||
-                error.message ||
-                "Failed to update permissions.",
-                {
-                    id: toastId,
-                }
-            );
+            toast.error(error?.response?.data?.message || error.message || 'Failed to update permissions.', {
+                id: toastId,
+            });
         } finally {
             setSaving(false);
         }
@@ -238,11 +182,7 @@ export default function PermissionModal({
         setEditing(false);
 
         if (role) {
-            setPermissions(
-                buildPermissionState(
-                    role.permissions
-                )
-            );
+            setPermissions(buildPermissionState(role.permissions));
         }
     };
 
@@ -252,11 +192,7 @@ export default function PermissionModal({
         setEditing(false);
 
         if (role) {
-            setPermissions(
-                buildPermissionState(
-                    role.permissions
-                )
-            );
+            setPermissions(buildPermissionState(role.permissions));
         }
 
         onClose();
@@ -265,38 +201,23 @@ export default function PermissionModal({
     if (!role) return null;
 
     return (
-        <Modal
-            isOpen={isOpen}
-            onClose={handleClose}
-            size="full"
-        >
+        <Modal isOpen={isOpen} onClose={handleClose} size="full">
             <Modal.Header>
-
                 <div className="flex items-center justify-between w-full">
-
                     <div>
-                        <div className="text-base font-semibold">
-                            {role.name} — Permissions
-                        </div>
+                        <div className="text-base font-semibold">{role.name} — Permissions</div>
 
                         <div className="text-xs opacity-60 mt-1">
-                            {editing
-                                ? "Edit permissions and save your changes"
-                                : "Live from database · Click Edit to make changes"}
+                            {editing ? 'Edit permissions and save your changes' : 'Live from database · Click Edit to make changes'}
                         </div>
                     </div>
-
                 </div>
-
             </Modal.Header>
 
             <Modal.Body>
-
                 <div className="border border-app rounded-xl overflow-hidden">
-
                     {/* HEADER */}
                     <div className="overflow-x-auto">
-
                         <div
                             className="
                                 grid
@@ -313,49 +234,28 @@ export default function PermissionModal({
                                 min-w-[950px]
                             "
                         >
+                            <div>Module</div>
 
-                            <div>
-                                Module
-                            </div>
+                            {PERMISSION_ACTIONS.map((action) => (
+                                <div key={action.key} className="text-center">
+                                    {action.label}
+                                </div>
+                            ))}
 
-                            {PERMISSION_ACTIONS.map(
-                                (action) => (
-                                    <div
-                                        key={action.key}
-                                        className="text-center"
-                                    >
-                                        {action.label}
-                                    </div>
-                                )
-                            )}
-
-                            <div className="text-center">
-                                Scope
-                            </div>
-
+                            <div className="text-center">Scope</div>
                         </div>
-
                     </div>
 
                     {/* ROWS */}
                     <div className="overflow-x-auto">
-
                         <div className="min-w-[950px]">
+                            {PERMISSION_MODULES.map((module) => {
+                                const moduleState = permissions[module.key] || {};
 
-                            {PERMISSION_MODULES.map(
-                                (module) => {
-
-                                    const moduleState =
-                                        permissions[
-                                        module.key
-                                        ] || {};
-
-                                    return (
-                                        <div
-                                            key={
-                                                module.key
-                                            }
-                                            className="
+                                return (
+                                    <div
+                                        key={module.key}
+                                        className="
                                                 grid
                                                 grid-cols-[minmax(180px,1fr)_repeat(8,70px)_100px]
                                                 items-center
@@ -365,80 +265,43 @@ export default function PermissionModal({
                                                 px-4
                                                 py-3
                                             "
-                                        >
+                                    >
+                                        {/* MODULE */}
+                                        <div className="text-sm font-medium">
+                                            <div>{module.name}</div>
 
-                                            {/* MODULE */}
-                                            <div className="text-sm font-medium">
+                                            <div className="text-[10px] opacity-50 mt-0.5">{module.path}</div>
+                                        </div>
 
-                                                <div>
-                                                    {
-                                                        module.name
-                                                    }
-                                                </div>
+                                        {/* ACTIONS */}
+                                        {PERMISSION_ACTIONS.map((action) => {
+                                            const available = module.actions.includes(action.key);
 
-                                                <div className="text-[10px] opacity-50 mt-0.5">
-                                                    {
-                                                        module.path
-                                                    }
-                                                </div>
+                                            const checked = moduleState[action.key] || false;
 
-                                            </div>
-
-                                            {/* ACTIONS */}
-                                            {PERMISSION_ACTIONS.map(
-                                                (action) => {
-
-                                                    const available =
-                                                        module.actions.includes(
-                                                            action.key
-                                                        );
-
-                                                    const checked =
-                                                        moduleState[
-                                                        action.key
-                                                        ] ||
-                                                        false;
-
-                                                    if (
-                                                        !available
-                                                    ) {
-                                                        return (
-                                                            <div
-                                                                key={
-                                                                    action.key
-                                                                }
-                                                                className="
+                                            if (!available) {
+                                                return (
+                                                    <div
+                                                        key={action.key}
+                                                        className="
                                                                     flex
                                                                     justify-center
                                                                     text-sm
                                                                     opacity-40
                                                                 "
-                                                            >
-                                                                —
-                                                            </div>
-                                                        );
-                                                    }
+                                                    >
+                                                        —
+                                                    </div>
+                                                );
+                                            }
 
-                                                    return (
-                                                        <div
-                                                            key={
-                                                                action.key
-                                                            }
-                                                            className="flex justify-center"
-                                                        >
-
-                                                            <button
-                                                                type="button"
-                                                                disabled={
-                                                                    !editing
-                                                                }
-                                                                onClick={() =>
-                                                                    togglePermission(
-                                                                        module.key,
-                                                                        action.key
-                                                                    )
-                                                                }
-                                                                className={`
+                                            return (
+                                                <div key={action.key} className="flex justify-center">
+                                                    <button
+                                                        type="button"
+                                                        disabled={!editing}
+                                                        onClick={() => togglePermission(module.key, action.key)}
+                                                        className={`
                                                                     w-4
                                                                     h-4
                                                                     rounded
@@ -447,55 +310,24 @@ export default function PermissionModal({
                                                                     justify-center
                                                                     transition
 
-                                                                    ${checked
-                                                                        ? "bg-blue-600 text-white"
-                                                                        : "border border-app bg-transparent"
-                                                                    }
+                                                                    ${checked ? 'bg-blue-600 text-white' : 'border border-app bg-transparent'}
 
-                                                                    ${!editing
-                                                                        ? "cursor-default"
-                                                                        : "cursor-pointer"
-                                                                    }
+                                                                    ${!editing ? 'cursor-default' : 'cursor-pointer'}
                                                                 `}
-                                                            >
+                                                    >
+                                                        {checked && <Check size={11} strokeWidth={3} />}
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
 
-                                                                {checked && (
-                                                                    <Check
-                                                                        size={
-                                                                            11
-                                                                        }
-                                                                        strokeWidth={
-                                                                            3
-                                                                        }
-                                                                    />
-                                                                )}
-
-                                                            </button>
-
-                                                        </div>
-                                                    );
-                                                }
-                                            )}
-
-                                            {/* SCOPE */}
-                                            <div className="flex justify-center">
-
-                                                <select
-                                                    value={
-                                                        moduleState.scope ||
-                                                        "own"
-                                                    }
-                                                    disabled={
-                                                        !editing
-                                                    }
-                                                    onChange={(e) =>
-                                                        changeScope(
-                                                            module.key,
-                                                            e.target
-                                                                .value
-                                                        )
-                                                    }
-                                                    className="
+                                        {/* SCOPE */}
+                                        <div className="flex justify-center">
+                                            <select
+                                                value={moduleState.scope || 'own'}
+                                                disabled={!editing}
+                                                onChange={(e) => changeScope(module.key, e.target.value)}
+                                                className="
                                                         h-8
                                                         w-[90px]
                                                         rounded-lg
@@ -507,51 +339,27 @@ export default function PermissionModal({
                                                         outline-none
                                                         disabled:opacity-60
                                                     "
-                                                >
-
-                                                    {SCOPES.map(
-                                                        (scope) => (
-                                                            <option
-                                                                key={
-                                                                    scope.key
-                                                                }
-                                                                value={
-                                                                    scope.key
-                                                                }
-                                                            >
-                                                                {
-                                                                    scope.label
-                                                                }
-                                                            </option>
-                                                        )
-                                                    )}
-
-                                                </select>
-
-                                            </div>
-
+                                            >
+                                                {SCOPES.map((scope) => (
+                                                    <option key={scope.key} value={scope.key}>
+                                                        {scope.label}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
-                                    );
-                                }
-                            )}
-
+                                    </div>
+                                );
+                            })}
                         </div>
-
                     </div>
-
                 </div>
-
             </Modal.Body>
 
             <Modal.Footer>
-
                 {!editing ? (
                     <>
-
                         <button
-                            onClick={
-                                handleClose
-                            }
+                            onClick={handleClose}
                             className="
                                 px-4
                                 py-2
@@ -567,9 +375,7 @@ export default function PermissionModal({
                         </button>
 
                         <button
-                            onClick={() =>
-                                setEditing(true)
-                            }
+                            onClick={() => setEditing(true)}
                             className="
                                 px-4
                                 py-2
@@ -582,18 +388,13 @@ export default function PermissionModal({
                             "
                         >
                             <Pencil size={14} />
-
                             Edit Permissions
                         </button>
-
                     </>
                 ) : (
                     <>
-
                         <button
-                            onClick={
-                                handleCancelEdit
-                            }
+                            onClick={handleCancelEdit}
                             disabled={saving}
                             className="
                                 px-4
@@ -610,9 +411,7 @@ export default function PermissionModal({
                         </button>
 
                         <button
-                            onClick={
-                                handleSave
-                            }
+                            onClick={handleSave}
                             disabled={saving}
                             className="
                                 px-4
@@ -622,16 +421,11 @@ export default function PermissionModal({
                                 btn-primary
                             "
                         >
-                            {saving
-                                ? "Saving..."
-                                : "Save Permissions"}
+                            {saving ? 'Saving...' : 'Save Permissions'}
                         </button>
-
                     </>
                 )}
-
             </Modal.Footer>
-
         </Modal>
     );
 }

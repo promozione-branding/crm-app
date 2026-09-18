@@ -2,16 +2,16 @@
 
 //src/app/tasks/components/TaskBadges.jsx
 
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
 export function PriorityBadge({ priority }) {
     const config = {
-        low: "bg-slate-500/10 text-slate-500",
-        medium: "bg-blue-500/10 text-blue-500",
-        high: "bg-orange-500/10 text-orange-500",
-        urgent: "bg-red-500/10 text-red-500",
+        low: 'bg-slate-500/10 text-slate-500',
+        medium: 'bg-blue-500/10 text-blue-500',
+        high: 'bg-orange-500/10 text-orange-500',
+        urgent: 'bg-red-500/10 text-red-500',
     };
 
     const value = priority?.toLowerCase();
@@ -28,19 +28,19 @@ export function PriorityBadge({ priority }) {
                 font-medium
                 capitalize
                 whitespace-nowrap
-                ${config[value] || "bg-slate-500/10 text-slate-500"}
+                ${config[value] || 'bg-slate-500/10 text-slate-500'}
             `}
         >
-            {priority || "-"}
+            {priority || '-'}
         </span>
     );
 }
 
 export function StatusBadge({ status }) {
     const config = {
-        pending: "bg-yellow-500/10 text-yellow-600",
-        completed: "bg-green-500/10 text-green-600",
-        cancelled: "bg-red-500/10 text-red-600",
+        pending: 'bg-yellow-500/10 text-yellow-600',
+        completed: 'bg-green-500/10 text-green-600',
+        cancelled: 'bg-red-500/10 text-red-600',
     };
 
     const value = status?.toLowerCase();
@@ -57,10 +57,10 @@ export function StatusBadge({ status }) {
                 font-medium
                 capitalize
                 whitespace-nowrap
-                ${config[value] || "bg-blue-500/10 text-blue-500"}
+                ${config[value] || 'bg-blue-500/10 text-blue-500'}
             `}
         >
-            {status || "-"}
+            {status || '-'}
         </span>
     );
 }

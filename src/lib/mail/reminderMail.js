@@ -1,9 +1,9 @@
 // src/lib/mail/reminderMail.js
 
-import nodemailer from "nodemailer";
+import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: 'gmail',
 
     auth: {
         user: process.env.YOUR_EMAIL_ADDRESS,
@@ -13,20 +13,16 @@ const transporter = nodemailer.createTransport({
 
 // FORMAT DATE
 function formatDate(date) {
-    return new Date(date).toLocaleDateString(
-        "en-IN", { day: "2-digit", month: "short", year: "numeric", }
-    );
+    return new Date(date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
 // FORMAT TIME
 function formatTime(date) {
-    return new Date(date).toLocaleTimeString(
-        "en-IN", { hour: "2-digit", minute: "2-digit", }
-    );
+    return new Date(date).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 }
 
 // MEETING REMINDER
-export async function sendMeetingReminderEmail({ to, userName, meeting, }) {
+export async function sendMeetingReminderEmail({ to, userName, meeting }) {
     const date = formatDate(meeting.startAt);
     const time = formatTime(meeting.startAt);
 
@@ -78,18 +74,20 @@ export async function sendMeetingReminderEmail({ to, userName, meeting, }) {
                     ${meeting.meetingType}
                 </p>
 
-                ${meeting.location?.address
-                ? `
+                ${
+                    meeting.location?.address
+                        ? `
                             <p>
                                 <strong>Location:</strong>
                                 ${meeting.location.address}
                             </p>
                         `
-                : ""
-            }
+                        : ''
+                }
 
-                ${meeting.meetingLink
-                ? `
+                ${
+                    meeting.meetingLink
+                        ? `
                             <p>
                                 <strong>Meeting Link:</strong>
                                 <a href="${meeting.meetingLink}">
@@ -97,18 +95,19 @@ export async function sendMeetingReminderEmail({ to, userName, meeting, }) {
                                 </a>
                             </p>
                         `
-                : ""
-            }
+                        : ''
+                }
 
-                ${meeting.description
-                ? `
+                ${
+                    meeting.description
+                        ? `
                             <p>
                                 <strong>Description:</strong>
                                 ${meeting.description}
                             </p>
                         `
-                : ""
-            }
+                        : ''
+                }
 
                 <hr />
 
@@ -122,7 +121,7 @@ export async function sendMeetingReminderEmail({ to, userName, meeting, }) {
 }
 
 // TASK REMINDER
-export async function sendTaskReminderEmail({ to, userName, task, }) {
+export async function sendTaskReminderEmail({ to, userName, task }) {
     const date = formatDate(task.dueDate);
     const time = formatTime(task.dueDate);
 
@@ -169,15 +168,16 @@ export async function sendTaskReminderEmail({ to, userName, task, }) {
                     ${time}
                 </p>
 
-                ${task.description
-                ? `
+                ${
+                    task.description
+                        ? `
                             <p>
                                 <strong>Description:</strong>
                                 ${task.description}
                             </p>
                         `
-                : ""
-            }
+                        : ''
+                }
 
                 <hr />
 

@@ -1,6 +1,6 @@
 // src/models/adminUser.model.js
 
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const adminUserSchema = new mongoose.Schema(
     {
@@ -20,7 +20,7 @@ const adminUserSchema = new mongoose.Schema(
 
         phone: {
             type: String,
-            default: "",
+            default: '',
             trim: true,
         },
 
@@ -32,20 +32,13 @@ const adminUserSchema = new mongoose.Schema(
 
         profileImage: {
             type: String,
-            default: "",
+            default: '',
         },
 
         role: {
             type: String,
-            enum: [
-                "owner",
-                "superadmin",
-                "sales",
-                "support",
-                "accounts",
-                "developer",
-            ],
-            default: "support",
+            enum: ['owner', 'superadmin', 'sales', 'support', 'accounts', 'developer'],
+            default: 'support',
             index: true,
         },
 
@@ -56,8 +49,8 @@ const adminUserSchema = new mongoose.Schema(
 
         status: {
             type: String,
-            enum: ["active", "inactive", "blocked"],
-            default: "active",
+            enum: ['active', 'inactive', 'blocked'],
+            default: 'active',
             index: true,
         },
 
@@ -68,15 +61,15 @@ const adminUserSchema = new mongoose.Schema(
 
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "AdminUser",
+            ref: 'AdminUser',
             default: null,
         },
     },
-    { timestamps: true, }
+    { timestamps: true }
 );
 
 // Indexes
 adminUserSchema.index({ email: 1 });
 adminUserSchema.index({ role: 1, status: 1 });
 
-export default mongoose.models.AdminUser || mongoose.model("AdminUser", adminUserSchema);
+export default mongoose.models.AdminUser || mongoose.model('AdminUser', adminUserSchema);

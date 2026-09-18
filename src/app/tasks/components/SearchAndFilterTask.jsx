@@ -1,102 +1,92 @@
 // src/app/tasks/components/SearchAndFilterTask.jsx
 
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Search, Filter, Plus, ChevronDown } from "lucide-react";
+import React, { useState } from 'react';
+import { Search, Filter, Plus, ChevronDown } from 'lucide-react';
 
 export default function SearchAndFilterTask({
-  search,
-  setSearch,
+    search,
+    setSearch,
 
-  relatedTo,
-  setRelatedTo,
+    relatedTo,
+    setRelatedTo,
 
-  assignedTo,
-  setAssignedTo,
+    assignedTo,
+    setAssignedTo,
 
-  priority,
-  setPriority,
+    priority,
+    setPriority,
 
-  onAddTask,
+    onAddTask,
 }) {
-  const [searchType, setSearchType] = useState("title");
+    const [searchType, setSearchType] = useState('title');
 
-  // ============================================================
-  // HANDLE SEARCH TYPE CHANGE
-  // ============================================================
+    // ============================================================
+    // HANDLE SEARCH TYPE CHANGE
+    // ============================================================
 
-  const handleSearchTypeChange = (e) => {
-    const value = e.target.value;
+    const handleSearchTypeChange = (e) => {
+        const value = e.target.value;
 
-    setSearchType(value);
+        setSearchType(value);
 
-    // Clear all search values when changing search type
-    setSearch("");
-    setRelatedTo("");
-    setAssignedTo("");
-  };
+        // Clear all search values when changing search type
+        setSearch('');
+        setRelatedTo('');
+        setAssignedTo('');
+    };
 
-  // ============================================================
-  // HANDLE SEARCH
-  // ============================================================
+    // ============================================================
+    // HANDLE SEARCH
+    // ============================================================
 
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
 
-    if (searchType === "title") {
-      setSearch(value);
-    }
+        if (searchType === 'title') {
+            setSearch(value);
+        }
 
-    if (searchType === "relatedTo") {
-      setRelatedTo(value);
-    }
+        if (searchType === 'relatedTo') {
+            setRelatedTo(value);
+        }
 
-    if (searchType === "assignedTo") {
-      setAssignedTo(value);
-    }
-  };
+        if (searchType === 'assignedTo') {
+            setAssignedTo(value);
+        }
+    };
 
-  // ============================================================
-  // CURRENT SEARCH VALUE
-  // ============================================================
+    // ============================================================
+    // CURRENT SEARCH VALUE
+    // ============================================================
 
-  const currentSearchValue =
-    searchType === "title"
-      ? search
-      : searchType === "relatedTo"
-        ? relatedTo
-        : assignedTo;
+    const currentSearchValue = searchType === 'title' ? search : searchType === 'relatedTo' ? relatedTo : assignedTo;
 
-  // ============================================================
-  // CURRENT PLACEHOLDER
-  // ============================================================
+    // ============================================================
+    // CURRENT PLACEHOLDER
+    // ============================================================
 
-  const placeholder =
-    searchType === "title"
-      ? "Search task title..."
-      : searchType === "relatedTo"
-        ? "Search related lead..."
-        : "Search assigned to...";
+    const placeholder = searchType === 'title' ? 'Search task title...' : searchType === 'relatedTo' ? 'Search related lead...' : 'Search assigned to...';
 
-  return (
-    <div
-      className="
+    return (
+        <div
+            className="
                 flex
                 flex-wrap
                 items-center
                 gap-2
                 sm:gap-3
             "
-    >
-      {/* ==================================================
+        >
+            {/* ==================================================
                 ADD TASK
             ================================================== */}
 
-      <button
-        type="button"
-        onClick={onAddTask}
-        className="
+            <button
+                type="button"
+                onClick={onAddTask}
+                className="
                     flex
                     h-9
                     items-center
@@ -107,20 +97,20 @@ export default function SearchAndFilterTask({
                     text-sm
                     btn-primary
                 "
-      >
-        <Plus size={16} />
+            >
+                <Plus size={16} />
 
-        <span>Add Task</span>
-      </button>
+                <span>Add Task</span>
+            </button>
 
-      {/* ==================================================
+            {/* ==================================================
                 PRIORITY FILTER
             ================================================== */}
 
-      <div className="relative">
-        <Filter
-          size={15}
-          className="
+            <div className="relative">
+                <Filter
+                    size={15}
+                    className="
                         pointer-events-none
                         absolute
                         left-3
@@ -128,14 +118,14 @@ export default function SearchAndFilterTask({
                         -translate-y-1/2
                         opacity-60
                     "
-        />
+                />
 
-        <select
-          value={priority}
-          onChange={(e) => {
-            setPriority(e.target.value);
-          }}
-          className="
+                <select
+                    value={priority}
+                    onChange={(e) => {
+                        setPriority(e.target.value);
+                    }}
+                    className="
                         h-9
                         appearance-none
                         rounded-lg
@@ -149,40 +139,40 @@ export default function SearchAndFilterTask({
                         focus:ring-2
                         focus:ring-blue-500
                     "
-        >
-          <option value="">All Leads</option>
+                >
+                    <option value="">All Leads</option>
 
-          <option value="low">Low</option>
+                    <option value="low">Low</option>
 
-          <option value="medium">Medium</option>
+                    <option value="medium">Medium</option>
 
-          <option value="high">High</option>
+                    <option value="high">High</option>
 
-          <option value="urgent">Urgent</option>
-        </select>
-      </div>
+                    <option value="urgent">Urgent</option>
+                </select>
+            </div>
 
-      {/* ==================================================
+            {/* ==================================================
                 SEARCH TYPE + SEARCH INPUT
             ================================================== */}
 
-      <div
-        className="
+            <div
+                className="
                     flex
                     w-full
                     sm:w-auto
                     items-center
                     gap-2
                 "
-      >
-        {/* ==================================================
+            >
+                {/* ==================================================
                     SEARCH TYPE DROPDOWN
                 ================================================== */}
 
-        <div className="relative shrink-0">
-          <Search
-            size={15}
-            className="
+                <div className="relative shrink-0">
+                    <Search
+                        size={15}
+                        className="
                             pointer-events-none
                             absolute
                             left-3
@@ -190,12 +180,12 @@ export default function SearchAndFilterTask({
                             -translate-y-1/2
                             opacity-60
                         "
-          />
+                    />
 
-          <select
-            value={searchType}
-            onChange={handleSearchTypeChange}
-            className="
+                    <select
+                        value={searchType}
+                        onChange={handleSearchTypeChange}
+                        className="
                             h-9
                             w-44
                             appearance-none
@@ -210,17 +200,17 @@ export default function SearchAndFilterTask({
                             focus:ring-2
                             focus:ring-blue-500
                         "
-          >
-            <option value="title">Search by Title</option>
+                    >
+                        <option value="title">Search by Title</option>
 
-            <option value="relatedTo">Search by Related Lead</option>
+                        <option value="relatedTo">Search by Related Lead</option>
 
-            <option value="assignedTo">Search by Assigned To</option>
-          </select>
+                        <option value="assignedTo">Search by Assigned To</option>
+                    </select>
 
-          <ChevronDown
-            size={15}
-            className="
+                    <ChevronDown
+                        size={15}
+                        className="
                             pointer-events-none
                             absolute
                             right-3
@@ -228,23 +218,23 @@ export default function SearchAndFilterTask({
                             -translate-y-1/2
                             opacity-60
                         "
-          />
-        </div>
+                    />
+                </div>
 
-        {/* ==================================================
+                {/* ==================================================
                     SEARCH INPUT
                 ================================================== */}
 
-        <div
-          className="
+                <div
+                    className="
                         relative
                         w-full
                         sm:w-52
                     "
-        >
-          <Search
-            size={16}
-            className="
+                >
+                    <Search
+                        size={16}
+                        className="
                             pointer-events-none
                             absolute
                             left-3
@@ -252,14 +242,14 @@ export default function SearchAndFilterTask({
                             -translate-y-1/2
                             opacity-60
                         "
-          />
+                    />
 
-          <input
-            type="text"
-            value={currentSearchValue}
-            onChange={handleSearchChange}
-            placeholder={placeholder}
-            className="
+                    <input
+                        type="text"
+                        value={currentSearchValue}
+                        onChange={handleSearchChange}
+                        placeholder={placeholder}
+                        className="
                             h-9
                             w-full
                             rounded-lg
@@ -273,9 +263,9 @@ export default function SearchAndFilterTask({
                             focus:ring-2
                             focus:ring-blue-500
                         "
-          />
+                    />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

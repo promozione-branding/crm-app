@@ -2,7 +2,6 @@
 
 //src/config/env.js
 
-
 export const ENV = {
     MONGODB_URI: process.env.MONGODB_URI,
 
@@ -14,5 +13,5 @@ export const ENV = {
 
     COOKIE_EXPIRE: Number(process.env.COOKIE_EXPIRE || 7),
 
-    NODE_ENV: process.env.NODE_ENV
+    NODE_ENV: process.env.NODE_ENV,
 };

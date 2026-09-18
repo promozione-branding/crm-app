@@ -1,7 +1,7 @@
 // src/app/api/admin/auth/login/route.js
 
-import { connectDB } from "@/config/db";
-import { loginAdmin } from "@/controllers/admin/adminAuthController";
+import { connectDB } from '@/config/db';
+import { loginAdmin } from '@/controllers/admin/adminAuthController';
 
 export async function POST(request) {
     try {
@@ -9,9 +9,6 @@ export async function POST(request) {
         return await loginAdmin(request);
     } catch (error) {
         console.error(error);
-        return Response.json(
-            { success: false, message: "Internal Server Error", },
-            { status: 500, }
-        );
+        return Response.json({ success: false, message: 'Internal Server Error' }, { status: 500 });
     }
 }

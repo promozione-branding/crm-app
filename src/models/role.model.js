@@ -1,60 +1,66 @@
 // src/models/role.model.js
 
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const PermissionSchema = new mongoose.Schema({
-    module: {
-        type: String,
-        required: true,
-    },
+const PermissionSchema = new mongoose.Schema(
+    {
+        module: {
+            type: String,
+            required: true,
+        },
 
-    actions: {
-        type: [String],
-        default: [],
-    },
+        actions: {
+            type: [String],
+            default: [],
+        },
 
-    scope: {
-        type: String,
-        enum: ["own", "team", "all"],
-        default: "own",
+        scope: {
+            type: String,
+            enum: ['own', 'team', 'all'],
+            default: 'own',
+        },
     },
-}, { _id: false, });
+    { _id: false }
+);
 
-const RoleSchema = new mongoose.Schema({
-    companyId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Company",
-        required: true,
-        index: true,
-    },
+const RoleSchema = new mongoose.Schema(
+    {
+        companyId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Company',
+            required: true,
+            index: true,
+        },
 
-    name: {
-        type: String,
-        required: true,
-        trim: true,
-    },
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+        },
 
-    description: {
-        type: String,
-        trim: true,
-        default: "",
-    },
+        description: {
+            type: String,
+            trim: true,
+            default: '',
+        },
 
-    permissions: {
-        type: [PermissionSchema],
-        default: [],
-    },
+        permissions: {
+            type: [PermissionSchema],
+            default: [],
+        },
 
-    isSystemRole: {
-        type: Boolean,
-        default: false,
-    },
+        isSystemRole: {
+            type: Boolean,
+            default: false,
+        },
 
-    createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        createdBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
     },
-}, { timestamps: true, });
+    { timestamps: true }
+);
 
 RoleSchema.index({ companyId: 1, name: 1 }, { unique: true });
-export default mongoose.models.Role || mongoose.model("Role", RoleSchema);
+export default mongoose.models.Role || mongoose.model('Role', RoleSchema);

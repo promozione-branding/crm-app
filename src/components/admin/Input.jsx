@@ -1,15 +1,8 @@
 // src/components/admin/Input.jsx
 
-"use client";
+'use client';
 
-export default function Input({
-    label,
-    icon: Icon,
-    required = false,
-    error,
-    className = "",
-    ...props
-}) {
+export default function Input({ label, icon: Icon, required = false, error, className = '', ...props }) {
     return (
         <div className={className}>
             <label className="mb-1.5 block text-sm font-medium text-gray-700">
@@ -27,8 +20,7 @@ export default function Input({
 
                 <input
                     {...props}
-                    className={`w-full rounded-lg border bg-white py-2.5 ${Icon ? "pl-10" : "pl-3"
-                        } pr-3 outline-none transition
+                    className={`w-full rounded-lg border bg-white py-2.5 ${Icon ? 'pl-10' : 'pl-3'} pr-3 outline-none transition
                     border-gray-300
                     focus:border-blue-300
                     focus:ring-1
@@ -36,11 +28,7 @@ export default function Input({
                 />
             </div>
 
-            {error && (
-                <p className="mt-1 text-xs text-red-500">
-                    {error}
-                </p>
-            )}
+            {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
         </div>
     );
 }

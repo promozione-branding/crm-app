@@ -1,42 +1,35 @@
 // src/components/user/Stickyfooter.jsx
 
+'use client';
 
-"use client";
-
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-    LayoutDashboard,
-    Users,
-    ClipboardList,
-    BarChart3,
-    PhoneCall,
-} from "lucide-react";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { LayoutDashboard, Users, ClipboardList, BarChart3, PhoneCall } from 'lucide-react';
 
 const menus = [
     {
-        name: "Dashboard",
-        href: "/dashboard",
+        name: 'Dashboard',
+        href: '/dashboard',
         icon: LayoutDashboard,
     },
     {
-        name: "Leads",
-        href: "/leads",
+        name: 'Leads',
+        href: '/leads',
         icon: Users,
     },
     {
-        name: "Task",
-        href: "/tasks",
+        name: 'Task',
+        href: '/tasks',
         icon: ClipboardList,
     },
     {
-        name: "Reports",
-        href: "/reports",
+        name: 'Reports',
+        href: '/reports',
         icon: BarChart3,
     },
     {
-        name: "Calls",
-        href: "/call-logs",
+        name: 'Calls',
+        href: '/call-logs',
         icon: PhoneCall,
     },
 ];
@@ -76,15 +69,13 @@ export default function Stickyfooter() {
                 {menus.map((item) => {
                     const Icon = item.icon;
 
-                    const active =
-                        pathname === item.href ||
-                        pathname.startsWith(item.href + "/");
+                    const active = pathname === item.href || pathname.startsWith(item.href + '/');
 
                     return (
                         <Link
                             key={item.name}
                             href={item.href}
-                            aria-current={active ? "page" : undefined}
+                            aria-current={active ? 'page' : undefined}
                             className={`
                                 relative
                                 flex
@@ -100,18 +91,10 @@ export default function Stickyfooter() {
                                 transition-all
                                 duration-200
                                 active:scale-95
-                                ${
-                                    active
-                                        ? "text-blue-600"
-                                        : "text-muted hover:text-app"
-                                }
+                                ${active ? 'text-blue-600' : 'text-muted hover:text-app'}
                             `}
                         >
-                            <Icon
-                                size={20}
-                                strokeWidth={active ? 2.5 : 2}
-                                className="shrink-0"
-                            />
+                            <Icon size={20} strokeWidth={active ? 2.5 : 2} className="shrink-0" />
 
                             <span
                                 className={`
@@ -121,11 +104,7 @@ export default function Stickyfooter() {
                                     xs:text-[11px]
                                     font-medium
                                     leading-none
-                                    ${
-                                        active
-                                            ? "text-blue-600"
-                                            : "text-muted"
-                                    }
+                                    ${active ? 'text-blue-600' : 'text-muted'}
                                 `}
                             >
                                 {item.name}
@@ -153,4 +132,3 @@ export default function Stickyfooter() {
         </nav>
     );
 }
-

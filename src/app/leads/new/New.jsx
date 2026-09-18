@@ -1,46 +1,46 @@
 // src/app/leads/new/New.jsx
 
-"use client";
+'use client';
 
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
-import axios from "axios";
-import toast from "react-hot-toast";
-import BasicInfo from "@/components/user/leads/form/BasicInfo";
-import CompanyInfo from "@/components/user/leads/form/CompanyInfo";
-import DealInfo from "@/components/user/leads/form/DealInfo";
-import CampaignInfo from "@/components/user/leads/form/CampaignInfo";
-import Description from "@/components/user/leads/form/Description";
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import BasicInfo from '@/components/user/leads/form/BasicInfo';
+import CompanyInfo from '@/components/user/leads/form/CompanyInfo';
+import DealInfo from '@/components/user/leads/form/DealInfo';
+import CampaignInfo from '@/components/user/leads/form/CampaignInfo';
+import Description from '@/components/user/leads/form/Description';
 
 export default function NewLead() {
     const [loading, setLoading] = useState(false);
     const [form, setForm] = useState({
         // Basic
-        name: "",
-        email: "",
-        phone: "",
-        place: "",
-        source: "",
+        name: '',
+        email: '',
+        phone: '',
+        place: '',
+        source: '',
 
         // Company
-        companyName: "",
-        gstNumber: "",
+        companyName: '',
+        gstNumber: '',
 
         // Deal
-        assignedTo: "",
-        stage: "new",
-        priceRange: "",
-        dealValue: "",
-        expectedClosureDate: "",
+        assignedTo: '',
+        stage: 'new',
+        priceRange: '',
+        dealValue: '',
+        expectedClosureDate: '',
 
         // Campaign
-        campaignId: "",
-        campaignName: "",
+        campaignId: '',
+        campaignName: '',
 
         // Description
-        product: "",
-        message: "",
+        product: '',
+        message: '',
     });
 
     const handleChange = ({ target: { name, value } }) => {
@@ -51,37 +51,37 @@ export default function NewLead() {
     };
 
     const handleSave = async () => {
-        const toastId = toast.loading("Saving...");
+        const toastId = toast.loading('Saving...');
 
         try {
             setLoading(true);
-            const { data } = await axios.post("/api/user/lead/create", form, { withCredentials: true, });
-            toast.success(data.message, { id: toastId, });
+            const { data } = await axios.post('/api/user/lead/create', form, { withCredentials: true });
+            toast.success(data.message, { id: toastId });
 
             setForm({
-                name: "",
-                email: "",
-                phone: "",
-                place: "",
-                source: "",
+                name: '',
+                email: '',
+                phone: '',
+                place: '',
+                source: '',
 
-                companyName: "",
-                gstNumber: "",
+                companyName: '',
+                gstNumber: '',
 
-                assignedTo: "",
-                stage: "new",
-                priceRange: "",
-                dealValue: "",
-                expectedClosureDate: "",
+                assignedTo: '',
+                stage: 'new',
+                priceRange: '',
+                dealValue: '',
+                expectedClosureDate: '',
 
-                campaignId: "",
-                campaignName: "",
+                campaignId: '',
+                campaignName: '',
 
-                product: "",
-                message: "",
+                product: '',
+                message: '',
             });
         } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to save lead.", { id: toastId, });
+            toast.error(error.response?.data?.message || 'Failed to save lead.', { id: toastId });
         } finally {
             setLoading(false);
         }
@@ -95,9 +95,7 @@ export default function NewLead() {
                         <ArrowLeft size={20} />
                     </Link>
 
-                    <h1 className="text-sm font-bold text-app">
-                        Create New Lead
-                    </h1>
+                    <h1 className="text-sm font-bold text-app">Create New Lead</h1>
                 </div>
 
                 <div className="flex md:gap-2 gap-1 text-sm">
@@ -106,7 +104,7 @@ export default function NewLead() {
                     </Link>
 
                     <button disabled={loading} onClick={handleSave} className="px-3 h-8 rounded-lg btn-primary">
-                        {loading ? "Creating" : "Create Lead"}
+                        {loading ? 'Creating' : 'Create Lead'}
                     </button>
                 </div>
             </div>

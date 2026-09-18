@@ -1,14 +1,10 @@
 // src/app/leads/components/LeadsActiveFilter.jsx
 
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
-export default function LeadsActiveFilter({
-    selectedStage,
-    selectedStageLabel,
-    onClear,
-}) {
+export default function LeadsActiveFilter({ selectedStage, selectedStageLabel, onClear }) {
     if (!selectedStage) {
         return null;
     }
@@ -23,9 +19,7 @@ export default function LeadsActiveFilter({
                 gap-2
             "
         >
-            <span className="text-xs opacity-60">
-                Filtered by:
-            </span>
+            <span className="text-xs opacity-60">Filtered by:</span>
 
             <button
                 type="button"

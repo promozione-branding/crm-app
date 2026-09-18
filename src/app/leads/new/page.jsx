@@ -1,11 +1,11 @@
 // src/app/leads/new/page.jsx
 
-"use client";
+'use client';
 
-import Navbar from "@/components/user/Navbar";
-import Sidebar from "@/components/user/Sidebar";
-import New from "./New";
-import Stickyfooter from "@/components/user/Stickyfooter";
+import Navbar from '@/components/user/Navbar';
+import Sidebar from '@/components/user/Sidebar';
+import New from './New';
+import Stickyfooter from '@/components/user/Stickyfooter';
 
 export default function page() {
     return (

@@ -1,10 +1,10 @@
 // src/app/ThemeProvider.jsx
 
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setTheme } from "@/redux/user/themeSlice";
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setTheme } from '@/redux/user/themeSlice';
 
 export default function ThemeProvider({ children }) {
     const dispatch = useDispatch();
@@ -13,7 +13,7 @@ export default function ThemeProvider({ children }) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        const savedTheme = localStorage.getItem("theme") || "dark";
+        const savedTheme = localStorage.getItem('theme') || 'dark';
         dispatch(setTheme(savedTheme));
         setMounted(true);
     }, [dispatch]);
@@ -21,9 +21,9 @@ export default function ThemeProvider({ children }) {
     useEffect(() => {
         if (!mounted) return;
 
-        localStorage.setItem("theme", theme);
+        localStorage.setItem('theme', theme);
 
-        document.documentElement.classList.remove("light", "dark");
+        document.documentElement.classList.remove('light', 'dark');
         document.documentElement.classList.add(theme);
     }, [theme, mounted]);
 

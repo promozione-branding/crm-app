@@ -1,12 +1,12 @@
 // src/components/user/ui/Calendar.jsx
 
-"use client";
+'use client';
 
-import dayjs from "dayjs";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { CalendarDays, Clock3 } from "lucide-react";
+import dayjs from 'dayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { CalendarDays, Clock3 } from 'lucide-react';
 
 export default function DateTimeInput({
     name,
@@ -14,7 +14,7 @@ export default function DateTimeInput({
     required = false,
     value,
     onChange,
-    placeholder = "Pick date & time",
+    placeholder = 'Pick date & time',
     error,
     minDate,
     maxDate,
@@ -27,7 +27,7 @@ export default function DateTimeInput({
             onChange?.({
                 target: {
                     name,
-                    value: "",
+                    value: '',
                 },
             });
             return;
@@ -48,9 +48,7 @@ export default function DateTimeInput({
                 <label className="block text-sm font-medium text-app mb-1">
                     {label}
 
-                    {required && (
-                        <span className="text-red-500 ml-1">*</span>
-                    )}
+                    {required && <span className="text-red-500 ml-1">*</span>}
                 </label>
             )}
 
@@ -65,10 +63,10 @@ export default function DateTimeInput({
                     closeOnSelect={false}
                     format="D MMM YYYY hh:mm A"
                     minutesStep={5}
-                    views={["year", "month", "day", "hours", "minutes"]}
+                    views={['year', 'month', 'day', 'hours', 'minutes']}
                     localeText={{
-                        okButtonLabel: "Done",
-                        cancelButtonLabel: "Cancel",
+                        okButtonLabel: 'Done',
+                        cancelButtonLabel: 'Cancel',
                     }}
                     slotProps={{
                         /* =========================
@@ -77,60 +75,54 @@ export default function DateTimeInput({
                         textField: {
                             fullWidth: true,
                             placeholder,
-                            size: "small",
+                            size: 'small',
                             error: !!error,
 
                             InputProps: {
-                                startAdornment: (
-                                    <CalendarDays
-                                        size={17}
-                                        className="mr-2 text-muted"
-                                    />
-                                ),
+                                startAdornment: <CalendarDays size={17} className="mr-2 text-muted" />,
                             },
 
                             sx: {
-                                "& .MuiOutlinedInput-root": {
-                                    height: "36px",
-                                    borderRadius: "8px",
-                                    backgroundColor: "var(--surface)",
+                                '& .MuiOutlinedInput-root': {
+                                    height: '36px',
+                                    borderRadius: '8px',
+                                    backgroundColor: 'var(--surface)',
 
-                                    "& fieldset": {
-                                        borderColor: "var(--border)",
+                                    '& fieldset': {
+                                        borderColor: 'var(--border)',
                                     },
 
-                                    "&:hover fieldset": {
-                                        borderColor: "var(--primary)",
+                                    '&:hover fieldset': {
+                                        borderColor: 'var(--primary)',
                                     },
 
-                                    "&.Mui-focused fieldset": {
-                                        borderColor: "var(--primary)",
-                                        borderWidth: "1px",
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: 'var(--primary)',
+                                        borderWidth: '1px',
                                     },
                                 },
 
-                                "& .MuiInputBase-input": {
-                                    color: "var(--text)",
-                                    fontSize: "13px",
-                                    padding: "7px 10px",
+                                '& .MuiInputBase-input': {
+                                    color: 'var(--text)',
+                                    fontSize: '13px',
+                                    padding: '7px 10px',
 
-                                    "&::placeholder": {
-                                        color: "var(--text-secondary)",
+                                    '&::placeholder': {
+                                        color: 'var(--text-secondary)',
                                         opacity: 1,
                                     },
                                 },
 
-                                "& .MuiInputAdornment-root": {
-                                    color: "var(--text-secondary)",
+                                '& .MuiInputAdornment-root': {
+                                    color: 'var(--text-secondary)',
                                 },
 
-                                "& .MuiIconButton-root": {
-                                    color: "var(--text-secondary)",
+                                '& .MuiIconButton-root': {
+                                    color: 'var(--text-secondary)',
                                 },
 
-                                "& .MuiInputBase-input.Mui-disabled": {
-                                    WebkitTextFillColor:
-                                        "var(--text-secondary)",
+                                '& .MuiInputBase-input.Mui-disabled': {
+                                    WebkitTextFillColor: 'var(--text-secondary)',
                                 },
                             },
                         },
@@ -139,276 +131,262 @@ export default function DateTimeInput({
                            POPPER
                         ========================= */
                         popper: {
-                            placement: "bottom-start",
+                            placement: 'bottom-start',
 
                             sx: {
                                 zIndex: 99999,
 
                                 /* Main popup */
-                                "& .MuiPaper-root": {
-                                    width: "490px !important",
-                                    minWidth: "490px !important",
+                                '& .MuiPaper-root': {
+                                    width: '490px !important',
+                                    minWidth: '490px !important',
 
-                                    backgroundColor: "var(--surface)",
-                                    color: "var(--text)",
+                                    backgroundColor: 'var(--surface)',
+                                    color: 'var(--text)',
 
-                                    border: "1px solid var(--border)",
-                                    borderRadius: "12px",
+                                    border: '1px solid var(--border)',
+                                    borderRadius: '12px',
 
-                                    overflow: "hidden",
+                                    overflow: 'hidden',
 
-                                    boxShadow:
-                                        "0 12px 40px rgba(0, 0, 0, 0.35)",
+                                    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.35)',
                                 },
 
                                 /* =========================
                                    PICKER LAYOUT
                                 ========================= */
-                                "& .MuiPickersLayout-root": {
-                                    width: "490px !important",
-                                    minWidth: "490px !important",
-                                    backgroundColor: "var(--surface)",
+                                '& .MuiPickersLayout-root': {
+                                    width: '490px !important',
+                                    minWidth: '490px !important',
+                                    backgroundColor: 'var(--surface)',
                                 },
 
                                 /*
                                  * Calendar + Time wrapper
                                  */
-                                "& .MuiPickersLayout-contentWrapper": {
-                                    display: "flex",
-                                    width: "100%",
+                                '& .MuiPickersLayout-contentWrapper': {
+                                    display: 'flex',
+                                    width: '100%',
                                 },
 
                                 /* =========================
                                    CALENDAR
                                 ========================= */
-                                "& .MuiDateCalendar-root": {
-                                    width: "300px !important",
-                                    minWidth: "300px !important",
+                                '& .MuiDateCalendar-root': {
+                                    width: '300px !important',
+                                    minWidth: '300px !important',
 
-                                    height: "340px",
+                                    height: '340px',
 
                                     margin: 0,
-                                    padding: "10px 12px",
+                                    padding: '10px 12px',
 
-                                    backgroundColor: "var(--surface)",
+                                    backgroundColor: 'var(--surface)',
                                 },
 
                                 /* Calendar header */
-                                "& .MuiPickersCalendarHeader-root": {
-                                    height: "45px",
+                                '& .MuiPickersCalendarHeader-root': {
+                                    height: '45px',
 
-                                    padding: "0 4px",
+                                    padding: '0 4px',
                                     margin: 0,
 
-                                    display: "flex",
-                                    alignItems: "center",
+                                    display: 'flex',
+                                    alignItems: 'center',
                                 },
 
-                                "& .MuiPickersCalendarHeader-label": {
-                                    color: "var(--text)",
+                                '& .MuiPickersCalendarHeader-label': {
+                                    color: 'var(--text)',
 
-                                    fontSize: "15px",
+                                    fontSize: '15px',
                                     fontWeight: 600,
                                 },
 
-                                "& .MuiPickersArrowSwitcher-button": {
-                                    color: "var(--text-secondary)",
-                                    padding: "6px",
+                                '& .MuiPickersArrowSwitcher-button': {
+                                    color: 'var(--text-secondary)',
+                                    padding: '6px',
 
-                                    "&:hover": {
-                                        backgroundColor: "var(--hover)",
+                                    '&:hover': {
+                                        backgroundColor: 'var(--hover)',
                                     },
                                 },
 
                                 /* Week names */
-                                "& .MuiDayCalendar-header": {
-                                    marginTop: "4px",
-                                    marginBottom: "4px",
+                                '& .MuiDayCalendar-header': {
+                                    marginTop: '4px',
+                                    marginBottom: '4px',
                                 },
 
-                                "& .MuiDayCalendar-weekDayLabel": {
-                                    width: "36px",
-                                    height: "30px",
+                                '& .MuiDayCalendar-weekDayLabel': {
+                                    width: '36px',
+                                    height: '30px',
 
-                                    color: "var(--text-secondary)",
+                                    color: 'var(--text-secondary)',
 
-                                    fontSize: "11px",
+                                    fontSize: '11px',
                                     fontWeight: 600,
                                 },
 
                                 /* Calendar days */
-                                "& .MuiDayCalendar-monthContainer": {
-                                    width: "100%",
+                                '& .MuiDayCalendar-monthContainer': {
+                                    width: '100%',
                                 },
 
-                                "& .MuiPickersDay-root": {
-                                    width: "36px",
-                                    height: "36px",
+                                '& .MuiPickersDay-root': {
+                                    width: '36px',
+                                    height: '36px',
 
-                                    margin: "1px",
+                                    margin: '1px',
 
-                                    color: "var(--text)",
+                                    color: 'var(--text)',
 
-                                    fontSize: "13px",
+                                    fontSize: '13px',
 
-                                    borderRadius: "7px",
+                                    borderRadius: '7px',
 
-                                    "&:hover": {
-                                        backgroundColor: "var(--hover)",
+                                    '&:hover': {
+                                        backgroundColor: 'var(--hover)',
                                     },
                                 },
 
                                 /* Selected date */
-                                "& .MuiPickersDay-root.Mui-selected": {
-                                    backgroundColor: "var(--primary)",
-                                    color: "#fff",
+                                '& .MuiPickersDay-root.Mui-selected': {
+                                    backgroundColor: 'var(--primary)',
+                                    color: '#fff',
 
-                                    "&:hover": {
-                                        backgroundColor: "var(--primary)",
+                                    '&:hover': {
+                                        backgroundColor: 'var(--primary)',
                                     },
                                 },
 
                                 /* Today */
-                                "& .MuiPickersDay-today": {
-                                    borderColor: "var(--primary)",
+                                '& .MuiPickersDay-today': {
+                                    borderColor: 'var(--primary)',
                                 },
 
                                 /* =========================
                                    TIME SECTION
                                 ========================= */
-                                "& .MuiMultiSectionDigitalClock-root": {
-                                    width: "190px !important",
-                                    minWidth: "190px !important",
+                                '& .MuiMultiSectionDigitalClock-root': {
+                                    width: '190px !important',
+                                    minWidth: '190px !important',
 
-                                    maxHeight: "340px",
+                                    maxHeight: '340px',
 
-                                    borderLeft:
-                                        "1px solid var(--border)",
+                                    borderLeft: '1px solid var(--border)',
 
-                                    backgroundColor: "var(--surface)",
+                                    backgroundColor: 'var(--surface)',
 
-                                    padding: "12px 8px",
+                                    padding: '12px 8px',
                                 },
 
                                 /* Each time column */
-                                "& .MuiMultiSectionDigitalClockSection-root":
-                                    {
-                                        width: "58px !important",
-                                    },
+                                '& .MuiMultiSectionDigitalClockSection-root': {
+                                    width: '58px !important',
+                                },
 
                                 /* Time items */
-                                "& .MuiMultiSectionDigitalClockSection-item":
-                                    {
-                                        width: "48px !important",
-                                        minWidth: "48px !important",
+                                '& .MuiMultiSectionDigitalClockSection-item': {
+                                    width: '48px !important',
+                                    minWidth: '48px !important',
 
-                                        height: "40px !important",
-                                        minHeight: "40px !important",
+                                    height: '40px !important',
+                                    minHeight: '40px !important',
 
-                                        margin: "2px 0",
+                                    margin: '2px 0',
 
-                                        padding: 0,
+                                    padding: 0,
 
-                                        borderRadius: "7px",
+                                    borderRadius: '7px',
 
-                                        color: "var(--text)",
+                                    color: 'var(--text)',
 
-                                        fontSize: "13px",
+                                    fontSize: '13px',
 
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
 
-                                        "&:hover": {
-                                            backgroundColor: "var(--hover)",
-                                        },
+                                    '&:hover': {
+                                        backgroundColor: 'var(--hover)',
                                     },
+                                },
 
                                 /* Selected time */
-                                "& .MuiMultiSectionDigitalClockSection-item.Mui-selected":
-                                    {
-                                        backgroundColor: "var(--primary)",
-                                        color: "#fff",
+                                '& .MuiMultiSectionDigitalClockSection-item.Mui-selected': {
+                                    backgroundColor: 'var(--primary)',
+                                    color: '#fff',
 
-                                        "&:hover": {
-                                            backgroundColor:
-                                                "var(--primary)",
-                                        },
+                                    '&:hover': {
+                                        backgroundColor: 'var(--primary)',
                                     },
+                                },
 
                                 /* =========================
                                    FOOTER
                                 ========================= */
-                                "& .MuiPickersLayout-actionBar": {
-                                    width: "100%",
+                                '& .MuiPickersLayout-actionBar': {
+                                    width: '100%',
 
-                                    minHeight: "54px",
+                                    minHeight: '54px',
 
-                                    padding: "8px 14px",
+                                    padding: '8px 14px',
 
-                                    borderTop:
-                                        "1px solid var(--border)",
+                                    borderTop: '1px solid var(--border)',
 
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "flex-end",
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'flex-end',
 
-                                    backgroundColor: "var(--surface)",
+                                    backgroundColor: 'var(--surface)',
                                 },
 
-                                "& .MuiPickersLayout-actionBar .MuiButton-root":
-                                    {
-                                        minWidth: "68px",
+                                '& .MuiPickersLayout-actionBar .MuiButton-root': {
+                                    minWidth: '68px',
 
-                                        height: "32px",
+                                    height: '32px',
 
-                                        padding: "5px 14px",
+                                    padding: '5px 14px',
 
-                                        borderRadius: "7px",
+                                    borderRadius: '7px',
 
-                                        backgroundColor:
-                                            "var(--primary)",
+                                    backgroundColor: 'var(--primary)',
 
-                                        color: "#fff",
+                                    color: '#fff',
 
-                                        fontSize: "12px",
-                                        fontWeight: 600,
+                                    fontSize: '12px',
+                                    fontWeight: 600,
 
-                                        textTransform: "none",
+                                    textTransform: 'none',
 
-                                        "&:hover": {
-                                            backgroundColor:
-                                                "var(--primary)",
-                                            opacity: 0.9,
-                                        },
+                                    '&:hover': {
+                                        backgroundColor: 'var(--primary)',
+                                        opacity: 0.9,
                                     },
+                                },
 
                                 /* =========================
                                    SHORTCUTS / TODAY
                                 ========================= */
-                                "& .MuiPickersShortcuts-root": {
-                                    padding: "8px 14px",
+                                '& .MuiPickersShortcuts-root': {
+                                    padding: '8px 14px',
 
-                                    borderTop:
-                                        "1px solid var(--border)",
+                                    borderTop: '1px solid var(--border)',
                                 },
 
-                                "& .MuiPickersShortcuts-root .MuiChip-root":
-                                    {
-                                        color: "var(--primary)",
+                                '& .MuiPickersShortcuts-root .MuiChip-root': {
+                                    color: 'var(--primary)',
 
-                                        backgroundColor:
-                                            "transparent",
+                                    backgroundColor: 'transparent',
 
-                                        fontSize: "12px",
+                                    fontSize: '12px',
 
-                                        fontWeight: 600,
+                                    fontWeight: 600,
 
-                                        "&:hover": {
-                                            backgroundColor:
-                                                "var(--hover)",
-                                        },
+                                    '&:hover': {
+                                        backgroundColor: 'var(--hover)',
                                     },
+                                },
                             },
                         },
 
@@ -416,7 +394,7 @@ export default function DateTimeInput({
                            ACTION BAR
                         ========================= */
                         actionBar: {
-                            actions: ["accept"],
+                            actions: ['accept'],
                         },
 
                         /* =========================
@@ -425,7 +403,7 @@ export default function DateTimeInput({
                         shortcuts: {
                             items: [
                                 {
-                                    label: "Today",
+                                    label: 'Today',
                                     getValue: () => dayjs(),
                                 },
                             ],
@@ -435,11 +413,7 @@ export default function DateTimeInput({
             </LocalizationProvider>
 
             {/* Error */}
-            {error && (
-                <p className="text-red-500 text-xs mt-1">
-                    {error}
-                </p>
-            )}
+            {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
         </div>
     );
 }

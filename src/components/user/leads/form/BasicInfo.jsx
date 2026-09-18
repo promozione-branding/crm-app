@@ -1,16 +1,16 @@
 // src/components/user/leads/form/BasicInfo.jsx
 
-import React from "react";
-import Input from "../../ui/Input";
-import SelectInput from "../../ui/SelectInput";
+import React from 'react';
+import Input from '../../ui/Input';
+import SelectInput from '../../ui/SelectInput';
 
 export default function BasicInfo({ form, handleChange }) {
     const handlePhoneChange = (e) => {
-        const value = e.target.value.replace(/\D/g, "").slice(0, 10);
+        const value = e.target.value.replace(/\D/g, '').slice(0, 10);
 
         handleChange({
             target: {
-                name: "phone",
+                name: 'phone',
                 value,
             },
         });
@@ -18,33 +18,16 @@ export default function BasicInfo({ form, handleChange }) {
 
     return (
         <div className="bg-card border border-app rounded-2xl p-5">
-            <h3 className="uppercase tracking-widest text-xs font-semibold text-muted">
-                Basic Information
-            </h3>
+            <h3 className="uppercase tracking-widest text-xs font-semibold text-muted">Basic Information</h3>
 
             <div className="border-b border-app my-4" />
 
             <div className="grid md:grid-cols-2 gap-3">
-
                 {/* Contact Name */}
-                <Input
-                    label="Contact Name"
-                    required
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    placeholder="Enter contact name"
-                />
+                <Input label="Contact Name" required name="name" value={form.name} onChange={handleChange} placeholder="Enter contact name" />
 
                 {/* Email */}
-                <Input
-                    label="Email"
-                    type="email"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="Enter email"
-                />
+                <Input label="Email" type="email" name="email" value={form.email} onChange={handleChange} placeholder="Enter email" />
 
                 {/* Phone */}
                 <Input
@@ -61,13 +44,7 @@ export default function BasicInfo({ form, handleChange }) {
                 />
 
                 {/* Location */}
-                <Input
-                    label="Location"
-                    name="place"
-                    value={form.place}
-                    onChange={handleChange}
-                    placeholder="Enter location"
-                />
+                <Input label="Location" name="place" value={form.place} onChange={handleChange} placeholder="Enter location" />
 
                 {/* City */}
                 {/* 
@@ -88,20 +65,20 @@ export default function BasicInfo({ form, handleChange }) {
                     onChange={handleChange}
                     options={[
                         {
-                            label: "Website",
-                            value: "website",
+                            label: 'Website',
+                            value: 'website',
                         },
                         {
-                            label: "Facebook",
-                            value: "facebook",
+                            label: 'Facebook',
+                            value: 'facebook',
                         },
                         {
-                            label: "Google Ads",
-                            value: "google",
+                            label: 'Google Ads',
+                            value: 'google',
                         },
                         {
-                            label: "WhatsApp",
-                            value: "whatsapp",
+                            label: 'WhatsApp',
+                            value: 'whatsapp',
                         },
                     ]}
                 />

@@ -1,11 +1,11 @@
 // src/app/api/user/[id]/route.js
 
-import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
+import { NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
 
-import { connectDB } from "@/config/db";
-import User from "@/models/user.model.js";
-import Role from "@/models/role.model.js";
+import { connectDB } from '@/config/db';
+import User from '@/models/user.model.js';
+import Role from '@/models/role.model.js';
 
 // GET USER BY ID
 export async function GET(request, { params }) {
@@ -14,15 +14,13 @@ export async function GET(request, { params }) {
 
         const { id } = await params;
 
-        const user = await User.findById(id)
-            .populate("roleId", "name")
-            .select("-password");
+        const user = await User.findById(id).populate('roleId', 'name').select('-password');
 
         if (!user) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "User not found",
+                    message: 'User not found',
                 },
                 { status: 404 }
             );
@@ -35,14 +33,13 @@ export async function GET(request, { params }) {
             },
             { status: 200 }
         );
-
     } catch (error) {
-        console.error("Get user error:", error);
+        console.error('Get user error:', error);
 
         return NextResponse.json(
             {
                 success: false,
-                message: "Failed to get user",
+                message: 'Failed to get user',
             },
             { status: 500 }
         );
@@ -57,16 +54,7 @@ export async function PUT(request, { params }) {
         const { id } = await params;
         const body = await request.json();
 
-        const {
-            name,
-            email,
-            phone,
-            password,
-            roleId,
-            leadSources,
-            status,
-        } = body;
-
+        const { name, email, phone, password, roleId, leadSources, status } = body;
 
         const user = await User.findById(id);
 
@@ -74,18 +62,16 @@ export async function PUT(request, { params }) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "User not found",
+                    message: 'User not found',
                 },
                 { status: 404 }
             );
         }
 
-
         // -------------------------
         // Check duplicate email
         // -------------------------
         if (email && email !== user.email) {
-
             const existingUser = await User.findOne({
                 email,
                 _id: { $ne: id },
@@ -95,13 +81,12 @@ export async function PUT(request, { params }) {
                 return NextResponse.json(
                     {
                         success: false,
-                        message: "Email already exists",
+                        message: 'Email already exists',
                     },
                     { status: 400 }
                 );
             }
         }
-
 
         // -------------------------
         // Update basic fields
@@ -122,7 +107,6 @@ export async function PUT(request, { params }) {
             user.roleId = roleId;
         }
 
-
         // -------------------------
         // Update Lead Sources
         // -------------------------
@@ -141,32 +125,25 @@ export async function PUT(request, { params }) {
             user.password = await bcrypt.hash(password, 10);
         }
 
-
         await user.save();
 
-
-        const updatedUser = await User.findById(id)
-            .populate("roleId", "name")
-            .select("-password");
-
+        const updatedUser = await User.findById(id).populate('roleId', 'name').select('-password');
 
         return NextResponse.json(
             {
                 success: true,
-                message: "User updated successfully",
+                message: 'User updated successfully',
                 user: updatedUser,
             },
             { status: 200 }
         );
-
     } catch (error) {
-
-        console.error("Update user error:", error);
+        console.error('Update user error:', error);
 
         return NextResponse.json(
             {
                 success: false,
-                message: "Failed to update user",
+                message: 'Failed to update user',
             },
             { status: 500 }
         );
@@ -185,7 +162,7 @@ export async function DELETE(request, { params }) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "User not found",
+                    message: 'User not found',
                 },
                 { status: 404 }
             );
@@ -196,18 +173,17 @@ export async function DELETE(request, { params }) {
         return NextResponse.json(
             {
                 success: true,
-                message: "User deleted successfully",
+                message: 'User deleted successfully',
             },
             { status: 200 }
         );
-
     } catch (error) {
-        console.error("Delete user error:", error);
+        console.error('Delete user error:', error);
 
         return NextResponse.json(
             {
                 success: false,
-                message: "Failed to delete user",
+                message: 'Failed to delete user',
             },
             { status: 500 }
         );

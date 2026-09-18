@@ -1,10 +1,10 @@
 // src/lib/cron/reminderCron.js
 
-import cron from "node-cron";
-import { connectDB } from "@/config/db";
-import Meeting from "@/models/meeting.model";
-import LeadTask from "@/models/task.model.js";
-import { sendMeetingReminderEmail, sendTaskReminderEmail, } from "@/lib/mail/reminderMail";
+import cron from 'node-cron';
+import { connectDB } from '@/config/db';
+import Meeting from '@/models/meeting.model';
+import LeadTask from '@/models/task.model.js';
+import { sendMeetingReminderEmail, sendTaskReminderEmail } from '@/lib/mail/reminderMail';
 
 let cronStarted = false;
 export function startReminderCron() {
@@ -13,10 +13,10 @@ export function startReminderCron() {
     }
 
     cronStarted = true;
-    console.log("Reminder cron started");
+    console.log('Reminder cron started');
 
     // Every minute
-    cron.schedule("* * * * *", async () => {
+    cron.schedule('* * * * *', async () => {
         try {
             await connectDB();
             const now = new Date();
@@ -24,10 +24,12 @@ export function startReminderCron() {
 
             // MEETINGS
             const meetings = await Meeting.find({
-                status: "scheduled",
-                reminderAt: { $ne: null, $lte: now, },
+                status: 'scheduled',
+                reminderAt: { $ne: null, $lte: now },
                 reminderSent: false,
-            }).populate({ path: "assignedTo", select: "name email", }).limit(50);
+            })
+                .populate({ path: 'assignedTo', select: 'name email' })
+                .limit(50);
 
             for (const meeting of meetings) {
                 try {
@@ -37,11 +39,8 @@ export function startReminderCron() {
                         continue;
                     }
 
-                    await sendMeetingReminderEmail({ to: user.email, userName: user.name, meeting, });
-                    await Meeting.updateOne(
-                        { _id: meeting._id, reminderSent: false, },
-                        { $set: { reminderSent: true, }, }
-                    );
+                    await sendMeetingReminderEmail({ to: user.email, userName: user.name, meeting });
+                    await Meeting.updateOne({ _id: meeting._id, reminderSent: false }, { $set: { reminderSent: true } });
 
                     console.log(`Meeting reminder sent to ${user.email}`);
                 } catch (error) {
@@ -51,10 +50,12 @@ export function startReminderCron() {
 
             // TASKS
             const tasks = await LeadTask.find({
-                status: "pending",
-                reminderAt: { $ne: null, $lte: now, },
+                status: 'pending',
+                reminderAt: { $ne: null, $lte: now },
                 reminderSent: false,
-            }).populate({ path: "assignedTo", select: "name email", }).limit(50);
+            })
+                .populate({ path: 'assignedTo', select: 'name email' })
+                .limit(50);
 
             for (const task of tasks) {
                 try {
@@ -64,20 +65,16 @@ export function startReminderCron() {
                         continue;
                     }
 
-                    await sendTaskReminderEmail({ to: user.email, userName: user.name, task, });
-                    await LeadTask.updateOne(
-                        { _id: task._id, reminderSent: false, },
-                        { $set: { reminderSent: true, }, }
-                    );
+                    await sendTaskReminderEmail({ to: user.email, userName: user.name, task });
+                    await LeadTask.updateOne({ _id: task._id, reminderSent: false }, { $set: { reminderSent: true } });
 
                     console.log(`Task reminder sent to ${user.email}`);
                 } catch (error) {
                     console.error(`Task reminder failed: ${task._id}`, error);
                 }
             }
-
         } catch (error) {
-            console.error("[Reminder Cron] Error:", error);
+            console.error('[Reminder Cron] Error:', error);
         }
     });
 }

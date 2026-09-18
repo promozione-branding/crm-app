@@ -2,11 +2,10 @@
 
 //src/api/user/task/route.js
 
-
-import { NextResponse } from "next/server";
-import { connectDB } from "@/config/db";
-import { createTaskService, getAllTasksService, } from "@/controllers/user/taskController";
-import { getCurrentUser } from "@/utils/auth";
+import { NextResponse } from 'next/server';
+import { connectDB } from '@/config/db';
+import { createTaskService, getAllTasksService } from '@/controllers/user/taskController';
+import { getCurrentUser } from '@/utils/auth';
 
 // POST /api/user/task
 export async function POST(request) {
@@ -16,15 +15,12 @@ export async function POST(request) {
         const body = await request.json();
         const task = await createTaskService(user, body);
 
-        return NextResponse.json(
-            { success: true, message: "Task created successfully.", data: task, },
-            { status: 201 }
-        );
+        return NextResponse.json({ success: true, message: 'Task created successfully.', data: task }, { status: 201 });
     } catch (error) {
-        console.error("CREATE TASK ERROR:", error);
+        console.error('CREATE TASK ERROR:', error);
         return NextResponse.json(
-            { success: false, message: error.message || "Failed to create task.", },
-            { status: error.message === "Not authenticated" ? 401 : 400, }
+            { success: false, message: error.message || 'Failed to create task.' },
+            { status: error.message === 'Not authenticated' ? 401 : 400 }
         );
     }
 }
@@ -40,7 +36,7 @@ export async function GET(request) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "User not found.",
+                    message: 'User not found.',
                 },
                 {
                     status: 401,
@@ -51,67 +47,40 @@ export async function GET(request) {
         const { searchParams } = new URL(request.url);
 
         const query = {
-            leadId:
-                searchParams.get("leadId") ||
-                undefined,
+            leadId: searchParams.get('leadId') || undefined,
 
-            status:
-                searchParams.get("status") ||
-                undefined,
+            status: searchParams.get('status') || undefined,
 
-            assignedTo:
-                searchParams.get("assignedTo") ||
-                undefined,
+            assignedTo: searchParams.get('assignedTo') || undefined,
 
-            priority:
-                searchParams.get("priority") ||
-                undefined,
+            priority: searchParams.get('priority') || undefined,
 
-            search:
-                searchParams.get("search") ||
-                undefined,
+            search: searchParams.get('search') || undefined,
 
             // Related Lead name search
-            relatedTo:
-                searchParams.get("relatedTo") ||
-                undefined,
+            relatedTo: searchParams.get('relatedTo') || undefined,
 
             // Assigned User name search
-            assignedToSearch:
-                searchParams.get("assignedToSearch") ||
-                undefined,
+            assignedToSearch: searchParams.get('assignedToSearch') || undefined,
 
-            page:
-                searchParams.get("page") ||
-                1,
+            page: searchParams.get('page') || 1,
 
-            limit:
-                searchParams.get("limit") ||
-                25,
+            limit: searchParams.get('limit') || 25,
         };
 
-        const result =
-            await getAllTasksService(
-                user,
-                query
-            );
+        const result = await getAllTasksService(user, query);
 
         return NextResponse.json({
             success: true,
             data: result,
         });
     } catch (error) {
-        console.error(
-            "GET TASKS ERROR:",
-            error
-        );
+        console.error('GET TASKS ERROR:', error);
 
         return NextResponse.json(
             {
                 success: false,
-                message:
-                    error.message ||
-                    "Failed to fetch tasks.",
+                message: error.message || 'Failed to fetch tasks.',
             },
             {
                 status: 400,

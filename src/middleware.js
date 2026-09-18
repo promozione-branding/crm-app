@@ -1,72 +1,60 @@
 // src/middleware.js
 
-import { NextResponse } from "next/server";
-import { ENV } from "./config/env";
+import { NextResponse } from 'next/server';
+import { ENV } from './config/env';
 
 export function middleware(request) {
     const { pathname } = request.nextUrl;
 
-    const host = request.headers.get("host") || "";
-    const hostname = host.split(":")[0];
+    const host = request.headers.get('host') || '';
+    const hostname = host.split(':')[0];
 
-    const adminToken =
-        request.cookies.get(ENV.ADMIN_COOKIE_NAME)?.value;
+    const adminToken = request.cookies.get(ENV.ADMIN_COOKIE_NAME)?.value;
 
-    const clientToken =
-        request.cookies.get(ENV.CLIENT_COOKIE_NAME)?.value;
+    const clientToken = request.cookies.get(ENV.CLIENT_COOKIE_NAME)?.value;
 
     const clientRoutes = [
-        "/dashboard",
-        "/leads",
-        "/clients",
-        "/profile",
-        "/call-logs",
-        "/tasks",
-        "/reports",
-        "/organization-settings",
-        "/team-management",
-        "/integration",
-        "/settings",
+        '/dashboard',
+        '/leads',
+        '/clients',
+        '/profile',
+        '/call-logs',
+        '/tasks',
+        '/reports',
+        '/organization-settings',
+        '/team-management',
+        '/integration',
+        '/settings',
     ];
 
-    const isClientRoute = clientRoutes.some((route) =>
-        pathname.startsWith(route)
-    );
+    const isClientRoute = clientRoutes.some((route) => pathname.startsWith(route));
 
-    const isLocalhost = hostname === "localhost";
+    const isLocalhost = hostname === 'localhost';
 
     // ADMIN DOMAIN
-    const isAdminDomain = hostname === "crm.inquirybazaar.com";
+    const isAdminDomain = hostname === 'crm.inquirybazaar.com';
 
     // CLIENT DOMAIN
-    const isClientDomain =
-        hostname.startsWith("crm.") &&
-        hostname !== "crm.inquirybazaar.com";
+    const isClientDomain = hostname.startsWith('crm.') && hostname !== 'crm.inquirybazaar.com';
 
     // ======================================================
     // LOCALHOST
     // ======================================================
 
     if (isLocalhost) {
-
         // ---------- ADMIN ----------
 
-        if (pathname === "/admin/login") {
+        if (pathname === '/admin/login') {
             if (adminToken) {
-                return NextResponse.redirect(
-                    new URL("/admin/dashboard", request.url)
-                );
+                return NextResponse.redirect(new URL('/admin/dashboard', request.url));
             }
 
             return NextResponse.next();
         }
 
-        if (pathname.startsWith("/admin")) {
-
+        if (pathname.startsWith('/admin')) {
             if (!adminToken) {
-                return NextResponse.redirect(
-                    new URL("/admin/login", request.url)
-                );
+                return NextResponse.redirect(new URL('/admin/login', request.url));
             }
 
             return NextResponse.next();
@@ -74,23 +62,17 @@ export function middleware(request) {
 
         // ---------- CLIENT ----------
 
-        if (pathname === "/login") {
-
+        if (pathname === '/login') {
             if (clientToken) {
-                return NextResponse.redirect(
-                    new URL("/dashboard", request.url)
-                );
+                return NextResponse.redirect(new URL('/dashboard', request.url));
             }
 
             return NextResponse.next();
         }
 
         if (isClientRoute) {
-
             if (!clientToken) {
-                return NextResponse.redirect(
-                    new URL("/login", request.url)
-                );
+                return NextResponse.redirect(new URL('/login', request.url));
             }
 
             return NextResponse.next();
@@ -106,15 +88,11 @@ export function middleware(request) {
     // ======================================================
 
     if (isAdminDomain) {
-
         // Admin Login
 
-        if (pathname === "/admin/login") {
-
+        if (pathname === '/admin/login') {
             if (adminToken) {
-                return NextResponse.redirect(
-                    new URL("/admin/dashboard", request.url)
-                );
+                return NextResponse.redirect(new URL('/admin/dashboard', request.url));
             }
 
             return NextResponse.next();
@@ -122,12 +100,9 @@ export function middleware(request) {
 
         // Admin Pages
 
-        if (pathname.startsWith("/admin")) {
-
+        if (pathname.startsWith('/admin')) {
             if (!adminToken) {
-                return NextResponse.redirect(
-                    new URL("/admin/login", request.url)
-                );
+                return NextResponse.redirect(new URL('/admin/login', request.url));
             }
 
             return NextResponse.next();
@@ -135,12 +110,9 @@ export function middleware(request) {
 
         // Client Login
 
-        if (pathname === "/login") {
-
+        if (pathname === '/login') {
             if (clientToken) {
-                return NextResponse.redirect(
-                    new URL("/dashboard", request.url)
-                );
+                return NextResponse.redirect(new URL('/dashboard', request.url));
             }
 
             return NextResponse.next();
@@ -149,11 +121,8 @@ export function middleware(request) {
         // Client Pages
 
         if (isClientRoute) {
-
             if (!clientToken) {
-                return NextResponse.redirect(
-                    new URL("/login", request.url)
-                );
+                return NextResponse.redirect(new URL('/login', request.url));
             }
 
             return NextResponse.next();
@@ -169,36 +138,23 @@ export function middleware(request) {
     // ======================================================
 
     if (isClientDomain) {
-
         // Never allow admin
 
-        if (pathname.startsWith("/admin")) {
-            return NextResponse.redirect(
-                new URL("/login", request.url)
-            );
+        if (pathname.startsWith('/admin')) {
+            return NextResponse.redirect(new URL('/login', request.url));
         }
 
         // Root
 
-        if (pathname === "/") {
-            return NextResponse.redirect(
-                new URL(
-                    clientToken
-                        ? "/dashboard"
-                        : "/login",
-                    request.url
-                )
-            );
+        if (pathname === '/') {
+            return NextResponse.redirect(new URL(clientToken ? '/dashboard' : '/login', request.url));
         }
 
         // Login
 
-        if (pathname === "/login") {
-
+        if (pathname === '/login') {
             if (clientToken) {
-                return NextResponse.redirect(
-                    new URL("/dashboard", request.url)
-                );
+                return NextResponse.redirect(new URL('/dashboard', request.url));
             }
 
             return NextResponse.next();
@@ -207,11 +163,8 @@ export function middleware(request) {
         // Protected Pages
 
         if (isClientRoute) {
-
             if (!clientToken) {
-                return NextResponse.redirect(
-                    new URL("/login", request.url)
-                );
+                return NextResponse.redirect(new URL('/login', request.url));
             }
 
             return NextResponse.next();
@@ -219,19 +172,12 @@ export function middleware(request) {
 
         // Unknown URL
 
-        return NextResponse.redirect(
-            new URL(
-                clientToken
-                    ? "/dashboard"
-                    : "/login",
-                request.url
-            )
-        );
+        return NextResponse.redirect(new URL(clientToken ? '/dashboard' : '/login', request.url));
     }
 
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: ["/((?!api|_next|favicon.ico|.*\\..*).*)"],
+    matcher: ['/((?!api|_next|favicon.ico|.*\\..*).*)'],
 };

@@ -1,100 +1,71 @@
 // src/components/user/leads/form/Meetings.jsx
 
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import {
-    Plus,
-    CalendarDays,
-    MapPin,
-    User,
-    Clock,
-    MoreVertical,
-    Pencil,
-    Trash2,
-    Video,
-    Phone,
-} from "lucide-react";
+import { Plus, CalendarDays, MapPin, User, Clock, MoreVertical, Pencil, Trash2, Video, Phone } from 'lucide-react';
 
-import axios from "axios";
-import toast from "react-hot-toast";
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
-import Modal from "@/components/user/ui/Modal";
-import Input from "../../ui/Input";
-import TextArea from "../../ui/TextArea";
-import SelectInput from "../../ui/SelectInput";
+import Modal from '@/components/user/ui/Modal';
+import Input from '../../ui/Input';
+import TextArea from '../../ui/TextArea';
+import SelectInput from '../../ui/SelectInput';
 
-export default function Meetings({
-    leadId,
-    users = [],
-    usersLoading = false,
-}) {
+export default function Meetings({ leadId, users = [], usersLoading = false }) {
+    const [open, setOpen] = useState(false);
 
-    const [open, setOpen] =
-        useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const [loading, setLoading] =
-        useState(false);
+    const [saving, setSaving] = useState(false);
 
-    const [saving, setSaving] =
-        useState(false);
+    const [meetings, setMeetings] = useState([]);
 
-    const [meetings, setMeetings] =
-        useState([]);
-
-    const [editingId, setEditingId] =
-        useState(null);
+    const [editingId, setEditingId] = useState(null);
 
     const [form, setForm] = useState({
+        metPersonName: '',
 
-        metPersonName: "",
+        title: '',
 
-        title: "",
+        description: '',
 
-        description: "",
+        assignedTo: '',
 
-        assignedTo: "",
+        startAt: '',
 
-        startAt: "",
+        endAt: '',
 
-        endAt: "",
+        meetingType: 'in_person',
 
-        meetingType: "in_person",
+        locationType: 'client',
 
-        locationType: "client",
+        address: '',
 
-        address: "",
+        latitude: '',
 
-        latitude: "",
+        longitude: '',
 
-        longitude: "",
+        meetingLink: '',
 
-        meetingLink: "",
+        reminderMinutes: '0',
 
-        reminderMinutes: "0",
+        notes: '',
 
-        notes: "",
-
-        status: "scheduled",
+        status: 'scheduled',
     });
 
     // ============================================================
     // HANDLE CHANGE
     // ============================================================
 
-    const handleChange = ({
-        target: {
-            name,
-            value,
-        },
-    }) => {
-
+    const handleChange = ({ target: { name, value } }) => {
         setForm((prev) => ({
             ...prev,
             [name]: value,
         }));
-
     };
 
     // ============================================================
@@ -102,39 +73,21 @@ export default function Meetings({
     // ============================================================
 
     const getMeetings = async () => {
-
         if (!leadId) return;
 
         try {
-
             setLoading(true);
 
-            const res =
-                await axios.get(
-                    `/api/user/meeting?leadId=${leadId}`,
-                    {
-                        withCredentials:
-                            true,
-                    }
-                );
+            const res = await axios.get(`/api/user/meeting?leadId=${leadId}`, {
+                withCredentials: true,
+            });
 
-            setMeetings(
-                res.data?.data || []
-            );
-
+            setMeetings(res.data?.data || []);
         } catch (error) {
-
-            toast.error(
-                error.response?.data?.message ||
-                "Failed to load meetings."
-            );
-
+            toast.error(error.response?.data?.message || 'Failed to load meetings.');
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
     // ============================================================
@@ -142,11 +95,9 @@ export default function Meetings({
     // ============================================================
 
     useEffect(() => {
-
         if (!leadId) return;
 
         getMeetings();
-
     }, [leadId]);
 
     // ============================================================
@@ -154,44 +105,39 @@ export default function Meetings({
     // ============================================================
 
     const resetForm = () => {
-
         setForm({
+            metPersonName: '',
 
-            metPersonName: "",
+            title: '',
 
-            title: "",
+            description: '',
 
-            description: "",
+            assignedTo: '',
 
-            assignedTo: "",
+            startAt: '',
 
-            startAt: "",
+            endAt: '',
 
-            endAt: "",
+            meetingType: 'in_person',
 
-            meetingType:
-                "in_person",
+            locationType: 'client',
 
-            locationType:
-                "client",
+            address: '',
 
-            address: "",
+            latitude: '',
 
-            latitude: "",
+            longitude: '',
 
-            longitude: "",
+            meetingLink: '',
 
-            meetingLink: "",
+            reminderMinutes: '0',
 
-            reminderMinutes: "0",
+            notes: '',
 
-            notes: "",
-
-            status: "scheduled",
+            status: 'scheduled',
         });
 
         setEditingId(null);
-
     };
 
     // ============================================================
@@ -199,11 +145,9 @@ export default function Meetings({
     // ============================================================
 
     const openAdd = () => {
-
         resetForm();
 
         setOpen(true);
-
     };
 
     // ============================================================
@@ -211,143 +155,79 @@ export default function Meetings({
     // ============================================================
 
     const handleSave = async () => {
-
         if (!form.metPersonName.trim()) {
-
-            return toast.error(
-                "Enter meeting person name."
-            );
-
+            return toast.error('Enter meeting person name.');
         }
 
         if (!form.title.trim()) {
-
-            return toast.error(
-                "Enter meeting title."
-            );
-
+            return toast.error('Enter meeting title.');
         }
 
         if (!form.assignedTo) {
-
-            return toast.error(
-                "Select assigned user."
-            );
-
+            return toast.error('Select assigned user.');
         }
 
         if (!form.startAt) {
-
-            return toast.error(
-                "Select meeting date and time."
-            );
-
+            return toast.error('Select meeting date and time.');
         }
 
-        const toastId =
-            toast.loading(
-                editingId
-                    ? "Updating meeting..."
-                    : "Creating meeting..."
-            );
+        const toastId = toast.loading(editingId ? 'Updating meeting...' : 'Creating meeting...');
 
         try {
-
             setSaving(true);
 
             const payload = {
-
                 leadId,
 
-                metPersonName:
-                    form.metPersonName,
+                metPersonName: form.metPersonName,
 
-                title:
-                    form.title,
+                title: form.title,
 
-                description:
-                    form.description,
+                description: form.description,
 
-                assignedTo:
-                    form.assignedTo,
+                assignedTo: form.assignedTo,
 
-                startAt:
-                    form.startAt,
+                startAt: form.startAt,
 
-                endAt:
-                    form.endAt ||
-                    null,
+                endAt: form.endAt || null,
 
-                meetingType:
-                    form.meetingType,
+                meetingType: form.meetingType,
 
                 location: {
+                    type: form.locationType,
 
-                    type:
-                        form.locationType,
+                    address: form.address,
 
-                    address:
-                        form.address,
+                    latitude: form.latitude,
 
-                    latitude:
-                        form.latitude,
-
-                    longitude:
-                        form.longitude,
-
+                    longitude: form.longitude,
                 },
 
-                meetingLink:
-                    form.meetingLink,
+                meetingLink: form.meetingLink,
 
-                reminderMinutes:
-                    Number(
-                        form.reminderMinutes
-                    ),
+                reminderMinutes: Number(form.reminderMinutes),
 
-                notes:
-                    form.notes,
+                notes: form.notes,
 
-                status:
-                    form.status,
+                status: form.status,
             };
 
             if (editingId) {
+                await axios.put(`/api/user/meeting/${editingId}`, payload, {
+                    withCredentials: true,
+                });
 
-                await axios.put(
-                    `/api/user/meeting/${editingId}`,
-                    payload,
-                    {
-                        withCredentials:
-                            true,
-                    }
-                );
-
-                toast.success(
-                    "Meeting updated successfully.",
-                    {
-                        id: toastId,
-                    }
-                );
-
+                toast.success('Meeting updated successfully.', {
+                    id: toastId,
+                });
             } else {
+                await axios.post('/api/user/meeting', payload, {
+                    withCredentials: true,
+                });
 
-                await axios.post(
-                    "/api/user/meeting",
-                    payload,
-                    {
-                        withCredentials:
-                            true,
-                    }
-                );
-
-                toast.success(
-                    "Meeting created successfully.",
-                    {
-                        id: toastId,
-                    }
-                );
-
+                toast.success('Meeting created successfully.', {
+                    id: toastId,
+                });
             }
 
             setOpen(false);
@@ -355,23 +235,13 @@ export default function Meetings({
             resetForm();
 
             await getMeetings();
-
         } catch (error) {
-
-            toast.error(
-                error.response?.data?.message ||
-                "Failed to save meeting.",
-                {
-                    id: toastId,
-                }
-            );
-
+            toast.error(error.response?.data?.message || 'Failed to save meeting.', {
+                id: toastId,
+            });
         } finally {
-
             setSaving(false);
-
         }
-
     };
 
     // ============================================================
@@ -379,148 +249,69 @@ export default function Meetings({
     // ============================================================
 
     const handleEdit = (meeting) => {
-
-        setEditingId(
-            meeting._id
-        );
+        setEditingId(meeting._id);
 
         setForm({
+            metPersonName: meeting.metPersonName || '',
 
-            metPersonName:
-                meeting.metPersonName ||
-                "",
+            title: meeting.title || '',
 
-            title:
-                meeting.title ||
-                "",
+            description: meeting.description || '',
 
-            description:
-                meeting.description ||
-                "",
+            assignedTo: meeting.assignedTo?._id || meeting.assignedTo || '',
 
-            assignedTo:
-                meeting.assignedTo?._id ||
-                meeting.assignedTo ||
-                "",
+            startAt: meeting.startAt ? new Date(meeting.startAt).toISOString().slice(0, 16) : '',
 
-            startAt:
-                meeting.startAt
-                    ? new Date(
-                          meeting.startAt
-                      )
-                          .toISOString()
-                          .slice(
-                              0,
-                              16
-                          )
-                    : "",
+            endAt: meeting.endAt ? new Date(meeting.endAt).toISOString().slice(0, 16) : '',
 
-            endAt:
-                meeting.endAt
-                    ? new Date(
-                          meeting.endAt
-                      )
-                          .toISOString()
-                          .slice(
-                              0,
-                              16
-                          )
-                    : "",
+            meetingType: meeting.meetingType || 'in_person',
 
-            meetingType:
-                meeting.meetingType ||
-                "in_person",
+            locationType: meeting.location?.type || 'client',
 
-            locationType:
-                meeting.location?.type ||
-                "client",
+            address: meeting.location?.address || '',
 
-            address:
-                meeting.location?.address ||
-                "",
+            latitude: meeting.location?.latitude || '',
 
-            latitude:
-                meeting.location?.latitude ||
-                "",
+            longitude: meeting.location?.longitude || '',
 
-            longitude:
-                meeting.location?.longitude ||
-                "",
+            meetingLink: meeting.meetingLink || '',
 
-            meetingLink:
-                meeting.meetingLink ||
-                "",
+            reminderMinutes: String(meeting.reminderMinutes ?? 0),
 
-            reminderMinutes:
-                String(
-                    meeting.reminderMinutes ??
-                    0
-                ),
+            notes: meeting.notes || '',
 
-            notes:
-                meeting.notes ||
-                "",
-
-            status:
-                meeting.status ||
-                "scheduled",
+            status: meeting.status || 'scheduled',
         });
 
         setOpen(true);
-
     };
 
     // ============================================================
     // DELETE MEETING
     // ============================================================
 
-    const handleDelete = async (
-        meetingId
-    ) => {
-
-        const confirmed =
-            window.confirm(
-                "Are you sure you want to delete this meeting?"
-            );
+    const handleDelete = async (meetingId) => {
+        const confirmed = window.confirm('Are you sure you want to delete this meeting?');
 
         if (!confirmed) return;
 
-        const toastId =
-            toast.loading(
-                "Deleting meeting..."
-            );
+        const toastId = toast.loading('Deleting meeting...');
 
         try {
+            await axios.delete(`/api/user/meeting/${meetingId}`, {
+                withCredentials: true,
+            });
 
-            await axios.delete(
-                `/api/user/meeting/${meetingId}`,
-                {
-                    withCredentials:
-                        true,
-                }
-            );
-
-            toast.success(
-                "Meeting deleted successfully.",
-                {
-                    id: toastId,
-                }
-            );
+            toast.success('Meeting deleted successfully.', {
+                id: toastId,
+            });
 
             await getMeetings();
-
         } catch (error) {
-
-            toast.error(
-                error.response?.data?.message ||
-                "Failed to delete meeting.",
-                {
-                    id: toastId,
-                }
-            );
-
+            toast.error(error.response?.data?.message || 'Failed to delete meeting.', {
+                id: toastId,
+            });
         }
-
     };
 
     // ============================================================
@@ -528,7 +319,6 @@ export default function Meetings({
     // ============================================================
 
     return (
-
         <>
             <div
                 className="
@@ -539,7 +329,6 @@ export default function Meetings({
                     px-2
                 "
             >
-
                 <div
                     className="
                         bg-card
@@ -550,7 +339,6 @@ export default function Meetings({
                         text-app
                     "
                 >
-
                     <div
                         className="
                             flex
@@ -558,7 +346,6 @@ export default function Meetings({
                             justify-between
                         "
                     >
-
                         <h3
                             className="
                                 uppercase
@@ -585,11 +372,8 @@ export default function Meetings({
                             "
                             title="Add Meeting"
                         >
-                            <Plus
-                                size={16}
-                            />
+                            <Plus size={16} />
                         </button>
-
                     </div>
 
                     <div
@@ -601,7 +385,6 @@ export default function Meetings({
                     />
 
                     {loading ? (
-
                         <div
                             className="
                                 py-12
@@ -612,9 +395,7 @@ export default function Meetings({
                         >
                             Loading meetings...
                         </div>
-
                     ) : meetings.length === 0 ? (
-
                         <div
                             className="
                                 py-12
@@ -625,88 +406,70 @@ export default function Meetings({
                         >
                             No meetings found.
                         </div>
-
                     ) : (
-
                         <div
                             className="
                                 space-y-3
                             "
                         >
-
-                            {meetings.map(
-                                (meeting) => (
-
-                                    <div
-                                        key={
-                                            meeting._id
-                                        }
-                                        className="
+                            {meetings.map((meeting) => (
+                                <div
+                                    key={meeting._id}
+                                    className="
                                             border
                                             border-app
                                             rounded-xl
                                             p-4
                                             bg-app
                                         "
-                                    >
-
-                                        <div
-                                            className="
+                                >
+                                    <div
+                                        className="
                                                 flex
                                                 items-start
                                                 justify-between
                                                 gap-3
                                             "
-                                        >
-
-                                            <div
-                                                className="
+                                    >
+                                        <div
+                                            className="
                                                     min-w-0
                                                 "
-                                            >
-
-                                                <h4
-                                                    className="
+                                        >
+                                            <h4
+                                                className="
                                                         text-sm
                                                         font-semibold
                                                         break-words
                                                     "
-                                                >
-                                                    {
-                                                        meeting.title
-                                                    }
-                                                </h4>
+                                            >
+                                                {meeting.title}
+                                            </h4>
 
-                                                <p
-                                                    className="
+                                            <p
+                                                className="
                                                         text-xs
                                                         text-muted
                                                         mt-1
                                                     "
-                                                >
-                                                    {
-                                                        meeting.metPersonName
-                                                    }
-                                                </p>
+                                            >
+                                                {meeting.metPersonName}
+                                            </p>
+                                        </div>
 
-                                            </div>
-
-                                            <span
-                                                className="
+                                        <span
+                                            className="
                                                     text-xs
                                                     capitalize
                                                     shrink-0
                                                 "
-                                            >
-                                                {
-                                                    meeting.status
-                                                }
-                                            </span>
+                                        >
+                                            {meeting.status}
+                                        </span>
+                                    </div>
 
-                                        </div>
-
-                                        <div
-                                            className="
+                                    <div
+                                        className="
                                                 grid
                                                 md:grid-cols-2
                                                 gap-2
@@ -714,110 +477,81 @@ export default function Meetings({
                                                 text-xs
                                                 text-muted
                                             "
+                                    >
+                                        <div
+                                            className="
+                                                    flex
+                                                    items-center
+                                                    gap-2
+                                                "
                                         >
+                                            <CalendarDays size={13} />
 
-                                            <div
-                                                className="
-                                                    flex
-                                                    items-center
-                                                    gap-2
-                                                "
-                                            >
-                                                <CalendarDays
-                                                    size={13}
-                                                />
-
-                                                {meeting.startAt
-                                                    ? new Date(
-                                                          meeting.startAt
-                                                      ).toLocaleString()
-                                                    : "-"}
-                                            </div>
-
-                                            <div
-                                                className="
-                                                    flex
-                                                    items-center
-                                                    gap-2
-                                                "
-                                            >
-                                                <User
-                                                    size={13}
-                                                />
-
-                                                {meeting.assignedTo?.name ||
-                                                    "-"}
-                                            </div>
-
-                                            {meeting.location?.address && (
-
-                                                <div
-                                                    className="
-                                                        flex
-                                                        items-center
-                                                        gap-2
-                                                    "
-                                                >
-                                                    <MapPin
-                                                        size={13}
-                                                    />
-
-                                                    {
-                                                        meeting.location.address
-                                                    }
-                                                </div>
-
-                                            )}
-
-                                            {meeting.meetingLink && (
-
-                                                <div
-                                                    className="
-                                                        flex
-                                                        items-center
-                                                        gap-2
-                                                    "
-                                                >
-                                                    <Video
-                                                        size={13}
-                                                    />
-
-                                                    <a
-                                                        href={
-                                                            meeting.meetingLink
-                                                        }
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="
-                                                            text-blue-500
-                                                            hover:underline
-                                                        "
-                                                    >
-                                                        Meeting Link
-                                                    </a>
-
-                                                </div>
-
-                                            )}
-
+                                            {meeting.startAt ? new Date(meeting.startAt).toLocaleString() : '-'}
                                         </div>
 
                                         <div
                                             className="
+                                                    flex
+                                                    items-center
+                                                    gap-2
+                                                "
+                                        >
+                                            <User size={13} />
+
+                                            {meeting.assignedTo?.name || '-'}
+                                        </div>
+
+                                        {meeting.location?.address && (
+                                            <div
+                                                className="
+                                                        flex
+                                                        items-center
+                                                        gap-2
+                                                    "
+                                            >
+                                                <MapPin size={13} />
+
+                                                {meeting.location.address}
+                                            </div>
+                                        )}
+
+                                        {meeting.meetingLink && (
+                                            <div
+                                                className="
+                                                        flex
+                                                        items-center
+                                                        gap-2
+                                                    "
+                                            >
+                                                <Video size={13} />
+
+                                                <a
+                                                    href={meeting.meetingLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="
+                                                            text-blue-500
+                                                            hover:underline
+                                                        "
+                                                >
+                                                    Meeting Link
+                                                </a>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div
+                                        className="
                                                 flex
                                                 gap-2
                                                 mt-3
                                             "
-                                        >
-
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleEdit(
-                                                        meeting
-                                                    )
-                                                }
-                                                className="
+                                    >
+                                        <button
+                                            type="button"
+                                            onClick={() => handleEdit(meeting)}
+                                            className="
                                                     px-3
                                                     py-1.5
                                                     text-xs
@@ -829,24 +563,15 @@ export default function Meetings({
                                                     items-center
                                                     gap-1.5
                                                 "
-                                            >
+                                        >
+                                            <Pencil size={13} />
+                                            Edit
+                                        </button>
 
-                                                <Pencil
-                                                    size={13}
-                                                />
-
-                                                Edit
-
-                                            </button>
-
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    handleDelete(
-                                                        meeting._id
-                                                    )
-                                                }
-                                                className="
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDelete(meeting._id)}
+                                            className="
                                                     px-3
                                                     py-1.5
                                                     text-xs
@@ -855,59 +580,31 @@ export default function Meetings({
                                                     border-app
                                                     hover-app
                                                 "
-                                            >
-
-                                                <Trash2
-                                                    size={13}
-                                                />
-
-                                                Delete
-
-                                            </button>
-
-                                        </div>
-
+                                        >
+                                            <Trash2 size={13} />
+                                            Delete
+                                        </button>
                                     </div>
-
-                                )
-                            )}
-
+                                </div>
+                            ))}
                         </div>
-
                     )}
-
                 </div>
-
             </div>
 
             {/* =====================================================
                 MEETING MODAL
             ===================================================== */}
 
-            <Modal
-                isOpen={open}
-                onClose={() =>
-                    setOpen(false)
-                }
-                size="lg"
-            >
-
-                <Modal.Header>
-
-                    {editingId
-                        ? "Edit Meeting"
-                        : "Add Meeting"}
-
-                </Modal.Header>
+            <Modal isOpen={open} onClose={() => setOpen(false)} size="lg">
+                <Modal.Header>{editingId ? 'Edit Meeting' : 'Add Meeting'}</Modal.Header>
 
                 <Modal.Body>
-
                     <div
                         className="
                             space-y-2
                         "
                     >
-
                         <div
                             className="
                                 grid
@@ -915,69 +612,38 @@ export default function Meetings({
                                 gap-2
                             "
                         >
-
                             <Input
                                 label="Meeting Person Name"
                                 required
                                 name="metPersonName"
-                                value={
-                                    form.metPersonName
-                                }
-                                onChange={
-                                    handleChange
-                                }
+                                value={form.metPersonName}
+                                onChange={handleChange}
                                 placeholder="Enter person name"
                             />
 
-                            <Input
-                                label="Meeting Title"
-                                required
-                                name="title"
-                                value={
-                                    form.title
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                placeholder="Enter meeting title"
-                            />
-
+                            <Input label="Meeting Title" required name="title" value={form.title} onChange={handleChange} placeholder="Enter meeting title" />
                         </div>
 
                         <SelectInput
                             label="Assigned To"
                             required
                             name="assignedTo"
-                            value={
-                                form.assignedTo
-                            }
-                            onChange={
-                                handleChange
-                            }
-                            disabled={
-                                usersLoading
-                            }
+                            value={form.assignedTo}
+                            onChange={handleChange}
+                            disabled={usersLoading}
                             options={[
-                                ...users.map(
-                                    (user) => ({
-                                        label:
-                                            `${user.name} (${user.roleId?.name})`,
-                                        value:
-                                            user._id,
-                                    })
-                                ),
+                                ...users.map((user) => ({
+                                    label: `${user.name} (${user.roleId?.name})`,
+                                    value: user._id,
+                                })),
                             ]}
                         />
 
                         <TextArea
                             label="Description"
                             name="description"
-                            value={
-                                form.description
-                            }
-                            onChange={
-                                handleChange
-                            }
+                            value={form.description}
+                            onChange={handleChange}
                             placeholder="Add meeting details..."
                         />
 
@@ -988,32 +654,9 @@ export default function Meetings({
                                 gap-2
                             "
                         >
+                            <Input label="Start" required type="datetime-local" name="startAt" value={form.startAt} onChange={handleChange} />
 
-                            <Input
-                                label="Start"
-                                required
-                                type="datetime-local"
-                                name="startAt"
-                                value={
-                                    form.startAt
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                            />
-
-                            <Input
-                                label="End"
-                                type="datetime-local"
-                                name="endAt"
-                                value={
-                                    form.endAt
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                            />
-
+                            <Input label="End" type="datetime-local" name="endAt" value={form.endAt} onChange={handleChange} />
                         </div>
 
                         <div
@@ -1023,34 +666,23 @@ export default function Meetings({
                                 gap-2
                             "
                         >
-
                             <SelectInput
                                 label="Meeting Type"
                                 name="meetingType"
-                                value={
-                                    form.meetingType
-                                }
-                                onChange={
-                                    handleChange
-                                }
+                                value={form.meetingType}
+                                onChange={handleChange}
                                 options={[
                                     {
-                                        label:
-                                            "In Person",
-                                        value:
-                                            "in_person",
+                                        label: 'In Person',
+                                        value: 'in_person',
                                     },
                                     {
-                                        label:
-                                            "Online",
-                                        value:
-                                            "online",
+                                        label: 'Online',
+                                        value: 'online',
                                     },
                                     {
-                                        label:
-                                            "Phone",
-                                        value:
-                                            "phone",
+                                        label: 'Phone',
+                                        value: 'phone',
                                     },
                                 ]}
                             />
@@ -1058,47 +690,26 @@ export default function Meetings({
                             <SelectInput
                                 label="Location Type"
                                 name="locationType"
-                                value={
-                                    form.locationType
-                                }
-                                onChange={
-                                    handleChange
-                                }
+                                value={form.locationType}
+                                onChange={handleChange}
                                 options={[
                                     {
-                                        label:
-                                            "Client",
-                                        value:
-                                            "client",
+                                        label: 'Client',
+                                        value: 'client',
                                     },
                                     {
-                                        label:
-                                            "Office",
-                                        value:
-                                            "office",
+                                        label: 'Office',
+                                        value: 'office',
                                     },
                                     {
-                                        label:
-                                            "Other",
-                                        value:
-                                            "other",
+                                        label: 'Other',
+                                        value: 'other',
                                     },
                                 ]}
                             />
-
                         </div>
 
-                        <Input
-                            label="Address"
-                            name="address"
-                            value={
-                                form.address
-                            }
-                            onChange={
-                                handleChange
-                            }
-                            placeholder="Enter address"
-                        />
+                        <Input label="Address" name="address" value={form.address} onChange={handleChange} placeholder="Enter address" />
 
                         <div
                             className="
@@ -1107,105 +718,46 @@ export default function Meetings({
                                 gap-2
                             "
                         >
+                            <Input label="Latitude" name="latitude" value={form.latitude} onChange={handleChange} />
 
-                            <Input
-                                label="Latitude"
-                                name="latitude"
-                                value={
-                                    form.latitude
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                            />
-
-                            <Input
-                                label="Longitude"
-                                name="longitude"
-                                value={
-                                    form.longitude
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                            />
-
+                            <Input label="Longitude" name="longitude" value={form.longitude} onChange={handleChange} />
                         </div>
 
-                        <Input
-                            label="Meeting Link"
-                            name="meetingLink"
-                            value={
-                                form.meetingLink
-                            }
-                            onChange={
-                                handleChange
-                            }
-                            placeholder="https://..."
-                        />
+                        <Input label="Meeting Link" name="meetingLink" value={form.meetingLink} onChange={handleChange} placeholder="https://..." />
 
                         <SelectInput
                             label="Reminder"
                             name="reminderMinutes"
-                            value={
-                                String(
-                                    form.reminderMinutes
-                                )
-                            }
-                            onChange={
-                                handleChange
-                            }
+                            value={String(form.reminderMinutes)}
+                            onChange={handleChange}
                             options={[
                                 {
-                                    label:
-                                        "None",
-                                    value:
-                                        "0",
+                                    label: 'None',
+                                    value: '0',
                                 },
                                 {
-                                    label:
-                                        "5 minutes before",
-                                    value:
-                                        "5",
+                                    label: '5 minutes before',
+                                    value: '5',
                                 },
                                 {
-                                    label:
-                                        "10 minutes before",
-                                    value:
-                                        "10",
+                                    label: '10 minutes before',
+                                    value: '10',
                                 },
                                 {
-                                    label:
-                                        "15 minutes before",
-                                    value:
-                                        "15",
+                                    label: '15 minutes before',
+                                    value: '15',
                                 },
                             ]}
                         />
 
-                        <TextArea
-                            label="Notes"
-                            name="notes"
-                            value={
-                                form.notes
-                            }
-                            onChange={
-                                handleChange
-                            }
-                            placeholder="Add notes..."
-                        />
-
+                        <TextArea label="Notes" name="notes" value={form.notes} onChange={handleChange} placeholder="Add notes..." />
                     </div>
-
                 </Modal.Body>
 
                 <Modal.Footer>
-
                     <button
                         type="button"
-                        onClick={() =>
-                            setOpen(false)
-                        }
+                        onClick={() => setOpen(false)}
                         className="
                             px-4
                             py-2
@@ -1222,12 +774,8 @@ export default function Meetings({
 
                     <button
                         type="button"
-                        onClick={
-                            handleSave
-                        }
-                        disabled={
-                            saving
-                        }
+                        onClick={handleSave}
+                        disabled={saving}
                         className="
                             px-4
                             py-2
@@ -1238,21 +786,10 @@ export default function Meetings({
                             disabled:cursor-not-allowed
                         "
                     >
-
-                        {saving
-                            ? "Saving..."
-                            : editingId
-                                ? "Update"
-                                : "Save"}
-
+                        {saving ? 'Saving...' : editingId ? 'Update' : 'Save'}
                     </button>
-
                 </Modal.Footer>
-
             </Modal>
-
         </>
-
     );
-
 }

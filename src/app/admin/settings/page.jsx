@@ -1,16 +1,16 @@
 // src/app/admin/settings/page.jsx
 
-import Sidebar from "@/components/admin/Sidebar";
-import Setting from "./Setting";
+import Sidebar from '@/components/admin/Sidebar';
+import Setting from './Setting';
 
 export default function Page() {
-  return (
-    <div className="flex bg-gray-100 min-h-screen">
-      <Sidebar />
+    return (
+        <div className="flex bg-gray-100 min-h-screen">
+            <Sidebar />
 
-      <main className="flex-1 px-4 pt-15 md:p-6">
-        <Setting />
-      </main>
-    </div>
-  );
+            <main className="flex-1 px-4 pt-15 md:p-6">
+                <Setting />
+            </main>
+        </div>
+    );
 }

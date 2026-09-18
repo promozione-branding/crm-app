@@ -1,20 +1,11 @@
 // src/components/user/ui/TextArea.jsx
 
-"use client";
+'use client';
 
-export default function TextArea({
-    label,
-    name,
-    value,
-    onChange,
-    placeholder,
-    rows = 5,
-}) {
+export default function TextArea({ label, name, value, onChange, placeholder, rows = 5 }) {
     return (
         <div className="space-y-2">
-            <label className="text-xs font-medium text-app">
-                {label}
-            </label>
+            <label className="text-xs font-medium text-app">{label}</label>
 
             <textarea
                 name={name}

@@ -1,18 +1,15 @@
 // src/lib/webhook/webhookApi.js
 
-import crypto from "crypto";
+import crypto from 'crypto';
 
 export function generateWebhookApiKey() {
-    const randomPart = crypto.randomBytes(32).toString("hex");
+    const randomPart = crypto.randomBytes(32).toString('hex');
 
     return `sk_live_${randomPart}`;
 }
 
 export function hashWebhookApiKey(apiKey) {
-    return crypto
-        .createHash("sha256")
-        .update(apiKey)
-        .digest("hex");
+    return crypto.createHash('sha256').update(apiKey).digest('hex');
 }
 
 export function getWebhookApiPrefix(apiKey) {

@@ -1,30 +1,16 @@
 // src/app/tasks/components/TaskCard.jsx
 
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import {
-    ChevronDown,
-    ChevronUp,
-    Calendar,
-    UserRound,
-    UserCheck,
-    CircleDot,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, Calendar, UserRound, UserCheck, CircleDot } from 'lucide-react';
 
-import {
-    PriorityBadge,
-    StatusBadge,
-} from "./TaskBadges";
+import { PriorityBadge, StatusBadge } from './TaskBadges';
 
-import { formatDueDate } from "./TaskUtils";
+import { formatDueDate } from './TaskUtils';
 
-export default function TaskCard({
-    task,
-    onAction,
-    sno,
-}) {
+export default function TaskCard({ task, onAction, sno }) {
     const [expanded, setExpanded] = useState(false);
 
     // ============================================================
@@ -59,7 +45,6 @@ export default function TaskCard({
                 bg-app
             "
         >
-
             {/* ==================================================
                 COMPACT TASK ROW
             ================================================== */}
@@ -79,17 +64,14 @@ export default function TaskCard({
                     hover:bg-surface
                 "
             >
-
                 {/* ==================================================
                     TASK INFO
                 ================================================== */}
 
                 <div className="min-w-0 flex-1">
-
                     {/* S.NO + TASK TITLE */}
 
                     <div className="flex items-center gap-2 min-w-0">
-
                         {sno !== undefined && (
                             <span
                                 className="
@@ -109,10 +91,8 @@ export default function TaskCard({
                                 font-semibold
                             "
                         >
-                            {task?.title ||
-                                "Untitled Task"}
+                            {task?.title || 'Untitled Task'}
                         </p>
-
                     </div>
 
                     {/* RELATED LEAD */}
@@ -141,11 +121,9 @@ export default function TaskCard({
                                 opacity-90
                             "
                         >
-                            {task?.leadId?.name ||
-                                "No related lead"}
+                            {task?.leadId?.name || 'No related lead'}
                         </span>
                     </div>
-
                 </div>
 
                 {/* ==================================================
@@ -153,9 +131,7 @@ export default function TaskCard({
                 ================================================== */}
 
                 <div className="shrink-0">
-                    <PriorityBadge
-                        priority={task?.priority}
-                    />
+                    <PriorityBadge priority={task?.priority} />
                 </div>
 
                 {/* ==================================================
@@ -172,10 +148,7 @@ export default function TaskCard({
                         sm:flex
                     "
                 >
-                    <Calendar
-                        size={11}
-                        className="opacity-40"
-                    />
+                    <Calendar size={11} className="opacity-40" />
 
                     <span
                         className="
@@ -184,9 +157,7 @@ export default function TaskCard({
                             opacity-60
                         "
                     >
-                        {formatDueDate(
-                            task?.dueDate
-                        )}
+                        {formatDueDate(task?.dueDate)}
                     </span>
                 </div>
 
@@ -206,13 +177,8 @@ export default function TaskCard({
                         bg-surface
                     "
                 >
-                    {expanded ? (
-                        <ChevronUp size={14} />
-                    ) : (
-                        <ChevronDown size={14} />
-                    )}
+                    {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 </div>
-
             </button>
 
             {/* ==================================================
@@ -231,7 +197,6 @@ export default function TaskCard({
                     sm:hidden
                 "
             >
-
                 <div
                     className="
                         flex
@@ -239,10 +204,7 @@ export default function TaskCard({
                         gap-1
                     "
                 >
-                    <Calendar
-                        size={11}
-                        className="opacity-40"
-                    />
+                    <Calendar size={11} className="opacity-40" />
 
                     <span
                         className="
@@ -251,7 +213,7 @@ export default function TaskCard({
                         "
                     >
                         Due
-                    </span> 
+                    </span>
                 </div>
 
                 <span
@@ -261,11 +223,8 @@ export default function TaskCard({
                         opacity-70
                     "
                 >
-                    {formatDueDate(
-                        task?.dueDate
-                    )}
+                    {formatDueDate(task?.dueDate)}
                 </span>
-
             </div>
 
             {/* ==================================================
@@ -281,9 +240,7 @@ export default function TaskCard({
                         p-3
                     "
                 >
-
                     <div className="space-y-2">
-
                         {/* ==================================================
                             STATUS
                         ================================================== */}
@@ -309,10 +266,7 @@ export default function TaskCard({
                                     gap-2
                                 "
                             >
-                                <CircleDot
-                                    size={13}
-                                    className="opacity-40"
-                                />
+                                <CircleDot size={13} className="opacity-40" />
 
                                 <span
                                     className="
@@ -324,9 +278,7 @@ export default function TaskCard({
                                 </span>
                             </div>
 
-                            <StatusBadge
-                                status={task?.status}
-                            />
+                            <StatusBadge status={task?.status} />
                         </div>
 
                         {/* ==================================================
@@ -354,10 +306,7 @@ export default function TaskCard({
                                     gap-2
                                 "
                             >
-                                <UserRound
-                                    size={13}
-                                    className="opacity-40"
-                                />
+                                <UserRound size={13} className="opacity-40" />
 
                                 <span
                                     className="
@@ -378,8 +327,7 @@ export default function TaskCard({
                                     font-medium
                                 "
                             >
-                                {task?.createdBy?.name ||
-                                    "-"}
+                                {task?.createdBy?.name || '-'}
                             </span>
                         </div>
 
@@ -408,10 +356,7 @@ export default function TaskCard({
                                     gap-2
                                 "
                             >
-                                <UserCheck
-                                    size={13}
-                                    className="opacity-40"
-                                />
+                                <UserCheck size={13} className="opacity-40" />
 
                                 <span
                                     className="
@@ -432,11 +377,9 @@ export default function TaskCard({
                                     font-medium
                                 "
                             >
-                                {task?.assignedTo?.name ||
-                                    "-"}
+                                {task?.assignedTo?.name || '-'}
                             </span>
                         </div>
-
                     </div>
 
                     {/* ==================================================
@@ -462,10 +405,8 @@ export default function TaskCard({
                     >
                         View / Edit Task
                     </button>
-
                 </div>
             )}
-
         </div>
     );
 }

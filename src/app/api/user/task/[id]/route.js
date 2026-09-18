@@ -2,12 +2,12 @@
 
 //src/api/user/task/[id]/route.js
 
-import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import { ENV } from "@/config/env";
-import { connectDB } from "@/config/db";
-import { getTaskByIdService, updateTaskService, } from "@/controllers/user/taskController";
-import { getCurrentUser } from "@/utils/auth";
+import { NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
+import { ENV } from '@/config/env';
+import { connectDB } from '@/config/db';
+import { getTaskByIdService, updateTaskService } from '@/controllers/user/taskController';
+import { getCurrentUser } from '@/utils/auth';
 
 // GET SINGLE TASK
 export async function GET(request, { params }) {
@@ -17,12 +17,9 @@ export async function GET(request, { params }) {
         const { id } = await params;
 
         const task = await getTaskByIdService(user, id);
-        return NextResponse.json({ success: true, data: task, });
+        return NextResponse.json({ success: true, data: task });
     } catch (error) {
-        return NextResponse.json(
-            { success: false, message: error.message, },
-            { status: error.message === "Not authenticated" ? 401 : 400, }
-        );
+        return NextResponse.json({ success: false, message: error.message }, { status: error.message === 'Not authenticated' ? 401 : 400 });
     }
 }
 
@@ -34,12 +31,9 @@ export async function PUT(request, { params }) {
         const { id } = await params;
         const body = await request.json();
         const task = await updateTaskService(user, id, body);
-        return NextResponse.json({ success: true, message: "Task updated successfully.", data: task, });
+        return NextResponse.json({ success: true, message: 'Task updated successfully.', data: task });
     } catch (error) {
-        console.error("UPDATE TASK ERROR:", error);
-        return NextResponse.json(
-            { success: false, message: error.message, },
-            { status: error.message === "Not authenticated" ? 401 : 400, }
-        );
+        console.error('UPDATE TASK ERROR:', error);
+        return NextResponse.json({ success: false, message: error.message }, { status: error.message === 'Not authenticated' ? 401 : 400 });
     }
 }

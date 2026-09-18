@@ -1,301 +1,290 @@
 // src/components/user/leads/form/Task.jsx
 
-"use client";
+'use client';
 
-import Modal from "@/components/user/ui/Modal";
-import { Calendar, ClipboardCheck, Plus, Pencil } from "lucide-react";
+import Modal from '@/components/user/ui/Modal';
+import { Calendar, ClipboardCheck, Plus, Pencil } from 'lucide-react';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import TextArea from "../../ui/TextArea";
-import Input from "../../ui/Input";
-import SelectInput from "../../ui/SelectInput";
+import TextArea from '../../ui/TextArea';
+import Input from '../../ui/Input';
+import SelectInput from '../../ui/SelectInput';
 
-import toast from "react-hot-toast";
-import axios from "axios";
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
 
-export default function Task({
-  lead,
-  getLead,
-  users = [],
-  usersLoading = false,
-}) {
-  // ================= ROUTER =================
+export default function Task({ lead, getLead, users = [], usersLoading = false }) {
+    // ================= ROUTER =================
 
-  const router = useRouter();
+    const router = useRouter();
 
-  // ================= STATE =================
+    // ================= STATE =================
 
-  const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-  const [tasks, setTasks] = useState([]);
+    const [tasks, setTasks] = useState([]);
 
-  // ================= FORM =================
+    // ================= FORM =================
 
-  const [form, setForm] = useState({
-    title: "",
-    priority: "medium",
-    dueDate: "",
-    leadId: lead?._id || "",
-    assignedTo: "",
-    description: "",
-    reminderMinutes: 0,
-  });
-
-  // ============================================================
-  // BROWSER CURRENT DATE/TIME
-  // ============================================================
-
-  const getBrowserDateTime = () => {
-    const now = new Date();
-
-    const year = now.getFullYear();
-
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-
-    const day = String(now.getDate()).padStart(2, "0");
-
-    const hours = String(now.getHours()).padStart(2, "0");
-
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
-
-  // ============================================================
-  // HANDLE CHANGE
-  // ============================================================
-
-  const handleChange = ({ target: { name, value } }) => {
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // ============================================================
-  // GET TASKS
-  // ============================================================
-
-  const getTasks = async () => {
-    if (!lead?._id) {
-      return;
-    }
-
-    try {
-      const res = await axios.get(`/api/user/task?leadId=${lead._id}`, {
-        withCredentials: true,
-      });
-
-      setTasks(res.data.data?.tasks || []);
-    } catch (error) {
-      console.error("GET TASKS ERROR:", error);
-
-      toast.error(error.response?.data?.message || "Failed to load tasks.");
-    }
-  };
-
-  // ============================================================
-  // LOAD TASKS
-  // ============================================================
-
-  useEffect(() => {
-    if (lead?._id) {
-      setForm((prev) => ({
-        ...prev,
-        leadId: lead._id,
-      }));
-
-      getTasks();
-    }
-  }, [lead?._id]);
-
-  // ============================================================
-  // RESET FORM
-  // ============================================================
-
-  const resetForm = () => {
-    setForm({
-      title: "",
-
-      priority: "medium",
-
-      dueDate: "",
-
-      leadId: lead?._id || "",
-
-      assignedTo: "",
-
-      description: "",
-
-      reminderMinutes: 0,
+    const [form, setForm] = useState({
+        title: '',
+        priority: 'medium',
+        dueDate: '',
+        leadId: lead?._id || '',
+        assignedTo: '',
+        description: '',
+        reminderMinutes: 0,
     });
-  };
 
-  // ============================================================
-  // CREATE TASK
-  // ============================================================
+    // ============================================================
+    // BROWSER CURRENT DATE/TIME
+    // ============================================================
 
-  const handleSave = async () => {
-    // ---------------- TITLE ----------------
+    const getBrowserDateTime = () => {
+        const now = new Date();
 
-    if (!form.title.trim()) {
-      return toast.error("Enter task title.");
-    }
+        const year = now.getFullYear();
 
-    // ---------------- DATE ----------------
+        const month = String(now.getMonth() + 1).padStart(2, '0');
 
-    if (!form.dueDate) {
-      return toast.error("Select due date and time.");
-    }
+        const day = String(now.getDate()).padStart(2, '0');
 
-    // ========================================================
-    // IMPORTANT:
-    // Compare selected date/time with BROWSER CURRENT TIME.
-    // This does NOT use API/server time.
-    // ========================================================
+        const hours = String(now.getHours()).padStart(2, '0');
 
-    const selectedDateTime = new Date(form.dueDate);
+        const minutes = String(now.getMinutes()).padStart(2, '0');
 
-    const currentBrowserTime = new Date();
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
 
-    if (Number.isNaN(selectedDateTime.getTime())) {
-      return toast.error("Invalid due date and time.");
-    }
+    // ============================================================
+    // HANDLE CHANGE
+    // ============================================================
 
-    if (selectedDateTime.getTime() < currentBrowserTime.getTime()) {
-      return toast.error("Task date and time cannot be in the past.");
-    }
+    const handleChange = ({ target: { name, value } }) => {
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
 
-    // ---------------- ASSIGNED USER ----------------
+    // ============================================================
+    // GET TASKS
+    // ============================================================
 
-    if (!form.assignedTo) {
-      return toast.error("Select assigned user.");
-    }
+    const getTasks = async () => {
+        if (!lead?._id) {
+            return;
+        }
 
-    // ========================================================
-    // CREATE
-    // ========================================================
+        try {
+            const res = await axios.get(`/api/user/task?leadId=${lead._id}`, {
+                withCredentials: true,
+            });
 
-    const toastId = toast.loading("Creating task...");
+            setTasks(res.data.data?.tasks || []);
+        } catch (error) {
+            console.error('GET TASKS ERROR:', error);
 
-    try {
-      setLoading(true);
+            toast.error(error.response?.data?.message || 'Failed to load tasks.');
+        }
+    };
 
-      const res = await axios.post(
-        "/api/user/task",
-        {
-          ...form,
+    // ============================================================
+    // LOAD TASKS
+    // ============================================================
 
-          reminderMinutes: Number(form.reminderMinutes),
-        },
-        {
-          withCredentials: true,
-        },
-      );
+    useEffect(() => {
+        if (lead?._id) {
+            setForm((prev) => ({
+                ...prev,
+                leadId: lead._id,
+            }));
 
-      toast.success(res.data.message || "Task created successfully.", {
-        id: toastId,
-      });
+            getTasks();
+        }
+    }, [lead?._id]);
 
-      resetForm();
+    // ============================================================
+    // RESET FORM
+    // ============================================================
 
-      setOpen(false);
+    const resetForm = () => {
+        setForm({
+            title: '',
 
-      // Refresh task list
-      await getTasks();
+            priority: 'medium',
 
-      // Refresh lead task count
-      await getLead();
-    } catch (error) {
-      console.error("CREATE TASK ERROR:", error);
+            dueDate: '',
 
-      toast.error(error.response?.data?.message || "Failed to create task.", {
-        id: toastId,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+            leadId: lead?._id || '',
 
-  // ============================================================
-  // UPDATE TASK STATUS
-  // ============================================================
+            assignedTo: '',
 
-  const updateTaskStatus = async (taskId, status) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to mark this task as "${status}"?`,
-    );
+            description: '',
 
-    if (!confirmed) {
-      return;
-    }
+            reminderMinutes: 0,
+        });
+    };
 
-    const toastId = toast.loading("Updating task...");
+    // ============================================================
+    // CREATE TASK
+    // ============================================================
 
-    try {
-      await axios.put(
-        `/api/user/task/${taskId}`,
-        {
-          status,
-        },
-        {
-          withCredentials: true,
-        },
-      );
+    const handleSave = async () => {
+        // ---------------- TITLE ----------------
 
-      toast.success("Task updated.", {
-        id: toastId,
-      });
+        if (!form.title.trim()) {
+            return toast.error('Enter task title.');
+        }
 
-      // Refresh tasks
-      await getTasks();
+        // ---------------- DATE ----------------
 
-      // Refresh lead task count
-      await getLead();
-    } catch (error) {
-      console.error("UPDATE TASK ERROR:", error);
+        if (!form.dueDate) {
+            return toast.error('Select due date and time.');
+        }
 
-      toast.error(error.response?.data?.message || "Failed to update task.", {
-        id: toastId,
-      });
-    }
-  };
+        // ========================================================
+        // IMPORTANT:
+        // Compare selected date/time with BROWSER CURRENT TIME.
+        // This does NOT use API/server time.
+        // ========================================================
 
-  // ============================================================
-  // EDIT TASK
-  // ============================================================
+        const selectedDateTime = new Date(form.dueDate);
 
-  const handleEditTask = (task) => {
-    if (!task?._id) {
-      toast.error("Task ID not found.");
+        const currentBrowserTime = new Date();
 
-      return;
-    }
+        if (Number.isNaN(selectedDateTime.getTime())) {
+            return toast.error('Invalid due date and time.');
+        }
 
-    router.push(
-      `/tasks/edit/${task._id}?returnTo=${encodeURIComponent(
-        `/leads/edit/${lead._id}`,
-      )}`,
-    );
-  };
+        if (selectedDateTime.getTime() < currentBrowserTime.getTime()) {
+            return toast.error('Task date and time cannot be in the past.');
+        }
 
-  // ============================================================
-  // UI
-  // ============================================================
+        // ---------------- ASSIGNED USER ----------------
 
-  return (
-    <>
-      {/* ====================================================
+        if (!form.assignedTo) {
+            return toast.error('Select assigned user.');
+        }
+
+        // ========================================================
+        // CREATE
+        // ========================================================
+
+        const toastId = toast.loading('Creating task...');
+
+        try {
+            setLoading(true);
+
+            const res = await axios.post(
+                '/api/user/task',
+                {
+                    ...form,
+
+                    reminderMinutes: Number(form.reminderMinutes),
+                },
+                {
+                    withCredentials: true,
+                }
+            );
+
+            toast.success(res.data.message || 'Task created successfully.', {
+                id: toastId,
+            });
+
+            resetForm();
+
+            setOpen(false);
+
+            // Refresh task list
+            await getTasks();
+
+            // Refresh lead task count
+            await getLead();
+        } catch (error) {
+            console.error('CREATE TASK ERROR:', error);
+
+            toast.error(error.response?.data?.message || 'Failed to create task.', {
+                id: toastId,
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // ============================================================
+    // UPDATE TASK STATUS
+    // ============================================================
+
+    const updateTaskStatus = async (taskId, status) => {
+        const confirmed = window.confirm(`Are you sure you want to mark this task as "${status}"?`);
+
+        if (!confirmed) {
+            return;
+        }
+
+        const toastId = toast.loading('Updating task...');
+
+        try {
+            await axios.put(
+                `/api/user/task/${taskId}`,
+                {
+                    status,
+                },
+                {
+                    withCredentials: true,
+                }
+            );
+
+            toast.success('Task updated.', {
+                id: toastId,
+            });
+
+            // Refresh tasks
+            await getTasks();
+
+            // Refresh lead task count
+            await getLead();
+        } catch (error) {
+            console.error('UPDATE TASK ERROR:', error);
+
+            toast.error(error.response?.data?.message || 'Failed to update task.', {
+                id: toastId,
+            });
+        }
+    };
+
+    // ============================================================
+    // EDIT TASK
+    // ============================================================
+
+    const handleEditTask = (task) => {
+        if (!task?._id) {
+            toast.error('Task ID not found.');
+
+            return;
+        }
+
+        router.push(`/tasks/edit/${task._id}?returnTo=${encodeURIComponent(`/leads/edit/${lead._id}`)}`);
+    };
+
+    // ============================================================
+    // UI
+    // ============================================================
+
+    return (
+        <>
+            {/* ====================================================
                 TASK CARD
             ==================================================== */}
 
-      <div
-        className="
+            <div
+                className="
                     bg-card
                     border
                     border-app
@@ -303,36 +292,36 @@ export default function Task({
                     p-5
                     text-app
                 "
-      >
-        {/* =================================================
+            >
+                {/* =================================================
                     HEADER
                 ================================================= */}
 
-        <div
-          className="
+                <div
+                    className="
                         flex
                         justify-between
                         items-center
                     "
-        >
-          <h3
-            className="
+                >
+                    <h3
+                        className="
                             uppercase
                             tracking-widest
                             text-xs
                             font-semibold
                             text-muted
                         "
-          >
-            Tasks
-          </h3>
+                    >
+                        Tasks
+                    </h3>
 
-          {/* ================= ADD TASK ================= */}
+                    {/* ================= ADD TASK ================= */}
 
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="
+                    <button
+                        type="button"
+                        onClick={() => setOpen(true)}
+                        className="
                             p-2
                             rounded-lg
                             border
@@ -341,31 +330,31 @@ export default function Task({
                             hover-app
                             text-app
                         "
-            title="Add Task"
-          >
-            <Plus size={16} />
-          </button>
-        </div>
+                        title="Add Task"
+                    >
+                        <Plus size={16} />
+                    </button>
+                </div>
 
-        {/* =================================================
+                {/* =================================================
                     DIVIDER
                 ================================================= */}
 
-        <div
-          className="
+                <div
+                    className="
                         border-b
                         border-app
                         my-4
                     "
-        />
+                />
 
-        {/* =================================================
+                {/* =================================================
                     NO TASK
                 ================================================= */}
 
-        {tasks.length === 0 ? (
-          <div
-            className="
+                {tasks.length === 0 ? (
+                    <div
+                        className="
                             flex
                             flex-col
                             items-center
@@ -373,9 +362,9 @@ export default function Task({
                             py-12
                             text-center
                         "
-          >
-            <div
-              className="
+                    >
+                        <div
+                            className="
                                 w-14
                                 h-14
                                 rounded-full
@@ -387,107 +376,107 @@ export default function Task({
                                 justify-center
                                 text-app
                             "
-            >
-              <ClipboardCheck size={24} className="opacity-80" />
-            </div>
+                        >
+                            <ClipboardCheck size={24} className="opacity-80" />
+                        </div>
 
-            <h4
-              className="
+                        <h4
+                            className="
                                 mt-4
                                 text-sm
                                 font-medium
                                 text-app
                             "
-            >
-              No Task Found
-            </h4>
+                        >
+                            No Task Found
+                        </h4>
 
-            <p
-              className="
+                        <p
+                            className="
                                 mt-1
                                 text-xs
                                 text-muted
                             "
-            >
-              Tasks history will appear here.
-            </p>
-          </div>
-        ) : (
-          /* =================================================
+                        >
+                            Tasks history will appear here.
+                        </p>
+                    </div>
+                ) : (
+                    /* =================================================
                         TASK LIST
                     ================================================= */
 
-          <div
-            className="
+                    <div
+                        className="
                             space-y-3
                         "
-          >
-            {tasks.map((task) => (
-              <div
-                key={task._id}
-                className="
+                    >
+                        {tasks.map((task) => (
+                            <div
+                                key={task._id}
+                                className="
                                         border
                                         border-app
                                         rounded-xl
                                         p-4
                                         bg-app
                                     "
-              >
-                {/* =================================
+                            >
+                                {/* =================================
                                         TASK HEADER
                                     ================================= */}
 
-                <div
-                  className="
+                                <div
+                                    className="
                                             flex
                                             justify-between
                                             gap-3
                                         "
-                >
-                  <div
-                    className="
+                                >
+                                    <div
+                                        className="
                                                 min-w-0
                                             "
-                  >
-                    <h4
-                      className="
+                                    >
+                                        <h4
+                                            className="
                                                     text-sm
                                                     font-semibold
                                                     break-words
                                                 "
-                    >
-                      {task.title}
-                    </h4>
+                                        >
+                                            {task.title}
+                                        </h4>
 
-                    <p
-                      className="
+                                        <p
+                                            className="
                                                     text-xs
                                                     text-muted
                                                     mt-1
                                                     break-words
                                                 "
-                    >
-                      {task.description || "No description"}
-                    </p>
-                  </div>
+                                        >
+                                            {task.description || 'No description'}
+                                        </p>
+                                    </div>
 
-                  <span
-                    className="
+                                    <span
+                                        className="
                                                 text-xs
                                                 capitalize
                                                 shrink-0
                                             "
-                  >
-                    {task.priority}
-                  </span>
-                </div>
+                                    >
+                                        {task.priority}
+                                    </span>
+                                </div>
 
-                {/* =================================
+                                {/* =================================
                                         TASK INFO
                                     ================================= */}
 
-                <div
-                  className="
+                                <div
+                                    className="
                                             flex
                                             flex-wrap
                                             gap-3
@@ -495,37 +484,32 @@ export default function Task({
                                             text-xs
                                             text-muted
                                         "
-                >
-                  <span>
-                    Due:{" "}
-                    {task.dueDate
-                      ? new Date(task.dueDate).toLocaleString()
-                      : "-"}
-                  </span>
+                                >
+                                    <span>Due: {task.dueDate ? new Date(task.dueDate).toLocaleString() : '-'}</span>
 
-                  <span>Assigned: {task.assignedTo?.name || "-"}</span>
-                </div>
+                                    <span>Assigned: {task.assignedTo?.name || '-'}</span>
+                                </div>
 
-                {/* =================================
+                                {/* =================================
                                         TASK ACTIONS
                                     ================================= */}
 
-                <div
-                  className="
+                                <div
+                                    className="
                                             flex
                                             flex-wrap
                                             gap-2
                                             mt-3
                                         "
-                >
-                  {/* ============================
+                                >
+                                    {/* ============================
                                             EDIT
                                         ============================ */}
 
-                  <button
-                    type="button"
-                    onClick={() => handleEditTask(task)}
-                    className="
+                                    <button
+                                        type="button"
+                                        onClick={() => handleEditTask(task)}
+                                        className="
                                                 px-3
                                                 py-1.5
                                                 text-xs
@@ -538,35 +522,35 @@ export default function Task({
                                                 gap-1.5
                                                 transition
                                             "
-                  >
-                    <Pencil size={13} />
-                    Edit
-                  </button>
+                                    >
+                                        <Pencil size={13} />
+                                        Edit
+                                    </button>
 
-                  {/* ============================
+                                    {/* ============================
                                             COMPLETE / CANCEL
                                         ============================ */}
 
-                  {task.status === "pending" && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => updateTaskStatus(task._id, "completed")}
-                        className="
+                                    {task.status === 'pending' && (
+                                        <>
+                                            <button
+                                                type="button"
+                                                onClick={() => updateTaskStatus(task._id, 'completed')}
+                                                className="
                                                         px-3
                                                         py-1.5
                                                         text-xs
                                                         rounded-lg
                                                         btn-primary
                                                     "
-                      >
-                        Complete
-                      </button>
+                                            >
+                                                Complete
+                                            </button>
 
-                      <button
-                        type="button"
-                        onClick={() => updateTaskStatus(task._id, "cancelled")}
-                        className="
+                                            <button
+                                                type="button"
+                                                onClick={() => updateTaskStatus(task._id, 'cancelled')}
+                                                className="
                                                         px-3
                                                         py-1.5
                                                         text-xs
@@ -575,19 +559,19 @@ export default function Task({
                                                         border-app
                                                         hover-app
                                                     "
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  )}
+                                            >
+                                                Cancel
+                                            </button>
+                                        </>
+                                    )}
 
-                  {/* ============================
+                                    {/* ============================
                                             NON-PENDING STATUS
                                         ============================ */}
 
-                  {task.status !== "pending" && (
-                    <span
-                      className="
+                                    {task.status !== 'pending' && (
+                                        <span
+                                            className="
                                                     text-xs
                                                     capitalize
                                                     opacity-70
@@ -595,188 +579,175 @@ export default function Task({
                                                     items-center
                                                     px-2
                                                 "
-                    >
-                      {task.status}
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+                                        >
+                                            {task.status}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
 
-      {/* ====================================================
+            {/* ====================================================
                 ADD TASK MODAL
             ==================================================== */}
 
-      <Modal isOpen={open} onClose={() => setOpen(false)} size="md">
-        <Modal.Header>Add Task</Modal.Header>
+            <Modal isOpen={open} onClose={() => setOpen(false)} size="md">
+                <Modal.Header>Add Task</Modal.Header>
 
-        <Modal.Body>
-          <div
-            className="
+                <Modal.Body>
+                    <div
+                        className="
                             space-y-2
                         "
-          >
-            {/* =========================================
+                    >
+                        {/* =========================================
                             TITLE + PRIORITY
                         ========================================= */}
 
-            <div
-              className="
+                        <div
+                            className="
                                 grid
                                 md:grid-cols-2
                                 gap-2
                             "
-            >
-              <Input
-                label="Task Title"
-                required
-                name="title"
-                value={form.title}
-                onChange={handleChange}
-                placeholder="Enter task title"
-              />
+                        >
+                            <Input label="Task Title" required name="title" value={form.title} onChange={handleChange} placeholder="Enter task title" />
 
-              <SelectInput
-                label="Priority"
-                name="priority"
-                value={form.priority}
-                onChange={handleChange}
-                options={[
-                  {
-                    label: "Low",
-                    value: "low",
-                  },
-                  {
-                    label: "Medium",
-                    value: "medium",
-                  },
-                  {
-                    label: "High",
-                    value: "high",
-                  },
-                  {
-                    label: "Urgent",
-                    value: "urgent",
-                  },
-                ]}
-              />
-            </div>
+                            <SelectInput
+                                label="Priority"
+                                name="priority"
+                                value={form.priority}
+                                onChange={handleChange}
+                                options={[
+                                    {
+                                        label: 'Low',
+                                        value: 'low',
+                                    },
+                                    {
+                                        label: 'Medium',
+                                        value: 'medium',
+                                    },
+                                    {
+                                        label: 'High',
+                                        value: 'high',
+                                    },
+                                    {
+                                        label: 'Urgent',
+                                        value: 'urgent',
+                                    },
+                                ]}
+                            />
+                        </div>
 
-            {/* =========================================
+                        {/* =========================================
                             LEAD + ASSIGNED USER
                         ========================================= */}
 
-            <div
-              className="
+                        <div
+                            className="
                                 grid
                                 md:grid-cols-2
                                 gap-2
                             "
-            >
-              <SelectInput
-                label="Related Lead"
-                required
-                name="leadId"
-                value={form.leadId || lead?._id}
-                onChange={handleChange}
-                disabled
-                options={[
-                  {
-                    label: lead?.name,
-                    value: lead?._id,
-                  },
-                ]}
-              />
+                        >
+                            <SelectInput
+                                label="Related Lead"
+                                required
+                                name="leadId"
+                                value={form.leadId || lead?._id}
+                                onChange={handleChange}
+                                disabled
+                                options={[
+                                    {
+                                        label: lead?.name,
+                                        value: lead?._id,
+                                    },
+                                ]}
+                            />
 
-              <SelectInput
-                label="Assigned To"
-                required
-                name="assignedTo"
-                value={form.assignedTo}
-                onChange={handleChange}
-                disabled={usersLoading}
-                options={[
-                  ...users.map((user) => ({
-                    label: `${user.name} (${user.roleId?.name})`,
-                    value: user._id,
-                  })),
-                ]}
-              />
-            </div>
+                            <SelectInput
+                                label="Assigned To"
+                                required
+                                name="assignedTo"
+                                value={form.assignedTo}
+                                onChange={handleChange}
+                                disabled={usersLoading}
+                                options={[
+                                    ...users.map((user) => ({
+                                        label: `${user.name} (${user.roleId?.name})`,
+                                        value: user._id,
+                                    })),
+                                ]}
+                            />
+                        </div>
 
-            {/* =========================================
+                        {/* =========================================
                             DATE + REMINDER
                         ========================================= */}
 
-            <div
-              className="
+                        <div
+                            className="
                                 grid
                                 md:grid-cols-2
                                 gap-2
                             "
-            >
-              <Input
-                label="Due Date & Time"
-                required
-                type="datetime-local"
-                name="dueDate"
-                value={form.dueDate}
-                onChange={handleChange}
-                min={getBrowserDateTime()}
-              />
+                        >
+                            <Input
+                                label="Due Date & Time"
+                                required
+                                type="datetime-local"
+                                name="dueDate"
+                                value={form.dueDate}
+                                onChange={handleChange}
+                                min={getBrowserDateTime()}
+                            />
 
-              <SelectInput
-                label="Add Reminder"
-                name="reminderMinutes"
-                value={String(form.reminderMinutes)}
-                onChange={handleChange}
-                options={[
-                  {
-                    label: "None",
-                    value: "0",
-                  },
-                  {
-                    label: "5 minutes before",
-                    value: "5",
-                  },
-                  {
-                    label: "10 minutes before",
-                    value: "10",
-                  },
-                  {
-                    label: "15 minutes before",
-                    value: "15",
-                  },
-                ]}
-              />
-            </div>
+                            <SelectInput
+                                label="Add Reminder"
+                                name="reminderMinutes"
+                                value={String(form.reminderMinutes)}
+                                onChange={handleChange}
+                                options={[
+                                    {
+                                        label: 'None',
+                                        value: '0',
+                                    },
+                                    {
+                                        label: '5 minutes before',
+                                        value: '5',
+                                    },
+                                    {
+                                        label: '10 minutes before',
+                                        value: '10',
+                                    },
+                                    {
+                                        label: '15 minutes before',
+                                        value: '15',
+                                    },
+                                ]}
+                            />
+                        </div>
 
-            {/* =========================================
+                        {/* =========================================
                             DESCRIPTION
                         ========================================= */}
 
-            <TextArea
-              label="Description"
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              placeholder="Add task details..."
-            />
-          </div>
-        </Modal.Body>
+                        <TextArea label="Description" name="description" value={form.description} onChange={handleChange} placeholder="Add task details..." />
+                    </div>
+                </Modal.Body>
 
-        {/* =================================================
+                {/* =================================================
                     MODAL FOOTER
                 ================================================= */}
 
-        <Modal.Footer>
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            className="
+                <Modal.Footer>
+                    <button
+                        type="button"
+                        onClick={() => setOpen(false)}
+                        className="
                             px-4
                             py-2
                             text-xs
@@ -786,15 +757,15 @@ export default function Task({
                             hover-app
                             text-app
                         "
-          >
-            Cancel
-          </button>
+                    >
+                        Cancel
+                    </button>
 
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={loading}
-            className="
+                    <button
+                        type="button"
+                        onClick={handleSave}
+                        disabled={loading}
+                        className="
                             px-4
                             py-2
                             text-xs
@@ -803,11 +774,11 @@ export default function Task({
                             disabled:opacity-50
                             disabled:cursor-not-allowed
                         "
-          >
-            {loading ? "Saving..." : "Save"}
-          </button>
-        </Modal.Footer>
-      </Modal>
-    </>
-  );
+                    >
+                        {loading ? 'Saving...' : 'Save'}
+                    </button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
 }

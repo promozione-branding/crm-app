@@ -1,50 +1,41 @@
 // src/components/user/Sidebar.jsx
 
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useState } from "react";
-import { usePathname } from "next/navigation";
-import {
-    LayoutDashboard,
-    Users,
-    Settings,
-    ClipboardList,
-    PhoneCall,
-    BarChart3,
-    PanelLeftClose,
-    PanelLeftOpen,
-} from "lucide-react";
+import Link from 'next/link';
+import { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { LayoutDashboard, Users, Settings, ClipboardList, PhoneCall, BarChart3, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 const menus = [
     {
-        name: "Dashboard",
-        href: "/dashboard",
+        name: 'Dashboard',
+        href: '/dashboard',
         icon: LayoutDashboard,
     },
     {
-        name: "Leads",
-        href: "/leads",
+        name: 'Leads',
+        href: '/leads',
         icon: Users,
     },
     {
-        name: "Task",
-        href: "/tasks",
+        name: 'Task',
+        href: '/tasks',
         icon: ClipboardList,
     },
     {
-        name: "Reports",
-        href: "/reports",
+        name: 'Reports',
+        href: '/reports',
         icon: BarChart3,
     },
     {
-        name: "Call Logs",
-        href: "/call-logs",
+        name: 'Call Logs',
+        href: '/call-logs',
         icon: PhoneCall,
     },
     {
-        name: "Settings",
-        href: "/settings",
+        name: 'Settings',
+        href: '/settings',
         icon: Settings,
     },
 ];
@@ -71,7 +62,7 @@ export default function Sidebar() {
                 transition-all
                 duration-300
                 ease-in-out
-                ${open ? "w-60" : "w-20"}
+                ${open ? 'w-60' : 'w-20'}
             `}
         >
             {/* ================= HEADER ================= */}
@@ -85,10 +76,7 @@ export default function Sidebar() {
                     items-center
                     transition-all
                     duration-300
-                    ${open
-                        ? "justify-between px-5"
-                        : "justify-center"
-                    }
+                    ${open ? 'justify-between px-5' : 'justify-center'}
                 `}
             >
                 {/* Logo / Brand */}
@@ -97,23 +85,18 @@ export default function Sidebar() {
                         overflow-hidden
                         transition-all
                         duration-300
-                        ${open
-                            ? "w-auto opacity-100"
-                            : "w-0 opacity-0"
-                        }
+                        ${open ? 'w-auto opacity-100' : 'w-0 opacity-0'}
                     `}
                 >
-                    <h2 className="font-bold text-xl tracking-wide whitespace-nowrap">
-                        CRM
-                    </h2>
+                    <h2 className="font-bold text-xl tracking-wide whitespace-nowrap">CRM</h2>
                 </div>
 
                 {/* Toggle */}
                 <button
                     type="button"
                     onClick={() => setOpen((prev) => !prev)}
-                    aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
-                    title={open ? "Collapse sidebar" : "Expand sidebar"}
+                    aria-label={open ? 'Collapse sidebar' : 'Expand sidebar'}
+                    title={open ? 'Collapse sidebar' : 'Expand sidebar'}
                     className="
                         w-9
                         h-9
@@ -128,11 +111,7 @@ export default function Sidebar() {
                         active:scale-95
                     "
                 >
-                    {open ? (
-                        <PanelLeftClose size={20} />
-                    ) : (
-                        <PanelLeftOpen size={20} />
-                    )}
+                    {open ? <PanelLeftClose size={20} /> : <PanelLeftOpen size={20} />}
                 </button>
             </div>
 
@@ -141,9 +120,7 @@ export default function Sidebar() {
                 {menus.map((item) => {
                     const Icon = item.icon;
 
-                    const active =
-                        pathname === item.href ||
-                        pathname.startsWith(item.href + "/");
+                    const active = pathname === item.href || pathname.startsWith(item.href + '/');
 
                     return (
                         <Link
@@ -159,24 +136,12 @@ export default function Sidebar() {
                                 transition-all
                                 duration-200
                                 active:scale-[0.98]
-                                ${
-                                    active
-                                        ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
-                                        : "hover-app"
-                                }
-                                ${
-                                    open
-                                        ? "h-12 px-4 gap-3"
-                                        : "h-12 justify-center px-0"
-                                }
+                                ${active ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'hover-app'}
+                                ${open ? 'h-12 px-4 gap-3' : 'h-12 justify-center px-0'}
                             `}
                         >
                             {/* Icon */}
-                            <Icon
-                                size={19}
-                                strokeWidth={active ? 2.5 : 2}
-                                className="shrink-0 transition-transform duration-200 group-hover:scale-105"
-                            />
+                            <Icon size={19} strokeWidth={active ? 2.5 : 2} className="shrink-0 transition-transform duration-200 group-hover:scale-105" />
 
                             {/* Menu Name */}
                             <span
@@ -187,11 +152,7 @@ export default function Sidebar() {
                                     overflow-hidden
                                     transition-all
                                     duration-300
-                                    ${
-                                        open
-                                            ? "w-auto opacity-100"
-                                            : "w-0 opacity-0"
-                                    }
+                                    ${open ? 'w-auto opacity-100' : 'w-0 opacity-0'}
                                 `}
                             >
                                 {item.name}
@@ -239,13 +200,11 @@ export default function Sidebar() {
                     p-3
                     transition-all
                     duration-300
-                    ${open ? "text-left" : "flex justify-center"}
+                    ${open ? 'text-left' : 'flex justify-center'}
                 `}
             >
                 {open ? (
-                    <p className="text-xs text-muted px-1">
-                        CRM Dashboard
-                    </p>
+                    <p className="text-xs text-muted px-1">CRM Dashboard</p>
                 ) : (
                     <span
                         className="

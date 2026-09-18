@@ -1,25 +1,15 @@
 // src/components/admin/SelectInput.jsx
 
-"use client";
+'use client';
 
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from 'lucide-react';
 
-export default function SelectInput({
-    label,
-    icon: Icon,
-    options = [],
-    required = false,
-    error,
-    className = "",
-    ...props
-}) {
+export default function SelectInput({ label, icon: Icon, options = [], required = false, error, className = '', ...props }) {
     return (
         <div className={className}>
             <label className="mb-1.5 block text-sm font-medium text-gray-700">
                 {label}
-                {required && (
-                    <span className="ml-1 text-red-500">*</span>
-                )}
+                {required && <span className="ml-1 text-red-500">*</span>}
             </label>
 
             <div className="relative group">
@@ -32,18 +22,14 @@ export default function SelectInput({
 
                 <select
                     {...props}
-                    className={`appearance-none w-full rounded-lg border bg-white py-2.5 ${Icon ? "pl-10" : "pl-3"
-                        } pr-10 outline-none transition
+                    className={`appearance-none w-full rounded-lg border bg-white py-2.5 ${Icon ? 'pl-10' : 'pl-3'} pr-10 outline-none transition
                     border-gray-300
                     focus:border-blue-300
                     focus:ring-1
                     focus:ring-blue-300`}
                 >
                     {options.map((item) => (
-                        <option
-                            key={item.value}
-                            value={item.value}
-                        >
+                        <option key={item.value} value={item.value}>
                             {item.label}
                         </option>
                     ))}
@@ -55,11 +41,7 @@ export default function SelectInput({
                 />
             </div>
 
-            {error && (
-                <p className="mt-1 text-xs text-red-500">
-                    {error}
-                </p>
-            )}
+            {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
         </div>
     );
 }

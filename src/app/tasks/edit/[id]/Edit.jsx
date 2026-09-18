@@ -1,30 +1,20 @@
 // src/app/tasks/edit/[id]/Edit.jsx
 
-"use client";
+'use client';
 
-import React, {
-    useCallback,
-    useEffect,
-    useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from 'react';
 
-import {
-    Loader2,
-    ClipboardCheck,
-} from "lucide-react";
+import { Loader2, ClipboardCheck } from 'lucide-react';
 
-import {
-    useParams,
-    useRouter,
-} from "next/navigation";
+import { useParams, useRouter } from 'next/navigation';
 
-import axios from "axios";
-import toast from "react-hot-toast";
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
-import TaskHeader from "./components/TaskHeader";
-import TaskForm from "./components/TaskForm";
-import TaskLeadInfo from "./components/TaskLeadInfo";
-import TaskActions from "./components/TaskActions";
+import TaskHeader from './components/TaskHeader';
+import TaskForm from './components/TaskForm';
+import TaskLeadInfo from './components/TaskLeadInfo';
+import TaskActions from './components/TaskActions';
 
 export default function Edit() {
     const { id } = useParams();
@@ -36,13 +26,13 @@ export default function Edit() {
     const [task, setTask] = useState(null);
 
     const [form, setForm] = useState({
-        title: "",
-        description: "",
-        priority: "medium",
-        assignedTo: "",
-        dueDate: "",
+        title: '',
+        description: '',
+        priority: 'medium',
+        assignedTo: '',
+        dueDate: '',
         reminderMinutes: 0,
-        status: "pending",
+        status: 'pending',
     });
 
     /* =====================================================
@@ -53,26 +43,18 @@ export default function Edit() {
         const d = new Date(date);
 
         if (isNaN(d.getTime())) {
-            return "";
+            return '';
         }
 
         const year = d.getFullYear();
 
-        const month = String(
-            d.getMonth() + 1
-        ).padStart(2, "0");
+        const month = String(d.getMonth() + 1).padStart(2, '0');
 
-        const day = String(
-            d.getDate()
-        ).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, '0');
 
-        const hours = String(
-            d.getHours()
-        ).padStart(2, "0");
+        const hours = String(d.getHours()).padStart(2, '0');
 
-        const minutes = String(
-            d.getMinutes()
-        ).padStart(2, "0");
+        const minutes = String(d.getMinutes()).padStart(2, '0');
 
         return `${year}-${month}-${day}T${hours}:${minutes}`;
     }, []);
@@ -86,28 +68,19 @@ export default function Edit() {
             setTask(data);
 
             setForm({
-                title: data.title || "",
+                title: data.title || '',
 
-                description:
-                    data.description || "",
+                description: data.description || '',
 
-                priority:
-                    data.priority || "medium",
+                priority: data.priority || 'medium',
 
-                assignedTo:
-                    data.assignedTo?._id || "",
+                assignedTo: data.assignedTo?._id || '',
 
-                dueDate: data.dueDate
-                    ? formatDateTimeLocal(
-                        data.dueDate
-                    )
-                    : "",
+                dueDate: data.dueDate ? formatDateTimeLocal(data.dueDate) : '',
 
-                reminderMinutes:
-                    data.reminderMinutes ?? 0,
+                reminderMinutes: data.reminderMinutes ?? 0,
 
-                status:
-                    data.status || "pending",
+                status: data.status || 'pending',
             });
         },
         [formatDateTimeLocal]
@@ -123,37 +96,23 @@ export default function Edit() {
         try {
             setLoading(true);
 
-            const res = await axios.get(
-                `/api/user/task/${id}`,
-                {
-                    withCredentials: true,
-                }
-            );
+            const res = await axios.get(`/api/user/task/${id}`, {
+                withCredentials: true,
+            });
 
-            console.log(
-                "TASK RESPONSE:",
-                res.data
-            );
+            console.log('TASK RESPONSE:', res.data);
 
             const data = res.data?.data;
 
             if (!data) {
-                throw new Error(
-                    "Task data not found."
-                );
+                throw new Error('Task data not found.');
             }
 
             setTaskForm(data);
         } catch (error) {
-            console.error(
-                "GET TASK ERROR:",
-                error
-            );
+            console.error('GET TASK ERROR:', error);
 
-            toast.error(
-                error.response?.data?.message ||
-                "Failed to load task."
-            );
+            toast.error(error.response?.data?.message || 'Failed to load task.');
         } finally {
             setLoading(false);
         }
@@ -174,10 +133,7 @@ export default function Edit() {
     ===================================================== */
 
     const handleChange = (e) => {
-        const {
-            name,
-            value,
-        } = e.target;
+        const { name, value } = e.target;
 
         setForm((prev) => ({
             ...prev,
@@ -193,87 +149,57 @@ export default function Edit() {
         e.preventDefault();
 
         if (!form.title.trim()) {
-            toast.error(
-                "Task title is required."
-            );
+            toast.error('Task title is required.');
             return;
         }
 
         if (!form.dueDate) {
-            toast.error(
-                "Due date is required."
-            );
+            toast.error('Due date is required.');
             return;
         }
 
         try {
             setSaving(true);
 
-            const toastId =
-                toast.loading(
-                    "Updating task..."
-                );
+            const toastId = toast.loading('Updating task...');
 
-            const res =
-                await axios.put(
-                    `/api/user/task/${id}`,
-                    {
-                        title:
-                            form.title.trim(),
-
-                        description:
-                            form.description.trim(),
-
-                        priority:
-                            form.priority,
-
-                        assignedTo:
-                            form.assignedTo,
-
-                        dueDate:
-                            form.dueDate,
-
-                        reminderMinutes:
-                            Number(
-                                form.reminderMinutes
-                            ),
-
-                        status:
-                            form.status,
-                    },
-                    {
-                        withCredentials:
-                            true,
-                    }
-                );
-
-            toast.success(
-                res.data?.message ||
-                "Task updated successfully.",
+            const res = await axios.put(
+                `/api/user/task/${id}`,
                 {
-                    id: toastId,
+                    title: form.title.trim(),
+
+                    description: form.description.trim(),
+
+                    priority: form.priority,
+
+                    assignedTo: form.assignedTo,
+
+                    dueDate: form.dueDate,
+
+                    reminderMinutes: Number(form.reminderMinutes),
+
+                    status: form.status,
+                },
+                {
+                    withCredentials: true,
                 }
             );
+
+            toast.success(res.data?.message || 'Task updated successfully.', {
+                id: toastId,
+            });
 
             /* ---------------------------------------------
                Update local state
             --------------------------------------------- */
 
             if (res.data?.data) {
-                setTaskForm(
-                    res.data.data
-                );
+                setTaskForm(res.data.data);
             }
         } catch (error) {
-            console.error(
-                "UPDATE TASK ERROR:",
-                error
-            );
+            console.error('UPDATE TASK ERROR:', error);
 
-            toast.error(
-                error.response?.data?.message ||
-                "Failed to update task."
-            );
+            toast.error(error.response?.data?.message || 'Failed to update task.');
         } finally {
             setSaving(false);
         }
@@ -284,7 +210,7 @@ export default function Edit() {
     ===================================================== */
 
     const handleBack = () => {
-        router.push("/tasks");
+        router.push('/tasks');
     };
 
     /* =====================================================
@@ -320,11 +246,7 @@ export default function Edit() {
                             opacity-70
                         "
                     >
-                        <Loader2
-                            size={20}
-                            className="animate-spin"
-                        />
-
+                        <Loader2 size={20} className="animate-spin" />
                         Loading task...
                     </div>
                 </div>
@@ -348,9 +270,7 @@ export default function Edit() {
                     sm:p-6
                 "
             >
-                <TaskHeader
-                    onBack={handleBack}
-                />
+                <TaskHeader onBack={handleBack} />
 
                 <div
                     className="
@@ -387,9 +307,7 @@ export default function Edit() {
                             max-w-sm
                         "
                     >
-                        The task you are looking
-                        for does not exist or
-                        could not be loaded.
+                        The task you are looking for does not exist or could not be loaded.
                     </p>
                 </div>
             </div>
@@ -421,9 +339,7 @@ export default function Edit() {
                     HEADER
                 ================================================= */}
 
-                <TaskHeader
-                    onBack={handleBack}
-                />
+                <TaskHeader onBack={handleBack} />
 
                 {/* =================================================
                     FORM CARD
@@ -446,28 +362,19 @@ export default function Edit() {
                         FORM
                     ================================================= */}
 
-                    <TaskForm
-                        form={form}
-                        task={task}
-                        onChange={handleChange}
-                    />
+                    <TaskForm form={form} task={task} onChange={handleChange} />
 
                     {/* =================================================
                         LEAD
                     ================================================= */}
 
-                    <TaskLeadInfo
-                        task={task}
-                    />
+                    <TaskLeadInfo task={task} />
 
                     {/* =================================================
                         ACTIONS
                     ================================================= */}
 
-                    <TaskActions
-                        saving={saving}
-                        onCancel={handleBack}
-                    />
+                    <TaskActions saving={saving} onCancel={handleBack} />
                 </form>
             </div>
         </div>

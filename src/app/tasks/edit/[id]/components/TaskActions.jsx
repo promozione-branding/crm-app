@@ -1,19 +1,14 @@
 // src/app/tasks/edit/[id]/components/TaskActions.jsx
 
-"use client";
+'use client';
 
-import React from "react";
-import {
-    Loader2,
-    Save,
-} from "lucide-react";
+import React from 'react';
+import { Loader2, Save } from 'lucide-react';
 
-export default function TaskActions({
-    saving,
-    onCancel,
-}) {
+export default function TaskActions({ saving, onCancel }) {
     return (
-        <div className="
+        <div
+            className="
             flex
             flex-col-reverse
             sm:flex-row
@@ -21,8 +16,8 @@ export default function TaskActions({
             sm:justify-end
             gap-3
             mt-8
-        ">
-
+        "
+        >
             {/* =================================================
                 CANCEL
             ================================================= */}
@@ -81,22 +76,16 @@ export default function TaskActions({
             >
                 {saving ? (
                     <>
-                        <Loader2
-                            size={17}
-                            className="animate-spin"
-                        />
-
+                        <Loader2 size={17} className="animate-spin" />
                         Updating...
                     </>
                 ) : (
                     <>
                         <Save size={17} />
-
                         Update Task
                     </>
                 )}
             </button>
-
         </div>
     );
 }
