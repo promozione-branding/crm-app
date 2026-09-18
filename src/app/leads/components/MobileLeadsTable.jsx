@@ -124,11 +124,7 @@ export default function MobileLeadsTable({
 
                         <button
                             type="button"
-                            onClick={() =>
-                                setExpandedId((prev) =>
-                                    prev === lead._id ? null : lead._id
-                                )
-                            }
+                            onClick={() => setExpandedId((prev) => (prev === lead._id ? null : lead._id))}
                             className="
                                 w-full
                                 px-4
@@ -156,9 +152,7 @@ export default function MobileLeadsTable({
                                 <div className="min-w-0 flex-1">
                                     {/* ROW 1 — NAME + PHONE (PHONE RIGHT ALIGNED) */}
                                     <div className="flex min-w-0 w-full items-center gap-2">
-                                        <h3 className="min-w-0 flex-1 truncate text-sm font-semibold">
-                                            {lead.name || 'Unnamed Lead'}
-                                        </h3>
+                                        <h3 className="min-w-0 flex-1 truncate text-sm font-semibold">{lead.name || 'Unnamed Lead'}</h3>
 
                                         {lead.phone ? (
                                             <a
@@ -187,9 +181,7 @@ export default function MobileLeadsTable({
                                                 "
                                             >
                                                 <Phone size={11} className="shrink-0" />
-                                                <span className="truncate">
-                                                    {lead.phone}
-                                                </span>
+                                                <span className="truncate">{lead.phone}</span>
                                             </a>
                                         ) : null}
                                     </div>
@@ -218,14 +210,10 @@ export default function MobileLeadsTable({
                                                 title={lead.product}
                                             >
                                                 <Package size={11} className="shrink-0" />
-                                                <span className="truncate">
-                                                    {lead.product}
-                                                </span>
+                                                <span className="truncate">{lead.product}</span>
                                             </span>
                                         ) : (
-                                            <span className="text-[11px] opacity-40">
-                                                No product
-                                            </span>
+                                            <span className="text-[11px] opacity-40">No product</span>
                                         )}
                                     </div>
                                 </div>
@@ -259,10 +247,10 @@ export default function MobileLeadsTable({
                                                 lead.status === 'open'
                                                     ? 'text-emerald-500'
                                                     : lead.status === 'closed'
-                                                    ? 'text-blue-500'
-                                                    : lead.status === 'junk'
-                                                    ? 'text-red-500'
-                                                    : 'opacity-50'
+                                                      ? 'text-blue-500'
+                                                      : lead.status === 'junk'
+                                                        ? 'text-red-500'
+                                                        : 'opacity-50'
                                             }
                                         `}
                                     >
@@ -271,13 +259,7 @@ export default function MobileLeadsTable({
                                 </div>
 
                                 {/* EXPAND */}
-                                <div className="shrink-0 opacity-50">
-                                    {isExpanded ? (
-                                        <ChevronUp size={16} />
-                                    ) : (
-                                        <ChevronDown size={16} />
-                                    )}
-                                </div>
+                                <div className="shrink-0 opacity-50">{isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</div>
                             </div>
                         </button>
 

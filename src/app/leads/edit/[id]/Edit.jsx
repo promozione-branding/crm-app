@@ -648,6 +648,29 @@ export default function Edit() {
                                     >
                                         {lead?.status || '-'}
                                     </span>
+
+                                    {/* PRODUCT — BESIDE LEAD STATUS */}
+                                    {lead?.product && (
+                                        <span
+                                            className="
+                                px-3
+                                py-1.5
+                                rounded-full
+                                text-xs
+                                font-semibold
+                                bg-purple-500/10
+                                text-purple-600
+                                dark:text-purple-400
+                                border
+                                border-purple-500/20
+                                truncate
+                                max-w-[180px]
+                            "
+                                            title={lead.product}
+                                        >
+                                            {lead.product}
+                                        </span>
+                                    )}
                                 </div>
                             </div>
 
@@ -656,7 +679,7 @@ export default function Edit() {
                 ================================================= */}
 
                             <div
-    className="
+                                className="
         flex
         flex-nowrap
         justify-evenly
@@ -664,12 +687,12 @@ export default function Edit() {
         gap-2
         mt-6
     "
->
-    {/* CALL */}
-    {lead?.phone && (
-        <a
-            href={`tel:${lead.phone}`}
-            className="
+                            >
+                                {/* CALL */}
+                                {lead?.phone && (
+                                    <a
+                                        href={`tel:${lead.phone}`}
+                                        className="
                 flex
                 items-center
                 justify-center
@@ -686,22 +709,22 @@ export default function Edit() {
                 text-app
                 transition
             "
-        >
-            <Phone size={17} className="text-blue-500" />
+                                    >
+                                        <Phone size={17} className="text-blue-500" />
 
-            <span className="hidden sm:inline">Call</span>
-        </a>
-    )}
+                                        <span className="hidden sm:inline">Call</span>
+                                    </a>
+                                )}
 
-    {/* WHATSAPP */}
-    {lead?.phone && (
-        <a
-            href={`https://wa.me/${
-                lead.phone.replace(/\D/g, '').length === 10 ? `91${lead.phone.replace(/\D/g, '')}` : lead.phone.replace(/\D/g, '')
-            }`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="
+                                {/* WHATSAPP */}
+                                {lead?.phone && (
+                                    <a
+                                        href={`https://wa.me/${
+                                            lead.phone.replace(/\D/g, '').length === 10 ? `91${lead.phone.replace(/\D/g, '')}` : lead.phone.replace(/\D/g, '')
+                                        }`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="
                 flex
                 items-center
                 justify-center
@@ -718,18 +741,18 @@ export default function Edit() {
                 text-app
                 transition
             "
-        >
-            <FaWhatsapp size={19} className="text-green-500" />
+                                    >
+                                        <FaWhatsapp size={19} className="text-green-500" />
 
-            <span className="hidden sm:inline">WhatsApp</span>
-        </a>
-    )}
+                                        <span className="hidden sm:inline">WhatsApp</span>
+                                    </a>
+                                )}
 
-    {/* EMAIL */}
-    {lead?.email && (
-        <a
-            href={`mailto:${lead.email}`}
-            className="
+                                {/* EMAIL */}
+                                {lead?.email && (
+                                    <a
+                                        href={`mailto:${lead.email}`}
+                                        className="
                 flex
                 items-center
                 justify-center
@@ -746,18 +769,18 @@ export default function Edit() {
                 text-app
                 transition
             "
-        >
-            <Mail size={17} className="text-orange-500" />
+                                    >
+                                        <Mail size={17} className="text-orange-500" />
 
-            <span className="hidden sm:inline">Email</span>
-        </a>
-    )}
+                                        <span className="hidden sm:inline">Email</span>
+                                    </a>
+                                )}
 
-    {/* SCHEDULE */}
-    <button
-        type="button"
-        onClick={() => setActive('meeting')}
-        className="
+                                {/* SCHEDULE */}
+                                <button
+                                    type="button"
+                                    onClick={() => setActive('meeting')}
+                                    className="
             flex
             items-center
             justify-center
@@ -774,12 +797,12 @@ export default function Edit() {
             text-app
             transition
         "
-    >
-        <CalendarDays size={17} className="text-purple-500" />
+                                >
+                                    <CalendarDays size={17} className="text-purple-500" />
 
-        <span className="hidden sm:inline">Schedule</span>
-    </button>
-</div>
+                                    <span className="hidden sm:inline">Schedule</span>
+                                </button>
+                            </div>
                         </div>
 
                         {/* =====================================================

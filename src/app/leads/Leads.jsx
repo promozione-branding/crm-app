@@ -467,7 +467,7 @@ export default function Leads() {
                     data={leads}
                     page={page}
                     setPage={setPage}
-                    total={total}  
+                    total={total}
                     rowsPerPage={rowsPerPage}
                     setRowsPerPage={setRowsPerPage}
                     onAction={(lead) => {
