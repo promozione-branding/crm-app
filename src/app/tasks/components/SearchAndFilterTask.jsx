@@ -72,12 +72,13 @@ export default function SearchAndFilterTask({
     return (
         <div
             className="
-                flex
-                flex-wrap
-                items-center
-                gap-2
-                sm:gap-3
-            "
+        flex
+        flex-wrap
+        items-center
+        justify-between
+        gap-2
+        sm:gap-3
+    "
         >
             {/* ==================================================
                 ADD TASK

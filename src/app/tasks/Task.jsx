@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import DynamicTable from '@/components/user/ui/DynamicTable';
 import TaskMobileList from './components/TaskMobileList';
 import SearchAndFilterTask from './components/SearchAndFilterTask';
+import Dashboarddata from '../dashboard/components/Dashboarddata';
 
 import toast from 'react-hot-toast';
 import axios from 'axios';
@@ -203,60 +204,49 @@ export default function Task() {
     return (
         <div className="bg-surface text-app min-h-[calc(100vh-64px)] p-6">
             {/* ==================================================
-                HEADER
-            ================================================== */}
+    HEADER
+================================================== */}
 
-            <div
-                className="
-                    mb-5
-                    flex
-                    flex-col
-                    gap-4
-                    md:mb-6
-                    md:flex-row
-                    md:items-center
-                    md:justify-between
-                "
-            >
+            <div className="mb-5 md:mb-6">
                 {/* ==================================================
-                    TITLE
-                ================================================== */}
+        ROW 1 — DASHBOARD DATA
+    ================================================== */}
 
-                <div>
-                    <h1
-                        className="
-                            text-base
-                            font-bold
-                        "
-                    >
-                        CRM
-                    </h1>
-
-                    <p
-                        className="
-                            text-xs
-                            opacity-70
-                        "
-                    >
-                        Manage your tasks
-                    </p>
+                <div
+                    className="
+            w-full
+            rounded-xl
+            sm:rounded-2xl
+            border
+            border-app
+            bg-app
+            shadow-sm
+            px-2
+            py-2
+            sm:px-4
+            sm:py-3
+        "
+                >
+                    <Dashboarddata />
                 </div>
 
                 {/* ==================================================
-                    SEARCH + FILTER
-                ================================================== */}
+        ROW 2 — SEARCH + FILTER + ADD TASK
+    ================================================== */}
 
-                <SearchAndFilterTask
-                    search={search}
-                    setSearch={setSearch}
-                    relatedTo={relatedTo}
-                    setRelatedTo={setRelatedTo}
-                    assignedTo={assignedTo}
-                    setAssignedTo={setAssignedTo}
-                    priority={priority}
-                    setPriority={setPriority}
-                    onAddTask={handleAddTask}
-                />
+                <div className="mt-3 sm:mt-4 w-full">
+                    <SearchAndFilterTask
+                        search={search}
+                        setSearch={setSearch}
+                        relatedTo={relatedTo}
+                        setRelatedTo={setRelatedTo}
+                        assignedTo={assignedTo}
+                        setAssignedTo={setAssignedTo}
+                        priority={priority}
+                        setPriority={setPriority}
+                        onAddTask={handleAddTask}
+                    />
+                </div>
             </div>
 
             {/* ==================================================

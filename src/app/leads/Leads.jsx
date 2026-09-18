@@ -15,6 +15,7 @@ import ImportLeadsModal from '@/components/user/leads/main/ImportLeadsModal';
 import MobileLeadsTable from './components/MobileLeadsTable';
 import LeadsActiveFilter from './components/LeadsActiveFilter';
 import LeadsFilter, { stageOptions } from './components/LeadsFilter';
+import Dashboarddata from '../dashboard/components/Dashboarddata';
 
 // ============================================================
 // DESKTOP TABLE COLUMNS
@@ -220,50 +221,47 @@ export default function Leads() {
             =================================================== */}
 
             <div className="mb-5">
-                {/* TITLE + DESKTOP ADD */}
-                <div className="flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                        <h1 className="text-base font-bold">CRM</h1>
+                {/* ==================================================
+                    ROW 1 — STATS
+                =================================================== */}
 
-                        <p className="text-xs opacity-70">Manage your leads</p>
-                    </div>
-
-                    {/* DESKTOP ADD */}
-                    <Link
-                        href="/leads/new"
-                        className="
-                            hidden
-                            sm:flex
-                            h-9
-                            px-3
-                            rounded-lg
-                            btn-primary
-                            items-center
-                            justify-center
-                            gap-2
-                            text-sm
-                            shrink-0
-                        "
-                    >
-                        <Plus size={16} />
-                        Add Lead
-                    </Link>
+                <div
+                    className="
+                        w-full
+                        rounded-xl
+                        sm:rounded-2xl
+                        border
+                        border-app
+                        bg-app
+                        shadow-sm
+                        px-2
+                        py-2
+                        sm:px-4
+                        sm:py-3
+                    "
+                >
+                    <Dashboarddata />
                 </div>
 
-                {/* SEARCH + FILTER + MENU */}
-                <div className="mt-4 w-full">
-                    <div className="flex items-center gap-2 w-full">
-                        {/* SEARCH */}
+                {/* ==================================================
+                    ROW 2 — SEARCH + ACTIONS
+                =================================================== */}
+
+                <div className="mt-3 sm:mt-4 w-full">
+                    <div className="flex items-center gap-2 sm:gap-3 w-full">
+                        {/* ==========================================
+                            SEARCH
+                        =========================================== */}
+
                         <div className="relative flex-1 min-w-0">
                             <Search
-                                size={16}
+                                size={17}
                                 className="
                                     absolute
                                     left-3
                                     top-1/2
                                     -translate-y-1/2
-                                    opacity-60
-                                    pointer-events-none
+                                    opacity-50
                                 "
                             />
 
@@ -274,11 +272,11 @@ export default function Leads() {
                                     setSearch(e.target.value);
                                     setPage(1);
                                 }}
-                                placeholder="Search leads..."
+                                placeholder="Search all leads..."
                                 className="
                                     h-10
                                     w-full
-                                    rounded-lg
+                                    rounded-xl
                                     border
                                     border-app
                                     bg-app
@@ -286,13 +284,46 @@ export default function Leads() {
                                     pr-3
                                     text-sm
                                     outline-none
+                                    transition-all
                                     focus:ring-2
-                                    focus:ring-blue-500
+                                    focus:ring-blue-500/30
                                 "
                             />
                         </div>
 
-                        {/* MOBILE ADD */}
+                        {/* ==========================================
+                            ADD LEAD — DESKTOP
+                        =========================================== */}
+
+                        <Link
+                            href="/leads/new"
+                            className="
+                                hidden
+                                sm:flex
+                                shrink-0
+                                h-10
+                                px-4
+                                rounded-xl
+                                btn-primary
+                                items-center
+                                justify-center
+                                gap-2
+                                text-sm
+                                font-medium
+                                shadow-sm
+                                transition-all
+                                hover:-translate-y-0.5
+                                hover:shadow-md
+                            "
+                        >
+                            <Plus size={17} />
+                            Add Lead
+                        </Link>
+
+                        {/* ==========================================
+                            ADD LEAD — MOBILE
+                        =========================================== */}
+
                         <Link
                             href="/leads/new"
                             className="
@@ -300,50 +331,55 @@ export default function Leads() {
                                 shrink-0
                                 h-10
                                 w-10
-                                rounded-lg
+                                rounded-xl
                                 btn-primary
                                 flex
                                 items-center
                                 justify-center
+                                shadow-sm
                             "
                             aria-label="Add Lead"
                         >
                             <Plus size={18} />
                         </Link>
 
-                        {/* FILTER */}
-                        <div className="shrink-0">
+                        {/* ==========================================
+                            FILTER
+                        =========================================== */}
+
+                        <div ref={filterRef} className="relative shrink-0">
                             <LeadsFilter
                                 selectedStage={selectedStage}
                                 setSelectedStage={setSelectedStage}
-                                setPage={setPage}
                                 filterOpen={filterOpen}
                                 setFilterOpen={setFilterOpen}
-                                filterRef={filterRef}
+                                setPage={setPage}
                             />
                         </div>
 
-                        {/* MORE MENU */}
+                        {/* ==========================================
+                            MORE MENU
+                        =========================================== */}
+
                         <div className="relative shrink-0" ref={menuRef}>
                             <button
                                 type="button"
-                                onClick={() => {
-                                    setMenuOpen((prev) => !prev);
-                                    setFilterOpen(false);
-                                }}
+                                onClick={() => setMenuOpen((prev) => !prev)}
                                 className="
                                     h-10
                                     w-10
-                                    rounded-lg
+                                    rounded-xl
                                     border
                                     border-app
-                                    hover-app
+                                    bg-app
                                     flex
                                     items-center
                                     justify-center
-                                    transition
+                                    shadow-sm
+                                    transition-all
+                                    hover:shadow-md
                                 "
-                                aria-label="More actions"
+                                aria-label="More options"
                             >
                                 <EllipsisVertical size={18} />
                             </button>
@@ -353,16 +389,15 @@ export default function Leads() {
                                     className="
                                         absolute
                                         right-0
-                                        top-full
+                                        top-12
                                         z-50
-                                        mt-1
-                                        w-36
-                                        rounded-lg
+                                        w-44
+                                        rounded-xl
                                         border
                                         border-app
                                         bg-app
-                                        p-1
                                         shadow-lg
+                                        overflow-hidden
                                     "
                                 >
                                     {/* EXPORT */}
@@ -370,20 +405,21 @@ export default function Leads() {
                                         type="button"
                                         onClick={handleExport}
                                         className="
-                                            flex
                                             w-full
+                                            flex
                                             items-center
-                                            gap-2
-                                            rounded-md
-                                            px-3
-                                            py-2
-                                            text-left
+                                            gap-3
+                                            px-4
+                                            py-3
                                             text-sm
-                                            hover-app
+                                            text-left
+                                            transition-colors
+                                            hover:bg-surface
                                         "
                                     >
-                                        <Download size={16} />
-                                        Export
+                                        <Download size={17} className="opacity-70" />
+
+                                        <span>Export Leads</span>
                                     </button>
 
                                     {/* IMPORT */}
@@ -391,20 +427,21 @@ export default function Leads() {
                                         type="button"
                                         onClick={handleImport}
                                         className="
-                                            flex
                                             w-full
+                                            flex
                                             items-center
-                                            gap-2
-                                            rounded-md
-                                            px-3
-                                            py-2
-                                            text-left
+                                            gap-3
+                                            px-4
+                                            py-3
                                             text-sm
-                                            hover-app
+                                            text-left
+                                            transition-colors
+                                            hover:bg-surface
                                         "
                                     >
-                                        <Upload size={16} />
-                                        Import
+                                        <Upload size={17} className="opacity-70" />
+
+                                        <span>Import Leads</span>
                                     </button>
                                 </div>
                             )}
@@ -440,8 +477,8 @@ export default function Leads() {
             </div>
 
             {/* ==================================================
-    MOBILE TABLE
-================================================== */}
+                MOBILE TABLE
+            =================================================== */}
 
             <div className="md:hidden">
                 <MobileLeadsTable

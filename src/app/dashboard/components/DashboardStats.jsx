@@ -1,8 +1,14 @@
+
 // src/app/dashboard/components/DashboardStats.jsx
 
 'use client';
 
-import { Users, UserPlus, Phone, ClipboardList } from 'lucide-react';
+import {
+    Users,
+    UserPlus,
+    Phone,
+    ClipboardList,
+} from 'lucide-react';
 
 import StatCard from './StatCard';
 
@@ -47,18 +53,36 @@ export default function DashboardStats({ stats, loading }) {
             className="
                 grid
                 grid-cols-2
-                gap-3
-                sm:gap-4
-                md:grid-cols-2
+                gap-2
+                sm:gap-3
+                md:gap-4
                 lg:grid-cols-4
                 lg:gap-6
+                w-full
             "
         >
             {statsConfig.map((item) => {
                 const Icon = item.icon;
 
-                return <StatCard key={item.key} title={item.title} value={stats[item.key]} icon={Icon} color={item.color} loading={loading} />;
+                return (
+                    <div
+                        key={item.key}
+                        className="
+                            min-w-0
+                            w-full
+                        "
+                    >
+                        <StatCard
+                            title={item.title}
+                            value={stats[item.key]}
+                            icon={Icon}
+                            color={item.color}
+                            loading={loading}
+                        />
+                    </div>
+                );
             })}
         </div>
     );
 }
+
