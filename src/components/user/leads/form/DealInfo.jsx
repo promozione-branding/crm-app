@@ -1,120 +1,198 @@
 // src/components/user/leads/form/DealInfo.jsx
 
-import React, { useEffect, useState } from "react";
+"use client";
+
+import React from "react";
+
 import SelectInput from "../../ui/SelectInput";
 import Input from "../../ui/Input";
-import toast from "react-hot-toast";
-import axios from "axios";
 
-export default function DealInfo({ form, handleChange }) {
-    const [users, setUsers] = useState([]);
-    const [today, setToday] = useState("");
+export default function DealInfo({
+    form,
+    handleChange,
+    users = [],
+    usersLoading = false,
+}) {
 
-    // Get current date from browser
-    useEffect(() => {
-        const date = new Date();
-
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-
-        setToday(`${year}-${month}-${day}`);
-    }, []);
-
-    const getUsers = async () => {
-        try {
-            const res = await axios.get(
-                "/api/user?limit=100",
-                {
-                    withCredentials: true,
-                }
-            );
-
-            setUsers(res.data.data || []);
-        } catch (error) {
-            toast.error(
-                error.response?.data?.message ||
-                    "Failed to load users."
-            );
-        }
-    };
-
-    useEffect(() => {
-        getUsers();
-    }, []);
+    // ============================================================
+    // USERS NOW COME FROM PARENT
+    // ============================================================
+    //
+    // No:
+    //
+    // GET /api/user?limit=100
+    //
+    // here anymore.
+    // ============================================================
 
     return (
-        <div className="bg-card border border-app rounded-2xl p-5 mt-6">
-            <h3 className="uppercase tracking-widest text-xs font-semibold text-muted">
-                Deal Information
-            </h3>
 
-            <div className="border-b border-app my-4" />
+        <div
+            className="
+                bg-card
+                border
+                border-app
+                rounded-2xl
+                p-5
+                text-app
+            "
+        >
 
-            <div className="grid md:grid-cols-2 gap-3">
+            {/* =====================================================
+                HEADER
+            ===================================================== */}
 
-                {/* Assigned To */}
+            <div
+                className="
+                    flex
+                    items-center
+                    justify-between
+                    mb-4
+                "
+            >
+
+                <h3
+                    className="
+                        uppercase
+                        tracking-widest
+                        text-xs
+                        font-semibold
+                        text-muted
+                    "
+                >
+                    Deal Information
+                </h3>
+
+            </div>
+
+            {/* =====================================================
+                FORM
+            ===================================================== */}
+
+            <div
+                className="
+                    grid
+                    md:grid-cols-2
+                    gap-3
+                "
+            >
+
+                {/* ASSIGNED TO */}
+
                 <SelectInput
                     label="Assigned To"
                     name="assignedTo"
-                    value={form.assignedTo}
-                    onChange={handleChange}
+                    value={
+                        form.assignedTo
+                    }
+                    onChange={
+                        handleChange
+                    }
+                    disabled={
+                        usersLoading
+                    }
                     options={[
-                        ...users.map((user) => ({
-                            label: `${user.name} (${user.roleId?.name})`,
-                            value: user._id,
-                        })),
+                        ...users.map(
+                            (user) => ({
+                                label:
+                                    `${user.name} (${user.roleId?.name})`,
+                                value:
+                                    user._id,
+                            })
+                        ),
                     ]}
                 />
 
-                {/* Lead Stage */}
+                {/* STAGE */}
+
                 <SelectInput
-                    label="Lead Stage"
+                    label="Stage"
                     name="stage"
-                    value={form.stage}
-                    onChange={handleChange}
+                    value={
+                        form.stage
+                    }
+                    onChange={
+                        handleChange
+                    }
                     options={[
-                        { label: "New", value: "new" },
-                        { label: "Contacted", value: "contacted" },
-                        { label: "Qualified", value: "qualified" },
-                        { label: "Proposal Sent", value: "proposal_sent" },
-                        { label: "Negotiation", value: "negotiation" },
-                        { label: "Won", value: "won" },
-                        { label: "Lost", value: "lost" },
+                        {
+                            label: "New",
+                            value: "new",
+                        },
+                        {
+                            label: "Contacted",
+                            value: "contacted",
+                        },
+                        {
+                            label: "Qualified",
+                            value: "qualified",
+                        },
+                        {
+                            label: "Proposal",
+                            value: "proposal",
+                        },
+                        {
+                            label: "Negotiation",
+                            value: "negotiation",
+                        },
+                        {
+                            label: "Won",
+                            value: "won",
+                        },
+                        {
+                            label: "Lost",
+                            value: "lost",
+                        },
                     ]}
                 />
 
-                {/* Price Range */}
+                {/* PRICE RANGE */}
+
                 <Input
-                    label="Price Range (₹)"
-                    type="number"
+                    label="Price Range"
                     name="priceRange"
-                    value={form.priceRange}
-                    onChange={handleChange}
-                    placeholder="Price Range"
+                    value={
+                        form.priceRange
+                    }
+                    onChange={
+                        handleChange
+                    }
+                    placeholder="Enter price range"
                 />
 
-                {/* Deal Value */}
+                {/* DEAL VALUE */}
+
                 <Input
-                    label="Deal Value (₹)"
-                    type="number"
+                    label="Deal Value"
                     name="dealValue"
-                    value={form.dealValue}
-                    onChange={handleChange}
+                    value={
+                        form.dealValue
+                    }
+                    onChange={
+                        handleChange
+                    }
                     placeholder="Enter deal value"
+                    type="number"
                 />
 
-                {/* Expected Closure Date */}
+                {/* EXPECTED CLOSURE DATE */}
+
                 <Input
-                    label="Expected Closure On"
-                    type="date"
+                    label="Expected Closure Date"
                     name="expectedClosureDate"
-                    value={form.expectedClosureDate}
-                    onChange={handleChange}
-                    min={today}
+                    value={
+                        form.expectedClosureDate
+                    }
+                    onChange={
+                        handleChange
+                    }
+                    type="date"
                 />
 
             </div>
+
         </div>
+
     );
+
 }

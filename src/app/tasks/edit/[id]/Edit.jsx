@@ -99,8 +99,8 @@ export default function Edit() {
 
                 dueDate: data.dueDate
                     ? formatDateTimeLocal(
-                          data.dueDate
-                      )
+                        data.dueDate
+                    )
                     : "",
 
                 reminderMinutes:
@@ -164,28 +164,10 @@ export default function Edit() {
     ===================================================== */
 
     useEffect(() => {
-    const timer = setTimeout(() => {
-        getTasks({
-            requestedPage: page,
-            requestedRowsPerPage: rowsPerPage,
-            requestedSearch: search,
-            requestedRelatedTo: relatedTo,
-            requestedAssignedTo: assignedTo,
-            requestedPriority: priority,
-        });
-    }, 500);
+        if (!id) return;
 
-    return () => {
-        clearTimeout(timer);
-    };
-}, [
-    page,
-    rowsPerPage,
-    search,
-    relatedTo,
-    assignedTo,
-    priority,
-]);
+        getTask();
+    }, [id, getTask]);
 
     /* =====================================================
        HANDLE INPUT
@@ -282,7 +264,6 @@ export default function Edit() {
                     res.data.data
                 );
             }
-
         } catch (error) {
             console.error(
                 "UPDATE TASK ERROR:",
@@ -312,41 +293,41 @@ export default function Edit() {
 
     if (loading) {
         return (
-            <div className="
-                bg-surface
-                text-app
-                min-h-[calc(100vh-64px)]
-                px-4
-                py-5
-                sm:p-6
-            ">
-
-                <div className="
-                    flex
-                    items-center
-                    justify-center
-                    min-h-[400px]
-                ">
-
-                    <div className="
+            <div
+                className="
+                    bg-surface
+                    text-app
+                    min-h-[calc(100vh-64px)]
+                    px-4
+                    py-5
+                    sm:p-6
+                "
+            >
+                <div
+                    className="
                         flex
                         items-center
-                        gap-3
-                        text-sm
-                        opacity-70
-                    ">
-
+                        justify-center
+                        min-h-[400px]
+                    "
+                >
+                    <div
+                        className="
+                            flex
+                            items-center
+                            gap-3
+                            text-sm
+                            opacity-70
+                        "
+                    >
                         <Loader2
                             size={20}
                             className="animate-spin"
                         />
 
                         Loading task...
-
                     </div>
-
                 </div>
-
             </div>
         );
     }
@@ -357,28 +338,30 @@ export default function Edit() {
 
     if (!task) {
         return (
-            <div className="
-                bg-surface
-                text-app
-                min-h-[calc(100vh-64px)]
-                px-4
-                py-5
-                sm:p-6
-            ">
-
+            <div
+                className="
+                    bg-surface
+                    text-app
+                    min-h-[calc(100vh-64px)]
+                    px-4
+                    py-5
+                    sm:p-6
+                "
+            >
                 <TaskHeader
                     onBack={handleBack}
                 />
 
-                <div className="
-                    flex
-                    flex-col
-                    items-center
-                    justify-center
-                    text-center
-                    min-h-[350px]
-                ">
-
+                <div
+                    className="
+                        flex
+                        flex-col
+                        items-center
+                        justify-center
+                        text-center
+                        min-h-[350px]
+                    "
+                >
                     <ClipboardCheck
                         size={45}
                         className="
@@ -387,26 +370,28 @@ export default function Edit() {
                         "
                     />
 
-                    <h2 className="
-                        text-lg
-                        font-semibold
-                    "> 
+                    <h2
+                        className="
+                            text-lg
+                            font-semibold
+                        "
+                    >
                         Task not found
                     </h2>
 
-                    <p className="
-                        text-sm
-                        opacity-60
-                        mt-1
-                        max-w-sm
-                    ">
+                    <p
+                        className="
+                            text-sm
+                            opacity-60
+                            mt-1
+                            max-w-sm
+                        "
+                    >
                         The task you are looking
                         for does not exist or
                         could not be loaded.
                     </p>
-
                 </div>
-
             </div>
         );
     }
@@ -416,20 +401,22 @@ export default function Edit() {
     ===================================================== */
 
     return (
-        <div className="
-            bg-surface
-            text-app
-            min-h-[calc(100vh-64px)]
-            px-4
-            py-5
-            sm:p-6
-        ">
-
-            <div className="
-                max-w-5xl
-                mx-auto
-            ">
-
+        <div
+            className="
+                bg-surface
+                text-app
+                min-h-[calc(100vh-64px)]
+                px-4
+                py-5
+                sm:p-6
+            "
+        >
+            <div
+                className="
+                    max-w-5xl
+                    mx-auto
+                "
+            >
                 {/* =================================================
                     HEADER
                 ================================================= */}
@@ -455,7 +442,6 @@ export default function Edit() {
                         shadow-sm
                     "
                 >
-
                     {/* =================================================
                         FORM
                     ================================================= */}
@@ -482,11 +468,8 @@ export default function Edit() {
                         saving={saving}
                         onCancel={handleBack}
                     />
-
                 </form>
-
             </div>
-
         </div>
     );
 }
