@@ -1,14 +1,8 @@
-
 // src/app/dashboard/components/DashboardStats.jsx
 
 'use client';
 
-import {
-    Users,
-    UserPlus,
-    Phone,
-    ClipboardList,
-} from 'lucide-react';
+import { Users, UserPlus, Phone, ClipboardList } from 'lucide-react';
 
 import StatCard from './StatCard';
 
@@ -72,17 +66,10 @@ export default function DashboardStats({ stats, loading }) {
                             w-full
                         "
                     >
-                        <StatCard
-                            title={item.title}
-                            value={stats[item.key]}
-                            icon={Icon}
-                            color={item.color}
-                            loading={loading}
-                        />
+                        <StatCard title={item.title} value={stats[item.key]} icon={Icon} color={item.color} loading={loading} />
                     </div>
                 );
             })}
         </div>
     );
 }
-

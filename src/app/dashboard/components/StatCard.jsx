@@ -2,13 +2,7 @@
 
 'use client';
 
-export default function StatCard({
-    title,
-    value,
-    icon: Icon,
-    color,
-    loading,
-}) {
+export default function StatCard({ title, value, icon: Icon, color, loading }) {
     return (
         <div
             className="
@@ -26,12 +20,9 @@ export default function StatCard({
             "
         >
             <div className="flex items-center justify-between gap-2 sm:gap-3">
-
                 {/* DATA */}
                 <div className="min-w-0 flex-1">
-                    <p className="text-[11px] sm:text-sm opacity-70 truncate">
-                        {title}
-                    </p>
+                    <p className="text-[11px] sm:text-sm opacity-70 truncate">{title}</p>
 
                     <h2 className="text-xl sm:text-2xl lg:text-4xl font-bold mt-1 sm:mt-2">
                         {loading ? (
@@ -75,22 +66,12 @@ export default function StatCard({
                         border-app
                     "
                 >
-                    <Icon
-                        size={18}
-                        className={`${color} sm:hidden`}
-                    />
+                    <Icon size={18} className={`${color} sm:hidden`} />
 
-                    <Icon
-                        size={22}
-                        className={`${color} hidden sm:block lg:hidden`}
-                    />
+                    <Icon size={22} className={`${color} hidden sm:block lg:hidden`} />
 
-                    <Icon
-                        size={28}
-                        className={`${color} hidden lg:block`}
-                    />
+                    <Icon size={28} className={`${color} hidden lg:block`} />
                 </div>
-
             </div>
         </div>
     );

@@ -1,4 +1,3 @@
-
 // src/app/reports/Reports.jsx
 
 'use client';
@@ -24,7 +23,6 @@ export default function Reports() {
             ================================================== */}
 
             <div className="mb-4 sm:mb-5 md:mb-6">
-
                 {/* ==================================================
                     ROW 1 — STATS
                 ================================================== */}
@@ -47,9 +45,7 @@ export default function Reports() {
                 >
                     <Dashboarddata />
                 </div>
-
             </div>
-
 
             {/* ==================================================
                 EMPTY STATE
@@ -74,7 +70,6 @@ export default function Reports() {
                     sm:py-12
                 "
             >
-
                 <div
                     className="
                         text-center
@@ -82,7 +77,6 @@ export default function Reports() {
                         max-w-md
                     "
                 >
-
                     {/* ==================================================
                         ICON
                     ================================================== */}
@@ -103,17 +97,10 @@ export default function Reports() {
                             bg-blue-500/10
                         "
                     >
-                        <FileBarChart2
-                            size={32}
-                            className="text-blue-500 sm:hidden"
-                        />
+                        <FileBarChart2 size={32} className="text-blue-500 sm:hidden" />
 
-                        <FileBarChart2
-                            size={40}
-                            className="text-blue-500 hidden sm:block"
-                        />
+                        <FileBarChart2 size={40} className="text-blue-500 hidden sm:block" />
                     </div>
-
 
                     {/* ==================================================
                         TITLE
@@ -130,7 +117,6 @@ export default function Reports() {
                         No Reports Found
                     </h2>
 
-
                     {/* ==================================================
                         DESCRIPTION
                     ================================================== */}
@@ -145,11 +131,9 @@ export default function Reports() {
                             mx-auto
                         "
                     >
-                        You haven't generated any reports yet. Once your
-                        CRM starts collecting data, your sales, leads, and
-                        performance reports will appear here.
+                        You haven't generated any reports yet. Once your CRM starts collecting data, your sales, leads, and performance reports will appear
+                        here.
                     </p>
-
 
                     {/* ==================================================
                         GENERATE REPORT
@@ -175,11 +159,8 @@ export default function Reports() {
                     >
                         Generate Report
                     </button>
-
                 </div>
-
             </div>
         </div>
     );
 }
-

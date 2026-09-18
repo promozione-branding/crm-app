@@ -1,4 +1,3 @@
-
 // src/app/call-logs/CallLog.jsx
 
 'use client';
@@ -24,7 +23,6 @@ export default function CallLog() {
             ================================================== */}
 
             <div className="mb-4 sm:mb-5 md:mb-6">
-
                 {/* ==================================================
                     ROW 1 — STATS
                 ================================================== */}
@@ -47,9 +45,7 @@ export default function CallLog() {
                 >
                     <Dashboarddata />
                 </div>
-
             </div>
-
 
             {/* ==================================================
                 EMPTY STATE
@@ -74,7 +70,6 @@ export default function CallLog() {
                     sm:py-12
                 "
             >
-
                 <div
                     className="
                         text-center
@@ -82,7 +77,6 @@ export default function CallLog() {
                         max-w-md
                     "
                 >
-
                     {/* ==================================================
                         ICON
                     ================================================== */}
@@ -103,17 +97,10 @@ export default function CallLog() {
                             bg-green-500/10
                         "
                     >
-                        <PhoneOff
-                            size={32}
-                            className="text-green-500 sm:hidden"
-                        />
+                        <PhoneOff size={32} className="text-green-500 sm:hidden" />
 
-                        <PhoneOff
-                            size={40}
-                            className="text-green-500 hidden sm:block"
-                        />
+                        <PhoneOff size={40} className="text-green-500 hidden sm:block" />
                     </div>
-
 
                     {/* ==================================================
                         TITLE
@@ -130,7 +117,6 @@ export default function CallLog() {
                         No Call Logs Found
                     </h2>
 
-
                     {/* ==================================================
                         DESCRIPTION
                     ================================================== */}
@@ -145,11 +131,8 @@ export default function CallLog() {
                             mx-auto
                         "
                     >
-                        Your call history is empty. Once calls are made or
-                        received through the CRM, they'll appear here for
-                        easy tracking and follow-up.
+                        Your call history is empty. Once calls are made or received through the CRM, they'll appear here for easy tracking and follow-up.
                     </p>
-
 
                     {/* ==================================================
                         REFRESH BUTTON
@@ -177,11 +160,8 @@ export default function CallLog() {
                     >
                         Refresh
                     </button>
-
                 </div>
-
             </div>
         </div>
     );
 }
-
