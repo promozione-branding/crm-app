@@ -459,9 +459,8 @@ export default function Edit() {
                     border-app
                     flex
                     items-center
-                    gap-2
-                    justify-between
-                    md:px-8
+                    
+                    md:px-4
                     px-1
                     overflow-x-auto
                     overflow-y-hidden
