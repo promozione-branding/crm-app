@@ -115,71 +115,62 @@ export default function Edit() {
     // GET LEAD
     // ============================================================
 
-    const getLead = useCallback(async () => {
-        if (!id) return;
+   const getLead = useCallback(async () => {
+    if (!id) return;
 
-        try {
-            setLeadLoading(true);
+    try {
+        setLeadLoading(true);
 
-            const res = await axios.get(`/api/user/lead/${id}`, {
-                withCredentials: true,
-            });
+        const res = await axios.get(`/api/user/lead/${id}`, {
+            withCredentials: true,
+        });
 
-            const data = res.data?.data;
+        const data = res.data?.data;
 
-            setLead(data);
+        setLead(data);
 
-            setForm({
-                name: data.name || '',
+        setForm({
+            name: data.name || '',
+            email: data.email || '',
+            phone: data.phone || '',
+            place: data.place || '',
+            source: data.source || '',
 
-                email: data.email || '',
+            companyName: data.companyName || '',
+            gstNumber: data.gstNumber || '',
 
-                phone: data.phone || '',
+            assignedTo: data.assignedTo?._id || '',
+            stage: data.stage || 'new',
+            priceRange: data.priceRange || '',
+            dealValue: data.dealValue || '',
+            expectedClosureDate: data.expectedClosureDate
+                ? data.expectedClosureDate.slice(0, 10)
+                : '',
 
-                place: data.place || '',
+            campaignId: data.campaignId || '',
+            campaignName: data.campaignName || '',
 
-                source: data.source || '',
+            product: data.product || '',
+            message: data.message || '',
+        });
 
-                companyName: data.companyName || '',
+        // ====================================================
+        // ALWAYS OPEN OVERVIEW TAB
+        // ====================================================
 
-                gstNumber: data.gstNumber || '',
+        setActive('overview');
 
-                assignedTo: data.assignedTo?._id || '',
+    } catch (error) {
+        console.error('Get lead error:', error);
 
-                stage: data.stage || 'new',
-
-                priceRange: data.priceRange || '',
-
-                dealValue: data.dealValue || '',
-
-                expectedClosureDate: data.expectedClosureDate ? data.expectedClosureDate.slice(0, 10) : '',
-
-                campaignId: data.campaignId || '',
-
-                campaignName: data.campaignName || '',
-
-                product: data.product || '',
-
-                message: data.message || '',
-            });
-
-            // ====================================================
-            // OPEN TASK TAB IF LEAD HAS TASK
-            // ====================================================
-
-            if (Number(data?.taskCount) > 0) {
-                setActive('task');
-            } else {
-                setActive('overview');
-            }
-        } catch (error) {
-            console.error('Get lead error:', error);
-
-            toast.error(error.response?.data?.message || 'Failed to load lead');
-        } finally {
-            setLeadLoading(false);
-        }
-    }, [id]);
+        toast.error(
+            error.response?.data?.message ||
+                'Failed to load lead'
+        );
+    } finally {
+        setLeadLoading(false);
+    }
+}, [id]);
 
     // ============================================================
     // INITIAL DATA LOAD

@@ -331,7 +331,7 @@ export default function MobileLeadsTable({
                                         className="
                                             mt-2
                                             w-full
-                                            rounded-lg
+                                            rounded-lg 
                                             btn-primary
                                             py-2.5
                                             text-sm
