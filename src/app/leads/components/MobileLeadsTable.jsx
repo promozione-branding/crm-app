@@ -124,7 +124,11 @@ export default function MobileLeadsTable({
 
                         <button
                             type="button"
-                            onClick={() => setExpandedId((prev) => (prev === lead._id ? null : lead._id))}
+                            onClick={() =>
+                                setExpandedId((prev) =>
+                                    prev === lead._id ? null : lead._id
+                                )
+                            }
                             className="
                                 w-full
                                 px-4
@@ -134,161 +138,142 @@ export default function MobileLeadsTable({
                                 hover-app
                             "
                         >
-                            {/* TOP ROW */}
                             <div
                                 className="
                                     flex
-                                    items-start
-                                    justify-between
+                                    items-center
                                     gap-3
                                 "
                             >
-                                {/* CUSTOMER INFO */}
+                                {/* S.NO */}
+                                <span
+                                    className="
+                                        shrink-0
+                                        w-7
+                                        text-xs
+                                        font-medium
+                                        opacity-50
+                                    "
+                                >
+                                    #{getSerialNumber(index)}
+                                </span>
+
+                                {/* NAME + PHONE */}
                                 <div className="min-w-0 flex-1">
-                                    {/* S.NO + CUSTOMER NAME */}
-                                    <div
+                                    <h3
                                         className="
-                                            flex
-                                            min-w-0
-                                            items-center
-                                            gap-2
+                                            truncate
+                                            text-sm
+                                            font-semibold
                                         "
                                     >
-                                        <span
-                                            className="
-                                                shrink-0
-                                                text-xs
-                                                font-medium
-                                                opacity-70
-                                            "
-                                        >
-                                            #{getSerialNumber(index)}
-                                        </span>
+                                        {lead.name || 'Unnamed Lead'}
+                                    </h3>
 
-                                        <h3
-                                            className="
-                                                min-w-0
-                                                truncate
-                                                text-sm
-                                                font-semibold
-                                            "
-                                        >
-                                            {lead.name || 'Unnamed Lead'}
-                                        </h3>
-                                    </div>
-
-                                    {/* PHONE */}
-                                    <div
-                                        className="
-                                            mt-1.5
-                                            flex
-                                            items-center
-                                            gap-1.5
-                                        "
-                                    >
-                                        <Phone
-                                            size={13}
-                                            className="
-                                                shrink-0
-                                                opacity-50
-                                            "
-                                        />
-
-                                        <span
-                                            className="
-                                                truncate
-                                                text-sm
-                                                opacity-60
-                                            "
-                                        >
-                                            {lead.phone || 'No phone'}
-                                        </span>
-                                    </div>
+                                    {lead.phone ? (
+                                        <a
+  href={`tel:${lead.phone}`}
+  onClick={(e) => e.stopPropagation()}
+  className="
+    mt-1
+    inline-flex
+    min-w-0
+    items-center
+    gap-1.5
+    px-2.5
+    py-1
+    text-sm
+    font-medium
+    text-amber-50
+    bg-amber-900/70
+    hover:bg-amber-800
+    opacity-60
+    hover:opacity-100
+    rounded-full
+    border
+    border-amber-700/40
+    shadow-sm
+    hover:shadow-md
+    hover:shadow-amber-900/30
+    transition-all
+    duration-200
+    ease-out
+    hover:scale-105
+    active:scale-95
+    group
+  "
+>
+  <Phone
+    size={12}
+    className="shrink-0 transition-transform duration-200 group-hover:rotate-12"
+  />
+  <span className="truncate">
+    {lead.phone}
+  </span>
+</a>
+                                    ) : (
+                                        <p className="mt-1 text-xs opacity-50">
+                                            No phone number
+                                        </p>
+                                    )}
                                 </div>
 
-                                {/* STAGE / PRIORITY RIGHT END */}
-                                <div className="shrink-0">
+                                {/* STAGE + STATUS */}
+                                <div
+                                    className="
+                                        shrink-0
+                                        flex
+                                        flex-col
+                                        items-end
+                                        gap-1
+                                    "
+                                >
                                     <span
                                         className="
                                             inline-flex
-                                            items-center
+                                            max-w-[110px]
+                                            truncate
                                             rounded-full
                                             bg-blue-500/10
                                             px-2.5
                                             py-1
-                                            text-xs
+                                            text-[11px]
                                             font-medium
                                             capitalize
                                             text-blue-500
                                         "
                                     >
-                                        {lead.stage || '—'}
+                                        {(lead.stage || '—').replace(/_/g, ' ')}
                                     </span>
-                                </div>
-                            </div>
-
-                            {/* ASSIGNED TO */}
-                            <div
-                                className="
-                                    mt-3
-                                    flex
-                                    items-center
-                                    justify-between
-                                    gap-3
-                                    border-t
-                                    border-app
-                                    pt-2.5
-                                "
-                            >
-                                <div
-                                    className="
-                                        flex
-                                        items-center
-                                        gap-1.5
-                                        min-w-0
-                                    "
-                                >
-                                    <UserRound
-                                        size={13}
-                                        className="
-                                            shrink-0
-                                            opacity-70
-                                        "
-                                    />
 
                                     <span
-                                        className="
-                                            text-xs
-                                            opacity-50
-                                        "
+                                        className={`
+                                            text-[10px]
+                                            font-medium
+                                            capitalize
+                                            ${
+                                                lead.status === 'open'
+                                                    ? 'text-emerald-500'
+                                                    : lead.status === 'closed'
+                                                    ? 'text-blue-500'
+                                                    : lead.status === 'junk'
+                                                    ? 'text-red-500'
+                                                    : 'opacity-50'
+                                            }
+                                        `}
                                     >
-                                        Assigned To
+                                        {lead.status || '—'}
                                     </span>
                                 </div>
 
-                                <span
-                                    className="
-                                        max-w-[55%]
-                                        truncate
-                                        text-sm
-                                        font-medium
-                                        text-right
-                                    "
-                                >
-                                    {lead.assignedTo?.name || '—'}
-                                </span>
-                            </div>
-
-                            {/* EXPAND ICON */}
-                            <div
-                                className="
-                                    mt-2
-                                    flex
-                                    justify-center
-                                    opacity-70
-                                "
-                            >
-                                {isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                                {/* EXPAND */}
+                                <div className="shrink-0 opacity-50">
+                                    {isExpanded ? (
+                                        <ChevronUp size={16} />
+                                    ) : (
+                                        <ChevronDown size={16} />
+                                    )}
+                                </div>
                             </div>
                         </button>
 

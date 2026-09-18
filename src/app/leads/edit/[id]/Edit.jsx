@@ -8,7 +8,25 @@ import CompanyInfo from '@/components/user/leads/form/CompanyInfo';
 import DealInfo from '@/components/user/leads/form/DealInfo';
 import Description from '@/components/user/leads/form/Description';
 
-import { Activity, ArrowLeft, ClipboardCheck, FileText, LaptopMinimalCheck, Phone, TrendingUp, User } from 'lucide-react';
+import {
+    Activity,
+    ArrowLeft,
+    BriefcaseBusiness,
+    Building2,
+    CalendarDays,
+    ClipboardCheck,
+    Copy,
+    FileText,
+    IndianRupee,
+    LaptopMinimalCheck,
+    Mail,
+    MapPin,
+    Phone,
+    Tag,
+    TrendingUp,
+    User,
+} from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 
 import Link from 'next/link';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -32,7 +50,7 @@ export default function Edit() {
     // STATE
     // ============================================================
 
-    const [active, setActive] = useState('overview');
+    const [active, setActive] = useState('Insight');
 
     const [loading, setLoading] = useState(false);
 
@@ -115,62 +133,56 @@ export default function Edit() {
     // GET LEAD
     // ============================================================
 
-   const getLead = useCallback(async () => {
-    if (!id) return;
+    const getLead = useCallback(async () => {
+        if (!id) return;
 
-    try {
-        setLeadLoading(true);
+        try {
+            setLeadLoading(true);
 
-        const res = await axios.get(`/api/user/lead/${id}`, {
-            withCredentials: true,
-        });
+            const res = await axios.get(`/api/user/lead/${id}`, {
+                withCredentials: true,
+            });
 
-        const data = res.data?.data;
+            const data = res.data?.data;
 
-        setLead(data);
+            setLead(data);
 
-        setForm({
-            name: data.name || '',
-            email: data.email || '',
-            phone: data.phone || '',
-            place: data.place || '',
-            source: data.source || '',
+            setForm({
+                name: data.name || '',
+                email: data.email || '',
+                phone: data.phone || '',
+                place: data.place || '',
+                source: data.source || '',
 
-            companyName: data.companyName || '',
-            gstNumber: data.gstNumber || '',
+                companyName: data.companyName || '',
+                gstNumber: data.gstNumber || '',
 
-            assignedTo: data.assignedTo?._id || '',
-            stage: data.stage || 'new',
-            priceRange: data.priceRange || '',
-            dealValue: data.dealValue || '',
-            expectedClosureDate: data.expectedClosureDate
-                ? data.expectedClosureDate.slice(0, 10)
-                : '',
+                assignedTo: data.assignedTo?._id || '',
+                stage: data.stage || 'new',
+                priceRange: data.priceRange || '',
+                dealValue: data.dealValue || '',
+                expectedClosureDate: data.expectedClosureDate ? data.expectedClosureDate.slice(0, 10) : '',
 
-            campaignId: data.campaignId || '',
-            campaignName: data.campaignName || '',
+                campaignId: data.campaignId || '',
+                campaignName: data.campaignName || '',
 
-            product: data.product || '',
-            message: data.message || '',
-        });
+                product: data.product || '',
+                message: data.message || '',
+            });
 
-        // ====================================================
-        // ALWAYS OPEN OVERVIEW TAB
-        // ====================================================
+            // ====================================================
+            // ALWAYS OPEN OVERVIEW TAB
+            // ====================================================
 
-        setActive('overview');
+            setActive('Insight');
+        } catch (error) {
+            console.error('Get lead error:', error);
 
-    } catch (error) {
-        console.error('Get lead error:', error);
-
-        toast.error(
-            error.response?.data?.message ||
-                'Failed to load lead'
-        );
-    } finally {
-        setLeadLoading(false);
-    }
-}, [id]);
+            toast.error(error.response?.data?.message || 'Failed to load lead');
+        } finally {
+            setLeadLoading(false);
+        }
+    }, [id]);
 
     // ============================================================
     // INITIAL DATA LOAD
@@ -200,6 +212,11 @@ export default function Edit() {
     // ============================================================
 
     const tabs = [
+        {
+            id: 'Insight',
+            label: 'Insight',
+            icon: User,
+        },
         {
             id: 'overview',
             label: 'Overview',
@@ -503,6 +520,705 @@ export default function Edit() {
                     );
                 })}
             </div>
+
+            {/* =====================================================
+                Insight
+            ===================================================== */}
+
+            {active === 'Insight' && (
+                <div className="max-w-5xl mx-auto px-3 sm:px-5 md:px-8 py-5 md:py-8">
+                    {/* =====================================================
+            LEAD PROFILE
+        ===================================================== */}
+
+                    <div className="bg-app border border-app rounded-2xl overflow-hidden">
+                        <div className="p-4 sm:p-6">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                {/* PROFILE */}
+                                <div className="flex items-center gap-3 min-w-0">
+                                    {/* Avatar */}
+                                    <div
+                                        className="
+                                w-14 h-14
+                                sm:w-16 sm:h-16
+                                rounded-full
+                                bg-blue-500/10
+                                border border-blue-500/20
+                                flex items-center justify-center
+                                text-blue-600
+                                dark:text-blue-400
+                                text-lg
+                                font-bold
+                                shrink-0
+                            "
+                                    >
+                                        {(lead?.name || 'L')
+                                            .split(' ')
+                                            .map((word) => word[0])
+                                            .slice(0, 2)
+                                            .join('')
+                                            .toUpperCase()}
+                                    </div>
+
+                                    <div className="min-w-0">
+                                        <h2
+                                            className="
+                                    text-lg
+                                    sm:text-xl
+                                    font-bold
+                                    text-app
+                                    truncate
+                                "
+                                        >
+                                            {lead?.name || '-'}
+                                        </h2>
+
+                                        {lead?.companyName && (
+                                            <p
+                                                className="
+                                        text-sm
+                                        text-muted
+                                        mt-1
+                                        flex
+                                        items-center
+                                        gap-1.5
+                                        truncate
+                                    "
+                                            >
+                                                <Building2 size={14} />
+
+                                                {lead.companyName}
+                                            </p>
+                                        )}
+
+                                        {lead?.assignedTo?.name && (
+                                            <p
+                                                className="
+                                        text-xs
+                                        text-muted
+                                        mt-1
+                                        flex
+                                        items-center
+                                        gap-1.5
+                                    "
+                                            >
+                                                <User size={12} />
+                                                Assigned to {lead.assignedTo.name}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* STAGE + STATUS */}
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    <span
+                                        className="
+                                px-3
+                                py-1.5
+                                rounded-full
+                                text-xs
+                                font-semibold
+                                bg-blue-500/10
+                                text-blue-600
+                                dark:text-blue-400
+                                border
+                                border-blue-500/20
+                                capitalize
+                            "
+                                    >
+                                        {lead?.stage?.replace(/_/g, ' ') || '-'}
+                                    </span>
+
+                                    <span
+                                        className={`
+                                px-3
+                                py-1.5
+                                rounded-full
+                                text-xs
+                                font-semibold
+                                capitalize
+                                border
+                                ${
+                                    lead?.status === 'open'
+                                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                                        : lead?.status === 'closed'
+                                          ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
+                                          : 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20'
+                                }
+                            `}
+                                    >
+                                        {lead?.status || '-'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* =================================================
+                    ACTION BUTTONS
+                ================================================= */}
+
+                            <div
+                                className="
+                        grid
+                        grid-cols-2
+                        sm:flex
+                        sm:flex-wrap
+                        gap-2
+                        mt-6
+                    "
+                            >
+                                {/* CALL */}
+                                {lead?.phone && (
+                                    <a
+                                        href={`tel:${lead.phone}`}
+                                        className="
+                                flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-4
+                                py-2.5
+                                rounded-xl
+                                border
+                                border-app
+                                bg-surface
+                                hover-app
+                                text-sm
+                                font-medium
+                                text-app
+                                transition
+                            "
+                                    >
+                                        <Phone size={17} className="text-blue-500" />
+
+                                        <span>Call</span>
+                                    </a>
+                                )}
+
+                                {/* WHATSAPP */}
+                                {lead?.phone && (
+                                    <a
+                                        href={`https://wa.me/${
+                                            lead.phone.replace(/\D/g, '').length === 10 ? `91${lead.phone.replace(/\D/g, '')}` : lead.phone.replace(/\D/g, '')
+                                        }`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="
+                                flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-4
+                                py-2.5
+                                rounded-xl
+                                border
+                                border-app
+                                bg-surface
+                                hover-app
+                                text-sm
+                                font-medium
+                                text-app
+                                transition
+                            "
+                                    >
+                                        <FaWhatsapp size={19} className="text-green-500" />
+
+                                        <span>WhatsApp</span>
+                                    </a>
+                                )}
+
+                                {/* EMAIL */}
+                                {lead?.email && (
+                                    <a
+                                        href={`mailto:${lead.email}`}
+                                        className="
+                                flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-4
+                                py-2.5
+                                rounded-xl
+                                border
+                                border-app
+                                bg-surface
+                                hover-app
+                                text-sm
+                                font-medium
+                                text-app
+                                transition
+                            "
+                                    >
+                                        <Mail size={17} className="text-orange-500" />
+
+                                        <span>Email</span>
+                                    </a>
+                                )}
+
+                                {/* SCHEDULE */}
+                                <button
+                                    type="button"
+                                    onClick={() => setActive('meeting')}
+                                    className="
+                            flex
+                            items-center
+                            justify-center
+                            gap-2
+                            px-4
+                            py-2.5
+                            rounded-xl
+                            border
+                            border-app
+                            bg-surface
+                            hover-app
+                            text-sm
+                            font-medium
+                            text-app
+                            transition
+                        "
+                                >
+                                    <CalendarDays size={17} className="text-purple-500" />
+
+                                    <span>Schedule</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* =====================================================
+                CONTACT INFORMATION
+            ===================================================== */}
+
+                        <div className="border-t border-app p-4 sm:p-6">
+                            <div className="flex items-center gap-2 mb-4">
+                                <div
+                                    className="
+                            w-8 h-8
+                            rounded-lg
+                            bg-blue-500/10
+                            text-blue-500
+                            flex
+                            items-center
+                            justify-center
+                        "
+                                >
+                                    <User size={16} />
+                                </div>
+
+                                <div>
+                                    <h3 className="text-sm font-semibold text-app">Contact Information</h3>
+
+                                    <p className="text-xs text-muted">Lead contact details</p>
+                                </div>
+                            </div>
+
+                            <div className="space-y-1">
+                                {/* PHONE */}
+                                <div
+                                    className="
+                            flex
+                            items-center
+                            gap-3
+                            py-3
+                            border-b
+                            border-app
+                        "
+                                >
+                                    <Phone size={19} className="text-blue-500 shrink-0" />
+
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs text-muted">Phone</p>
+
+                                        {lead?.phone ? (
+                                            <a
+                                                href={`tel:${lead.phone}`}
+                                                className="
+                                        text-sm
+                                        font-medium
+                                        text-app
+                                        hover:text-blue-500
+                                        transition
+                                    "
+                                            >
+                                                {lead.phone}
+                                            </a>
+                                        ) : (
+                                            <p className="text-sm text-app">-</p>
+                                        )}
+                                    </div>
+
+                                    {lead?.phone && (
+                                        <button
+                                            type="button"
+                                            onClick={() => navigator.clipboard.writeText(lead.phone)}
+                                            className="
+                                    p-2
+                                    rounded-lg
+                                    hover-app
+                                    text-muted
+                                "
+                                            title="Copy phone"
+                                        >
+                                            <Copy size={15} />
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* EMAIL */}
+                                <div
+                                    className="
+                            flex
+                            items-center
+                            gap-3
+                            py-3
+                            border-b
+                            border-app
+                        "
+                                >
+                                    <Mail size={19} className="text-orange-500 shrink-0" />
+
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs text-muted">Email</p>
+
+                                        {lead?.email ? (
+                                            <a
+                                                href={`mailto:${lead.email}`}
+                                                className="
+                                        text-sm
+                                        font-medium
+                                        text-app
+                                        hover:text-blue-500
+                                        break-all
+                                    "
+                                            >
+                                                {lead.email}
+                                            </a>
+                                        ) : (
+                                            <p className="text-sm text-app">-</p>
+                                        )}
+                                    </div>
+
+                                    {lead?.email && (
+                                        <button
+                                            type="button"
+                                            onClick={() => navigator.clipboard.writeText(lead.email)}
+                                            className="
+                                    p-2
+                                    rounded-lg
+                                    hover-app
+                                    text-muted
+                                "
+                                            title="Copy email"
+                                        >
+                                            <Copy size={15} />
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* COMPANY */}
+                                <div
+                                    className="
+                            flex
+                            items-center
+                            gap-3
+                            py-3
+                            border-b
+                            border-app
+                        "
+                                >
+                                    <Building2 size={19} className="text-indigo-500 shrink-0" />
+
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs text-muted">Company</p>
+
+                                        <p className="text-sm font-medium text-app">{lead?.companyName || '-'}</p>
+                                    </div>
+                                </div>
+
+                                {/* PLACE */}
+                                <div
+                                    className="
+                            flex
+                            items-center
+                            gap-3
+                            py-3
+                            border-b
+                            border-app
+                        "
+                                >
+                                    <MapPin size={19} className="text-red-500 shrink-0" />
+
+                                    <div className="flex-1">
+                                        <p className="text-xs text-muted">Location</p>
+
+                                        <p className="text-sm font-medium text-app">{lead?.place || '-'}</p>
+                                    </div>
+                                </div>
+
+                                {/* PRODUCT */}
+                                <div
+                                    className="
+                            flex
+                            items-center
+                            gap-3
+                            py-3
+                            border-b
+                            border-app
+                        "
+                                >
+                                    <BriefcaseBusiness size={19} className="text-purple-500 shrink-0" />
+
+                                    <div className="flex-1">
+                                        <p className="text-xs text-muted">Product</p>
+
+                                        <p className="text-sm font-medium text-app">{lead?.product || '-'}</p>
+                                    </div>
+                                </div>
+
+                                {/* GST */}
+                                <div
+                                    className="
+                            flex
+                            items-center
+                            gap-3
+                            py-3
+                        "
+                                >
+                                    <FileText size={19} className="text-cyan-500 shrink-0" />
+
+                                    <div className="flex-1">
+                                        <p className="text-xs text-muted">GST Number</p>
+
+                                        <p className="text-sm font-medium text-app">{lead?.gstNumber || '-'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* =====================================================
+                DEAL INFORMATION
+            ===================================================== */}
+
+                        <div className="border-t border-app p-4 sm:p-6">
+                            <div className="flex items-center gap-2 mb-4">
+                                <div
+                                    className="
+                            w-8 h-8
+                            rounded-lg
+                            bg-emerald-500/10
+                            text-emerald-500
+                            flex
+                            items-center
+                            justify-center
+                        "
+                                >
+                                    <IndianRupee size={16} />
+                                </div>
+
+                                <div>
+                                    <h3 className="text-sm font-semibold text-app">Deal Information</h3>
+
+                                    <p className="text-xs text-muted">Value and closure details</p>
+                                </div>
+                            </div>
+
+                            <div
+                                className="
+                        grid
+                        grid-cols-1
+                        sm:grid-cols-2
+                        gap-3
+                    "
+                            >
+                                {/* DEAL VALUE */}
+                                <div
+                                    className="
+                            rounded-xl
+                            border
+                            border-app
+                            bg-surface
+                            p-4
+                        "
+                                >
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <IndianRupee size={16} className="text-emerald-500" />
+
+                                        <p className="text-xs text-muted">Deal Value</p>
+                                    </div>
+
+                                    <p className="text-lg font-bold text-app">{lead?.dealValue ? `₹${Number(lead.dealValue).toLocaleString('en-IN')}` : '-'}</p>
+                                </div>
+
+                                {/* EXPECTED CLOSURE */}
+                                <div
+                                    className="
+                            rounded-xl
+                            border
+                            border-app
+                            bg-surface
+                            p-4
+                        "
+                                >
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <CalendarDays size={16} className="text-purple-500" />
+
+                                        <p className="text-xs text-muted">Expected Closure</p>
+                                    </div>
+
+                                    <p className="text-sm font-semibold text-app">
+                                        {lead?.expectedClosureDate
+                                            ? new Date(lead.expectedClosureDate).toLocaleDateString('en-IN', {
+                                                  day: '2-digit',
+                                                  month: 'short',
+                                                  year: 'numeric',
+                                              })
+                                            : '-'}
+                                    </p>
+                                </div>
+
+                                {/* SOURCE */}
+                                <div
+                                    className="
+                            rounded-xl
+                            border
+                            border-app
+                            bg-surface
+                            p-4
+                        "
+                                >
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Tag size={16} className="text-blue-500" />
+
+                                        <p className="text-xs text-muted">Lead Source</p>
+                                    </div>
+
+                                    <p className="text-sm font-semibold text-app capitalize">{lead?.source || '-'}</p>
+                                </div>
+
+                                {/* PRICE RANGE */}
+                                <div
+                                    className="
+                            rounded-xl
+                            border
+                            border-app
+                            bg-surface
+                            p-4
+                        "
+                                >
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <IndianRupee size={16} className="text-orange-500" />
+
+                                        <p className="text-xs text-muted">Price Range</p>
+                                    </div>
+
+                                    <p className="text-sm font-semibold text-app">
+                                        {lead?.priceRange ? `₹${Number(lead.priceRange).toLocaleString('en-IN')}` : '-'}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* =====================================================
+                TIMELINE
+            ===================================================== */}
+
+                        <div className="border-t border-app p-4 sm:p-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div
+                                    className="
+                            rounded-xl
+                            border
+                            border-app
+                            bg-surface
+                            p-4
+                            flex
+                            items-center
+                            gap-3
+                        "
+                                >
+                                    <CalendarDays size={18} className="text-blue-500 shrink-0" />
+
+                                    <div>
+                                        <p className="text-xs text-muted">Created Date</p>
+
+                                        <p className="text-sm font-medium text-app">
+                                            {lead?.createdAt
+                                                ? new Date(lead.createdAt).toLocaleDateString('en-IN', {
+                                                      day: '2-digit',
+                                                      month: 'short',
+                                                      year: 'numeric',
+                                                  })
+                                                : '-'}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div
+                                    className="
+                            rounded-xl
+                            border
+                            border-app
+                            bg-surface
+                            p-4
+                            flex
+                            items-center
+                            gap-3
+                        "
+                                >
+                                    <TrendingUp size={18} className="text-purple-500 shrink-0" />
+
+                                    <div>
+                                        <p className="text-xs text-muted">Last Updated</p>
+
+                                        <p className="text-sm font-medium text-app">
+                                            {lead?.updatedAt
+                                                ? new Date(lead.updatedAt).toLocaleDateString('en-IN', {
+                                                      day: '2-digit',
+                                                      month: 'short',
+                                                      year: 'numeric',
+                                                  })
+                                                : '-'}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* =====================================================
+                MESSAGE
+            ===================================================== */}
+
+                        {lead?.message && (
+                            <div className="border-t border-app p-4 sm:p-6">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <FileText size={18} className="text-blue-500" />
+
+                                    <h3 className="text-sm font-semibold text-app">Lead Message</h3>
+                                </div>
+
+                                <div
+                                    className="
+                            rounded-xl
+                            bg-surface
+                            border
+                            border-app
+                            p-4
+                        "
+                                >
+                                    <p
+                                        className="
+                                text-sm
+                                text-app
+                                leading-6
+                                whitespace-pre-wrap
+                            "
+                                    >
+                                        {lead.message}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
 
             {/* =====================================================
                 OVERVIEW
