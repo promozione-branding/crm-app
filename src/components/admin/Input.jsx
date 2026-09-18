@@ -10,21 +10,17 @@ export default function Input({ label, icon: Icon, required = false, error, clas
                 {required && <span className="ml-1 text-red-500">*</span>}
             </label>
 
-            <div className="relative group">
+            <div className="group relative">
                 {Icon && (
                     <Icon
                         size={18}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors duration-200 group-focus-within:text-blue-500"
+                        className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors duration-200 group-focus-within:text-blue-500"
                     />
                 )}
 
                 <input
                     {...props}
-                    className={`w-full rounded-lg border bg-white py-2.5 ${Icon ? 'pl-10' : 'pl-3'} pr-3 outline-none transition
-                    border-gray-300
-                    focus:border-blue-300
-                    focus:ring-1
-                    focus:ring-blue-300`}
+                    className={`w-full rounded-lg border bg-white py-2.5 ${Icon ? 'pl-10' : 'pl-3'} border-gray-300 pr-3 transition outline-none focus:border-blue-300 focus:ring-1 focus:ring-blue-300`}
                 />
             </div>
 

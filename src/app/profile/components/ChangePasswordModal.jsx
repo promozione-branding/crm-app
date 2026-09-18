@@ -44,7 +44,7 @@ export default function ChangePasswordModal({ isOpen, onClose, passwordData, onC
                             <button
                                 type="button"
                                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                                className="absolute right-3 top-9 opacity-60 transition hover:opacity-100"
+                                className="absolute top-9 right-3 opacity-60 transition hover:opacity-100"
                                 aria-label={showCurrentPassword ? 'Hide current password' : 'Show current password'}
                             >
                                 {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -69,7 +69,7 @@ export default function ChangePasswordModal({ isOpen, onClose, passwordData, onC
                             <button
                                 type="button"
                                 onClick={() => setShowNewPassword(!showNewPassword)}
-                                className="absolute right-3 top-9 opacity-60 transition hover:opacity-100"
+                                className="absolute top-9 right-3 opacity-60 transition hover:opacity-100"
                                 aria-label={showNewPassword ? 'Hide new password' : 'Show new password'}
                             >
                                 {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -94,7 +94,7 @@ export default function ChangePasswordModal({ isOpen, onClose, passwordData, onC
                             <button
                                 type="button"
                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                className="absolute right-3 top-9 opacity-60 transition hover:opacity-100"
+                                className="absolute top-9 right-3 opacity-60 transition hover:opacity-100"
                                 aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
                             >
                                 {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -109,7 +109,7 @@ export default function ChangePasswordModal({ isOpen, onClose, passwordData, onC
                         type="button"
                         onClick={onClose}
                         disabled={changingPassword}
-                        className="rounded-lg border border-app px-4 py-2 text-xs text-app hover-app disabled:cursor-not-allowed disabled:opacity-50"
+                        className="border-app text-app hover-app rounded-lg border px-4 py-2 text-xs disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         Cancel
                     </button>
@@ -118,7 +118,7 @@ export default function ChangePasswordModal({ isOpen, onClose, passwordData, onC
                     <button
                         type="submit"
                         disabled={changingPassword}
-                        className="rounded-lg btn-primary px-4 py-2 text-xs disabled:cursor-not-allowed disabled:opacity-50"
+                        className="btn-primary rounded-lg px-4 py-2 text-xs disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {changingPassword ? 'Changing...' : 'Change Password'}
                     </button>

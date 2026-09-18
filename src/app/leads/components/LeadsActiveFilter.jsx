@@ -10,31 +10,10 @@ export default function LeadsActiveFilter({ selectedStage, selectedStageLabel, o
     }
 
     return (
-        <div
-            className="
-                mb-4
-                flex
-                flex-wrap
-                items-center
-                gap-2
-            "
-        >
+        <div className="mb-4 flex flex-wrap items-center gap-2">
             <span className="text-xs opacity-60">Filtered by:</span>
 
-            <button
-                type="button"
-                onClick={onClear}
-                className="
-                    px-2.5
-                    py-1
-                    rounded-full
-                    text-xs
-                    bg-blue-500/10
-                    text-blue-500
-                    hover:opacity-80
-                    transition
-                "
-            >
+            <button type="button" onClick={onClear} className="rounded-full bg-blue-500/10 px-2.5 py-1 text-xs text-blue-500 transition hover:opacity-80">
                 {selectedStageLabel} ×
             </button>
         </div>

@@ -7,17 +7,7 @@ import { Loader2, Save } from 'lucide-react';
 
 export default function TaskActions({ saving, onCancel }) {
     return (
-        <div
-            className="
-            flex
-            flex-col-reverse
-            sm:flex-row
-            sm:items-center
-            sm:justify-end
-            gap-3
-            mt-8
-        "
-        >
+        <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
             {/* =================================================
                 CANCEL
             ================================================= */}
@@ -26,22 +16,7 @@ export default function TaskActions({ saving, onCancel }) {
                 type="button"
                 onClick={onCancel}
                 disabled={saving}
-                className="
-                    w-full
-                    sm:w-auto
-                    px-5
-                    py-2.5
-                    rounded-lg
-                    border
-                    border-app
-                    text-sm
-                    font-medium
-                    hover:opacity-80
-                    active:scale-[0.98]
-                    transition
-                    disabled:opacity-50
-                    disabled:cursor-not-allowed
-                "
+                className="border-app w-full rounded-lg border px-5 py-2.5 text-sm font-medium transition hover:opacity-80 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
                 Cancel
             </button>
@@ -53,26 +28,7 @@ export default function TaskActions({ saving, onCancel }) {
             <button
                 type="submit"
                 disabled={saving}
-                className="
-                    w-full
-                    sm:w-auto
-                    flex
-                    items-center
-                    justify-center
-                    gap-2
-                    px-5
-                    py-2.5
-                    rounded-lg
-                    bg-blue-600
-                    text-white
-                    text-sm
-                    font-medium
-                    hover:bg-blue-700
-                    active:scale-[0.98]
-                    transition
-                    disabled:opacity-50
-                    disabled:cursor-not-allowed
-                "
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
                 {saving ? (
                     <>

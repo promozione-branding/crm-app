@@ -5,7 +5,7 @@
 export default function TextArea({ label, name, value, onChange, placeholder, rows = 5 }) {
     return (
         <div className="space-y-2">
-            <label className="text-xs font-medium text-app">{label}</label>
+            <label className="text-app text-xs font-medium">{label}</label>
 
             <textarea
                 name={name}
@@ -13,7 +13,7 @@ export default function TextArea({ label, name, value, onChange, placeholder, ro
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
-                className="w-full rounded-xl border mt-0.5 text-sm border-app bg-app px-4 py-3 outline-none text-app placeholder:text-muted resize-none"
+                className="border-app bg-app text-app placeholder:text-muted mt-0.5 w-full resize-none rounded-xl border px-4 py-3 text-sm outline-none"
             />
         </div>
     );

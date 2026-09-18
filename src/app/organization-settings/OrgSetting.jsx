@@ -66,9 +66,9 @@ export default function OrgSetting() {
 
     return (
         <div className="bg-surface min-h-screen">
-            <div className="h-16 top-16 sticky z-40 bg-surface border-b border-app flex items-center justify-between md:px-8 px-1">
-                <div className="flex items-center md:gap-2 gap-1">
-                    <Link href="/settings" className="p-2 rounded-xl border bg-app border-app hover-app text-app">
+            <div className="bg-surface border-app sticky top-16 z-40 flex h-16 items-center justify-between border-b px-1 md:px-8">
+                <div className="flex items-center gap-1 md:gap-2">
+                    <Link href="/settings" className="bg-app border-app hover-app text-app rounded-xl border p-2">
                         <ArrowLeft size={20} />
                     </Link>
 
@@ -76,21 +76,21 @@ export default function OrgSetting() {
             <Building2 size={18} />
           </div> */}
 
-                    <h1 className="text-sm font-bold text-app">Organization</h1>
+                    <h1 className="text-app text-sm font-bold">Organization</h1>
                 </div>
 
-                <div className="flex md:gap-2 items-center gap-1 text-sm">
-                    <Link href="/settings" className="px-3 h-8 rounded-lg flex items-center border bg-app border-app hover-app text-app">
+                <div className="flex items-center gap-1 text-sm md:gap-2">
+                    <Link href="/settings" className="bg-app border-app hover-app text-app flex h-8 items-center rounded-lg border px-3">
                         Cancel
                     </Link>
 
-                    <button disabled={loading} onClick={handleSave} className="px-3 h-8 rounded-lg btn-primary">
+                    <button disabled={loading} onClick={handleSave} className="btn-primary h-8 rounded-lg px-3">
                         {loading ? 'Saving' : 'Save'}
                     </button>
                 </div>
             </div>
 
-            <div className="max-w-4xl mx-auto md:py-10 py-5 px-2 space-y-4">
+            <div className="mx-auto max-w-4xl space-y-4 px-2 py-5 md:py-10">
                 <BasicInfo form={form} handleChange={handleChange} />
 
                 <BusinessInfo form={form} handleChange={handleChange} />

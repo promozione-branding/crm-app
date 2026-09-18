@@ -46,49 +46,15 @@ export default function Sidebar() {
 
     return (
         <aside
-            className={`
-                hidden
-                md:flex
-                sticky
-                top-0
-                left-0
-                h-screen
-                shrink-0
-                flex-col
-                bg-app
-                border-r
-                border-app
-                text-app
-                transition-all
-                duration-300
-                ease-in-out
-                ${open ? 'w-60' : 'w-20'}
-            `}
+            className={`bg-app border-app text-app sticky top-0 left-0 hidden h-screen shrink-0 flex-col border-r transition-all duration-300 ease-in-out md:flex ${open ? 'w-60' : 'w-20'} `}
         >
             {/* ================= HEADER ================= */}
             <div
-                className={`
-                    h-16
-                    shrink-0
-                    border-b
-                    border-app
-                    flex
-                    items-center
-                    transition-all
-                    duration-300
-                    ${open ? 'justify-between px-5' : 'justify-center'}
-                `}
+                className={`border-app flex h-16 shrink-0 items-center border-b transition-all duration-300 ${open ? 'justify-between px-5' : 'justify-center'} `}
             >
                 {/* Logo / Brand */}
-                <div
-                    className={`
-                        overflow-hidden
-                        transition-all
-                        duration-300
-                        ${open ? 'w-auto opacity-100' : 'w-0 opacity-0'}
-                    `}
-                >
-                    <h2 className="font-bold text-xl tracking-wide whitespace-nowrap">CRM</h2>
+                <div className={`overflow-hidden transition-all duration-300 ${open ? 'w-auto opacity-100' : 'w-0 opacity-0'} `}>
+                    <h2 className="text-xl font-bold tracking-wide whitespace-nowrap">CRM</h2>
                 </div>
 
                 {/* Toggle */}
@@ -97,26 +63,14 @@ export default function Sidebar() {
                     onClick={() => setOpen((prev) => !prev)}
                     aria-label={open ? 'Collapse sidebar' : 'Expand sidebar'}
                     title={open ? 'Collapse sidebar' : 'Expand sidebar'}
-                    className="
-                        w-9
-                        h-9
-                        shrink-0
-                        rounded-lg
-                        flex
-                        items-center
-                        justify-center
-                        hover-app
-                        transition-all
-                        duration-200
-                        active:scale-95
-                    "
+                    className="hover-app flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-all duration-200 active:scale-95"
                 >
                     {open ? <PanelLeftClose size={20} /> : <PanelLeftOpen size={20} />}
                 </button>
             </div>
 
             {/* ================= MENU ================= */}
-            <nav className="flex-1 p-3 space-y-2 overflow-y-auto">
+            <nav className="flex-1 space-y-2 overflow-y-auto p-3">
                 {menus.map((item) => {
                     const Icon = item.icon;
 
@@ -127,62 +81,21 @@ export default function Sidebar() {
                             key={item.name}
                             href={item.href}
                             title={!open ? item.name : undefined}
-                            className={`
-                                group
-                                relative
-                                flex
-                                items-center
-                                rounded-xl
-                                transition-all
-                                duration-200
-                                active:scale-[0.98]
-                                ${active ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'hover-app'}
-                                ${open ? 'h-12 px-4 gap-3' : 'h-12 justify-center px-0'}
-                            `}
+                            className={`group relative flex items-center rounded-xl transition-all duration-200 active:scale-[0.98] ${active ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'hover-app'} ${open ? 'h-12 gap-3 px-4' : 'h-12 justify-center px-0'} `}
                         >
                             {/* Icon */}
                             <Icon size={19} strokeWidth={active ? 2.5 : 2} className="shrink-0 transition-transform duration-200 group-hover:scale-105" />
 
                             {/* Menu Name */}
                             <span
-                                className={`
-                                    font-medium
-                                    text-sm
-                                    whitespace-nowrap
-                                    overflow-hidden
-                                    transition-all
-                                    duration-300
-                                    ${open ? 'w-auto opacity-100' : 'w-0 opacity-0'}
-                                `}
+                                className={`overflow-hidden text-sm font-medium whitespace-nowrap transition-all duration-300 ${open ? 'w-auto opacity-100' : 'w-0 opacity-0'} `}
                             >
                                 {item.name}
                             </span>
 
                             {/* Tooltip when collapsed */}
                             {!open && (
-                                <span
-                                    className="
-                                        pointer-events-none
-                                        absolute
-                                        left-full
-                                        ml-3
-                                        z-50
-                                        whitespace-nowrap
-                                        rounded-lg
-                                        bg-gray-900
-                                        px-3
-                                        py-2
-                                        text-xs
-                                        font-medium
-                                        text-white
-                                        opacity-0
-                                        translate-x-[-4px]
-                                        transition-all
-                                        duration-200
-                                        group-hover:opacity-100
-                                        group-hover:translate-x-0
-                                    "
-                                >
+                                <span className="pointer-events-none absolute left-full z-50 ml-3 translate-x-[-4px] rounded-lg bg-gray-900 px-3 py-2 text-xs font-medium whitespace-nowrap text-white opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100">
                                     {item.name}
                                 </span>
                             )}
@@ -192,36 +105,11 @@ export default function Sidebar() {
             </nav>
 
             {/* ================= FOOTER ================= */}
-            <div
-                className={`
-                    shrink-0
-                    border-t
-                    border-app
-                    p-3
-                    transition-all
-                    duration-300
-                    ${open ? 'text-left' : 'flex justify-center'}
-                `}
-            >
+            <div className={`border-app shrink-0 border-t p-3 transition-all duration-300 ${open ? 'text-left' : 'flex justify-center'} `}>
                 {open ? (
-                    <p className="text-xs text-muted px-1">CRM Dashboard</p>
+                    <p className="text-muted px-1 text-xs">CRM Dashboard</p>
                 ) : (
-                    <span
-                        className="
-                            w-8
-                            h-8
-                            rounded-lg
-                            bg-blue-600
-                            text-white
-                            flex
-                            items-center
-                            justify-center
-                            text-xs
-                            font-bold
-                        "
-                    >
-                        C
-                    </span>
+                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-xs font-bold text-white">C</span>
                 )}
             </div>
         </aside>

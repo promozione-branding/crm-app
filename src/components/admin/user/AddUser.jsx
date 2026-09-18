@@ -73,7 +73,7 @@ export default function AddUser({ userAdd, setUserAdd, getCompanies }) {
             <Modal.Header>Create User</Modal.Header>
 
             <Modal.Body>
-                <div className="grid grid-cols-2 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-2 gap-5 md:grid-cols-2">
                     <Input label="User Name" name="userName" value={formData.userName} onChange={handleChange} placeholder="John Doe" icon={User} required />
 
                     <Input
@@ -147,11 +147,11 @@ export default function AddUser({ userAdd, setUserAdd, getCompanies }) {
             </Modal.Body>
 
             <Modal.Footer>
-                <button onClick={() => setUserAdd(false)} className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200">
+                <button onClick={() => setUserAdd(false)} className="rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 hover:bg-gray-200">
                     Cancel
                 </button>
 
-                <button onClick={handleSubmit} className="px-5 py-2 rounded-lg bg-[#082c62] hover:bg-[#051f48] text-white" disabled={loading}>
+                <button onClick={handleSubmit} className="rounded-lg bg-[#082c62] px-5 py-2 text-white hover:bg-[#051f48]" disabled={loading}>
                     {loading ? 'Creating...' : 'Create User'}
                 </button>
             </Modal.Footer>

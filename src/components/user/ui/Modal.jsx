@@ -8,10 +8,10 @@ import { X } from 'lucide-react';
 
 function Header({ children, onClose }) {
     return (
-        <div className="flex items-center justify-between border-b border-app px-6 py-4 bg-surface">
-            <h2 className="text-lg font-semibold text-app">{children}</h2>
+        <div className="border-app bg-surface flex items-center justify-between border-b px-6 py-4">
+            <h2 className="text-app text-lg font-semibold">{children}</h2>
 
-            <button onClick={onClose} className="rounded-lg p-2 hover-app text-app transition">
+            <button onClick={onClose} className="hover-app text-app rounded-lg p-2 transition">
                 <X size={18} />
             </button>
         </div>
@@ -19,11 +19,11 @@ function Header({ children, onClose }) {
 }
 
 function Body({ children }) {
-    return <div className="px-6 py-5 max-h-[65vh] overflow-y-auto bg-surface text-app">{children}</div>;
+    return <div className="bg-surface text-app max-h-[65vh] overflow-y-auto px-6 py-5">{children}</div>;
 }
 
 function Footer({ children }) {
-    return <div className="flex justify-end items-center gap-3 border-t border-app bg-surface px-6 py-4">{children}</div>;
+    return <div className="border-app bg-surface flex items-center justify-end gap-3 border-t px-6 py-4">{children}</div>;
 }
 
 export default function Modal({ isOpen, onClose, children, size = 'md' }) {
@@ -66,14 +66,14 @@ export default function Modal({ isOpen, onClose, children, size = 'md' }) {
             {isOpen && (
                 <motion.div
                     onMouseDown={handleBackdropClick}
-                    className="fixed inset-0 z-[999] flex items-center justify-center bg-black/10 backdrop-blur-sm p-4"
+                    className="fixed inset-0 z-[999] flex items-center justify-center bg-black/10 p-4 backdrop-blur-sm"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                 >
                     <motion.div
                         ref={modalRef}
-                        className={`w-full ${sizes[size]} rounded-2xl border border-app bg-surface shadow-2xl overflow-hidden`}
+                        className={`w-full ${sizes[size]} border-app bg-surface overflow-hidden rounded-2xl border shadow-2xl`}
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}

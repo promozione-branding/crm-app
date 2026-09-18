@@ -71,9 +71,9 @@ export default function Dashboard() {
             ================================================== */}
 
             <div className="mb-6 sm:mb-8">
-                <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
+                <h1 className="text-2xl font-bold sm:text-3xl">Dashboard</h1>
 
-                <p className="text-xs sm:text-sm opacity-70 mt-1">Welcome to your CRM dashboard.</p>
+                <p className="mt-1 text-xs opacity-70 sm:text-sm">Welcome to your CRM dashboard.</p>
             </div>
 
             {/* ==================================================

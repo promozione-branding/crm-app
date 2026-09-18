@@ -80,7 +80,7 @@ export default function EditProfileModal({ isOpen, onClose, formData, onChange, 
                         type="button"
                         disabled={saving}
                         onClick={onClose}
-                        className="rounded-lg border border-app px-4 py-2 text-xs text-app hover-app disabled:cursor-not-allowed disabled:opacity-50"
+                        className="border-app text-app hover-app rounded-lg border px-4 py-2 text-xs disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         Cancel
                     </button>
@@ -89,7 +89,7 @@ export default function EditProfileModal({ isOpen, onClose, formData, onChange, 
                     <button
                         type="submit"
                         disabled={saving}
-                        className="rounded-lg btn-primary px-4 py-2 text-xs disabled:cursor-not-allowed disabled:opacity-50"
+                        className="btn-primary rounded-lg px-4 py-2 text-xs disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {saving ? 'Saving...' : 'Save'}
                     </button>

@@ -17,7 +17,7 @@ export default function FilterSidebar({ open, onClose, filters, setFilters, onAp
                         animate={{ opacity: 0.4 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black z-40"
+                        className="fixed inset-0 z-40 bg-black"
                     />
 
                     {/* Sidebar */}
@@ -26,19 +26,19 @@ export default function FilterSidebar({ open, onClose, filters, setFilters, onAp
                         animate={{ x: 0 }}
                         exit={{ x: 380 }}
                         transition={{ duration: 0.25 }}
-                        className="fixed right-0 top-0 h-screen w-full sm:w-96 bg-white z-50 shadow-xl flex flex-col text-gray-800"
+                        className="fixed top-0 right-0 z-50 flex h-screen w-full flex-col bg-white text-gray-800 shadow-xl sm:w-96"
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between border-b border-gray-300 px-4 py-2">
-                            <h2 className="text-lg font-semibold ">Filters</h2>
+                            <h2 className="text-lg font-semibold">Filters</h2>
 
-                            <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100">
+                            <button onClick={onClose} className="rounded-lg p-2 hover:bg-gray-100">
                                 <X size={20} />
                             </button>
                         </div>
 
                         {/* Body */}
-                        <div className="flex-1 overflow-y-auto p-5 space-y-5">
+                        <div className="flex-1 space-y-5 overflow-y-auto p-5">
                             <SelectInput
                                 label="Status"
                                 value={filters.status}
@@ -77,12 +77,12 @@ export default function FilterSidebar({ open, onClose, filters, setFilters, onAp
                         </div>
 
                         {/* Footer */}
-                        <div className="border-t border-gray-300 px-4 py-2 flex gap-3">
+                        <div className="flex gap-3 border-t border-gray-300 px-4 py-2">
                             <button onClick={onReset} className="flex-1 rounded-lg border border-gray-300 py-2.5 hover:bg-gray-100">
                                 Reset
                             </button>
 
-                            <button onClick={onApply} className="flex-1 rounded-lg bg-[#082c62] text-white py-2.5 hover:bg-[#051f48]">
+                            <button onClick={onApply} className="flex-1 rounded-lg bg-[#082c62] py-2.5 text-white hover:bg-[#051f48]">
                                 Apply
                             </button>
                         </div>

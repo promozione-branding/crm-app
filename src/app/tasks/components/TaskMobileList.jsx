@@ -16,18 +16,7 @@ export default function TaskMobileList({ tasks, loading, onAction, page, rowsPer
         return (
             <div className="space-y-2">
                 {[1, 2, 3, 4, 5].map((item) => (
-                    <div
-                        key={item}
-                        className="
-                            h-14
-                            w-full
-                            animate-pulse
-                            rounded-lg
-                            border
-                            border-app
-                            bg-app
-                        "
-                    />
+                    <div key={item} className="border-app bg-app h-14 w-full animate-pulse rounded-lg border" />
                 ))}
             </div>
         );
@@ -39,30 +28,8 @@ export default function TaskMobileList({ tasks, loading, onAction, page, rowsPer
 
     if (!tasks?.length) {
         return (
-            <div
-                className="
-                    w-full
-                    rounded-lg
-                    border
-                    border-app
-                    bg-app
-                    px-4
-                    py-8
-                    text-center
-                "
-            >
-                <div
-                    className="
-                        mx-auto
-                        flex
-                        h-9
-                        w-9
-                        items-center
-                        justify-center
-                        rounded-full
-                        bg-surface
-                    "
-                >
+            <div className="border-app bg-app w-full rounded-lg border px-4 py-8 text-center">
+                <div className="bg-surface mx-auto flex h-9 w-9 items-center justify-center rounded-full">
                     <Search size={16} className="opacity-40" />
                 </div>
 

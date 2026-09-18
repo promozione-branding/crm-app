@@ -18,18 +18,7 @@ export function PriorityBadge({ priority }) {
 
     return (
         <span
-            className={`
-                inline-flex
-                items-center
-                rounded-full
-                px-2
-                py-0.5
-                text-[10px]
-                font-medium
-                capitalize
-                whitespace-nowrap
-                ${config[value] || 'bg-slate-500/10 text-slate-500'}
-            `}
+            className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium whitespace-nowrap capitalize ${config[value] || 'bg-slate-500/10 text-slate-500'} `}
         >
             {priority || '-'}
         </span>
@@ -47,18 +36,7 @@ export function StatusBadge({ status }) {
 
     return (
         <span
-            className={`
-                inline-flex
-                items-center
-                rounded-full
-                px-2
-                py-0.5
-                text-[10px]
-                font-medium
-                capitalize
-                whitespace-nowrap
-                ${config[value] || 'bg-blue-500/10 text-blue-500'}
-            `}
+            className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium whitespace-nowrap capitalize ${config[value] || 'bg-blue-500/10 text-blue-500'} `}
         >
             {status || '-'}
         </span>

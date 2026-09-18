@@ -300,24 +300,8 @@ export default function Edit() {
 
     if (leadLoading) {
         return (
-            <div
-                className="
-                    bg-surface
-                    min-h-screen
-                    flex
-                    items-center
-                    justify-center
-                    text-app
-                "
-            >
-                <div
-                    className="
-                        text-sm
-                        opacity-70
-                    "
-                >
-                    Loading lead...
-                </div>
+            <div className="bg-surface text-app flex min-h-screen items-center justify-center">
+                <div className="text-sm opacity-70">Loading lead...</div>
             </div>
         );
     }
@@ -327,75 +311,21 @@ export default function Edit() {
     // ============================================================
 
     return (
-        <div
-            className="
-                bg-surface
-                min-h-screen
-            "
-        >
+        <div className="bg-surface min-h-screen">
             {/* =====================================================
                 HEADER
             ===================================================== */}
 
-            <div
-                className="
-                    h-16
-                    top-16
-                    sticky
-                    z-40
-                    bg-surface
-                    border-b
-                    border-app
-                    flex
-                    items-center
-                    justify-between
-                    md:px-8
-                    px-1
-                "
-            >
-                <div
-                    className="
-                        flex
-                        items-center
-                        md:gap-2
-                        gap-1
-                    "
-                >
-                    <Link
-                        href="/leads"
-                        className="
-                            p-2
-                            rounded-xl
-                            border
-                            bg-app
-                            border-app
-                            hover-app
-                            text-app
-                        "
-                    >
+            <div className="bg-surface border-app sticky top-16 z-40 flex h-16 items-center justify-between border-b px-1 md:px-8">
+                <div className="flex items-center gap-1 md:gap-2">
+                    <Link href="/leads" className="bg-app border-app hover-app text-app rounded-xl border p-2">
                         <ArrowLeft size={20} />
                     </Link>
 
-                    <h1
-                        className="
-                            text-sm
-                            font-bold
-                            text-app
-                            flex
-                            flex-col
-                        "
-                    >
+                    <h1 className="text-app flex flex-col text-sm font-bold">
                         {lead?.name || '-'}
 
-                        <span
-                            className="
-                                text-muted
-                                text-xs
-                                flex
-                                items-center
-                                gap-1
-                            "
-                        >
+                        <span className="text-muted flex items-center gap-1 text-xs">
                             <User size={12} />
 
                             {lead?.assignedTo?.name}
@@ -403,42 +333,12 @@ export default function Edit() {
                     </h1>
                 </div>
 
-                <div
-                    className="
-                        flex
-                        md:gap-2
-                        gap-1
-                        text-sm
-                    "
-                >
-                    <Link
-                        href="/leads"
-                        className="
-                            px-3
-                            h-8
-                            rounded-lg
-                            flex
-                            items-center
-                            border
-                            bg-app
-                            border-app
-                            hover-app
-                            text-app
-                        "
-                    >
+                <div className="flex gap-1 text-sm md:gap-2">
+                    <Link href="/leads" className="bg-app border-app hover-app text-app flex h-8 items-center rounded-lg border px-3">
                         Cancel
                     </Link>
 
-                    <button
-                        disabled={loading}
-                        onClick={handleEdit}
-                        className="
-                            px-3
-                            h-8
-                            rounded-lg
-                            btn-primary
-                        "
-                    >
+                    <button disabled={loading} onClick={handleEdit} className="btn-primary h-8 rounded-lg px-3">
                         {loading ? 'Editing' : 'Edit Lead'}
                     </button>
                 </div>
@@ -448,24 +348,7 @@ export default function Edit() {
                 TABS
             ===================================================== */}
 
-            <div
-                className="
-                    h-10
-                    top-32
-                    sticky
-                    z-40
-                    bg-surface
-                    border-b
-                    border-app
-                    flex
-                    items-center
-                    
-                    md:px-4
-                    px-1
-                    overflow-x-auto
-                    overflow-y-hidden
-                "
-            >
+            <div className="bg-surface border-app sticky top-32 z-40 flex h-10 items-center overflow-x-auto overflow-y-hidden border-b px-1 md:px-4">
                 {tabs.map((tab) => {
                     const Icon = tab.icon;
 
@@ -475,24 +358,7 @@ export default function Edit() {
                         <button
                             key={tab.id}
                             onClick={() => setActive(tab.id)}
-                            className={`
-                                relative
-                                flex
-                                items-center
-                                justify-center
-                                gap-2
-                                px-5
-                                h-11
-                                min-w-max
-                                text-sm
-                                font-medium
-                                whitespace-nowrap
-                                transition-all
-                                duration-200
-                                border-b-2
-
-                                ${isActive ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-500/10' : 'border-transparent text-app hover-app'}
-                            `}
+                            className={`relative flex h-11 min-w-max items-center justify-center gap-2 border-b-2 px-5 text-sm font-medium whitespace-nowrap transition-all duration-200 ${isActive ? 'border-blue-600 bg-blue-500/10 text-blue-600 dark:text-blue-400' : 'text-app hover-app border-transparent'} `}
                         >
                             <Icon size={16} />
 
@@ -500,17 +366,7 @@ export default function Edit() {
 
                             {tab.badge && (
                                 <span
-                                    className={`
-                                        flex
-                                        items-center
-                                        justify-center
-                                        min-w-5
-                                        h-5
-                                        rounded-full
-                                        text-[10px]
-
-                                        ${isActive ? 'bg-blue-600 text-white' : 'bg-app border border-app text-app'}
-                                    `}
+                                    className={`flex h-5 min-w-5 items-center justify-center rounded-full text-[10px] ${isActive ? 'bg-blue-600 text-white' : 'bg-app border-app text-app border'} `}
                                 >
                                     {tab.badge}
                                 </span>
@@ -525,32 +381,18 @@ export default function Edit() {
             ===================================================== */}
 
             {active === 'Insight' && (
-                <div className="max-w-5xl mx-auto px-3 sm:px-5 md:px-8 py-5 md:py-8">
+                <div className="mx-auto max-w-5xl px-3 py-5 sm:px-5 md:px-8 md:py-8">
                     {/* =====================================================
             LEAD PROFILE
         ===================================================== */}
 
-                    <div className="bg-app border border-app rounded-2xl overflow-hidden">
+                    <div className="bg-app border-app overflow-hidden rounded-2xl border">
                         <div className="p-4 sm:p-6">
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 {/* PROFILE */}
-                                <div className="flex items-center gap-3 min-w-0">
+                                <div className="flex min-w-0 items-center gap-3">
                                     {/* Avatar */}
-                                    <div
-                                        className="
-                                w-14 h-14
-                                sm:w-16 sm:h-16
-                                rounded-full
-                                bg-blue-500/10
-                                border border-blue-500/20
-                                flex items-center justify-center
-                                text-blue-600
-                                dark:text-blue-400
-                                text-lg
-                                font-bold
-                                shrink-0
-                            "
-                                    >
+                                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-blue-500/20 bg-blue-500/10 text-lg font-bold text-blue-600 sm:h-16 sm:w-16 dark:text-blue-400">
                                         {(lead?.name || 'L')
                                             .split(' ')
                                             .map((word) => word[0])
@@ -560,30 +402,10 @@ export default function Edit() {
                                     </div>
 
                                     <div className="min-w-0">
-                                        <h2
-                                            className="
-                                    text-lg
-                                    sm:text-xl
-                                    font-bold
-                                    text-app
-                                    truncate
-                                "
-                                        >
-                                            {lead?.name || '-'}
-                                        </h2>
+                                        <h2 className="text-app truncate text-lg font-bold sm:text-xl">{lead?.name || '-'}</h2>
 
                                         {lead?.companyName && (
-                                            <p
-                                                className="
-                                        text-sm
-                                        text-muted
-                                        mt-1
-                                        flex
-                                        items-center
-                                        gap-1.5
-                                        truncate
-                                    "
-                                            >
+                                            <p className="text-muted mt-1 flex items-center gap-1.5 truncate text-sm">
                                                 <Building2 size={14} />
 
                                                 {lead.companyName}
@@ -591,16 +413,7 @@ export default function Edit() {
                                         )}
 
                                         {lead?.assignedTo?.name && (
-                                            <p
-                                                className="
-                                        text-xs
-                                        text-muted
-                                        mt-1
-                                        flex
-                                        items-center
-                                        gap-1.5
-                                    "
-                                            >
+                                            <p className="text-muted mt-1 flex items-center gap-1.5 text-xs">
                                                 <User size={12} />
                                                 Assigned to {lead.assignedTo.name}
                                             </p>
@@ -609,42 +422,19 @@ export default function Edit() {
                                 </div>
 
                                 {/* STAGE + STATUS */}
-                                <div className="flex items-center gap-2 flex-wrap">
-                                    <span
-                                        className="
-                                px-3
-                                py-1.5
-                                rounded-full
-                                text-xs
-                                font-semibold
-                                bg-blue-500/10
-                                text-blue-600
-                                dark:text-blue-400
-                                border
-                                border-blue-500/20
-                                capitalize
-                            "
-                                    >
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <span className="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1.5 text-xs font-semibold text-blue-600 capitalize dark:text-blue-400">
                                         {lead?.stage?.replace(/_/g, ' ') || '-'}
                                     </span>
 
                                     <span
-                                        className={`
-                                px-3
-                                py-1.5
-                                rounded-full
-                                text-xs
-                                font-semibold
-                                capitalize
-                                border
-                                ${
-                                    lead?.status === 'open'
-                                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
-                                        : lead?.status === 'closed'
-                                          ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
-                                          : 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20'
-                                }
-                            `}
+                                        className={`rounded-full border px-3 py-1.5 text-xs font-semibold capitalize ${
+                                            lead?.status === 'open'
+                                                ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                                                : lead?.status === 'closed'
+                                                  ? 'border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                                                  : 'border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400'
+                                        } `}
                                     >
                                         {lead?.status || '-'}
                                     </span>
@@ -652,20 +442,7 @@ export default function Edit() {
                                     {/* PRODUCT — BESIDE LEAD STATUS */}
                                     {lead?.product && (
                                         <span
-                                            className="
-                                px-3
-                                py-1.5
-                                rounded-full
-                                text-xs
-                                font-semibold
-                                bg-purple-500/10
-                                text-purple-600
-                                dark:text-purple-400
-                                border
-                                border-purple-500/20
-                                truncate
-                                max-w-[180px]
-                            "
+                                            className="max-w-[180px] truncate rounded-full border border-purple-500/20 bg-purple-500/10 px-3 py-1.5 text-xs font-semibold text-purple-600 dark:text-purple-400"
                                             title={lead.product}
                                         >
                                             {lead.product}
@@ -678,37 +455,12 @@ export default function Edit() {
                     ACTION BUTTONS
                 ================================================= */}
 
-                            <div
-                                className="
-        flex
-        flex-nowrap
-        justify-evenly
-        w-full
-        gap-2
-        mt-6
-    "
-                            >
+                            <div className="mt-6 flex w-full flex-nowrap justify-evenly gap-2">
                                 {/* CALL */}
                                 {lead?.phone && (
                                     <a
                                         href={`tel:${lead.phone}`}
-                                        className="
-                flex
-                items-center
-                justify-center
-                gap-2
-                px-4
-                py-2.5
-                rounded-xl
-                border
-                border-app
-                bg-surface
-                hover-app
-                text-sm
-                font-medium
-                text-app
-                transition
-            "
+                                        className="border-app bg-surface hover-app text-app flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition"
                                     >
                                         <Phone size={17} className="text-blue-500" />
 
@@ -724,23 +476,7 @@ export default function Edit() {
                                         }`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="
-                flex
-                items-center
-                justify-center
-                gap-2
-                px-4
-                py-2.5
-                rounded-xl
-                border
-                border-app
-                bg-surface
-                hover-app
-                text-sm
-                font-medium
-                text-app
-                transition
-            "
+                                        className="border-app bg-surface hover-app text-app flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition"
                                     >
                                         <FaWhatsapp size={19} className="text-green-500" />
 
@@ -752,23 +488,7 @@ export default function Edit() {
                                 {lead?.email && (
                                     <a
                                         href={`mailto:${lead.email}`}
-                                        className="
-                flex
-                items-center
-                justify-center
-                gap-2
-                px-4
-                py-2.5
-                rounded-xl
-                border
-                border-app
-                bg-surface
-                hover-app
-                text-sm
-                font-medium
-                text-app
-                transition
-            "
+                                        className="border-app bg-surface hover-app text-app flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition"
                                     >
                                         <Mail size={17} className="text-orange-500" />
 
@@ -780,23 +500,7 @@ export default function Edit() {
                                 <button
                                     type="button"
                                     onClick={() => setActive('meeting')}
-                                    className="
-            flex
-            items-center
-            justify-center
-            gap-2
-            px-4
-            py-2.5
-            rounded-xl
-            border
-            border-app
-            bg-surface
-            hover-app
-            text-sm
-            font-medium
-            text-app
-            transition
-        "
+                                    className="border-app bg-surface hover-app text-app flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition"
                                 >
                                     <CalendarDays size={17} className="text-purple-500" />
 
@@ -809,61 +513,33 @@ export default function Edit() {
                 CONTACT INFORMATION
             ===================================================== */}
 
-                        <div className="border-t border-app p-4 sm:p-6">
-                            <div className="flex items-center gap-2 mb-4">
-                                <div
-                                    className="
-                            w-8 h-8
-                            rounded-lg
-                            bg-blue-500/10
-                            text-blue-500
-                            flex
-                            items-center
-                            justify-center
-                        "
-                                >
+                        <div className="border-app border-t p-4 sm:p-6">
+                            <div className="mb-4 flex items-center gap-2">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-500">
                                     <User size={16} />
                                 </div>
 
                                 <div>
-                                    <h3 className="text-sm font-semibold text-app">Contact Information</h3>
+                                    <h3 className="text-app text-sm font-semibold">Contact Information</h3>
 
-                                    <p className="text-xs text-muted">Lead contact details</p>
+                                    <p className="text-muted text-xs">Lead contact details</p>
                                 </div>
                             </div>
 
                             <div className="space-y-1">
                                 {/* PHONE */}
-                                <div
-                                    className="
-                            flex
-                            items-center
-                            gap-3
-                            py-3
-                            border-b
-                            border-app
-                        "
-                                >
-                                    <Phone size={19} className="text-blue-500 shrink-0" />
+                                <div className="border-app flex items-center gap-3 border-b py-3">
+                                    <Phone size={19} className="shrink-0 text-blue-500" />
 
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-muted">Phone</p>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-muted text-xs">Phone</p>
 
                                         {lead?.phone ? (
-                                            <a
-                                                href={`tel:${lead.phone}`}
-                                                className="
-                                        text-sm
-                                        font-medium
-                                        text-app
-                                        hover:text-blue-500
-                                        transition
-                                    "
-                                            >
+                                            <a href={`tel:${lead.phone}`} className="text-app text-sm font-medium transition hover:text-blue-500">
                                                 {lead.phone}
                                             </a>
                                         ) : (
-                                            <p className="text-sm text-app">-</p>
+                                            <p className="text-app text-sm">-</p>
                                         )}
                                     </div>
 
@@ -871,12 +547,7 @@ export default function Edit() {
                                         <button
                                             type="button"
                                             onClick={() => navigator.clipboard.writeText(lead.phone)}
-                                            className="
-                                    p-2
-                                    rounded-lg
-                                    hover-app
-                                    text-muted
-                                "
+                                            className="hover-app text-muted rounded-lg p-2"
                                             title="Copy phone"
                                         >
                                             <Copy size={15} />
@@ -885,36 +556,18 @@ export default function Edit() {
                                 </div>
 
                                 {/* EMAIL */}
-                                <div
-                                    className="
-                            flex
-                            items-center
-                            gap-3
-                            py-3
-                            border-b
-                            border-app
-                        "
-                                >
-                                    <Mail size={19} className="text-orange-500 shrink-0" />
+                                <div className="border-app flex items-center gap-3 border-b py-3">
+                                    <Mail size={19} className="shrink-0 text-orange-500" />
 
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-muted">Email</p>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-muted text-xs">Email</p>
 
                                         {lead?.email ? (
-                                            <a
-                                                href={`mailto:${lead.email}`}
-                                                className="
-                                        text-sm
-                                        font-medium
-                                        text-app
-                                        hover:text-blue-500
-                                        break-all
-                                    "
-                                            >
+                                            <a href={`mailto:${lead.email}`} className="text-app text-sm font-medium break-all hover:text-blue-500">
                                                 {lead.email}
                                             </a>
                                         ) : (
-                                            <p className="text-sm text-app">-</p>
+                                            <p className="text-app text-sm">-</p>
                                         )}
                                     </div>
 
@@ -922,12 +575,7 @@ export default function Edit() {
                                         <button
                                             type="button"
                                             onClick={() => navigator.clipboard.writeText(lead.email)}
-                                            className="
-                                    p-2
-                                    rounded-lg
-                                    hover-app
-                                    text-muted
-                                "
+                                            className="hover-app text-muted rounded-lg p-2"
                                             title="Copy email"
                                         >
                                             <Copy size={15} />
@@ -936,80 +584,46 @@ export default function Edit() {
                                 </div>
 
                                 {/* COMPANY */}
-                                <div
-                                    className="
-                            flex
-                            items-center
-                            gap-3
-                            py-3
-                            border-b
-                            border-app
-                        "
-                                >
-                                    <Building2 size={19} className="text-indigo-500 shrink-0" />
+                                <div className="border-app flex items-center gap-3 border-b py-3">
+                                    <Building2 size={19} className="shrink-0 text-indigo-500" />
 
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-muted">Company</p>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-muted text-xs">Company</p>
 
-                                        <p className="text-sm font-medium text-app">{lead?.companyName || '-'}</p>
+                                        <p className="text-app text-sm font-medium">{lead?.companyName || '-'}</p>
                                     </div>
                                 </div>
 
                                 {/* PLACE */}
-                                <div
-                                    className="
-                            flex
-                            items-center
-                            gap-3
-                            py-3
-                            border-b
-                            border-app
-                        "
-                                >
-                                    <MapPin size={19} className="text-red-500 shrink-0" />
+                                <div className="border-app flex items-center gap-3 border-b py-3">
+                                    <MapPin size={19} className="shrink-0 text-red-500" />
 
                                     <div className="flex-1">
-                                        <p className="text-xs text-muted">Location</p>
+                                        <p className="text-muted text-xs">Location</p>
 
-                                        <p className="text-sm font-medium text-app">{lead?.place || '-'}</p>
+                                        <p className="text-app text-sm font-medium">{lead?.place || '-'}</p>
                                     </div>
                                 </div>
 
                                 {/* PRODUCT */}
-                                <div
-                                    className="
-                            flex
-                            items-center
-                            gap-3
-                            py-3
-                            border-b
-                            border-app
-                        "
-                                >
-                                    <BriefcaseBusiness size={19} className="text-purple-500 shrink-0" />
+                                <div className="border-app flex items-center gap-3 border-b py-3">
+                                    <BriefcaseBusiness size={19} className="shrink-0 text-purple-500" />
 
                                     <div className="flex-1">
-                                        <p className="text-xs text-muted">Product</p>
+                                        <p className="text-muted text-xs">Product</p>
 
-                                        <p className="text-sm font-medium text-app">{lead?.product || '-'}</p>
+                                        <p className="text-app text-sm font-medium">{lead?.product || '-'}</p>
                                     </div>
                                 </div>
 
                                 {/* GST */}
-                                <div
-                                    className="
-                            flex
-                            items-center
-                            gap-3
-                            py-3
-                        "
-                                >
-                                    <FileText size={19} className="text-cyan-500 shrink-0" />
+                                <div className="flex items-center gap-3 py-3">
+                                    <FileText size={19} className="shrink-0 text-cyan-500" />
 
                                     <div className="flex-1">
-                                        <p className="text-xs text-muted">GST Number</p>
+                                        <p className="text-muted text-xs">GST Number</p>
 
-                                        <p className="text-sm font-medium text-app">{lead?.gstNumber || '-'}</p>
+                                        <p className="text-app text-sm font-medium">{lead?.gstNumber || '-'}</p>
                                     </div>
                                 </div>
                             </div>
@@ -1019,73 +633,40 @@ export default function Edit() {
                 DEAL INFORMATION
             ===================================================== */}
 
-                        <div className="border-t border-app p-4 sm:p-6">
-                            <div className="flex items-center gap-2 mb-4">
-                                <div
-                                    className="
-                            w-8 h-8
-                            rounded-lg
-                            bg-emerald-500/10
-                            text-emerald-500
-                            flex
-                            items-center
-                            justify-center
-                        "
-                                >
+                        <div className="border-app border-t p-4 sm:p-6">
+                            <div className="mb-4 flex items-center gap-2">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
                                     <IndianRupee size={16} />
                                 </div>
 
                                 <div>
-                                    <h3 className="text-sm font-semibold text-app">Deal Information</h3>
+                                    <h3 className="text-app text-sm font-semibold">Deal Information</h3>
 
-                                    <p className="text-xs text-muted">Value and closure details</p>
+                                    <p className="text-muted text-xs">Value and closure details</p>
                                 </div>
                             </div>
 
-                            <div
-                                className="
-                        grid
-                        grid-cols-1
-                        sm:grid-cols-2
-                        gap-3
-                    "
-                            >
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                 {/* DEAL VALUE */}
-                                <div
-                                    className="
-                            rounded-xl
-                            border
-                            border-app
-                            bg-surface
-                            p-4
-                        "
-                                >
-                                    <div className="flex items-center gap-2 mb-2">
+                                <div className="border-app bg-surface rounded-xl border p-4">
+                                    <div className="mb-2 flex items-center gap-2">
                                         <IndianRupee size={16} className="text-emerald-500" />
 
-                                        <p className="text-xs text-muted">Deal Value</p>
+                                        <p className="text-muted text-xs">Deal Value</p>
                                     </div>
 
-                                    <p className="text-lg font-bold text-app">{lead?.dealValue ? `₹${Number(lead.dealValue).toLocaleString('en-IN')}` : '-'}</p>
+                                    <p className="text-app text-lg font-bold">{lead?.dealValue ? `₹${Number(lead.dealValue).toLocaleString('en-IN')}` : '-'}</p>
                                 </div>
 
                                 {/* EXPECTED CLOSURE */}
-                                <div
-                                    className="
-                            rounded-xl
-                            border
-                            border-app
-                            bg-surface
-                            p-4
-                        "
-                                >
-                                    <div className="flex items-center gap-2 mb-2">
+                                <div className="border-app bg-surface rounded-xl border p-4">
+                                    <div className="mb-2 flex items-center gap-2">
                                         <CalendarDays size={16} className="text-purple-500" />
 
-                                        <p className="text-xs text-muted">Expected Closure</p>
+                                        <p className="text-muted text-xs">Expected Closure</p>
                                     </div>
 
-                                    <p className="text-sm font-semibold text-app">
+                                    <p className="text-app text-sm font-semibold">
                                         {lead?.expectedClosureDate
                                             ? new Date(lead.expectedClosureDate).toLocaleDateString('en-IN', {
                                                   day: '2-digit',
@@ -1097,41 +678,25 @@ export default function Edit() {
                                 </div>
 
                                 {/* SOURCE */}
-                                <div
-                                    className="
-                            rounded-xl
-                            border
-                            border-app
-                            bg-surface
-                            p-4
-                        "
-                                >
-                                    <div className="flex items-center gap-2 mb-2">
+                                <div className="border-app bg-surface rounded-xl border p-4">
+                                    <div className="mb-2 flex items-center gap-2">
                                         <Tag size={16} className="text-blue-500" />
 
-                                        <p className="text-xs text-muted">Lead Source</p>
+                                        <p className="text-muted text-xs">Lead Source</p>
                                     </div>
 
-                                    <p className="text-sm font-semibold text-app capitalize">{lead?.source || '-'}</p>
+                                    <p className="text-app text-sm font-semibold capitalize">{lead?.source || '-'}</p>
                                 </div>
 
                                 {/* PRICE RANGE */}
-                                <div
-                                    className="
-                            rounded-xl
-                            border
-                            border-app
-                            bg-surface
-                            p-4
-                        "
-                                >
-                                    <div className="flex items-center gap-2 mb-2">
+                                <div className="border-app bg-surface rounded-xl border p-4">
+                                    <div className="mb-2 flex items-center gap-2">
                                         <IndianRupee size={16} className="text-orange-500" />
 
-                                        <p className="text-xs text-muted">Price Range</p>
+                                        <p className="text-muted text-xs">Price Range</p>
                                     </div>
 
-                                    <p className="text-sm font-semibold text-app">
+                                    <p className="text-app text-sm font-semibold">
                                         {lead?.priceRange ? `₹${Number(lead.priceRange).toLocaleString('en-IN')}` : '-'}
                                     </p>
                                 </div>
@@ -1142,26 +707,15 @@ export default function Edit() {
                 TIMELINE
             ===================================================== */}
 
-                        <div className="border-t border-app p-4 sm:p-6">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div
-                                    className="
-                            rounded-xl
-                            border
-                            border-app
-                            bg-surface
-                            p-4
-                            flex
-                            items-center
-                            gap-3
-                        "
-                                >
-                                    <CalendarDays size={18} className="text-blue-500 shrink-0" />
+                        <div className="border-app border-t p-4 sm:p-6">
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <div className="border-app bg-surface flex items-center gap-3 rounded-xl border p-4">
+                                    <CalendarDays size={18} className="shrink-0 text-blue-500" />
 
                                     <div>
-                                        <p className="text-xs text-muted">Created Date</p>
+                                        <p className="text-muted text-xs">Created Date</p>
 
-                                        <p className="text-sm font-medium text-app">
+                                        <p className="text-app text-sm font-medium">
                                             {lead?.createdAt
                                                 ? new Date(lead.createdAt).toLocaleDateString('en-IN', {
                                                       day: '2-digit',
@@ -1173,24 +727,13 @@ export default function Edit() {
                                     </div>
                                 </div>
 
-                                <div
-                                    className="
-                            rounded-xl
-                            border
-                            border-app
-                            bg-surface
-                            p-4
-                            flex
-                            items-center
-                            gap-3
-                        "
-                                >
-                                    <TrendingUp size={18} className="text-purple-500 shrink-0" />
+                                <div className="border-app bg-surface flex items-center gap-3 rounded-xl border p-4">
+                                    <TrendingUp size={18} className="shrink-0 text-purple-500" />
 
                                     <div>
-                                        <p className="text-xs text-muted">Last Updated</p>
+                                        <p className="text-muted text-xs">Last Updated</p>
 
-                                        <p className="text-sm font-medium text-app">
+                                        <p className="text-app text-sm font-medium">
                                             {lead?.updatedAt
                                                 ? new Date(lead.updatedAt).toLocaleDateString('en-IN', {
                                                       day: '2-digit',
@@ -1209,32 +752,15 @@ export default function Edit() {
             ===================================================== */}
 
                         {lead?.message && (
-                            <div className="border-t border-app p-4 sm:p-6">
-                                <div className="flex items-center gap-2 mb-3">
+                            <div className="border-app border-t p-4 sm:p-6">
+                                <div className="mb-3 flex items-center gap-2">
                                     <FileText size={18} className="text-blue-500" />
 
-                                    <h3 className="text-sm font-semibold text-app">Lead Message</h3>
+                                    <h3 className="text-app text-sm font-semibold">Lead Message</h3>
                                 </div>
 
-                                <div
-                                    className="
-                            rounded-xl
-                            bg-surface
-                            border
-                            border-app
-                            p-4
-                        "
-                                >
-                                    <p
-                                        className="
-                                text-sm
-                                text-app
-                                leading-6
-                                whitespace-pre-wrap
-                            "
-                                    >
-                                        {lead.message}
-                                    </p>
+                                <div className="bg-surface border-app rounded-xl border p-4">
+                                    <p className="text-app text-sm leading-6 whitespace-pre-wrap">{lead.message}</p>
                                 </div>
                             </div>
                         )}
@@ -1247,16 +773,7 @@ export default function Edit() {
             ===================================================== */}
 
             {active === 'overview' && (
-                <div
-                    className="
-                        max-w-4xl
-                        mx-auto
-                        md:py-10
-                        py-5
-                        px-2
-                        space-y-4
-                    "
-                >
+                <div className="mx-auto max-w-4xl space-y-4 px-2 py-5 md:py-10">
                     <BasicInfo form={form} handleChange={handleChange} />
 
                     <CompanyInfo form={form} handleChange={handleChange} />
@@ -1280,16 +797,7 @@ export default function Edit() {
             ===================================================== */}
 
             {active === 'notes' && (
-                <div
-                    className="
-                        max-w-4xl
-                        mx-auto
-                        md:py-10
-                        py-5
-                        px-2
-                        space-y-4
-                    "
-                >
+                <div className="mx-auto max-w-4xl space-y-4 px-2 py-5 md:py-10">
                     <Notes notes={lead?.notes || []} leadId={id} getLead={getLead} />
                 </div>
             )}
@@ -1299,16 +807,7 @@ export default function Edit() {
             ===================================================== */}
 
             {active === 'activities' && (
-                <div
-                    className="
-                        max-w-4xl
-                        mx-auto
-                        md:py-10
-                        py-5
-                        px-2
-                        space-y-4
-                    "
-                >
+                <div className="mx-auto max-w-4xl space-y-4 px-2 py-5 md:py-10">
                     <Activities activities={lead?.activities || []} />
                 </div>
             )}
@@ -1318,16 +817,7 @@ export default function Edit() {
             ===================================================== */}
 
             {active === 'calls' && (
-                <div
-                    className="
-                        max-w-4xl
-                        mx-auto
-                        md:py-10
-                        py-5
-                        px-2
-                        space-y-4
-                    "
-                >
+                <div className="mx-auto max-w-4xl space-y-4 px-2 py-5 md:py-10">
                     <Call />
                 </div>
             )}
@@ -1337,16 +827,7 @@ export default function Edit() {
             ===================================================== */}
 
             {active === 'stage' && (
-                <div
-                    className="
-                        max-w-4xl
-                        mx-auto
-                        md:py-10
-                        py-5
-                        px-2
-                        space-y-4
-                    "
-                >
+                <div className="mx-auto max-w-4xl space-y-4 px-2 py-5 md:py-10">
                     <Stage stage={lead?.stageHistory || []} />
                 </div>
             )}
@@ -1356,16 +837,7 @@ export default function Edit() {
             ===================================================== */}
 
             {active === 'task' && (
-                <div
-                    className="
-                        max-w-4xl
-                        mx-auto
-                        md:py-10
-                        py-5
-                        px-2
-                        space-y-4
-                    "
-                >
+                <div className="mx-auto max-w-4xl space-y-4 px-2 py-5 md:py-10">
                     <Task lead={lead} getLead={getLead} users={users} usersLoading={usersLoading} />
                 </div>
             )}

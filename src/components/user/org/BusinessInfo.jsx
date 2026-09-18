@@ -20,12 +20,12 @@ export default function BusinessInfo({ form, handleChange }) {
     };
 
     return (
-        <div className="bg-card border border-app rounded-2xl p-5">
-            <h3 className="uppercase tracking-widest text-xs font-semibold text-muted">Business Info</h3>
+        <div className="bg-card border-app rounded-2xl border p-5">
+            <h3 className="text-muted text-xs font-semibold tracking-widest uppercase">Business Info</h3>
 
-            <div className="border-b border-app my-4" />
+            <div className="border-app my-4 border-b" />
 
-            <div className="grid md:grid-cols-2 gap-3">
+            <div className="grid gap-3 md:grid-cols-2">
                 {/* GST Number */}
                 <Input label="GST Number" name="gst" value={form.gst} onChange={handleGSTChange} placeholder="Enter 15 digit GST No." maxLength={15} />
 

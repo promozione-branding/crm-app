@@ -7,12 +7,12 @@ export default function Home() {
     return (
         <main className="min-h-screen bg-gradient-to-br from-white via-blue-50 to-purple-100">
             {/* Navbar */}
-            <nav className="flex items-center justify-between md:px-8 px-2 py-2 bg-white shadow-md sticky top-0 z-50">
+            <nav className="sticky top-0 z-50 flex items-center justify-between bg-white px-2 py-2 shadow-md md:px-8">
                 <div className="flex items-center gap-3">
                     <Image src="/logoo.webp" alt="Logo" width={120} height={40} className="object-contain" />
                 </div>
 
-                <button className="rounded-xl bg-orange-500 px-6 py-3 flex items-center gap-1 font-semibold text-white transition hover:bg-orange-600">
+                <button className="flex items-center gap-1 rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600">
                     Book a Demo <ArrowRight size={18} />
                 </button>
             </nav>
@@ -23,7 +23,7 @@ export default function Home() {
                 <div className="lg:px-5">
                     <span className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-700">India's #1 Lead Engagement CRM</span>
 
-                    <h1 className="mt-8 text-6xl font-bold leading-tight">
+                    <h1 className="mt-8 text-6xl leading-tight font-bold">
                         <span className="text-blue-600">CRM.</span> <span className="text-gray-900">Call Tracking.</span>
                         <br />
                         <span className="text-green-500">WhatsApp.</span>
@@ -33,13 +33,13 @@ export default function Home() {
                         Auto-capture leads, track mobile calls with recordings, and auto-reply on WhatsApp. One CRM built for the Indian sales process.
                     </p>
 
-                    <div className="mt-5 flex gap-5 justify-center lg:justify-start">
+                    <div className="mt-5 flex justify-center gap-5 lg:justify-start">
                         <button className="rounded-xl bg-orange-500 px-8 py-4 text-lg font-semibold text-white hover:bg-orange-600">Book a Demo</button>
                     </div>
                 </div>
 
                 {/* Right Stats */}
-                <div className="flex lg:flex-nowrap flex-wrap justify-center gap-4 text-gray-600">
+                <div className="flex flex-wrap justify-center gap-4 text-gray-600 lg:flex-nowrap">
                     {/* CRM Card */}
                     <div className="w-72 rounded-3xl bg-white shadow-2xl">
                         <div className="rounded-t-3xl bg-blue-600 px-6 py-4 font-semibold text-white">CRM</div>

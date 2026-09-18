@@ -41,7 +41,7 @@ const columns = [
         label: 'Status',
         sortable: true,
 
-        render: (task) => <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500 capitalize">{task.status}</span>,
+        render: (task) => <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs text-blue-500 capitalize">{task.status}</span>,
     },
 
     {
@@ -212,21 +212,7 @@ export default function Task() {
         ROW 1 — DASHBOARD DATA
     ================================================== */}
 
-                <div
-                    className="
-            w-full
-            rounded-xl
-            sm:rounded-2xl
-            border
-            border-app
-            bg-app
-            shadow-sm
-            px-2
-            py-2
-            sm:px-4
-            sm:py-3
-        "
-                >
+                <div className="border-app bg-app w-full rounded-xl border px-2 py-2 shadow-sm sm:rounded-2xl sm:px-4 sm:py-3">
                     <Dashboarddata />
                 </div>
 
@@ -234,7 +220,7 @@ export default function Task() {
         ROW 2 — SEARCH + FILTER + ADD TASK
     ================================================== */}
 
-                <div className="mt-3 sm:mt-4 w-full">
+                <div className="mt-3 w-full sm:mt-4">
                     <SearchAndFilterTask
                         search={search}
                         setSearch={setSearch}

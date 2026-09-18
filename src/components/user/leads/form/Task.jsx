@@ -283,55 +283,17 @@ export default function Task({ lead, getLead, users = [], usersLoading = false }
                 TASK CARD
             ==================================================== */}
 
-            <div
-                className="
-                    bg-card
-                    border
-                    border-app
-                    rounded-2xl
-                    p-5
-                    text-app
-                "
-            >
+            <div className="bg-card border-app text-app rounded-2xl border p-5">
                 {/* =================================================
                     HEADER
                 ================================================= */}
 
-                <div
-                    className="
-                        flex
-                        justify-between
-                        items-center
-                    "
-                >
-                    <h3
-                        className="
-                            uppercase
-                            tracking-widest
-                            text-xs
-                            font-semibold
-                            text-muted
-                        "
-                    >
-                        Tasks
-                    </h3>
+                <div className="flex items-center justify-between">
+                    <h3 className="text-muted text-xs font-semibold tracking-widest uppercase">Tasks</h3>
 
                     {/* ================= ADD TASK ================= */}
 
-                    <button
-                        type="button"
-                        onClick={() => setOpen(true)}
-                        className="
-                            p-2
-                            rounded-lg
-                            border
-                            bg-app
-                            border-app
-                            hover-app
-                            text-app
-                        "
-                        title="Add Task"
-                    >
+                    <button type="button" onClick={() => setOpen(true)} className="bg-app border-app hover-app text-app rounded-lg border p-2" title="Add Task">
                         <Plus size={16} />
                     </button>
                 </div>
@@ -340,151 +302,49 @@ export default function Task({ lead, getLead, users = [], usersLoading = false }
                     DIVIDER
                 ================================================= */}
 
-                <div
-                    className="
-                        border-b
-                        border-app
-                        my-4
-                    "
-                />
+                <div className="border-app my-4 border-b" />
 
                 {/* =================================================
                     NO TASK
                 ================================================= */}
 
                 {tasks.length === 0 ? (
-                    <div
-                        className="
-                            flex
-                            flex-col
-                            items-center
-                            justify-center
-                            py-12
-                            text-center
-                        "
-                    >
-                        <div
-                            className="
-                                w-14
-                                h-14
-                                rounded-full
-                                bg-app
-                                border
-                                border-app
-                                flex
-                                items-center
-                                justify-center
-                                text-app
-                            "
-                        >
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                        <div className="bg-app border-app text-app flex h-14 w-14 items-center justify-center rounded-full border">
                             <ClipboardCheck size={24} className="opacity-80" />
                         </div>
 
-                        <h4
-                            className="
-                                mt-4
-                                text-sm
-                                font-medium
-                                text-app
-                            "
-                        >
-                            No Task Found
-                        </h4>
+                        <h4 className="text-app mt-4 text-sm font-medium">No Task Found</h4>
 
-                        <p
-                            className="
-                                mt-1
-                                text-xs
-                                text-muted
-                            "
-                        >
-                            Tasks history will appear here.
-                        </p>
+                        <p className="text-muted mt-1 text-xs">Tasks history will appear here.</p>
                     </div>
                 ) : (
                     /* =================================================
                         TASK LIST
                     ================================================= */
 
-                    <div
-                        className="
-                            space-y-3
-                        "
-                    >
+                    <div className="space-y-3">
                         {tasks.map((task) => (
-                            <div
-                                key={task._id}
-                                className="
-                                        border
-                                        border-app
-                                        rounded-xl
-                                        p-4
-                                        bg-app
-                                    "
-                            >
+                            <div key={task._id} className="border-app bg-app rounded-xl border p-4">
                                 {/* =================================
                                         TASK HEADER
                                     ================================= */}
 
-                                <div
-                                    className="
-                                            flex
-                                            justify-between
-                                            gap-3
-                                        "
-                                >
-                                    <div
-                                        className="
-                                                min-w-0
-                                            "
-                                    >
-                                        <h4
-                                            className="
-                                                    text-sm
-                                                    font-semibold
-                                                    break-words
-                                                "
-                                        >
-                                            {task.title}
-                                        </h4>
+                                <div className="flex justify-between gap-3">
+                                    <div className="min-w-0">
+                                        <h4 className="text-sm font-semibold break-words">{task.title}</h4>
 
-                                        <p
-                                            className="
-                                                    text-xs
-                                                    text-muted
-                                                    mt-1
-                                                    break-words
-                                                "
-                                        >
-                                            {task.description || 'No description'}
-                                        </p>
+                                        <p className="text-muted mt-1 text-xs break-words">{task.description || 'No description'}</p>
                                     </div>
 
-                                    <span
-                                        className="
-                                                text-xs
-                                                capitalize
-                                                shrink-0
-                                            "
-                                    >
-                                        {task.priority}
-                                    </span>
+                                    <span className="shrink-0 text-xs capitalize">{task.priority}</span>
                                 </div>
 
                                 {/* =================================
                                         TASK INFO
                                     ================================= */}
 
-                                <div
-                                    className="
-                                            flex
-                                            flex-wrap
-                                            gap-3
-                                            mt-3
-                                            text-xs
-                                            text-muted
-                                        "
-                                >
+                                <div className="text-muted mt-3 flex flex-wrap gap-3 text-xs">
                                     <span>Due: {task.dueDate ? new Date(task.dueDate).toLocaleString() : '-'}</span>
 
                                     <span>Assigned: {task.assignedTo?.name || '-'}</span>
@@ -494,14 +354,7 @@ export default function Task({ lead, getLead, users = [], usersLoading = false }
                                         TASK ACTIONS
                                     ================================= */}
 
-                                <div
-                                    className="
-                                            flex
-                                            flex-wrap
-                                            gap-2
-                                            mt-3
-                                        "
-                                >
+                                <div className="mt-3 flex flex-wrap gap-2">
                                     {/* ============================
                                             EDIT
                                         ============================ */}
@@ -509,19 +362,7 @@ export default function Task({ lead, getLead, users = [], usersLoading = false }
                                     <button
                                         type="button"
                                         onClick={() => handleEditTask(task)}
-                                        className="
-                                                px-3
-                                                py-1.5
-                                                text-xs
-                                                rounded-lg
-                                                border
-                                                border-app
-                                                hover-app
-                                                flex
-                                                items-center
-                                                gap-1.5
-                                                transition
-                                            "
+                                        className="border-app hover-app flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs transition"
                                     >
                                         <Pencil size={13} />
                                         Edit
@@ -536,13 +377,7 @@ export default function Task({ lead, getLead, users = [], usersLoading = false }
                                             <button
                                                 type="button"
                                                 onClick={() => updateTaskStatus(task._id, 'completed')}
-                                                className="
-                                                        px-3
-                                                        py-1.5
-                                                        text-xs
-                                                        rounded-lg
-                                                        btn-primary
-                                                    "
+                                                className="btn-primary rounded-lg px-3 py-1.5 text-xs"
                                             >
                                                 Complete
                                             </button>
@@ -550,15 +385,7 @@ export default function Task({ lead, getLead, users = [], usersLoading = false }
                                             <button
                                                 type="button"
                                                 onClick={() => updateTaskStatus(task._id, 'cancelled')}
-                                                className="
-                                                        px-3
-                                                        py-1.5
-                                                        text-xs
-                                                        rounded-lg
-                                                        border
-                                                        border-app
-                                                        hover-app
-                                                    "
+                                                className="border-app hover-app rounded-lg border px-3 py-1.5 text-xs"
                                             >
                                                 Cancel
                                             </button>
@@ -569,20 +396,7 @@ export default function Task({ lead, getLead, users = [], usersLoading = false }
                                             NON-PENDING STATUS
                                         ============================ */}
 
-                                    {task.status !== 'pending' && (
-                                        <span
-                                            className="
-                                                    text-xs
-                                                    capitalize
-                                                    opacity-70
-                                                    flex
-                                                    items-center
-                                                    px-2
-                                                "
-                                        >
-                                            {task.status}
-                                        </span>
-                                    )}
+                                    {task.status !== 'pending' && <span className="flex items-center px-2 text-xs capitalize opacity-70">{task.status}</span>}
                                 </div>
                             </div>
                         ))}
@@ -598,22 +412,12 @@ export default function Task({ lead, getLead, users = [], usersLoading = false }
                 <Modal.Header>Add Task</Modal.Header>
 
                 <Modal.Body>
-                    <div
-                        className="
-                            space-y-2
-                        "
-                    >
+                    <div className="space-y-2">
                         {/* =========================================
                             TITLE + PRIORITY
                         ========================================= */}
 
-                        <div
-                            className="
-                                grid
-                                md:grid-cols-2
-                                gap-2
-                            "
-                        >
+                        <div className="grid gap-2 md:grid-cols-2">
                             <Input label="Task Title" required name="title" value={form.title} onChange={handleChange} placeholder="Enter task title" />
 
                             <SelectInput
@@ -646,13 +450,7 @@ export default function Task({ lead, getLead, users = [], usersLoading = false }
                             LEAD + ASSIGNED USER
                         ========================================= */}
 
-                        <div
-                            className="
-                                grid
-                                md:grid-cols-2
-                                gap-2
-                            "
-                        >
+                        <div className="grid gap-2 md:grid-cols-2">
                             <SelectInput
                                 label="Related Lead"
                                 required
@@ -688,13 +486,7 @@ export default function Task({ lead, getLead, users = [], usersLoading = false }
                             DATE + REMINDER
                         ========================================= */}
 
-                        <div
-                            className="
-                                grid
-                                md:grid-cols-2
-                                gap-2
-                            "
-                        >
+                        <div className="grid gap-2 md:grid-cols-2">
                             <Input
                                 label="Due Date & Time"
                                 required
@@ -744,20 +536,7 @@ export default function Task({ lead, getLead, users = [], usersLoading = false }
                 ================================================= */}
 
                 <Modal.Footer>
-                    <button
-                        type="button"
-                        onClick={() => setOpen(false)}
-                        className="
-                            px-4
-                            py-2
-                            text-xs
-                            rounded-lg
-                            border
-                            border-app
-                            hover-app
-                            text-app
-                        "
-                    >
+                    <button type="button" onClick={() => setOpen(false)} className="border-app hover-app text-app rounded-lg border px-4 py-2 text-xs">
                         Cancel
                     </button>
 
@@ -765,15 +544,7 @@ export default function Task({ lead, getLead, users = [], usersLoading = false }
                         type="button"
                         onClick={handleSave}
                         disabled={loading}
-                        className="
-                            px-4
-                            py-2
-                            text-xs
-                            rounded-lg
-                            btn-primary
-                            disabled:opacity-50
-                            disabled:cursor-not-allowed
-                        "
+                        className="btn-primary rounded-lg px-4 py-2 text-xs disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {loading ? 'Saving...' : 'Save'}
                     </button>

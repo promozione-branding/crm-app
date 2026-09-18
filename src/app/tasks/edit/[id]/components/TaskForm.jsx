@@ -92,15 +92,7 @@ export default function TaskForm({ form, task, onChange }) {
             ================================================= */}
 
             <div>
-                <label
-                    htmlFor="title"
-                    className="
-                        block
-                        text-sm
-                        font-medium
-                        mb-2
-                    "
-                >
+                <label htmlFor="title" className="mb-2 block text-sm font-medium">
                     Task Title
                 </label>
 
@@ -111,23 +103,7 @@ export default function TaskForm({ form, task, onChange }) {
                     value={form.title}
                     onChange={onChange}
                     placeholder="Enter task title"
-                    className="
-                        w-full
-                        min-w-0
-                        px-3
-                        sm:px-4
-                        py-2.5
-                        rounded-lg
-                        border
-                        border-app
-                        bg-surface
-                        text-app
-                        text-sm
-                        outline-none
-                        transition
-                        focus:ring-2
-                        focus:ring-blue-500/30
-                    "
+                    className="border-app bg-surface text-app w-full min-w-0 rounded-lg border px-3 py-2.5 text-sm transition outline-none focus:ring-2 focus:ring-blue-500/30 sm:px-4"
                 />
             </div>
 
@@ -136,15 +112,7 @@ export default function TaskForm({ form, task, onChange }) {
             ================================================= */}
 
             <div>
-                <label
-                    htmlFor="description"
-                    className="
-                        block
-                        text-sm
-                        font-medium
-                        mb-2
-                    "
-                >
+                <label htmlFor="description" className="mb-2 block text-sm font-medium">
                     Description
                 </label>
 
@@ -155,24 +123,7 @@ export default function TaskForm({ form, task, onChange }) {
                     onChange={onChange}
                     rows={5}
                     placeholder="Enter task description"
-                    className="
-                        w-full
-                        min-w-0
-                        px-3
-                        sm:px-4
-                        py-2.5
-                        rounded-lg
-                        border
-                        border-app
-                        bg-surface
-                        text-app
-                        text-sm
-                        outline-none
-                        resize-y
-                        transition
-                        focus:ring-2
-                        focus:ring-blue-500/30
-                    "
+                    className="border-app bg-surface text-app w-full min-w-0 resize-y rounded-lg border px-3 py-2.5 text-sm transition outline-none focus:ring-2 focus:ring-blue-500/30 sm:px-4"
                 />
             </div>
 
@@ -180,29 +131,13 @@ export default function TaskForm({ form, task, onChange }) {
                 GRID
             ================================================= */}
 
-            <div
-                className="
-                    grid
-                    grid-cols-1
-                    sm:grid-cols-2
-                    gap-4
-                    sm:gap-5
-                "
-            >
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
                 {/* =================================================
                     PRIORITY
                 ================================================= */}
 
                 <div>
-                    <label
-                        htmlFor="priority"
-                        className="
-                            block
-                            text-sm
-                            font-medium
-                            mb-2
-                        "
-                    >
+                    <label htmlFor="priority" className="mb-2 block text-sm font-medium">
                         Priority
                     </label>
 
@@ -211,21 +146,7 @@ export default function TaskForm({ form, task, onChange }) {
                         name="priority"
                         value={form.priority}
                         onChange={onChange}
-                        className="
-                            w-full
-                            px-3
-                            sm:px-4
-                            py-2.5
-                            rounded-lg
-                            border
-                            border-app
-                            bg-surface
-                            text-app
-                            text-sm
-                            outline-none
-                            focus:ring-2
-                            focus:ring-blue-500/30
-                        "
+                        className="border-app bg-surface text-app w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/30 sm:px-4"
                     >
                         <option value="low">Low</option>
 
@@ -242,15 +163,7 @@ export default function TaskForm({ form, task, onChange }) {
                 ================================================= */}
 
                 <div>
-                    <label
-                        htmlFor="status"
-                        className="
-                            block
-                            text-sm
-                            font-medium
-                            mb-2
-                        "
-                    >
+                    <label htmlFor="status" className="mb-2 block text-sm font-medium">
                         Status
                     </label>
 
@@ -259,21 +172,7 @@ export default function TaskForm({ form, task, onChange }) {
                         name="status"
                         value={form.status}
                         onChange={onChange}
-                        className="
-                            w-full
-                            px-3
-                            sm:px-4
-                            py-2.5
-                            rounded-lg
-                            border
-                            border-app
-                            bg-surface
-                            text-app
-                            text-sm
-                            outline-none
-                            focus:ring-2
-                            focus:ring-blue-500/30
-                        "
+                        className="border-app bg-surface text-app w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/30 sm:px-4"
                     >
                         <option value="pending">Pending</option>
 
@@ -288,15 +187,7 @@ export default function TaskForm({ form, task, onChange }) {
                 ================================================= */}
 
                 <div>
-                    <label
-                        htmlFor="assignedTo"
-                        className="
-                            block
-                            text-sm
-                            font-medium
-                            mb-2
-                        "
-                    >
+                    <label htmlFor="assignedTo" className="mb-2 block text-sm font-medium">
                         Assigned To
                     </label>
 
@@ -305,33 +196,10 @@ export default function TaskForm({ form, task, onChange }) {
                         type="text"
                         value={task?.assignedTo?.name || 'Not assigned'}
                         disabled
-                        className="
-                            w-full
-                            min-w-0
-                            px-3
-                            sm:px-4
-                            py-2.5
-                            rounded-lg
-                            border
-                            border-app
-                            bg-surface
-                            text-app
-                            text-sm
-                            opacity-70
-                            cursor-not-allowed
-                        "
+                        className="border-app bg-surface text-app w-full min-w-0 cursor-not-allowed rounded-lg border px-3 py-2.5 text-sm opacity-70 sm:px-4"
                     />
 
-                    <p
-                        className="
-                            text-[11px]
-                            sm:text-xs
-                            opacity-50
-                            mt-1.5
-                        "
-                    >
-                        Assigned user cannot be changed from this form.
-                    </p>
+                    <p className="mt-1.5 text-[11px] opacity-50 sm:text-xs">Assigned user cannot be changed from this form.</p>
                 </div>
 
                 {/* =================================================
@@ -339,15 +207,7 @@ export default function TaskForm({ form, task, onChange }) {
                 ================================================= */}
 
                 <div>
-                    <label
-                        htmlFor="dueDate"
-                        className="
-                            block
-                            text-sm
-                            font-medium
-                            mb-2
-                        "
-                    >
+                    <label htmlFor="dueDate" className="mb-2 block text-sm font-medium">
                         Due Date
                     </label>
 
@@ -363,34 +223,10 @@ export default function TaskForm({ form, task, onChange }) {
                          * browser date/time.
                          */
                         min={minDateTime}
-                        className="
-                            w-full
-                            min-w-0
-                            px-3
-                            sm:px-4
-                            py-2.5
-                            rounded-lg
-                            border
-                            border-app
-                            bg-surface
-                            text-app
-                            text-sm
-                            outline-none
-                            focus:ring-2
-                            focus:ring-blue-500/30
-                        "
+                        className="border-app bg-surface text-app w-full min-w-0 rounded-lg border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/30 sm:px-4"
                     />
 
-                    <p
-                        className="
-                            text-[11px]
-                            sm:text-xs
-                            opacity-50
-                            mt-1.5
-                        "
-                    >
-                        Past date and time cannot be selected.
-                    </p>
+                    <p className="mt-1.5 text-[11px] opacity-50 sm:text-xs">Past date and time cannot be selected.</p>
                 </div>
 
                 {/* =================================================
@@ -398,15 +234,7 @@ export default function TaskForm({ form, task, onChange }) {
                 ================================================= */}
 
                 <div className="sm:col-span-2">
-                    <label
-                        htmlFor="reminderMinutes"
-                        className="
-                            block
-                            text-sm
-                            font-medium
-                            mb-2
-                        "
-                    >
+                    <label htmlFor="reminderMinutes" className="mb-2 block text-sm font-medium">
                         Reminder
                     </label>
 
@@ -415,21 +243,7 @@ export default function TaskForm({ form, task, onChange }) {
                         name="reminderMinutes"
                         value={form.reminderMinutes}
                         onChange={onChange}
-                        className="
-                            w-full
-                            px-3
-                            sm:px-4
-                            py-2.5
-                            rounded-lg
-                            border
-                            border-app
-                            bg-surface
-                            text-app
-                            text-sm
-                            outline-none
-                            focus:ring-2
-                            focus:ring-blue-500/30
-                        "
+                        className="border-app bg-surface text-app w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/30 sm:px-4"
                     >
                         <option value={0}>No Reminder</option>
 

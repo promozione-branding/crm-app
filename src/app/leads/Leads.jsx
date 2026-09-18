@@ -41,7 +41,7 @@ const columns = [
         key: 'stage',
         label: 'Stage',
         sortable: true,
-        render: (lead) => <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500 capitalize">{lead.stage || '—'}</span>,
+        render: (lead) => <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs text-blue-500 capitalize">{lead.stage || '—'}</span>,
     },
     {
         key: 'dealValue',
@@ -206,16 +206,7 @@ export default function Leads() {
     // ========================================================
 
     return (
-        <div
-            className="
-                min-h-[calc(100vh-64px)]
-                bg-surface
-                text-app
-                p-3
-                sm:p-4
-                md:p-6
-            "
-        >
+        <div className="bg-surface text-app min-h-[calc(100vh-64px)] p-3 sm:p-4 md:p-6">
             {/* ==================================================
                 HEADER
             =================================================== */}
@@ -225,21 +216,7 @@ export default function Leads() {
                     ROW 1 — STATS
                 =================================================== */}
 
-                <div
-                    className="
-                        w-full
-                        rounded-xl
-                        sm:rounded-2xl
-                        border
-                        border-app
-                        bg-app
-                        shadow-sm
-                        px-2
-                        py-2
-                        sm:px-4
-                        sm:py-3
-                    "
-                >
+                <div className="border-app bg-app w-full rounded-xl border px-2 py-2 shadow-sm sm:rounded-2xl sm:px-4 sm:py-3">
                     <Dashboarddata />
                 </div>
 
@@ -247,23 +224,14 @@ export default function Leads() {
                     ROW 2 — SEARCH + ACTIONS
                 =================================================== */}
 
-                <div className="mt-3 sm:mt-4 w-full">
-                    <div className="flex items-center gap-2 sm:gap-3 w-full">
+                <div className="mt-3 w-full sm:mt-4">
+                    <div className="flex w-full items-center gap-2 sm:gap-3">
                         {/* ==========================================
                             SEARCH
                         =========================================== */}
 
-                        <div className="relative flex-1 min-w-0">
-                            <Search
-                                size={17}
-                                className="
-                                    absolute
-                                    left-3
-                                    top-1/2
-                                    -translate-y-1/2
-                                    opacity-50
-                                "
-                            />
+                        <div className="relative min-w-0 flex-1">
+                            <Search size={17} className="absolute top-1/2 left-3 -translate-y-1/2 opacity-50" />
 
                             <input
                                 type="text"
@@ -273,21 +241,7 @@ export default function Leads() {
                                     setPage(1);
                                 }}
                                 placeholder="Search all leads..."
-                                className="
-                                    h-10
-                                    w-full
-                                    rounded-xl
-                                    border
-                                    border-app
-                                    bg-app
-                                    pl-10
-                                    pr-3
-                                    text-sm
-                                    outline-none
-                                    transition-all
-                                    focus:ring-2
-                                    focus:ring-blue-500/30
-                                "
+                                className="border-app bg-app h-10 w-full rounded-xl border pr-3 pl-10 text-sm transition-all outline-none focus:ring-2 focus:ring-blue-500/30"
                             />
                         </div>
 
@@ -297,24 +251,7 @@ export default function Leads() {
 
                         <Link
                             href="/leads/new"
-                            className="
-                                hidden
-                                sm:flex
-                                shrink-0
-                                h-10
-                                px-4
-                                rounded-xl
-                                btn-primary
-                                items-center
-                                justify-center
-                                gap-2
-                                text-sm
-                                font-medium
-                                shadow-sm
-                                transition-all
-                                hover:-translate-y-0.5
-                                hover:shadow-md
-                            "
+                            className="btn-primary hidden h-10 shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:flex"
                         >
                             <Plus size={17} />
                             Add Lead
@@ -326,18 +263,7 @@ export default function Leads() {
 
                         <Link
                             href="/leads/new"
-                            className="
-                                sm:hidden
-                                shrink-0
-                                h-10
-                                w-10
-                                rounded-xl
-                                btn-primary
-                                flex
-                                items-center
-                                justify-center
-                                shadow-sm
-                            "
+                            className="btn-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm sm:hidden"
                             aria-label="Add Lead"
                         >
                             <Plus size={18} />
@@ -365,57 +291,19 @@ export default function Leads() {
                             <button
                                 type="button"
                                 onClick={() => setMenuOpen((prev) => !prev)}
-                                className="
-                                    h-10
-                                    w-10
-                                    rounded-xl
-                                    border
-                                    border-app
-                                    bg-app
-                                    flex
-                                    items-center
-                                    justify-center
-                                    shadow-sm
-                                    transition-all
-                                    hover:shadow-md
-                                "
+                                className="border-app bg-app flex h-10 w-10 items-center justify-center rounded-xl border shadow-sm transition-all hover:shadow-md"
                                 aria-label="More options"
                             >
                                 <EllipsisVertical size={18} />
                             </button>
 
                             {menuOpen && (
-                                <div
-                                    className="
-                                        absolute
-                                        right-0
-                                        top-12
-                                        z-50
-                                        w-44
-                                        rounded-xl
-                                        border
-                                        border-app
-                                        bg-app
-                                        shadow-lg
-                                        overflow-hidden
-                                    "
-                                >
+                                <div className="border-app bg-app absolute top-12 right-0 z-50 w-44 overflow-hidden rounded-xl border shadow-lg">
                                     {/* EXPORT */}
                                     <button
                                         type="button"
                                         onClick={handleExport}
-                                        className="
-                                            w-full
-                                            flex
-                                            items-center
-                                            gap-3
-                                            px-4
-                                            py-3
-                                            text-sm
-                                            text-left
-                                            transition-colors
-                                            hover:bg-surface
-                                        "
+                                        className="hover:bg-surface flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors"
                                     >
                                         <Download size={17} className="opacity-70" />
 
@@ -426,18 +314,7 @@ export default function Leads() {
                                     <button
                                         type="button"
                                         onClick={handleImport}
-                                        className="
-                                            w-full
-                                            flex
-                                            items-center
-                                            gap-3
-                                            px-4
-                                            py-3
-                                            text-sm
-                                            text-left
-                                            transition-colors
-                                            hover:bg-surface
-                                        "
+                                        className="hover:bg-surface flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors"
                                     >
                                         <Upload size={17} className="opacity-70" />
 

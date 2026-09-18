@@ -219,33 +219,9 @@ export default function Edit() {
 
     if (loading) {
         return (
-            <div
-                className="
-                    bg-surface
-                    text-app
-                    min-h-[calc(100vh-64px)]
-                    px-4
-                    py-5
-                    sm:p-6
-                "
-            >
-                <div
-                    className="
-                        flex
-                        items-center
-                        justify-center
-                        min-h-[400px]
-                    "
-                >
-                    <div
-                        className="
-                            flex
-                            items-center
-                            gap-3
-                            text-sm
-                            opacity-70
-                        "
-                    >
+            <div className="bg-surface text-app min-h-[calc(100vh-64px)] px-4 py-5 sm:p-6">
+                <div className="flex min-h-[400px] items-center justify-center">
+                    <div className="flex items-center gap-3 text-sm opacity-70">
                         <Loader2 size={20} className="animate-spin" />
                         Loading task...
                     </div>
@@ -260,55 +236,15 @@ export default function Edit() {
 
     if (!task) {
         return (
-            <div
-                className="
-                    bg-surface
-                    text-app
-                    min-h-[calc(100vh-64px)]
-                    px-4
-                    py-5
-                    sm:p-6
-                "
-            >
+            <div className="bg-surface text-app min-h-[calc(100vh-64px)] px-4 py-5 sm:p-6">
                 <TaskHeader onBack={handleBack} />
 
-                <div
-                    className="
-                        flex
-                        flex-col
-                        items-center
-                        justify-center
-                        text-center
-                        min-h-[350px]
-                    "
-                >
-                    <ClipboardCheck
-                        size={45}
-                        className="
-                            opacity-30
-                            mb-4
-                        "
-                    />
+                <div className="flex min-h-[350px] flex-col items-center justify-center text-center">
+                    <ClipboardCheck size={45} className="mb-4 opacity-30" />
 
-                    <h2
-                        className="
-                            text-lg
-                            font-semibold
-                        "
-                    >
-                        Task not found
-                    </h2>
+                    <h2 className="text-lg font-semibold">Task not found</h2>
 
-                    <p
-                        className="
-                            text-sm
-                            opacity-60
-                            mt-1
-                            max-w-sm
-                        "
-                    >
-                        The task you are looking for does not exist or could not be loaded.
-                    </p>
+                    <p className="mt-1 max-w-sm text-sm opacity-60">The task you are looking for does not exist or could not be loaded.</p>
                 </div>
             </div>
         );
@@ -319,22 +255,8 @@ export default function Edit() {
     ===================================================== */
 
     return (
-        <div
-            className="
-                bg-surface
-                text-app
-                min-h-[calc(100vh-64px)]
-                px-4
-                py-5
-                sm:p-6
-            "
-        >
-            <div
-                className="
-                    max-w-5xl
-                    mx-auto
-                "
-            >
+        <div className="bg-surface text-app min-h-[calc(100vh-64px)] px-4 py-5 sm:p-6">
+            <div className="mx-auto max-w-5xl">
                 {/* =================================================
                     HEADER
                 ================================================= */}
@@ -345,19 +267,7 @@ export default function Edit() {
                     FORM CARD
                 ================================================= */}
 
-                <form
-                    onSubmit={handleSubmit}
-                    className="
-                        w-full
-                        bg-app
-                        border
-                        border-app
-                        rounded-xl
-                        p-4
-                        sm:p-6
-                        shadow-sm
-                    "
-                >
+                <form onSubmit={handleSubmit} className="bg-app border-app w-full rounded-xl border p-4 shadow-sm sm:p-6">
                     {/* =================================================
                         FORM
                     ================================================= */}

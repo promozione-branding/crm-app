@@ -20,27 +20,27 @@ export default function Integration() {
     ];
 
     return (
-        <div className="bg-surface min-h-screen text-app">
+        <div className="bg-surface text-app min-h-screen">
             {/* Header */}
-            <div className="h-16 top-0 sticky z-40 bg-surface border-b border-app flex items-center justify-between md:px-8 px-3">
-                <div className="flex items-center md:gap-2 gap-1">
-                    <Link href="/settings" className="p-2 rounded-xl border bg-app border-app hover-app text-app">
+            <div className="bg-surface border-app sticky top-0 z-40 flex h-16 items-center justify-between border-b px-3 md:px-8">
+                <div className="flex items-center gap-1 md:gap-2">
+                    <Link href="/settings" className="bg-app border-app hover-app text-app rounded-xl border p-2">
                         <ArrowLeft size={20} />
                     </Link>
 
-                    <h1 className="text-sm font-bold text-app">Integrations</h1>
+                    <h1 className="text-app text-sm font-bold">Integrations</h1>
                 </div>
 
-                <div className="flex md:gap-2 gap-1 text-sm">
-                    <p className="flex items-center text-xs gap-1">
-                        <span className="text-blue-500 text-sm">●</span>
+                <div className="flex gap-1 text-sm md:gap-2">
+                    <p className="flex items-center gap-1 text-xs">
+                        <span className="text-sm text-blue-500">●</span>
                         15 Available
                     </p>
                 </div>
             </div>
 
             {/* Tabs */}
-            <div className="h-11 top-16 sticky z-40 bg-surface border-b border-app flex items-center gap-2 md:px-8 px-1 overflow-x-auto overflow-y-hidden">
+            <div className="bg-surface border-app sticky top-16 z-40 flex h-11 items-center gap-2 overflow-x-auto overflow-y-hidden border-b px-1 md:px-8">
                 {tabs.map((tab) => {
                     const Icon = tab.icon;
                     const isActive = active === tab.id;
@@ -49,14 +49,7 @@ export default function Integration() {
                         <button
                             key={tab.id}
                             onClick={() => setActive(tab.id)}
-                            className={`
-                                relative flex items-center justify-center gap-2
-                                px-5 h-11 min-w-max
-                                text-sm font-medium whitespace-nowrap
-                                transition-all duration-200
-                                border-b-2
-                                ${isActive ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-500/10' : 'border-transparent text-app hover-app'}
-                            `}
+                            className={`relative flex h-11 min-w-max items-center justify-center gap-2 border-b-2 px-5 text-sm font-medium whitespace-nowrap transition-all duration-200 ${isActive ? 'border-blue-600 bg-blue-500/10 text-blue-600 dark:text-blue-400' : 'text-app hover-app border-transparent'} `}
                         >
                             <Icon size={16} />
                             <span>{tab.label}</span>
@@ -66,7 +59,7 @@ export default function Integration() {
             </div>
 
             {/* Content */}
-            <main className="px-3 md:px-8 py-6">
+            <main className="px-3 py-6 md:px-8">
                 {active == 'market-places' && <MarketPlaces />}
 
                 {active == 'websites' && <Websites />}

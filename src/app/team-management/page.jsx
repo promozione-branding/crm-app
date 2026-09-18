@@ -12,7 +12,7 @@ export default function page() {
         <div className="flex">
             <Sidebar />
 
-            <div className="flex-1 md:overflow-visible overflow-hidden">
+            <div className="flex-1 overflow-hidden md:overflow-visible">
                 <Navbar />
 
                 <main className="">

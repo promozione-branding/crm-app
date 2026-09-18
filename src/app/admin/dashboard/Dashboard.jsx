@@ -9,14 +9,14 @@ export default function Dashboard() {
 
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                 {['Users', 'Orders', 'Revenue', 'Products'].map((item) => (
-                    <div key={item} className="bg-white rounded-2xl shadow-sm border border-gray-300 p-6">
+                    <div key={item} className="rounded-2xl border border-gray-300 bg-white p-6 shadow-sm">
                         <p className="text-gray-500">{item}</p>
-                        <h2 className="text-3xl font-bold mt-2">0</h2>
+                        <h2 className="mt-2 text-3xl font-bold">0</h2>
                     </div>
                 ))}
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-300 h-[450px] flex items-center justify-center text-gray-400">
+            <div className="flex h-[450px] items-center justify-center rounded-2xl border border-gray-300 bg-white text-gray-400 shadow-sm">
                 Charts / Tables Here
             </div>
         </div>

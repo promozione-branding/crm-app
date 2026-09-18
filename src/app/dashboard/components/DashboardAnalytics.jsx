@@ -43,88 +43,34 @@ export default function DashboardAnalytics({ stats, loading }) {
     let accumulated = 0;
 
     return (
-        <section
-            className="
-                mt-6
-                sm:mt-8
-                bg-app
-                border
-                border-app
-                rounded-2xl
-                p-4
-                sm:p-6
-            "
-        >
+        <section className="bg-app border-app mt-6 rounded-2xl border p-4 sm:mt-8 sm:p-6">
             {/* ==================================================
                 HEADER
             ================================================== */}
 
             <div className="mb-5 sm:mb-6">
-                <h2 className="text-lg sm:text-xl font-semibold">Analytics</h2>
+                <h2 className="text-lg font-semibold sm:text-xl">Analytics</h2>
 
-                <p className="text-xs sm:text-sm opacity-60 mt-1">Overview of your CRM data</p>
+                <p className="mt-1 text-xs opacity-60 sm:text-sm">Overview of your CRM data</p>
             </div>
 
             {/* ==================================================
                 ANALYTICS CONTENT
             ================================================== */}
 
-            <div
-                className="
-                    grid
-                    grid-cols-1
-                    lg:grid-cols-2
-                    gap-6
-                    lg:gap-10
-                    items-center
-                "
-            >
+            <div className="grid grid-cols-1 items-center gap-6 lg:grid-cols-2 lg:gap-10">
                 {/* ==================================================
                     DONUT CHART
                 ================================================== */}
 
                 <div className="flex justify-center">
-                    <div
-                        className="
-                            relative
-                            w-[220px]
-                            h-[220px]
-                            sm:w-[260px]
-                            sm:h-[260px]
-                        "
-                    >
+                    <div className="relative h-[220px] w-[220px] sm:h-[260px] sm:w-[260px]">
                         {loading ? (
-                            <div
-                                className="
-                                    absolute
-                                    inset-0
-                                    rounded-full
-                                    border-[24px]
-                                    sm:border-[28px]
-                                    border-surface
-                                    animate-pulse
-                                "
-                            />
+                            <div className="border-surface absolute inset-0 animate-pulse rounded-full border-[24px] sm:border-[28px]" />
                         ) : total === 0 ? (
-                            <div
-                                className="
-                                    absolute
-                                    inset-0
-                                    rounded-full
-                                    border-[24px]
-                                    sm:border-[28px]
-                                    border-surface
-                                "
-                            />
+                            <div className="border-surface absolute inset-0 rounded-full border-[24px] sm:border-[28px]" />
                         ) : (
-                            <svg
-                                viewBox="0 0 200 200"
-                                className="
-                                    w-full
-                                    h-full
-                                    -rotate-90
-                                "
-                            >
+                            <svg viewBox="0 0 200 200" className="h-full w-full -rotate-90">
                                 {/* ==================================================
                                     BACKGROUND
                                 ================================================== */}
@@ -172,21 +118,12 @@ export default function DashboardAnalytics({ stats, loading }) {
                           CENTER TEXT
                         ================================================== */}
 
-                        <div
-                            className="
-                                absolute
-                                inset-0
-                                flex
-                                flex-col
-                                items-center
-                                justify-center
-                            "
-                        >
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
                             <span className="text-xs opacity-60">Total</span>
 
-                            <span className="text-2xl sm:text-3xl font-bold mt-1">{loading ? '—' : total}</span>
+                            <span className="mt-1 text-2xl font-bold sm:text-3xl">{loading ? '—' : total}</span>
 
-                            <span className="text-xs opacity-50 mt-1">Records</span>
+                            <span className="mt-1 text-xs opacity-50">Records</span>
                         </div>
                     </div>
                 </div>
@@ -202,48 +139,30 @@ export default function DashboardAnalytics({ stats, loading }) {
                         const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
 
                         return (
-                            <div
-                                key={item.key}
-                                className="
-                                        flex
-                                        items-center
-                                        justify-between
-                                        gap-3
-                                        rounded-xl
-                                        border
-                                        border-app
-                                        p-3
-                                        sm:p-4
-                                    "
-                            >
+                            <div key={item.key} className="border-app flex items-center justify-between gap-3 rounded-xl border p-3 sm:p-4">
                                 {/* ==================================================
                                         LABEL
                                     ================================================== */}
 
-                                <div className="flex items-center gap-3 min-w-0">
+                                <div className="flex min-w-0 items-center gap-3">
                                     <span
-                                        className="
-                                                shrink-0
-                                                w-3
-                                                h-3
-                                                rounded-full
-                                            "
+                                        className="h-3 w-3 shrink-0 rounded-full"
                                         style={{
                                             backgroundColor: item.color,
                                         }}
                                     />
 
-                                    <span className="text-sm font-medium truncate">{item.label}</span>
+                                    <span className="truncate text-sm font-medium">{item.label}</span>
                                 </div>
 
                                 {/* ==================================================
                                         VALUE
                                     ================================================== */}
 
-                                <div className="flex items-center gap-3 sm:gap-5 shrink-0">
-                                    <span className="text-xs sm:text-sm opacity-60">{percentage}%</span>
+                                <div className="flex shrink-0 items-center gap-3 sm:gap-5">
+                                    <span className="text-xs opacity-60 sm:text-sm">{percentage}%</span>
 
-                                    <span className="font-semibold min-w-[32px] text-right">{loading ? '—' : value}</span>
+                                    <span className="min-w-[32px] text-right font-semibold">{loading ? '—' : value}</span>
                                 </div>
                             </div>
                         );

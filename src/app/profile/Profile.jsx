@@ -309,7 +309,7 @@ export default function Profile() {
     };
 
     return (
-        <div className="min-h-screen bg-surface p-4 text-app sm:p-6">
+        <div className="bg-surface text-app min-h-screen p-4 sm:p-6">
             {/* --------------------------------------------------
           Header
       -------------------------------------------------- */}
@@ -336,7 +336,7 @@ export default function Profile() {
                     <button
                         type="button"
                         onClick={handleOpenPassword}
-                        className="flex items-center justify-center gap-2 rounded-lg border border-app px-4 py-2 text-sm transition hover:bg-surface"
+                        className="border-app hover:bg-surface flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm transition"
                     >
                         <Lock size={16} />
                         Change Password
@@ -348,7 +348,7 @@ export default function Profile() {
           Profile Card
       -------------------------------------------------- */}
 
-            <div className="rounded-2xl border border-app bg-app p-5 sm:p-8">
+            <div className="border-app bg-app rounded-2xl border p-5 sm:p-8">
                 <div className="flex flex-col items-center gap-8 md:flex-row md:items-start">
                     {/* --------------------------------------------------
               Profile Image
@@ -362,7 +362,7 @@ export default function Profile() {
                                     : `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'U')}&background=2563eb&color=fff&size=200`
                             }
                             alt={user?.name || 'Profile'}
-                            className="h-30 w-30 rounded-full border-4 border-app object-cover"
+                            className="border-app h-30 w-30 rounded-full border-4 object-cover"
                         />
 
                         <h2 className="mt-2 text-xl font-semibold">{user?.name || '-'}</h2>
@@ -377,7 +377,7 @@ export default function Profile() {
                     <div className="w-full flex-1">
                         <div className="grid grid-cols-1 gap-6 text-xs md:grid-cols-2">
                             {/* Email */}
-                            <div className="rounded-xl border border-app bg-surface p-5">
+                            <div className="border-app bg-surface rounded-xl border p-5">
                                 <div className="mb-2 flex items-center gap-3">
                                     <Mail size={20} className="text-blue-500" />
 
@@ -388,7 +388,7 @@ export default function Profile() {
                             </div>
 
                             {/* Phone */}
-                            <div className="rounded-xl border border-app bg-surface p-5">
+                            <div className="border-app bg-surface rounded-xl border p-5">
                                 <div className="mb-2 flex items-center gap-3">
                                     <Phone size={20} className="text-green-500" />
 
@@ -399,7 +399,7 @@ export default function Profile() {
                             </div>
 
                             {/* Role */}
-                            <div className="rounded-xl border border-app bg-surface p-5">
+                            <div className="border-app bg-surface rounded-xl border p-5">
                                 <div className="mb-2 flex items-center gap-3">
                                     <Shield size={20} className="text-purple-500" />
 
@@ -410,7 +410,7 @@ export default function Profile() {
                             </div>
 
                             {/* Reporting To */}
-                            <div className="rounded-xl border border-app bg-surface p-5">
+                            <div className="border-app bg-surface rounded-xl border p-5">
                                 <div className="mb-2 flex items-center gap-3">
                                     <UserCheck size={20} className="text-orange-500" />
 

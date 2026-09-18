@@ -67,18 +67,18 @@ export default function User() {
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="bg-white md:p-4 p-2 rounded-lg shadow-md flex items-center justify-between">
+            <div className="flex items-center justify-between rounded-lg bg-white p-2 shadow-md md:p-4">
                 <h2 className="text-xl font-bold text-gray-800">User Management</h2>
 
-                <div className="flex gap-1 items-center">
+                <div className="flex items-center gap-1">
                     <button
                         onClick={() => setUserAdd(true)}
-                        className="flex items-center gap-1 text-sm bg-[#082c62] text-white p-2 rounded hover:bg-[#051f48] transition-colors"
+                        className="flex items-center gap-1 rounded bg-[#082c62] p-2 text-sm text-white transition-colors hover:bg-[#051f48]"
                     >
                         <Plus size={16} />
                         Add User
                     </button>
-                    <button className="p-2 rounded bg-[#082c62] text-white hover:bg-[#051f48] transition-colors">
+                    <button className="rounded bg-[#082c62] p-2 text-white transition-colors hover:bg-[#051f48]">
                         <EllipsisVertical size={18} />
                     </button>
                 </div>

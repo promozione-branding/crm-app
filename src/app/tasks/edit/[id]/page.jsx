@@ -11,7 +11,7 @@ export default function Page() {
         <div className="flex min-h-screen">
             <Sidebar />
 
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
                 <Navbar />
 
                 <main>

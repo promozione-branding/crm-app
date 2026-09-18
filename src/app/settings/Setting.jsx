@@ -74,15 +74,15 @@ export default function Setting() {
         <div className="bg-surface text-app min-h-[calc(100vh-64px)] p-6">
             <div className="mb-6">
                 <h1 className="text-base font-bold">Settings</h1>
-                <p className="text-xs text-muted">Manage your CRM preferences and integrations.</p>
+                <p className="text-muted text-xs">Manage your CRM preferences and integrations.</p>
             </div>
 
             {sections.map((section) => (
                 <div key={section.title} className="mb-5">
-                    <h2 className="text-xs font-semibold tracking-widest uppercase text-blue-500 mb-2">{section.title}</h2>
+                    <h2 className="mb-2 text-xs font-semibold tracking-widest text-blue-500 uppercase">{section.title}</h2>
 
-                    <div className="border-t border-app pt-5">
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="border-app border-t pt-5">
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                             {section.items.map((item) => {
                                 const Icon = item.icon;
 
@@ -90,15 +90,15 @@ export default function Setting() {
                                     <Link
                                         href={item.href || ''}
                                         key={item.title}
-                                        className="bg-app border border-app rounded-2xl p-5 text-left hover:border-blue-500 hover:-translate-y-1 transition-all duration-200"
+                                        className="bg-app border-app rounded-2xl border p-5 text-left transition-all duration-200 hover:-translate-y-1 hover:border-blue-500"
                                     >
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${item.color}`}>
+                                        <div className={`mb-4 flex h-10 w-10 items-center justify-center rounded-xl ${item.color}`}>
                                             <Icon size={24} />
                                         </div>
 
-                                        <h3 className="text-base font-semibold mb-2">{item.title}</h3>
+                                        <h3 className="mb-2 text-base font-semibold">{item.title}</h3>
 
-                                        <p className="text-xs text-muted">{item.description}</p>
+                                        <p className="text-muted text-xs">{item.description}</p>
                                     </Link>
                                 );
                             })}

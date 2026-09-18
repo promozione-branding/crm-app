@@ -53,15 +53,15 @@ export default function Navbar() {
     };
 
     return (
-        <header className="h-16 px-6 flex items-center justify-between bg-app border-b border-app text-app sticky top-0 z-50">
+        <header className="bg-app border-app text-app sticky top-0 z-50 flex h-16 items-center justify-between border-b px-6">
             <h1 className="text-xl font-semibold">
-                <span className="text-blue-600 flex md:hidden">CRM</span>
+                <span className="flex text-blue-600 md:hidden">CRM</span>
             </h1>
 
             <div className="flex items-center gap-3">
                 <button
                     onClick={() => dispatch(toggleTheme())}
-                    className="w-10 h-10 rounded-xl border border-app hover-app flex items-center justify-center transition"
+                    className="border-app hover-app flex h-10 w-10 items-center justify-center rounded-xl border transition"
                 >
                     {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                 </button>
@@ -73,20 +73,20 @@ export default function Navbar() {
                             setShowNotification((prev) => !prev);
                             setShowProfile(false);
                         }}
-                        className="w-10 h-10 rounded-xl border border-app hover-app flex items-center justify-center transition"
+                        className="border-app hover-app flex h-10 w-10 items-center justify-center rounded-xl border transition"
                     >
                         <Bell size={20} />
                     </button>
 
                     {showNotification && (
-                        <div className="absolute right-0 mt-2 w-72 bg-card border border-app rounded-xl shadow-lg overflow-hidden z-50">
-                            <div className="px-4 py-3 border-b border-app font-semibold flex justify-between items-center">
+                        <div className="bg-card border-app absolute right-0 z-50 mt-2 w-72 overflow-hidden rounded-xl border shadow-lg">
+                            <div className="border-app flex items-center justify-between border-b px-4 py-3 font-semibold">
                                 <p>Notifications</p>
 
-                                <div className="bg-blue-500 font-light px-1.5 py-0.5 rounded-md text-white text-xs">0</div>
+                                <div className="rounded-md bg-blue-500 px-1.5 py-0.5 text-xs font-light text-white">0</div>
                             </div>
 
-                            <div className="p-6 text-center text-muted text-sm">No notifications yet.</div>
+                            <div className="text-muted p-6 text-center text-sm">No notifications yet.</div>
                         </div>
                     )}
                 </div>
@@ -98,30 +98,30 @@ export default function Navbar() {
                             setShowProfile((prev) => !prev);
                             setShowNotification(false);
                         }}
-                        className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center"
+                        className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white"
                     >
                         <UserCircle size={22} />
                     </button>
 
                     {showProfile && (
-                        <div className="absolute right-0 mt-2 w-60 bg-card border border-app rounded-xl shadow-lg overflow-hidden z-50">
-                            <div className="px-4 py-4 border-b border-app">
-                                <p className="font-semibold text-app">{user?.name || ''}</p>
+                        <div className="bg-card border-app absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-xl border shadow-lg">
+                            <div className="border-app border-b px-4 py-4">
+                                <p className="text-app font-semibold">{user?.name || ''}</p>
 
-                                <p className="text-sm text-muted">{user?.email || ''}</p>
+                                <p className="text-muted text-sm">{user?.email || ''}</p>
                             </div>
 
-                            <Link href="/profile" className="flex items-center gap-3 px-4 py-3 hover-app transition">
+                            <Link href="/profile" className="hover-app flex items-center gap-3 px-4 py-3 transition">
                                 <User size={18} />
                                 Profile
                             </Link>
 
-                            <Link href="/settings" className="flex items-center gap-3 px-4 py-3 hover-app transition">
+                            <Link href="/settings" className="hover-app flex items-center gap-3 px-4 py-3 transition">
                                 <Settings size={18} />
                                 Settings
                             </Link>
 
-                            <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-500/10 transition">
+                            <button onClick={handleLogout} className="flex w-full items-center gap-3 px-4 py-3 text-red-500 transition hover:bg-red-500/10">
                                 <LogOut size={18} />
                                 Logout
                             </button>

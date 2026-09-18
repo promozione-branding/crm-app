@@ -19,7 +19,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
     return (
         <html lang="en" className={`${poppins.variable} h-full antialiased`}>
-            <body className="min-h-full flex flex-col">
+            <body className="flex min-h-full flex-col">
                 <Toaster position="top-right" />
 
                 <Providers>

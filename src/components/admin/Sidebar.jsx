@@ -33,27 +33,27 @@ export default function Sidebar() {
     return (
         <>
             {/* Mobile Button */}
-            <div className="flex justify-between items-center md:hidden fixed -top-1 z-50 px-2 bg-white shadow-lg w-full">
+            <div className="fixed -top-1 z-50 flex w-full items-center justify-between bg-white px-2 shadow-lg md:hidden">
                 <div>
-                    <div className="w-auto h-15 p-2">
-                        <img src="/logocheck.webp" alt="logo" className="w-full h-full" />
+                    <div className="h-15 w-auto p-2">
+                        <img src="/logocheck.webp" alt="logo" className="h-full w-full" />
                     </div>
                 </div>
-                <button onClick={() => setOpen(!open)} className="bg-gray-200 text-gray-800 shadow-lg rounded-lg p-2">
+                <button onClick={() => setOpen(!open)} className="rounded-lg bg-gray-200 p-2 text-gray-800 shadow-lg">
                     <Menu size={24} />
                 </button>
             </div>
 
             {/* Desktop Sidebar */}
-            <aside className="hidden md:flex w-64 h-screen sticky top-0 bg-white border-r border-gray-300 flex-col justify-between">
+            <aside className="sticky top-0 hidden h-screen w-64 flex-col justify-between border-r border-gray-300 bg-white md:flex">
                 <div>
                     <div className="flex items-center justify-center border-b border-gray-300">
-                        <div className="w-auto h-15 p-2">
-                            <img src="/logocheck.webp" alt="logo" className="w-full h-full" />
+                        <div className="h-15 w-auto p-2">
+                            <img src="/logocheck.webp" alt="logo" className="h-full w-full" />
                         </div>
                     </div>
 
-                    <nav className="p-4 space-y-2">
+                    <nav className="space-y-2 p-4">
                         {menuItems.map((item) => {
                             const Icon = item.icon;
                             const isActive = pathname === item.href;
@@ -62,8 +62,7 @@ export default function Sidebar() {
                                 <motion.div key={item.title} whileHover={{ x: 5 }} whileTap={{ scale: 0.97 }}>
                                     <Link
                                         href={item.href}
-                                        className={`flex items-center gap-3 p-3 rounded-xl transition
-        ${isActive ? 'bg-indigo-600 text-white shadow-lg' : 'text-gray-700 hover:bg-gray-100'}`}
+                                        className={`flex items-center gap-3 rounded-xl p-3 transition ${isActive ? 'bg-indigo-600 text-white shadow-lg' : 'text-gray-700 hover:bg-gray-100'}`}
                                     >
                                         <Icon size={20} />
                                         {item.title}
@@ -74,8 +73,8 @@ export default function Sidebar() {
                     </nav>
                 </div>
 
-                <div className="py-3 px-4 border-t border-gray-300">
-                    <button className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-red-100 border border-red-200 bg-red-50 text-red-500">
+                <div className="border-t border-gray-300 px-4 py-3">
+                    <button className="flex w-full items-center gap-3 rounded-md border border-red-200 bg-red-50 p-3 text-red-500 hover:bg-red-100">
                         <LogOut size={20} />
                         Logout
                     </button>
@@ -91,7 +90,7 @@ export default function Sidebar() {
                             animate={{ opacity: 0.4 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setOpen(false)}
-                            className="fixed inset-0 bg-black z-40 md:hidden"
+                            className="fixed inset-0 z-40 bg-black md:hidden"
                         />
 
                         <motion.div
@@ -99,10 +98,10 @@ export default function Sidebar() {
                             animate={{ x: 0 }}
                             exit={{ x: -300 }}
                             transition={{ duration: 0.25 }}
-                            className="fixed left-0 top-0 w-72 h-screen bg-white z-50 shadow-xl md:hidden flex flex-col justify-between"
+                            className="fixed top-0 left-0 z-50 flex h-screen w-72 flex-col justify-between bg-white shadow-xl md:hidden"
                         >
                             <div>
-                                <nav className="p-4 space-y-2 text-gray-800">
+                                <nav className="space-y-2 p-4 text-gray-800">
                                     {menuItems.map((item) => {
                                         const Icon = item.icon;
                                         const isActive = pathname === item.href;
@@ -112,8 +111,7 @@ export default function Sidebar() {
                                                 <Link
                                                     href={item.href}
                                                     onClick={() => setOpen(false)}
-                                                    className={`flex items-center gap-3 p-3 rounded-xl transition
-        ${isActive ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100'}`}
+                                                    className={`flex items-center gap-3 rounded-xl p-3 transition ${isActive ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100'}`}
                                                 >
                                                     <Icon size={20} />
                                                     {item.title}
@@ -124,8 +122,8 @@ export default function Sidebar() {
                                 </nav>
                             </div>
 
-                            <div className="py-3 px-4 border-t border-gray-300">
-                                <button className="w-full flex items-center gap-3 p-3 rounded-md hover:bg-red-100 border border-red-200 bg-red-50 text-red-500">
+                            <div className="border-t border-gray-300 px-4 py-3">
+                                <button className="flex w-full items-center gap-3 rounded-md border border-red-200 bg-red-50 p-3 text-red-500 hover:bg-red-100">
                                     <LogOut size={20} />
                                     Logout
                                 </button>

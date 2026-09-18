@@ -19,7 +19,7 @@ function Header({ children, onClose }) {
 }
 
 function Body({ children }) {
-    return <div className="px-6 py-5 max-h-[70vh] overflow-y-auto">{children}</div>;
+    return <div className="max-h-[70vh] overflow-y-auto px-6 py-5">{children}</div>;
 }
 
 function Footer({ children }) {
@@ -68,14 +68,14 @@ export default function Modal({ isOpen, onClose, children, size = 'md' }) {
         <AnimatePresence>
             {isOpen && (
                 <motion.div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                 >
                     <motion.div
                         ref={modalRef}
-                        className={`w-full ${sizes[size]} overflow-hidden rounded-2xl bg-white shadow-2xl text-gray-800 `}
+                        className={`w-full ${sizes[size]} overflow-hidden rounded-2xl bg-white text-gray-800 shadow-2xl`}
                         initial={{ scale: 0.95, opacity: 0, y: 20 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.95, opacity: 0, y: 20 }}

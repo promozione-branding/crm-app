@@ -21,64 +21,24 @@ export default function TaskHeader() {
     };
 
     return (
-        <div
-            className="
-            flex
-            items-center
-            gap-3
-            mb-6
-        "
-        >
+        <div className="mb-6 flex items-center gap-3">
             {/* Back Button */}
 
             <button
                 type="button"
                 onClick={handleBack}
                 aria-label="Go back"
-                className="
-                    shrink-0
-                    w-9
-                    h-9
-                    sm:w-10
-                    sm:h-10
-                    rounded-lg
-                    flex
-                    items-center
-                    justify-center
-                    bg-app
-                    border
-                    border-app
-                    hover:opacity-80
-                    active:scale-95
-                    transition
-                "
+                className="bg-app border-app flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition hover:opacity-80 active:scale-95 sm:h-10 sm:w-10"
             >
-                <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
+                <ArrowLeft size={18} className="sm:h-5 sm:w-5" />
             </button>
 
             {/* Heading */}
 
             <div className="min-w-0">
-                <h1
-                    className="
-                    text-base
-                    sm:text-lg
-                    font-bold
-                    truncate
-                "
-                >
-                    Edit Task
-                </h1>
+                <h1 className="truncate text-base font-bold sm:text-lg">Edit Task</h1>
 
-                <p
-                    className="
-                    text-xs
-                    sm:text-sm
-                    opacity-70
-                "
-                >
-                    Update task details
-                </p>
+                <p className="text-xs opacity-70 sm:text-sm">Update task details</p>
             </div>
         </div>
     );

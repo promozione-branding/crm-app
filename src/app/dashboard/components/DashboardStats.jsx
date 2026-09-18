@@ -43,29 +43,12 @@ const statsConfig = [
 
 export default function DashboardStats({ stats, loading }) {
     return (
-        <div
-            className="
-                grid
-                grid-cols-2
-                gap-2
-                sm:gap-3
-                md:gap-4
-                lg:grid-cols-4
-                lg:gap-6
-                w-full
-            "
-        >
+        <div className="grid w-full grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:grid-cols-4 lg:gap-6">
             {statsConfig.map((item) => {
                 const Icon = item.icon;
 
                 return (
-                    <div
-                        key={item.key}
-                        className="
-                            min-w-0
-                            w-full
-                        "
-                    >
+                    <div key={item.key} className="w-full min-w-0">
                         <StatCard title={item.title} value={stats[item.key]} icon={Icon} color={item.color} loading={loading} />
                     </div>
                 );

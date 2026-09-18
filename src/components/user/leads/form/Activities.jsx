@@ -6,37 +6,37 @@ import { Activity } from 'lucide-react';
 
 export default function Activities({ activities = [] }) {
     return (
-        <div className="bg-card border border-app rounded-2xl p-5 overflow-hidden">
-            <h3 className="uppercase tracking-widest text-xs font-semibold text-muted">Activities</h3>
+        <div className="bg-card border-app overflow-hidden rounded-2xl border p-5">
+            <h3 className="text-muted text-xs font-semibold tracking-widest uppercase">Activities</h3>
 
-            <div className="border-b border-app my-4" />
+            <div className="border-app my-4 border-b" />
 
             {activities.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
-                    <div className="w-14 h-14 rounded-full bg-app border border-app flex items-center justify-center text-app">
+                    <div className="bg-app border-app text-app flex h-14 w-14 items-center justify-center rounded-full border">
                         <Activity size={24} className="opacity-80" />
                     </div>
 
-                    <h4 className="mt-4 text-sm font-medium text-app">No Activities Found</h4>
+                    <h4 className="text-app mt-4 text-sm font-medium">No Activities Found</h4>
 
-                    <p className="mt-1 text-xs text-muted">Activity history will appear here.</p>
+                    <p className="text-muted mt-1 text-xs">Activity history will appear here.</p>
                 </div>
             ) : (
                 <div className="space-y-5">
                     {activities.map((activity, idx) => (
                         <div key={activity._id} className="relative pl-8">
                             {/* Timeline */}
-                            {idx !== activities.length - 1 && <div className="absolute left-3 top-1.5 bottom-0 w-px border border-app h-24" />}
+                            {idx !== activities.length - 1 && <div className="border-app absolute top-1.5 bottom-0 left-3 h-24 w-px border" />}
 
                             {/* Dot */}
-                            <div className="absolute left-0 top-1.5 w-6 h-6 rounded-full border-2 border-blue-500 bg-surface flex items-center justify-center">
+                            <div className="bg-surface absolute top-1.5 left-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-blue-500">
                                 <Activity size={12} className="text-blue-500" />
                             </div>
 
-                            <div className="rounded-xl border border-app bg-app p-4">
-                                <p className="text-sm text-app capitalize">{activity.description}</p>
+                            <div className="border-app bg-app rounded-xl border p-4">
+                                <p className="text-app text-sm capitalize">{activity.description}</p>
 
-                                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
+                                <div className="text-muted mt-2 flex flex-wrap items-center gap-2 text-xs">
                                     <span>
                                         By <strong>{activity.createdBy?.name || 'N/A'}</strong>
                                     </span>

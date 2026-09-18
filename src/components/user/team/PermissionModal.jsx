@@ -203,11 +203,11 @@ export default function PermissionModal({ role, isOpen, onClose, fetchRoles }) {
     return (
         <Modal isOpen={isOpen} onClose={handleClose} size="full">
             <Modal.Header>
-                <div className="flex items-center justify-between w-full">
+                <div className="flex w-full items-center justify-between">
                     <div>
                         <div className="text-base font-semibold">{role.name} — Permissions</div>
 
-                        <div className="text-xs opacity-60 mt-1">
+                        <div className="mt-1 text-xs opacity-60">
                             {editing ? 'Edit permissions and save your changes' : 'Live from database · Click Edit to make changes'}
                         </div>
                     </div>
@@ -215,25 +215,10 @@ export default function PermissionModal({ role, isOpen, onClose, fetchRoles }) {
             </Modal.Header>
 
             <Modal.Body>
-                <div className="border border-app rounded-xl overflow-hidden">
+                <div className="border-app overflow-hidden rounded-xl border">
                     {/* HEADER */}
                     <div className="overflow-x-auto">
-                        <div
-                            className="
-                                grid
-                                grid-cols-[minmax(180px,1fr)_repeat(8,70px)_100px]
-                                items-center
-                                border-b
-                                border-app
-                                bg-app
-                                px-4
-                                py-3
-                                text-xs
-                                font-medium
-                                opacity-70
-                                min-w-[950px]
-                            "
-                        >
+                        <div className="border-app bg-app grid min-w-[950px] grid-cols-[minmax(180px,1fr)_repeat(8,70px)_100px] items-center border-b px-4 py-3 text-xs font-medium opacity-70">
                             <div>Module</div>
 
                             {PERMISSION_ACTIONS.map((action) => (
@@ -255,22 +240,13 @@ export default function PermissionModal({ role, isOpen, onClose, fetchRoles }) {
                                 return (
                                     <div
                                         key={module.key}
-                                        className="
-                                                grid
-                                                grid-cols-[minmax(180px,1fr)_repeat(8,70px)_100px]
-                                                items-center
-                                                border-b
-                                                border-app
-                                                last:border-0
-                                                px-4
-                                                py-3
-                                            "
+                                        className="border-app grid grid-cols-[minmax(180px,1fr)_repeat(8,70px)_100px] items-center border-b px-4 py-3 last:border-0"
                                     >
                                         {/* MODULE */}
                                         <div className="text-sm font-medium">
                                             <div>{module.name}</div>
 
-                                            <div className="text-[10px] opacity-50 mt-0.5">{module.path}</div>
+                                            <div className="mt-0.5 text-[10px] opacity-50">{module.path}</div>
                                         </div>
 
                                         {/* ACTIONS */}
@@ -281,15 +257,7 @@ export default function PermissionModal({ role, isOpen, onClose, fetchRoles }) {
 
                                             if (!available) {
                                                 return (
-                                                    <div
-                                                        key={action.key}
-                                                        className="
-                                                                    flex
-                                                                    justify-center
-                                                                    text-sm
-                                                                    opacity-40
-                                                                "
-                                                    >
+                                                    <div key={action.key} className="flex justify-center text-sm opacity-40">
                                                         —
                                                     </div>
                                                 );
@@ -301,19 +269,7 @@ export default function PermissionModal({ role, isOpen, onClose, fetchRoles }) {
                                                         type="button"
                                                         disabled={!editing}
                                                         onClick={() => togglePermission(module.key, action.key)}
-                                                        className={`
-                                                                    w-4
-                                                                    h-4
-                                                                    rounded
-                                                                    flex
-                                                                    items-center
-                                                                    justify-center
-                                                                    transition
-
-                                                                    ${checked ? 'bg-blue-600 text-white' : 'border border-app bg-transparent'}
-
-                                                                    ${!editing ? 'cursor-default' : 'cursor-pointer'}
-                                                                `}
+                                                        className={`flex h-4 w-4 items-center justify-center rounded transition ${checked ? 'bg-blue-600 text-white' : 'border-app border bg-transparent'} ${!editing ? 'cursor-default' : 'cursor-pointer'} `}
                                                     >
                                                         {checked && <Check size={11} strokeWidth={3} />}
                                                     </button>
@@ -327,18 +283,7 @@ export default function PermissionModal({ role, isOpen, onClose, fetchRoles }) {
                                                 value={moduleState.scope || 'own'}
                                                 disabled={!editing}
                                                 onChange={(e) => changeScope(module.key, e.target.value)}
-                                                className="
-                                                        h-8
-                                                        w-[90px]
-                                                        rounded-lg
-                                                        border
-                                                        border-app
-                                                        bg-app
-                                                        px-2
-                                                        text-xs
-                                                        outline-none
-                                                        disabled:opacity-60
-                                                    "
+                                                className="border-app bg-app h-8 w-[90px] rounded-lg border px-2 text-xs outline-none disabled:opacity-60"
                                             >
                                                 {SCOPES.map((scope) => (
                                                     <option key={scope.key} value={scope.key}>
@@ -358,69 +303,22 @@ export default function PermissionModal({ role, isOpen, onClose, fetchRoles }) {
             <Modal.Footer>
                 {!editing ? (
                     <>
-                        <button
-                            onClick={handleClose}
-                            className="
-                                px-4
-                                py-2
-                                text-xs
-                                rounded-lg
-                                border
-                                border-app
-                                hover-app
-                                text-app
-                            "
-                        >
+                        <button onClick={handleClose} className="border-app hover-app text-app rounded-lg border px-4 py-2 text-xs">
                             Close
                         </button>
 
-                        <button
-                            onClick={() => setEditing(true)}
-                            className="
-                                px-4
-                                py-2
-                                text-xs
-                                rounded-lg
-                                btn-primary
-                                flex
-                                items-center
-                                gap-2
-                            "
-                        >
+                        <button onClick={() => setEditing(true)} className="btn-primary flex items-center gap-2 rounded-lg px-4 py-2 text-xs">
                             <Pencil size={14} />
                             Edit Permissions
                         </button>
                     </>
                 ) : (
                     <>
-                        <button
-                            onClick={handleCancelEdit}
-                            disabled={saving}
-                            className="
-                                px-4
-                                py-2
-                                text-xs
-                                rounded-lg
-                                border
-                                border-app
-                                hover-app
-                                text-app
-                            "
-                        >
+                        <button onClick={handleCancelEdit} disabled={saving} className="border-app hover-app text-app rounded-lg border px-4 py-2 text-xs">
                             Cancel
                         </button>
 
-                        <button
-                            onClick={handleSave}
-                            disabled={saving}
-                            className="
-                                px-4
-                                py-2
-                                text-xs
-                                rounded-lg
-                                btn-primary
-                            "
-                        >
+                        <button onClick={handleSave} disabled={saving} className="btn-primary rounded-lg px-4 py-2 text-xs">
                             {saving ? 'Saving...' : 'Save Permissions'}
                         </button>
                     </>

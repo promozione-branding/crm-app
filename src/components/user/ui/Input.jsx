@@ -6,15 +6,15 @@ export default function Input({ name, label, required = false, type = 'text', va
     return (
         <div className="space-y-2">
             {label && (
-                <label className="text-xs font-medium text-app">
+                <label className="text-app text-xs font-medium">
                     {label}
 
-                    {required && <span className="text-red-500 ml-1">*</span>}
+                    {required && <span className="ml-1 text-red-500">*</span>}
                 </label>
             )}
 
-            <div className="flex rounded-lg border border-app bg-app overflow-hidden mt-0.5 text-sm">
-                {leftElement && <div className="px-4 flex items-center border-r border-app text-app">{leftElement}</div>}
+            <div className="border-app bg-app mt-0.5 flex overflow-hidden rounded-lg border text-sm">
+                {leftElement && <div className="border-app text-app flex items-center border-r px-4">{leftElement}</div>}
 
                 <input
                     type={type}
@@ -22,12 +22,12 @@ export default function Input({ name, label, required = false, type = 'text', va
                     name={name}
                     onChange={onChange}
                     placeholder={placeholder}
-                    className="w-full h-9 px-4 bg-transparent text-app outline-none placeholder:text-muted"
+                    className="text-app placeholder:text-muted h-9 w-full bg-transparent px-4 outline-none"
                     {...rest}
                 />
             </div>
 
-            {error && <p className="text-red-500 text-xs">{error}</p>}
+            {error && <p className="text-xs text-red-500">{error}</p>}
         </div>
     );
 }

@@ -42,13 +42,13 @@ export default function DateTimeInput({
     };
 
     return (
-        <div className="w-full relative">
+        <div className="relative w-full">
             {/* Label */}
             {label && (
-                <label className="block text-sm font-medium text-app mb-1">
+                <label className="text-app mb-1 block text-sm font-medium">
                     {label}
 
-                    {required && <span className="text-red-500 ml-1">*</span>}
+                    {required && <span className="ml-1 text-red-500">*</span>}
                 </label>
             )}
 
@@ -79,7 +79,7 @@ export default function DateTimeInput({
                             error: !!error,
 
                             InputProps: {
-                                startAdornment: <CalendarDays size={17} className="mr-2 text-muted" />,
+                                startAdornment: <CalendarDays size={17} className="text-muted mr-2" />,
                             },
 
                             sx: {
@@ -413,7 +413,7 @@ export default function DateTimeInput({
             </LocalizationProvider>
 
             {/* Error */}
-            {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+            {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
         </div>
     );
 }

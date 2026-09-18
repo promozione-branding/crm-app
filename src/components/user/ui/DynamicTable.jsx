@@ -79,7 +79,7 @@ const DynamicTable = ({
     };
 
     return (
-        <div className="rounded-2xl border border-app shadow-sm overflow-hidden">
+        <div className="border-app overflow-hidden rounded-2xl border shadow-sm">
             {/* =====================================================
                 TABLE WRAPPER
             ====================================================== */}
@@ -90,14 +90,14 @@ const DynamicTable = ({
                         HEADER
                     ================================================== */}
 
-                    <thead className="border-b border-app bg-app">
+                    <thead className="border-app bg-app border-b">
                         <tr>
                             {/* S.NO */}
-                            {showSno && <th className="px-6 py-4 font-semibold text-left">S.NO</th>}
+                            {showSno && <th className="px-6 py-4 text-left font-semibold">S.NO</th>}
 
                             {/* DYNAMIC COLUMNS */}
                             {columns.map((col) => (
-                                <th key={col.key} className="px-6 py-4 font-semibold cursor-pointer text-left">
+                                <th key={col.key} className="cursor-pointer px-6 py-4 text-left font-semibold">
                                     <div className="flex items-center gap-2">
                                         {col.label}
 
@@ -112,7 +112,7 @@ const DynamicTable = ({
                             ))}
 
                             {/* ACTION */}
-                            {onAction && <th className="px-6 py-4 font-semibold text-left">Action</th>}
+                            {onAction && <th className="px-6 py-4 text-left font-semibold">Action</th>}
                         </tr>
                     </thead>
 
@@ -127,13 +127,13 @@ const DynamicTable = ({
 
                         {loading ? (
                             <tr>
-                                <td colSpan={totalColumns} className="text-center py-16">
+                                <td colSpan={totalColumns} className="py-16 text-center">
                                     <div className="flex flex-col items-center justify-center gap-3">
                                         {/* Spinner */}
-                                        <div className="relative w-9 h-9">
-                                            <div className="absolute inset-0 rounded-full border-4 border-app opacity-30" />
+                                        <div className="relative h-9 w-9">
+                                            <div className="border-app absolute inset-0 rounded-full border-4 opacity-30" />
 
-                                            <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-600 animate-spin" />
+                                            <div className="absolute inset-0 animate-spin rounded-full border-4 border-transparent border-t-blue-600" />
                                         </div>
 
                                         {/* Loading Text */}
@@ -159,7 +159,7 @@ const DynamicTable = ({
                             ================================================== */
 
                             data.map((row, index) => (
-                                <tr key={row.id || row._id || index} className="border-b border-app hover-app transition bg-surface">
+                                <tr key={row.id || row._id || index} className="border-app hover-app bg-surface border-b transition">
                                     {/* S.NO */}
                                     {showSno && <td className="px-6 py-4">{getSerialNumber(index)}</td>}
 
@@ -182,7 +182,7 @@ const DynamicTable = ({
                                             <button
                                                 type="button"
                                                 onClick={() => onAction(row)}
-                                                className="w-8 h-8 rounded-lg btn-primary flex items-center justify-center"
+                                                className="btn-primary flex h-8 w-8 items-center justify-center rounded-lg"
                                             >
                                                 <MoreVertical size={18} />
                                             </button>
@@ -196,7 +196,7 @@ const DynamicTable = ({
                             ================================================== */
 
                             <tr>
-                                <td colSpan={totalColumns} className="text-center py-10 opacity-60">
+                                <td colSpan={totalColumns} className="py-10 text-center opacity-60">
                                     No Data Found
                                 </td>
                             </tr>
@@ -210,18 +210,18 @@ const DynamicTable = ({
             ====================================================== */}
 
             {setPage && (
-                <div className="flex items-center justify-between px-6 py-2 bg-app text-xs">
+                <div className="bg-app flex items-center justify-between px-6 py-2 text-xs">
                     {/* SHOWING COUNT */}
 
                     <p className="opacity-70">{total > 0 ? `Showing ${startItem}-${endItem} of ${total}` : 'Showing 0 of 0'}</p>
 
                     {/* CONTROLS */}
 
-                    <div className="flex gap-2 items-center">
+                    <div className="flex items-center gap-2">
                         {/* ROWS PER PAGE */}
 
                         {setRowsPerPage && (
-                            <select value={rowsPerPage} onChange={handleRowsPerPageChange} className="border border-app px-1.5 py-2 rounded-lg text-app bg-app">
+                            <select value={rowsPerPage} onChange={handleRowsPerPageChange} className="border-app text-app bg-app rounded-lg border px-1.5 py-2">
                                 <option value={25}>25</option>
 
                                 <option value={50}>50</option>
@@ -238,14 +238,14 @@ const DynamicTable = ({
                             type="button"
                             disabled={page <= 1}
                             onClick={() => handlePageChange(page - 1)}
-                            className={`px-3 h-9 rounded-lg border border-app ${page <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover-app'}`}
+                            className={`border-app h-9 rounded-lg border px-3 ${page <= 1 ? 'cursor-not-allowed opacity-50' : 'hover-app'}`}
                         >
                             Prev
                         </button>
 
                         {/* CURRENT PAGE */}
 
-                        <button type="button" className="px-3 h-8 rounded-lg bg-blue-600 text-white">
+                        <button type="button" className="h-8 rounded-lg bg-blue-600 px-3 text-white">
                             {page}
                         </button>
 
@@ -255,8 +255,8 @@ const DynamicTable = ({
                             type="button"
                             disabled={totalPages === 0 || page >= totalPages}
                             onClick={() => handlePageChange(page + 1)}
-                            className={`px-3 h-9 rounded-lg border border-app ${
-                                totalPages === 0 || page >= totalPages ? 'opacity-50 cursor-not-allowed' : 'hover-app'
+                            className={`border-app h-9 rounded-lg border px-3 ${
+                                totalPages === 0 || page >= totalPages ? 'cursor-not-allowed opacity-50' : 'hover-app'
                             }`}
                         >
                             Next

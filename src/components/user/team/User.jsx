@@ -16,7 +16,7 @@ const columns = [
         key: 'roleId.name',
         label: 'Role',
         sortable: true,
-        render: (lead) => <span className="px-3 py-1 rounded-full text-xs bg-blue-500/10 text-blue-500 capitalize">{lead.roleId.name}</span>,
+        render: (lead) => <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs text-blue-500 capitalize">{lead.roleId.name}</span>,
     },
     { key: 'createdAt', type: 'date', label: 'Created At', sortable: true },
 ];
@@ -47,21 +47,21 @@ export default function Users({
     };
 
     return (
-        <div className="max-w-7xl mx-auto py-4 px-3 space-y-4">
-            <div className="flex justify-end items-center gap-2">
-                <button onClick={() => setOpen(true)} className="h-8 text-sm px-3 rounded-lg btn-primary flex items-center gap-2 transition">
+        <div className="mx-auto max-w-7xl space-y-4 px-3 py-4">
+            <div className="flex items-center justify-end gap-2">
+                <button onClick={() => setOpen(true)} className="btn-primary flex h-8 items-center gap-2 rounded-lg px-3 text-sm transition">
                     <Plus size={16} />
                     Add User
                 </button>
 
                 <div className="relative">
-                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 opacity-60" />
+                    <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 opacity-60" />
 
                     <input
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search user..."
-                        className="h-9 w-60 rounded-lg text-sm border border-app bg-app bg-transparent pl-10 pr-3 outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border-app bg-app h-9 w-60 rounded-lg border bg-transparent pr-3 pl-10 text-sm outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
             </div>
@@ -85,13 +85,13 @@ export default function Users({
 
                 <Modal.Body>
                     <div className="space-y-4">
-                        <div className="grid md:grid-cols-2 gap-2">
+                        <div className="grid gap-2 md:grid-cols-2">
                             <Input label="Name" required name="name" value={form.name} onChange={handleChange} placeholder="Enter name" />
 
                             <Input label="Email" required type="mail" name="email" value={form.email} onChange={handleChange} placeholder="Enter email" />
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-2">
+                        <div className="grid gap-2 md:grid-cols-2">
                             <Input label="Phone" required name="phone" value={form.phone} onChange={handleChange} placeholder="Enter phone" />
 
                             <Input
@@ -105,7 +105,7 @@ export default function Users({
                             />
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-2">
+                        <div className="grid gap-2 md:grid-cols-2">
                             <SelectInput
                                 label="Role"
                                 name="roleId"
@@ -119,11 +119,11 @@ export default function Users({
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <button onClick={() => setOpen(false)} className="px-4 py-2 text-xs rounded-lg border border-app hover-app text-app">
+                    <button onClick={() => setOpen(false)} className="border-app hover-app text-app rounded-lg border px-4 py-2 text-xs">
                         Cancel
                     </button>
 
-                    <button onClick={handleCreateUser} className="px-4 py-2 text-xs rounded-lg btn-primary">
+                    <button onClick={handleCreateUser} className="btn-primary rounded-lg px-4 py-2 text-xs">
                         Save
                     </button>
                 </Modal.Footer>

@@ -70,35 +70,12 @@ export default function SearchAndFilterTask({
     const placeholder = searchType === 'title' ? 'Search task title...' : searchType === 'relatedTo' ? 'Search related lead...' : 'Search assigned to...';
 
     return (
-        <div
-            className="
-        flex
-        flex-wrap
-        items-center
-        justify-between
-        gap-2
-        sm:gap-3
-    "
-        >
+        <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
             {/* ==================================================
                 ADD TASK
             ================================================== */}
 
-            <button
-                type="button"
-                onClick={onAddTask}
-                className="
-                    flex
-                    h-9
-                    items-center
-                    justify-center
-                    gap-2
-                    rounded-lg
-                    px-3
-                    text-sm
-                    btn-primary
-                "
-            >
+            <button type="button" onClick={onAddTask} className="btn-primary flex h-9 items-center justify-center gap-2 rounded-lg px-3 text-sm">
                 <Plus size={16} />
 
                 <span>Add Task</span>
@@ -109,37 +86,14 @@ export default function SearchAndFilterTask({
             ================================================== */}
 
             <div className="relative">
-                <Filter
-                    size={15}
-                    className="
-                        pointer-events-none
-                        absolute
-                        left-3
-                        top-1/2
-                        -translate-y-1/2
-                        opacity-60
-                    "
-                />
+                <Filter size={15} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 opacity-60" />
 
                 <select
                     value={priority}
                     onChange={(e) => {
                         setPriority(e.target.value);
                     }}
-                    className="
-                        h-9
-                        appearance-none
-                        rounded-lg
-                        border
-                        border-app
-                        bg-app
-                        pl-9
-                        pr-8
-                        text-sm
-                        outline-none
-                        focus:ring-2
-                        focus:ring-blue-500
-                    "
+                    className="border-app bg-app h-9 appearance-none rounded-lg border pr-8 pl-9 text-sm outline-none focus:ring-2 focus:ring-blue-500"
                 >
                     <option value="">All Leads</option>
 
@@ -157,50 +111,18 @@ export default function SearchAndFilterTask({
                 SEARCH TYPE + SEARCH INPUT
             ================================================== */}
 
-            <div
-                className="
-                    flex
-                    w-full
-                    sm:w-auto
-                    items-center
-                    gap-2
-                "
-            >
+            <div className="flex w-full items-center gap-2 sm:w-auto">
                 {/* ==================================================
                     SEARCH TYPE DROPDOWN
                 ================================================== */}
 
                 <div className="relative shrink-0">
-                    <Search
-                        size={15}
-                        className="
-                            pointer-events-none
-                            absolute
-                            left-3
-                            top-1/2
-                            -translate-y-1/2
-                            opacity-60
-                        "
-                    />
+                    <Search size={15} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 opacity-60" />
 
                     <select
                         value={searchType}
                         onChange={handleSearchTypeChange}
-                        className="
-                            h-9
-                            w-44
-                            appearance-none
-                            rounded-lg
-                            border
-                            border-app
-                            bg-app
-                            pl-9
-                            pr-8
-                            text-sm
-                            outline-none
-                            focus:ring-2
-                            focus:ring-blue-500
-                        "
+                        className="border-app bg-app h-9 w-44 appearance-none rounded-lg border pr-8 pl-9 text-sm outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         <option value="title">Search by Title</option>
 
@@ -209,61 +131,22 @@ export default function SearchAndFilterTask({
                         <option value="assignedTo">Search by Assigned To</option>
                     </select>
 
-                    <ChevronDown
-                        size={15}
-                        className="
-                            pointer-events-none
-                            absolute
-                            right-3
-                            top-1/2
-                            -translate-y-1/2
-                            opacity-60
-                        "
-                    />
+                    <ChevronDown size={15} className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 opacity-60" />
                 </div>
 
                 {/* ==================================================
                     SEARCH INPUT
                 ================================================== */}
 
-                <div
-                    className="
-                        relative
-                        w-full
-                        sm:w-52
-                    "
-                >
-                    <Search
-                        size={16}
-                        className="
-                            pointer-events-none
-                            absolute
-                            left-3
-                            top-1/2
-                            -translate-y-1/2
-                            opacity-60
-                        "
-                    />
+                <div className="relative w-full sm:w-52">
+                    <Search size={16} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 opacity-60" />
 
                     <input
                         type="text"
                         value={currentSearchValue}
                         onChange={handleSearchChange}
                         placeholder={placeholder}
-                        className="
-                            h-9
-                            w-full
-                            rounded-lg
-                            border
-                            border-app
-                            bg-app
-                            pl-10
-                            pr-3
-                            text-sm
-                            outline-none
-                            focus:ring-2
-                            focus:ring-blue-500
-                        "
+                        className="border-app bg-app h-9 w-full rounded-lg border pr-3 pl-10 text-sm outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
             </div>

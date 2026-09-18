@@ -39,18 +39,18 @@ export default function Page() {
     return (
         <>
             {/* Main */}
-            <div className="min-h-screen bg-slate-100 flex items-center justify-center">
-                <div className="flex items-center justify-center p-4 lg:p-8 bg-white rounded-2xl shadow-lg">
+            <div className="flex min-h-screen items-center justify-center bg-slate-100">
+                <div className="flex items-center justify-center rounded-2xl bg-white p-4 shadow-lg lg:p-8">
                     <div className="w-full max-w-md">
-                        <div className="text-center mb-8">
+                        <div className="mb-8 text-center">
                             <h2 className="text-3xl font-bold text-gray-900">Welcome to Your CRM</h2>
 
-                            <p className="text-gray-500 mt-2">Login to continue to your dashboard.</p>
+                            <p className="mt-2 text-gray-500">Login to continue to your dashboard.</p>
                         </div>
 
                         <form className="space-y-5 text-black" onSubmit={handleSubmit}>
                             <div>
-                                <label className="block mb-2 text-sm font-medium text-gray-700">Email Address</label>
+                                <label className="mb-2 block text-sm font-medium text-gray-700">Email Address</label>
 
                                 <div className="flex items-center rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 transition focus-within:border-[#082c62] focus-within:ring-4 focus-within:ring-[#082c62]/10">
                                     <Mail size={18} className="mr-3 text-gray-400" />
@@ -66,7 +66,7 @@ export default function Page() {
                             </div>
 
                             <div>
-                                <label className="block mb-2 text-sm font-medium text-gray-700">Password</label>
+                                <label className="mb-2 block text-sm font-medium text-gray-700">Password</label>
 
                                 <div className="flex items-center rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 transition focus-within:border-[#082c62] focus-within:ring-4 focus-within:ring-[#082c62]/10">
                                     <Lock size={18} className="mr-3 text-gray-400" />
@@ -82,7 +82,7 @@ export default function Page() {
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="ml-3 text-gray-400 hover:text-[#082c62] transition"
+                                        className="ml-3 text-gray-400 transition hover:text-[#082c62]"
                                     >
                                         {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                     </button>
@@ -102,16 +102,16 @@ export default function Page() {
 
                             <button
                                 type="submit"
-                                className="w-full bg-[#082c62] hover:bg-[#0d376f] text-white py-3 rounded-xl font-semibold transition flex items-center justify-center gap-2 shadow-lg"
+                                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#082c62] py-3 font-semibold text-white shadow-lg transition hover:bg-[#0d376f]"
                             >
                                 Login
                                 <ArrowRight size={18} />
                             </button>
                         </form>
 
-                        <p className="text-center mt-4 text-gray-500 text-sm">
+                        <p className="mt-4 text-center text-sm text-gray-500">
                             Don't have an account?
-                            <span className="ml-1 font-semibold text-[#082c62] hover:underline cursor-pointer">
+                            <span className="ml-1 cursor-pointer font-semibold text-[#082c62] hover:underline">
                                 Contact Admin <ArrowRight size={15} className="inline-block" />
                             </span>
                         </p>

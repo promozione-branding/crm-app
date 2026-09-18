@@ -92,77 +92,17 @@ export default function Dashboarddata() {
     // ========================================================
 
     return (
-        <div
-            className="
-                w-full
-                grid
-                grid-cols-4
-                gap-2
-                sm:flex
-                sm:items-center
-                sm:justify-between
-                sm:gap-4
-                lg:gap-6
-            "
-        >
+        <div className="grid w-full grid-cols-4 gap-2 sm:flex sm:items-center sm:justify-between sm:gap-4 lg:gap-6">
             {statsConfig.map((item) => {
                 const Icon = item.icon;
 
                 return (
                     <div
                         key={item.key}
-                        className="
-                            flex
-                            flex-col
-                            items-center
-                            justify-center
-                            gap-1
-                            min-w-0
-
-                            sm:flex-row
-                            sm:items-center
-                            sm:justify-start
-                            sm:gap-2.5
-
-                            px-1.5
-                            py-2
-
-                            sm:px-3
-                            sm:py-2
-
-                            rounded-lg
-                            sm:rounded-xl
-
-                            border
-                            border-transparent
-                            sm:border-app
-
-                            shadow-none
-                            sm:shadow-sm
-
-                            bg-transparent
-                            sm:bg-app
-
-                            transition-all
-                            sm:hover:-translate-y-0.5
-                            sm:hover:shadow-md
-                        "
+                        className="sm:border-app sm:bg-app flex min-w-0 flex-col items-center justify-center gap-1 rounded-lg border border-transparent bg-transparent px-1.5 py-2 shadow-none transition-all sm:flex-row sm:items-center sm:justify-start sm:gap-2.5 sm:rounded-xl sm:px-3 sm:py-2 sm:shadow-sm sm:hover:-translate-y-0.5 sm:hover:shadow-md"
                     >
                         {/* ICON */}
-                        <div
-                            className={`
-                                shrink-0
-                                flex
-                                items-center
-                                justify-center
-                                w-6
-                                h-6
-                                sm:w-7
-                                sm:h-7
-                                rounded-lg
-                                ${item.iconBg}
-                            `}
-                        >
+                        <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg sm:h-7 sm:w-7 ${item.iconBg} `}>
                             <Icon size={16} className={item.iconClass} />
                         </div>
 
@@ -170,45 +110,10 @@ export default function Dashboarddata() {
                             Mobile  → stacked (label on top, value below), centered
                             Desktop → inline side by side
                         */}
-                        <div
-                            className="
-                                flex
-                                flex-col
-                                items-center
-                                min-w-0
-                                w-full
+                        <div className="flex w-full min-w-0 flex-col items-center sm:w-auto sm:flex-row sm:items-baseline sm:gap-1.5">
+                            <span className="max-w-full truncate text-[10px] leading-none opacity-60 sm:text-sm">{item.label}</span>
 
-                                sm:flex-row
-                                sm:items-baseline
-                                sm:gap-1.5
-                                sm:w-auto
-                            "
-                        >
-                            <span
-                                className="
-                                    text-[10px]
-                                    sm:text-sm
-                                    opacity-60
-                                    leading-none
-                                    truncate
-                                    max-w-full
-                                "
-                            >
-                                {item.label}
-                            </span>
-
-                            <span
-                                className="
-                                    text-sm
-                                    sm:text-lg
-                                    font-bold
-                                    leading-tight
-                                    truncate
-                                    max-w-full
-                                "
-                            >
-                                {loading ? '...' : stats[item.key]}
-                            </span>
+                            <span className="max-w-full truncate text-sm leading-tight font-bold sm:text-lg">{loading ? '...' : stats[item.key]}</span>
                         </div>
                     </div>
                 );

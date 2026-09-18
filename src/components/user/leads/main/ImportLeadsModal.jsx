@@ -192,7 +192,7 @@ export default function ImportLeadsModal({ open, setOpen, onSuccess }) {
                 <div>
                     <h2 className="text-lg font-semibold">Import Leads</h2>
 
-                    <p className="mt-1 text-xs font-normal text-muted">
+                    <p className="text-muted mt-1 text-xs font-normal">
                         Step {step} of 3: {step === 1 ? 'Upload' : step === 2 ? 'Field Mapping' : 'Bulk Options'}
                     </p>
                 </div>
@@ -214,7 +214,7 @@ export default function ImportLeadsModal({ open, setOpen, onSuccess }) {
                         <span className={`text-sm font-medium ${step >= 1 ? 'text-app' : 'text-muted'}`}>Upload</span>
                     </div>
 
-                    <div className="mx-4 h-px flex-1 bg-app" />
+                    <div className="bg-app mx-4 h-px flex-1" />
 
                     {/* Step 2 */}
                     <div className="flex items-center gap-2">
@@ -229,7 +229,7 @@ export default function ImportLeadsModal({ open, setOpen, onSuccess }) {
                         <span className={`text-sm font-medium ${step >= 2 ? 'text-app' : 'text-muted'}`}>Field Mapping</span>
                     </div>
 
-                    <div className="mx-4 h-px flex-1 bg-app" />
+                    <div className="bg-app mx-4 h-px flex-1" />
 
                     {/* Step 3 */}
                     <div className="flex items-center gap-2">
@@ -272,23 +272,23 @@ export default function ImportLeadsModal({ open, setOpen, onSuccess }) {
 
                             {file ? (
                                 <>
-                                    <div className="mb-4 rounded-xl bg-primary/10 p-4 text-primary">
+                                    <div className="bg-primary/10 text-primary mb-4 rounded-xl p-4">
                                         <FileSpreadsheet size={38} />
                                     </div>
 
-                                    <p className="text-base font-semibold text-app">{file.name}</p>
+                                    <p className="text-app text-base font-semibold">{file.name}</p>
 
-                                    <p className="mt-1 text-sm text-muted">{(file.size / 1024).toFixed(1)} KB</p>
+                                    <p className="text-muted mt-1 text-sm">{(file.size / 1024).toFixed(1)} KB</p>
 
-                                    <p className="mt-3 text-sm text-primary">Click to change file</p>
+                                    <p className="text-primary mt-3 text-sm">Click to change file</p>
                                 </>
                             ) : (
                                 <>
-                                    <Upload size={48} strokeWidth={1.5} className="mb-5 text-muted" />
+                                    <Upload size={48} strokeWidth={1.5} className="text-muted mb-5" />
 
-                                    <p className="text-base font-semibold text-app">Drop Excel file here or click to browse</p>
+                                    <p className="text-app text-base font-semibold">Drop Excel file here or click to browse</p>
 
-                                    <p className="mt-2 text-sm text-muted">Accepted: XLSX, XLS — Max 10MB</p>
+                                    <p className="text-muted mt-2 text-sm">Accepted: XLSX, XLS — Max 10MB</p>
                                 </>
                             )}
                         </div>
@@ -298,13 +298,13 @@ export default function ImportLeadsModal({ open, setOpen, onSuccess }) {
                             <button
                                 type="button"
                                 onClick={handleDownloadSample}
-                                className="inline-flex items-center gap-2 text-sm font-medium text-primary transition hover:opacity-80"
+                                className="text-primary inline-flex items-center gap-2 text-sm font-medium transition hover:opacity-80"
                             >
                                 <Download size={17} />
                                 Download Sample Excel
                             </button>
 
-                            <p className="mt-1 text-xs text-muted">Download the Excel template and fill in your lead details.</p>
+                            <p className="text-muted mt-1 text-xs">Download the Excel template and fill in your lead details.</p>
                         </div>
                     </>
                 )}
@@ -312,14 +312,14 @@ export default function ImportLeadsModal({ open, setOpen, onSuccess }) {
                 {/* STEP 2 */}
                 {step === 2 && (
                     <div className="min-h-[250px]">
-                        <h3 className="mb-2 text-base font-semibold text-app">Field Mapping</h3>
+                        <h3 className="text-app mb-2 text-base font-semibold">Field Mapping</h3>
 
-                        <p className="text-sm text-muted">Map the Excel columns to your lead fields.</p>
+                        <p className="text-muted text-sm">Map the Excel columns to your lead fields.</p>
 
-                        <div className="mt-5 rounded-xl border border-app p-4">
-                            <p className="text-sm text-app">File:</p>
+                        <div className="border-app mt-5 rounded-xl border p-4">
+                            <p className="text-app text-sm">File:</p>
 
-                            <p className="mt-1 text-sm text-muted">{file?.name}</p>
+                            <p className="text-muted mt-1 text-sm">{file?.name}</p>
                         </div>
                     </div>
                 )}
@@ -327,9 +327,9 @@ export default function ImportLeadsModal({ open, setOpen, onSuccess }) {
                 {/* STEP 3 */}
                 {step === 3 && (
                     <div className="min-h-[250px]">
-                        <h3 className="mb-2 text-base font-semibold text-app">Bulk Options</h3>
+                        <h3 className="text-app mb-2 text-base font-semibold">Bulk Options</h3>
 
-                        <p className="text-sm text-muted">Configure your bulk import options.</p>
+                        <p className="text-muted text-sm">Configure your bulk import options.</p>
                     </div>
                 )}
             </Modal.Body>
@@ -339,7 +339,7 @@ export default function ImportLeadsModal({ open, setOpen, onSuccess }) {
                     type="button"
                     onClick={handleBack}
                     disabled={uploading}
-                    className="flex h-10 items-center gap-2 rounded-lg border border-app px-4 text-sm font-medium text-app transition hover-app disabled:opacity-50"
+                    className="border-app text-app hover-app flex h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium transition disabled:opacity-50"
                 >
                     <ChevronLeft size={17} />
 
@@ -350,7 +350,7 @@ export default function ImportLeadsModal({ open, setOpen, onSuccess }) {
                     type="button"
                     onClick={handleNext}
                     disabled={uploading || (step === 1 && !file)}
-                    className="flex h-10 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="bg-primary flex h-10 items-center gap-2 rounded-lg px-5 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                     {uploading ? (
                         <>

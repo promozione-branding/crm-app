@@ -141,16 +141,16 @@ export default function Roles({ fetchRoles, roles = [], loading }) {
     }, []);
 
     return (
-        <div className="max-w-7xl mx-auto py-4 px-3 space-y-4">
+        <div className="mx-auto max-w-7xl space-y-4 px-3 py-4">
             {/* TOP BAR */}
-            <div className="flex justify-end items-center gap-2">
-                <button onClick={handleAddRole} className="h-8 text-sm px-3 rounded-lg btn-primary flex items-center gap-2 transition">
+            <div className="flex items-center justify-end gap-2">
+                <button onClick={handleAddRole} className="btn-primary flex h-8 items-center gap-2 rounded-lg px-3 text-sm transition">
                     <Plus size={16} />
                     Add Role
                 </button>
 
                 <div className="relative">
-                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 opacity-60" />
+                    <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 opacity-60" />
 
                     <input
                         placeholder="Search role..."
@@ -158,44 +158,44 @@ export default function Roles({ fetchRoles, roles = [], loading }) {
                         onChange={(e) => {
                             setSearch(e.target.value);
                         }}
-                        className="h-9 w-60 rounded-lg text-sm border border-app bg-app bg-transparent pl-10 pr-3 outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border-app bg-app h-9 w-60 rounded-lg border bg-transparent pr-3 pl-10 text-sm outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
             </div>
 
             {/* ROLE LIST */}
-            <div className="border border-app rounded-lg">
+            <div className="border-app rounded-lg border">
                 {loading ? (
                     <div className="p-6 text-center text-sm">Loading roles...</div>
                 ) : filteredRoles.length === 0 ? (
                     <div className="p-6 text-center text-sm opacity-60">No roles found</div>
                 ) : (
                     filteredRoles.map((role) => (
-                        <div key={role._id} className="px-4 py-3 border-b border-app last:border-0 flex justify-between items-center">
+                        <div key={role._id} className="border-app flex items-center justify-between border-b px-4 py-3 last:border-0">
                             <div className="flex flex-col">
                                 <div className="text-sm font-medium">{role.name}</div>
 
-                                <div className="text-xs opacity-60 mt-1">{role.description || 'No description'}</div>
+                                <div className="mt-1 text-xs opacity-60">{role.description || 'No description'}</div>
                             </div>
 
                             {/* ACTION MENU */}
                             <div className="relative" ref={menuOpen === role._id ? menuRef : null}>
                                 <button
                                     onClick={() => setMenuOpen(menuOpen === role._id ? null : role._id)}
-                                    className="p-2 rounded-xl border bg-app border-app hover-app text-app"
+                                    className="bg-app border-app hover-app text-app rounded-xl border p-2"
                                 >
                                     <EllipsisVertical size={18} />
                                 </button>
 
                                 {menuOpen === role._id && (
-                                    <div className="absolute right-0 top-full mt-2 w-44 rounded-lg border border-app bg-app shadow-lg z-50 overflow-hidden">
+                                    <div className="border-app bg-app absolute top-full right-0 z-50 mt-2 w-44 overflow-hidden rounded-lg border shadow-lg">
                                         <button
                                             onClick={() => {
                                                 setSelectedRole(role);
                                                 setPermissionModal(true);
                                                 setMenuOpen(null);
                                             }}
-                                            className="w-full px-3 py-2.5 flex items-center gap-2 text-sm text-left hover-app"
+                                            className="hover-app flex w-full items-center gap-2 px-3 py-2.5 text-left text-sm"
                                         >
                                             <ShieldCheck size={16} />
 
@@ -204,7 +204,7 @@ export default function Roles({ fetchRoles, roles = [], loading }) {
 
                                         <button
                                             onClick={() => handleEditRole(role)}
-                                            className="w-full px-3 py-2.5 flex items-center gap-2 text-sm text-left hover-app"
+                                            className="hover-app flex w-full items-center gap-2 px-3 py-2.5 text-left text-sm"
                                         >
                                             <Pencil size={16} />
 
@@ -237,11 +237,11 @@ export default function Roles({ fetchRoles, roles = [], loading }) {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <button onClick={closeFormModal} disabled={saving} className="px-4 py-2 text-xs rounded-lg border border-app hover-app text-app">
+                    <button onClick={closeFormModal} disabled={saving} className="border-app hover-app text-app rounded-lg border px-4 py-2 text-xs">
                         Cancel
                     </button>
 
-                    <button onClick={handleSave} disabled={saving} className="px-4 py-2 text-xs rounded-lg btn-primary">
+                    <button onClick={handleSave} disabled={saving} className="btn-primary rounded-lg px-4 py-2 text-xs">
                         {saving ? 'Saving...' : 'Save'}
                     </button>
                 </Modal.Footer>

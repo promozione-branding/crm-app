@@ -320,196 +320,51 @@ export default function Meetings({ leadId, users = [], usersLoading = false }) {
 
     return (
         <>
-            <div
-                className="
-                    max-w-4xl
-                    mx-auto
-                    md:py-10
-                    py-5
-                    px-2
-                "
-            >
-                <div
-                    className="
-                        bg-card
-                        border
-                        border-app
-                        rounded-2xl
-                        p-5
-                        text-app
-                    "
-                >
-                    <div
-                        className="
-                            flex
-                            items-center
-                            justify-between
-                        "
-                    >
-                        <h3
-                            className="
-                                uppercase
-                                tracking-widest
-                                text-xs
-                                font-semibold
-                                text-muted
-                            "
-                        >
-                            Meetings
-                        </h3>
+            <div className="mx-auto max-w-4xl px-2 py-5 md:py-10">
+                <div className="bg-card border-app text-app rounded-2xl border p-5">
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-muted text-xs font-semibold tracking-widest uppercase">Meetings</h3>
 
-                        <button
-                            type="button"
-                            onClick={openAdd}
-                            className="
-                                p-2
-                                rounded-lg
-                                border
-                                bg-app
-                                border-app
-                                hover-app
-                                text-app
-                            "
-                            title="Add Meeting"
-                        >
+                        <button type="button" onClick={openAdd} className="bg-app border-app hover-app text-app rounded-lg border p-2" title="Add Meeting">
                             <Plus size={16} />
                         </button>
                     </div>
 
-                    <div
-                        className="
-                            border-b
-                            border-app
-                            my-4
-                        "
-                    />
+                    <div className="border-app my-4 border-b" />
 
                     {loading ? (
-                        <div
-                            className="
-                                py-12
-                                text-center
-                                text-sm
-                                opacity-60
-                            "
-                        >
-                            Loading meetings...
-                        </div>
+                        <div className="py-12 text-center text-sm opacity-60">Loading meetings...</div>
                     ) : meetings.length === 0 ? (
-                        <div
-                            className="
-                                py-12
-                                text-center
-                                text-sm
-                                opacity-60
-                            "
-                        >
-                            No meetings found.
-                        </div>
+                        <div className="py-12 text-center text-sm opacity-60">No meetings found.</div>
                     ) : (
-                        <div
-                            className="
-                                space-y-3
-                            "
-                        >
+                        <div className="space-y-3">
                             {meetings.map((meeting) => (
-                                <div
-                                    key={meeting._id}
-                                    className="
-                                            border
-                                            border-app
-                                            rounded-xl
-                                            p-4
-                                            bg-app
-                                        "
-                                >
-                                    <div
-                                        className="
-                                                flex
-                                                items-start
-                                                justify-between
-                                                gap-3
-                                            "
-                                    >
-                                        <div
-                                            className="
-                                                    min-w-0
-                                                "
-                                        >
-                                            <h4
-                                                className="
-                                                        text-sm
-                                                        font-semibold
-                                                        break-words
-                                                    "
-                                            >
-                                                {meeting.title}
-                                            </h4>
+                                <div key={meeting._id} className="border-app bg-app rounded-xl border p-4">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <h4 className="text-sm font-semibold break-words">{meeting.title}</h4>
 
-                                            <p
-                                                className="
-                                                        text-xs
-                                                        text-muted
-                                                        mt-1
-                                                    "
-                                            >
-                                                {meeting.metPersonName}
-                                            </p>
+                                            <p className="text-muted mt-1 text-xs">{meeting.metPersonName}</p>
                                         </div>
 
-                                        <span
-                                            className="
-                                                    text-xs
-                                                    capitalize
-                                                    shrink-0
-                                                "
-                                        >
-                                            {meeting.status}
-                                        </span>
+                                        <span className="shrink-0 text-xs capitalize">{meeting.status}</span>
                                     </div>
 
-                                    <div
-                                        className="
-                                                grid
-                                                md:grid-cols-2
-                                                gap-2
-                                                mt-3
-                                                text-xs
-                                                text-muted
-                                            "
-                                    >
-                                        <div
-                                            className="
-                                                    flex
-                                                    items-center
-                                                    gap-2
-                                                "
-                                        >
+                                    <div className="text-muted mt-3 grid gap-2 text-xs md:grid-cols-2">
+                                        <div className="flex items-center gap-2">
                                             <CalendarDays size={13} />
 
                                             {meeting.startAt ? new Date(meeting.startAt).toLocaleString() : '-'}
                                         </div>
 
-                                        <div
-                                            className="
-                                                    flex
-                                                    items-center
-                                                    gap-2
-                                                "
-                                        >
+                                        <div className="flex items-center gap-2">
                                             <User size={13} />
 
                                             {meeting.assignedTo?.name || '-'}
                                         </div>
 
                                         {meeting.location?.address && (
-                                            <div
-                                                className="
-                                                        flex
-                                                        items-center
-                                                        gap-2
-                                                    "
-                                            >
+                                            <div className="flex items-center gap-2">
                                                 <MapPin size={13} />
 
                                                 {meeting.location.address}
@@ -517,23 +372,14 @@ export default function Meetings({ leadId, users = [], usersLoading = false }) {
                                         )}
 
                                         {meeting.meetingLink && (
-                                            <div
-                                                className="
-                                                        flex
-                                                        items-center
-                                                        gap-2
-                                                    "
-                                            >
+                                            <div className="flex items-center gap-2">
                                                 <Video size={13} />
 
                                                 <a
                                                     href={meeting.meetingLink}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="
-                                                            text-blue-500
-                                                            hover:underline
-                                                        "
+                                                    className="text-blue-500 hover:underline"
                                                 >
                                                     Meeting Link
                                                 </a>
@@ -541,28 +387,11 @@ export default function Meetings({ leadId, users = [], usersLoading = false }) {
                                         )}
                                     </div>
 
-                                    <div
-                                        className="
-                                                flex
-                                                gap-2
-                                                mt-3
-                                            "
-                                    >
+                                    <div className="mt-3 flex gap-2">
                                         <button
                                             type="button"
                                             onClick={() => handleEdit(meeting)}
-                                            className="
-                                                    px-3
-                                                    py-1.5
-                                                    text-xs
-                                                    rounded-lg
-                                                    border
-                                                    border-app
-                                                    hover-app
-                                                    flex
-                                                    items-center
-                                                    gap-1.5
-                                                "
+                                            className="border-app hover-app flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs"
                                         >
                                             <Pencil size={13} />
                                             Edit
@@ -571,15 +400,7 @@ export default function Meetings({ leadId, users = [], usersLoading = false }) {
                                         <button
                                             type="button"
                                             onClick={() => handleDelete(meeting._id)}
-                                            className="
-                                                    px-3
-                                                    py-1.5
-                                                    text-xs
-                                                    rounded-lg
-                                                    border
-                                                    border-app
-                                                    hover-app
-                                                "
+                                            className="border-app hover-app rounded-lg border px-3 py-1.5 text-xs"
                                         >
                                             <Trash2 size={13} />
                                             Delete
@@ -600,18 +421,8 @@ export default function Meetings({ leadId, users = [], usersLoading = false }) {
                 <Modal.Header>{editingId ? 'Edit Meeting' : 'Add Meeting'}</Modal.Header>
 
                 <Modal.Body>
-                    <div
-                        className="
-                            space-y-2
-                        "
-                    >
-                        <div
-                            className="
-                                grid
-                                md:grid-cols-2
-                                gap-2
-                            "
-                        >
+                    <div className="space-y-2">
+                        <div className="grid gap-2 md:grid-cols-2">
                             <Input
                                 label="Meeting Person Name"
                                 required
@@ -647,25 +458,13 @@ export default function Meetings({ leadId, users = [], usersLoading = false }) {
                             placeholder="Add meeting details..."
                         />
 
-                        <div
-                            className="
-                                grid
-                                md:grid-cols-2
-                                gap-2
-                            "
-                        >
+                        <div className="grid gap-2 md:grid-cols-2">
                             <Input label="Start" required type="datetime-local" name="startAt" value={form.startAt} onChange={handleChange} />
 
                             <Input label="End" type="datetime-local" name="endAt" value={form.endAt} onChange={handleChange} />
                         </div>
 
-                        <div
-                            className="
-                                grid
-                                md:grid-cols-2
-                                gap-2
-                            "
-                        >
+                        <div className="grid gap-2 md:grid-cols-2">
                             <SelectInput
                                 label="Meeting Type"
                                 name="meetingType"
@@ -711,13 +510,7 @@ export default function Meetings({ leadId, users = [], usersLoading = false }) {
 
                         <Input label="Address" name="address" value={form.address} onChange={handleChange} placeholder="Enter address" />
 
-                        <div
-                            className="
-                                grid
-                                md:grid-cols-2
-                                gap-2
-                            "
-                        >
+                        <div className="grid gap-2 md:grid-cols-2">
                             <Input label="Latitude" name="latitude" value={form.latitude} onChange={handleChange} />
 
                             <Input label="Longitude" name="longitude" value={form.longitude} onChange={handleChange} />
@@ -755,20 +548,7 @@ export default function Meetings({ leadId, users = [], usersLoading = false }) {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <button
-                        type="button"
-                        onClick={() => setOpen(false)}
-                        className="
-                            px-4
-                            py-2
-                            text-xs
-                            rounded-lg
-                            border
-                            border-app
-                            hover-app
-                            text-app
-                        "
-                    >
+                    <button type="button" onClick={() => setOpen(false)} className="border-app hover-app text-app rounded-lg border px-4 py-2 text-xs">
                         Cancel
                     </button>
 
@@ -776,15 +556,7 @@ export default function Meetings({ leadId, users = [], usersLoading = false }) {
                         type="button"
                         onClick={handleSave}
                         disabled={saving}
-                        className="
-                            px-4
-                            py-2
-                            text-xs
-                            rounded-lg
-                            btn-primary
-                            disabled:opacity-50
-                            disabled:cursor-not-allowed
-                        "
+                        className="btn-primary rounded-lg px-4 py-2 text-xs disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {saving ? 'Saving...' : editingId ? 'Update' : 'Save'}
                     </button>

@@ -47,36 +47,36 @@ export default function Notes({ notes: initialNotes, leadId, getLead }) {
 
     return (
         <>
-            <div className="bg-card border border-app rounded-2xl p-5">
-                <div className="flex justify-between items-center">
-                    <h3 className="uppercase tracking-widest text-xs font-semibold text-muted">Notes</h3>
+            <div className="bg-card border-app rounded-2xl border p-5">
+                <div className="flex items-center justify-between">
+                    <h3 className="text-muted text-xs font-semibold tracking-widest uppercase">Notes</h3>
 
-                    <button onClick={() => setOpen(true)} className="p-2 rounded-lg border bg-app border-app hover-app text-app">
+                    <button onClick={() => setOpen(true)} className="bg-app border-app hover-app text-app rounded-lg border p-2">
                         <Plus size={16} />
                     </button>
                 </div>
 
-                <div className="border-b border-app my-4" />
+                <div className="border-app my-4 border-b" />
 
                 {notes.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 text-center">
-                        <div className="w-14 h-14 rounded-full bg-app border border-app flex items-center justify-center text-app">
+                        <div className="bg-app border-app text-app flex h-14 w-14 items-center justify-center rounded-full border">
                             <FileText size={24} className="opacity-80" />
                         </div>
 
-                        <h4 className="mt-4 text-sm font-medium text-app">No Notes Found</h4>
+                        <h4 className="text-app mt-4 text-sm font-medium">No Notes Found</h4>
 
-                        <p className="mt-1 text-xs opacity-70 text-muted">Click the + button to add your first note.</p>
+                        <p className="text-muted mt-1 text-xs opacity-70">Click the + button to add your first note.</p>
                     </div>
                 ) : (
                     <div className="space-y-3">
                         {notes.map((note) => (
-                            <div key={note._id} className="rounded-xl border border-app bg-app p-4">
-                                <div className="flex justify-between items-start">
-                                    <h4 className="font-medium text-app">{note.message}</h4>
+                            <div key={note._id} className="border-app bg-app rounded-xl border p-4">
+                                <div className="flex items-start justify-between">
+                                    <h4 className="text-app font-medium">{note.message}</h4>
                                 </div>
 
-                                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
+                                <div className="text-muted mt-2 flex flex-wrap items-center gap-2 text-xs">
                                     <span>
                                         By <strong>{note.createdBy?.name}</strong>
                                     </span>
@@ -105,11 +105,11 @@ export default function Notes({ notes: initialNotes, leadId, getLead }) {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <button onClick={() => setOpen(false)} className="px-4 py-2 text-xs rounded-lg border border-app hover-app text-app">
+                    <button onClick={() => setOpen(false)} className="border-app hover-app text-app rounded-lg border px-4 py-2 text-xs">
                         Cancel
                     </button>
 
-                    <button onClick={handleSave} className="px-4 py-2 text-xs rounded-lg btn-primary">
+                    <button onClick={handleSave} className="btn-primary rounded-lg px-4 py-2 text-xs">
                         Save
                     </button>
                 </Modal.Footer>

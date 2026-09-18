@@ -11,12 +11,12 @@ export const metadata = {
 export default function PrivacyPolicyPage() {
     return (
         <>
-            <nav className="flex items-center justify-between md:px-8 px-2 py-2 bg-white shadow-md sticky top-0 z-50">
+            <nav className="sticky top-0 z-50 flex items-center justify-between bg-white px-2 py-2 shadow-md md:px-8">
                 <div className="flex items-center gap-3">
                     <Image src="/logoo.webp" alt="Logo" width={120} height={40} className="object-contain" />
                 </div>
 
-                <button className="rounded-xl bg-orange-500 px-6 py-3 flex items-center gap-1 font-semibold text-white transition hover:bg-orange-600">
+                <button className="flex items-center gap-1 rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600">
                     Book a Demo <ArrowRight size={18} />
                 </button>
             </nav>

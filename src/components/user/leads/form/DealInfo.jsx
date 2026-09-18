@@ -20,52 +20,20 @@ export default function DealInfo({ form, handleChange, users = [], usersLoading 
     // ============================================================
 
     return (
-        <div
-            className="
-                bg-card
-                border
-                border-app
-                rounded-2xl
-                p-5
-                text-app
-            "
-        >
+        <div className="bg-card border-app text-app rounded-2xl border p-5">
             {/* =====================================================
                 HEADER
             ===================================================== */}
 
-            <div
-                className="
-                    flex
-                    items-center
-                    justify-between
-                    mb-4
-                "
-            >
-                <h3
-                    className="
-                        uppercase
-                        tracking-widest
-                        text-xs
-                        font-semibold
-                        text-muted
-                    "
-                >
-                    Deal Information
-                </h3>
+            <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-muted text-xs font-semibold tracking-widest uppercase">Deal Information</h3>
             </div>
 
             {/* =====================================================
                 FORM
             ===================================================== */}
 
-            <div
-                className="
-                    grid
-                    md:grid-cols-2
-                    gap-3
-                "
-            >
+            <div className="grid gap-3 md:grid-cols-2">
                 {/* ASSIGNED TO */}
 
                 <SelectInput

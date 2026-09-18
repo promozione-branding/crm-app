@@ -5,19 +5,19 @@ import React from 'react';
 
 export default function Call() {
     return (
-        <div className="bg-card border border-app rounded-2xl p-5">
-            <h3 className="uppercase tracking-widest text-xs font-semibold text-muted">Call Log</h3>
+        <div className="bg-card border-app rounded-2xl border p-5">
+            <h3 className="text-muted text-xs font-semibold tracking-widest uppercase">Call Log</h3>
 
-            <div className="border-b border-app my-4" />
+            <div className="border-app my-4 border-b" />
 
             <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="w-14 h-14 rounded-full bg-app border border-app flex items-center justify-center text-app">
+                <div className="bg-app border-app text-app flex h-14 w-14 items-center justify-center rounded-full border">
                     <Phone size={24} className="opacity-80" />
                 </div>
 
-                <h4 className="mt-4 text-sm font-medium text-app">No Call Log Found</h4>
+                <h4 className="text-app mt-4 text-sm font-medium">No Call Log Found</h4>
 
-                <p className="mt-1 text-xs text-muted">Call history will appear here.</p>
+                <p className="text-muted mt-1 text-xs">Call history will appear here.</p>
             </div>
         </div>
     );

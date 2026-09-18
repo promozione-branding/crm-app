@@ -137,53 +137,53 @@ export default function User() {
     // LOADING
     if (loading) {
         return (
-            <div className="bg-surface min-h-screen text-app flex items-center justify-center">
+            <div className="bg-surface text-app flex min-h-screen items-center justify-center">
                 <p className="text-sm opacity-60">Loading user...</p>
             </div>
         );
     }
 
     return (
-        <div className="bg-surface min-h-screen text-app">
+        <div className="bg-surface text-app min-h-screen">
             {/* ================= HEADER ================= */}
-            <div className="h-16 top-16 sticky z-40 bg-surface border-b border-app flex items-center justify-between md:px-8 px-1">
-                <div className="flex items-center md:gap-2 gap-1">
-                    <Link href="/team-management" className="p-2 rounded-xl border bg-app border-app hover-app text-app">
+            <div className="bg-surface border-app sticky top-16 z-40 flex h-16 items-center justify-between border-b px-1 md:px-8">
+                <div className="flex items-center gap-1 md:gap-2">
+                    <Link href="/team-management" className="bg-app border-app hover-app text-app rounded-xl border p-2">
                         <ArrowLeft size={20} />
                     </Link>
 
-                    <h1 className="text-sm font-bold text-app">Edit User</h1>
+                    <h1 className="text-app text-sm font-bold">Edit User</h1>
                 </div>
 
-                <div className="flex items-center md:gap-2 gap-1 text-sm">
+                <div className="flex items-center gap-1 text-sm md:gap-2">
                     <button
                         onClick={handleUpdateUser}
                         disabled={saving}
-                        className="px-4 py-2 rounded-lg btn-primary border border-app hover-app text-app flex items-center gap-2 disabled:opacity-50"
+                        className="btn-primary border-app hover-app text-app flex items-center gap-2 rounded-lg border px-4 py-2 disabled:opacity-50"
                     >
                         <Edit size={16} />
                         {saving ? 'Saving...' : 'Save Changes'}
                     </button>
 
-                    <button onClick={handleDeleteUser} className="p-2 rounded-lg border bg-red-600 hover:bg-red-700 border-app text-white">
+                    <button onClick={handleDeleteUser} className="border-app rounded-lg border bg-red-600 p-2 text-white hover:bg-red-700">
                         <Trash2 size={18} />
                     </button>
                 </div>
             </div>
 
             {/* ================= FORM ================= */}
-            <div className="max-w-5xl mx-auto py-6 px-3">
-                <div className="bg-app border border-app rounded-xl p-5">
-                    <h2 className="text-base font-semibold mb-5">User Information</h2>
+            <div className="mx-auto max-w-5xl px-3 py-6">
+                <div className="bg-app border-app rounded-xl border p-5">
+                    <h2 className="mb-5 text-base font-semibold">User Information</h2>
 
                     <div className="space-y-4">
-                        <div className="grid md:grid-cols-2 gap-3">
+                        <div className="grid gap-3 md:grid-cols-2">
                             <Input label="Name" required name="name" value={form.name} onChange={handleChange} placeholder="Enter name" />
 
                             <Input label="Email" required type="email" name="email" value={form.email} onChange={handleChange} placeholder="Enter email" />
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-3">
+                        <div className="grid gap-3 md:grid-cols-2">
                             <Input label="Phone" required name="phone" value={form.phone} onChange={handleChange} placeholder="Enter phone" />
 
                             <Input
@@ -196,7 +196,7 @@ export default function User() {
                             />
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-3">
+                        <div className="grid gap-3 md:grid-cols-2">
                             <SelectInput
                                 label="Role"
                                 name="roleId"
@@ -231,9 +231,9 @@ export default function User() {
                         </div>
 
                         <div className="">
-                            <label className="block text-sm font-medium mb-3">Lead Sources</label>
+                            <label className="mb-3 block text-sm font-medium">Lead Sources</label>
 
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
                                 {[
                                     { value: 'facebook', label: 'Facebook' },
                                     { value: 'google', label: 'Google' },
@@ -249,7 +249,7 @@ export default function User() {
                                     return (
                                         <label
                                             key={source.value}
-                                            className="flex items-center gap-2 p-3 rounded-lg border border-app bg-surface cursor-pointer hover-app"
+                                            className="border-app bg-surface hover-app flex cursor-pointer items-center gap-2 rounded-lg border p-3"
                                         >
                                             <input
                                                 type="checkbox"
@@ -271,7 +271,7 @@ export default function User() {
                                                         };
                                                     });
                                                 }}
-                                                className="w-4 h-4"
+                                                className="h-4 w-4"
                                             />
 
                                             <span className="text-sm">{source.label}</span>

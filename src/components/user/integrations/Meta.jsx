@@ -136,9 +136,9 @@ export default function Meta() {
         return (
             <div className="space-y-5">
                 <div>
-                    <h2 className="text-base font-semibold text-app">Meta</h2>
+                    <h2 className="text-app text-base font-semibold">Meta</h2>
 
-                    <p className="text-xs text-muted mt-1">Checking Meta connection...</p>
+                    <p className="text-muted mt-1 text-xs">Checking Meta connection...</p>
                 </div>
             </div>
         );
@@ -149,30 +149,30 @@ export default function Meta() {
             {/* Header */}
 
             <div>
-                <h2 className="text-base font-semibold text-app">Meta</h2>
+                <h2 className="text-app text-base font-semibold">Meta</h2>
 
-                <p className="text-xs text-muted mt-1">Connect your Meta accounts to manage Facebook leads and conversations.</p>
+                <p className="text-muted mt-1 text-xs">Connect your Meta accounts to manage Facebook leads and conversations.</p>
             </div>
 
             {/* Meta Card */}
 
             <div className="max-w-xl">
-                <div className="group bg-app border border-app rounded-2xl p-5 transition-all duration-200 hover:border-blue-500/40 hover:shadow-lg">
+                <div className="group bg-app border-app rounded-2xl border p-5 transition-all duration-200 hover:border-blue-500/40 hover:shadow-lg">
                     {/* Header */}
 
                     <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-12 h-12 rounded-xl border border-app bg-surface flex items-center justify-center shrink-0 overflow-hidden">
-                                <img src="/logos/facebook.png" alt="Facebook logo" className="w-8 h-8 object-contain" />
+                        <div className="flex min-w-0 items-center gap-3">
+                            <div className="border-app bg-surface flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border">
+                                <img src="/logos/facebook.png" alt="Facebook logo" className="h-8 w-8 object-contain" />
                             </div>
 
                             <div className="min-w-0">
-                                <h3 className="font-semibold text-app text-sm">Facebook</h3>
+                                <h3 className="text-app text-sm font-semibold">Facebook</h3>
 
-                                <div className="flex items-center gap-1.5 mt-1">
-                                    <span className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-emerald-500' : 'bg-blue-500'}`} />
+                                <div className="mt-1 flex items-center gap-1.5">
+                                    <span className={`h-1.5 w-1.5 rounded-full ${connected ? 'bg-emerald-500' : 'bg-blue-500'}`} />
 
-                                    <span className="text-[11px] text-muted">{connected ? 'Connected' : 'Available'}</span>
+                                    <span className="text-muted text-[11px]">{connected ? 'Connected' : 'Available'}</span>
                                 </div>
                             </div>
                         </div>
@@ -180,14 +180,14 @@ export default function Meta() {
 
                     {/* Description */}
 
-                    <p className="text-xs text-muted leading-5 mt-4">Connect Facebook to receive leads from your business pages.</p>
+                    <p className="text-muted mt-4 text-xs leading-5">Connect Facebook to receive leads from your business pages.</p>
 
                     {/* Not Connected */}
 
                     {!connected && (
                         <button
                             onClick={handleConnect}
-                            className="w-full cursor-pointer mt-5 h-9 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium transition-colors"
+                            className="mt-5 h-9 w-full cursor-pointer rounded-lg bg-blue-600 text-xs font-medium text-white transition-colors hover:bg-blue-700"
                         >
                             Connect Facebook
                         </button>
@@ -202,42 +202,42 @@ export default function Meta() {
                             {/* -------------------------------- */}
 
                             {integration?.metadata?.pageId ? (
-                                <div className="border border-app rounded-lg p-3">
+                                <div className="border-app rounded-lg border p-3">
                                     <div className="flex items-center justify-between">
                                         <div>
-                                            <p className="text-xs text-muted">Connected Page</p>
+                                            <p className="text-muted text-xs">Connected Page</p>
 
-                                            <p className="text-sm font-medium text-app mt-1">{integration?.metadata?.pageName || 'Facebook Page'}</p>
+                                            <p className="text-app mt-1 text-sm font-medium">{integration?.metadata?.pageName || 'Facebook Page'}</p>
 
-                                            <p className="text-[10px] text-muted mt-1">Page ID: {integration?.metadata?.pageId}</p>
+                                            <p className="text-muted mt-1 text-[10px]">Page ID: {integration?.metadata?.pageId}</p>
                                         </div>
 
-                                        <span className="text-[10px] px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-500">Active</span>
+                                        <span className="rounded-full bg-emerald-500/10 px-2 py-1 text-[10px] text-emerald-500">Active</span>
                                     </div>
                                 </div>
                             ) : (
                                 <div className="space-y-3">
                                     {/* Loading */}
 
-                                    {loadingAssets && <div className="text-xs text-muted">Loading Facebook Pages and Ad Accounts...</div>}
+                                    {loadingAssets && <div className="text-muted text-xs">Loading Facebook Pages and Ad Accounts...</div>}
 
                                     {/* Page Selection */}
 
                                     {!loadingAssets && pages.length > 0 && (
                                         <div className="space-y-2">
-                                            <p className="text-xs font-medium text-app">Select Facebook Page</p>
+                                            <p className="text-app text-xs font-medium">Select Facebook Page</p>
 
                                             {pages.map((page) => (
                                                 <button
                                                     key={page.id}
                                                     disabled={selectingAssets}
                                                     onClick={() => handleSelectAssets(page.id, adAccounts?.[0]?.id || null)}
-                                                    className="w-full flex items-center justify-between border border-app rounded-lg p-3 hover:border-blue-500/50 transition-colors text-left disabled:opacity-50"
+                                                    className="border-app flex w-full items-center justify-between rounded-lg border p-3 text-left transition-colors hover:border-blue-500/50 disabled:opacity-50"
                                                 >
                                                     <div>
-                                                        <p className="text-sm font-medium text-app">{page.name}</p>
+                                                        <p className="text-app text-sm font-medium">{page.name}</p>
 
-                                                        <p className="text-[10px] text-muted mt-1">{page.id}</p>
+                                                        <p className="text-muted mt-1 text-[10px]">{page.id}</p>
                                                     </div>
 
                                                     <span className="text-xs text-blue-500">Select</span>
@@ -249,7 +249,7 @@ export default function Meta() {
                                     {/* No Pages */}
 
                                     {!loadingAssets && pages.length === 0 && (
-                                        <div className="border border-red-500/20 bg-red-500/5 rounded-lg p-3">
+                                        <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-3">
                                             <p className="text-xs text-red-500">No Facebook Pages found.</p>
                                         </div>
                                     )}
@@ -261,10 +261,10 @@ export default function Meta() {
                             {/* -------------------------------- */}
 
                             {integration?.metadata?.adAccountId && (
-                                <div className="border border-app rounded-lg p-3">
-                                    <p className="text-xs text-muted">Connected Ad Account</p>
+                                <div className="border-app rounded-lg border p-3">
+                                    <p className="text-muted text-xs">Connected Ad Account</p>
 
-                                    <p className="text-sm font-medium text-app mt-1">
+                                    <p className="text-app mt-1 text-sm font-medium">
                                         {integration?.metadata?.adAccountName || integration?.metadata?.adAccountId}
                                     </p>
                                 </div>
@@ -275,15 +275,15 @@ export default function Meta() {
                             {/* -------------------------------- */}
 
                             {integration?.metadata?.leadgenSubscribed && (
-                                <div className="border border-emerald-500/20 bg-emerald-500/5 rounded-lg p-3">
+                                <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3">
                                     <div className="flex items-center justify-between">
                                         <div>
-                                            <p className="text-xs text-muted">Facebook Lead Webhook</p>
+                                            <p className="text-muted text-xs">Facebook Lead Webhook</p>
 
-                                            <p className="text-sm font-medium text-emerald-500 mt-1">Lead capture enabled</p>
+                                            <p className="mt-1 text-sm font-medium text-emerald-500">Lead capture enabled</p>
                                         </div>
 
-                                        <span className="text-[10px] px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-500">Active</span>
+                                        <span className="rounded-full bg-emerald-500/10 px-2 py-1 text-[10px] text-emerald-500">Active</span>
                                     </div>
                                 </div>
                             )}
@@ -294,7 +294,7 @@ export default function Meta() {
 
                             <button
                                 onClick={handleConnect}
-                                className="w-full cursor-pointer h-9 rounded-lg bg-gray-600 hover:bg-gray-700 text-white text-xs font-medium transition-colors"
+                                className="h-9 w-full cursor-pointer rounded-lg bg-gray-600 text-xs font-medium text-white transition-colors hover:bg-gray-700"
                             >
                                 Reconnect
                             </button>

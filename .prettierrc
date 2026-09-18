@@ -3,5 +3,7 @@
     "singleAttributePerLine": false,
     "tabWidth": 4,
     "singleQuote": true,
-    "trailingComma": "es5"
+    "trailingComma": "es5",
+    "plugins": ["prettier-plugin-tailwindcss"],
+    "tailwindFunctions": ["clsx", "cn", "cva"]
 }
