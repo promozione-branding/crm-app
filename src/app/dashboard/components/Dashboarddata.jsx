@@ -113,15 +113,19 @@ export default function Dashboarddata() {
                         key={item.key}
                         className="
                             flex
+                            flex-col
                             items-center
                             justify-center
-                            sm:justify-start
-                            gap-1.5
-                            sm:gap-2.5
+                            gap-1
                             min-w-0
 
+                            sm:flex-row
+                            sm:items-center
+                            sm:justify-start
+                            sm:gap-2.5
+
                             px-1.5
-                            py-1.5
+                            py-2
 
                             sm:px-3
                             sm:py-2
@@ -151,24 +155,43 @@ export default function Dashboarddata() {
                                 flex
                                 items-center
                                 justify-center
-                                w-7
-                                h-7
-                                sm:w-8
-                                sm:h-8
+                                w-6
+                                h-6
+                                sm:w-7
+                                sm:h-7
                                 rounded-lg
                                 ${item.iconBg}
                             `}
                         >
-                            <Icon size={14} className={item.iconClass} />
+                            <Icon size={16} className={item.iconClass} />
                         </div>
 
-                        {/* LABEL + VALUE */}
-                        <div className="flex items-baseline gap-1.5 min-w-0">
+                        {/* LABEL + VALUE
+                            Mobile  → stacked (label on top, value below), centered
+                            Desktop → inline side by side
+                        */}
+                        <div
+                            className="
+                                flex
+                                flex-col
+                                items-center
+                                min-w-0
+                                w-full
+
+                                sm:flex-row
+                                sm:items-baseline
+                                sm:gap-1.5
+                                sm:w-auto
+                            "
+                        >
                             <span
                                 className="
-                                    text-[11px]
+                                    text-[10px]
                                     sm:text-sm
                                     opacity-60
+                                    leading-none
+                                    truncate
+                                    max-w-full
                                 "
                             >
                                 {item.label}
@@ -179,6 +202,9 @@ export default function Dashboarddata() {
                                     text-sm
                                     sm:text-lg
                                     font-bold
+                                    leading-tight
+                                    truncate
+                                    max-w-full
                                 "
                             >
                                 {loading ? '...' : stats[item.key]}
