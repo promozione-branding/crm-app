@@ -102,8 +102,8 @@ export default function Dashboarddata() {
                         className="sm:border-app sm:bg-app flex min-w-0 flex-col items-center justify-center gap-1 rounded-lg border border-transparent bg-transparent px-1.5 py-2 shadow-none transition-all sm:flex-row sm:items-center sm:justify-start sm:gap-2.5 sm:rounded-xl sm:px-3 sm:py-2 sm:shadow-sm sm:hover:-translate-y-0.5 sm:hover:shadow-md"
                     >
                         {/* ICON */}
-                        <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg sm:h-7 sm:w-7 ${item.iconBg} `}>
-                            <Icon size={16} className={item.iconClass} />
+                        <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg sm:h-8 sm:w-8 ${item.iconBg}`}>
+                            <Icon size={20} className={item.iconClass} />
                         </div>
 
                         {/* LABEL + VALUE
