@@ -164,8 +164,28 @@ export default function Edit() {
     ===================================================== */
 
     useEffect(() => {
-        getTask();
-    }, [getTask]);
+    const timer = setTimeout(() => {
+        getTasks({
+            requestedPage: page,
+            requestedRowsPerPage: rowsPerPage,
+            requestedSearch: search,
+            requestedRelatedTo: relatedTo,
+            requestedAssignedTo: assignedTo,
+            requestedPriority: priority,
+        });
+    }, 500);
+
+    return () => {
+        clearTimeout(timer);
+    };
+}, [
+    page,
+    rowsPerPage,
+    search,
+    relatedTo,
+    assignedTo,
+    priority,
+]);
 
     /* =====================================================
        HANDLE INPUT
