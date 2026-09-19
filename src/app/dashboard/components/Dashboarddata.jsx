@@ -101,15 +101,13 @@ export default function Dashboarddata() {
                         key={item.key}
                         className="sm:border-app sm:bg-app flex min-w-0 flex-col items-center justify-center gap-1 rounded-lg border border-transparent bg-transparent px-1.5 py-2 shadow-none transition-all sm:flex-row sm:items-center sm:justify-start sm:gap-2.5 sm:rounded-xl sm:px-3 sm:py-2 sm:shadow-sm sm:hover:-translate-y-0.5 sm:hover:shadow-md"
                     >
-                        {/* ICON */}
-                        <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg sm:h-8 sm:w-8 ${item.iconBg}`}>
-                            <Icon size={20} className={item.iconClass} />
+                        {/* ICON — larger on mobile using fixed px */}
+                        <div className={`flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl sm:h-[40px] sm:w-[40px] sm:rounded-lg ${item.iconBg}`}>
+                            <Icon size={26} className={`${item.iconClass} sm:hidden`} />
+                            <Icon size={22} className={`${item.iconClass} hidden sm:block`} />
                         </div>
 
-                        {/* LABEL + VALUE
-                            Mobile  → stacked (label on top, value below), centered
-                            Desktop → inline side by side
-                        */}
+                        {/* LABEL + VALUE */}
                         <div className="flex w-full min-w-0 flex-col items-center sm:w-auto sm:flex-row sm:items-baseline sm:gap-1.5">
                             <span className="max-w-full truncate text-[10px] leading-none opacity-60 sm:text-sm">{item.label}</span>
 
