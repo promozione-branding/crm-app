@@ -25,7 +25,7 @@ export const dateOptions = [
 ];
 
 export default function LeadsFilter({
-    selectedStage = [],          // 👈 now an ARRAY
+    selectedStage = [],
     setSelectedStage,
     selectedDate,
     setSelectedDate,
@@ -38,10 +38,6 @@ export default function LeadsFilter({
     setFilterOpen,
     filterRef,
 }) {
-    // =====================================================
-    // LOCAL (DRAFT) STATE — committed only on Apply
-    // =====================================================
-
     const [draftStage, setDraftStage] = useState(
         Array.isArray(selectedStage) ? selectedStage : []
     );
@@ -51,22 +47,15 @@ export default function LeadsFilter({
 
     const [showCustomDate, setShowCustomDate] = useState(false);
 
-    // Sync draft when dropdown opens with current applied values
     useEffect(() => {
         if (filterOpen) {
-            setDraftStage(
-                Array.isArray(selectedStage) ? selectedStage : []
-            );
+            setDraftStage(Array.isArray(selectedStage) ? selectedStage : []);
             setDraftDate(selectedDate || '');
             setDraftStartDate(customStartDate || '');
             setDraftEndDate(customEndDate || '');
             setShowCustomDate(selectedDate === 'custom');
         }
     }, [filterOpen, selectedStage, selectedDate, customStartDate, customEndDate]);
-
-    // =====================================================
-    // LABEL FOR THE FILTER BUTTON
-    // =====================================================
 
     const stageLabels = (Array.isArray(selectedStage) ? selectedStage : [])
         .map((val) => stageOptions.find((o) => o.value === val)?.label)
@@ -85,10 +74,6 @@ export default function LeadsFilter({
             ? selectedDateLabel
             : 'Filter';
 
-    // =====================================================
-    // STAGE (DRAFT) HANDLERS — MULTI SELECT
-    // =====================================================
-
     const toggleStage = (value) => {
         setDraftStage((prev) =>
             prev.includes(value)
@@ -100,10 +85,6 @@ export default function LeadsFilter({
     const clearStageFilter = () => {
         setDraftStage([]);
     };
-
-    // =====================================================
-    // DATE (DRAFT) HANDLERS
-    // =====================================================
 
     const handleDateFilter = (date) => {
         if (date === 'custom') {
@@ -124,10 +105,6 @@ export default function LeadsFilter({
         setDraftStartDate('');
         setDraftEndDate('');
     };
-
-    // =====================================================
-    // APPLY / RESET
-    // =====================================================
 
     const handleApply = () => {
         if (draftDate === 'custom' && (!draftStartDate || !draftEndDate)) {
@@ -154,10 +131,6 @@ export default function LeadsFilter({
     const applyDisabled =
         draftDate === 'custom' && (!draftStartDate || !draftEndDate);
 
-    // =====================================================
-    // RENDER
-    // =====================================================
-
     return (
         <div className="relative" ref={filterRef}>
             {/* Filter Button */}
@@ -173,6 +146,35 @@ export default function LeadsFilter({
             {/* Dropdown */}
             {filterOpen && (
                 <div className="border-app bg-app absolute top-full right-0 z-50 mt-1 max-h-[80vh] w-72 max-w-[calc(100vw-1.5rem)] overflow-y-auto rounded-lg border p-3 shadow-lg">
+
+                    {/* =================================================
+                        APPLY / RESET — NOW AT THE TOP
+                    ================================================= */}
+                    <div className="mb-3 flex gap-2">
+                        <button
+                            type="button"
+                            onClick={handleReset}
+                            className="border-app hover-app flex-1 rounded-md border py-2 text-xs transition"
+                        >
+                            Reset
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={handleApply}
+                            disabled={applyDisabled}
+                            className={`flex-1 rounded-md py-2 text-xs font-medium text-white transition ${
+                                applyDisabled
+                                    ? 'cursor-not-allowed bg-blue-600 opacity-50'
+                                    : 'bg-blue-600 hover:opacity-90'
+                            }`}
+                        >
+                            Apply Filter
+                        </button>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="border-app mb-3 border-t" />
 
                     {/* =================================================
                         FILTER BY STAGE — MULTI SELECT
@@ -197,17 +199,13 @@ export default function LeadsFilter({
 
                         <div className="flex flex-wrap gap-1.5">
                             {stageOptions.map((option) => {
-                                const active = draftStage.includes(
-                                    option.value
-                                );
+                                const active = draftStage.includes(option.value);
 
                                 return (
                                     <button
                                         key={option.value}
                                         type="button"
-                                        onClick={() =>
-                                            toggleStage(option.value)
-                                        }
+                                        onClick={() => toggleStage(option.value)}
                                         className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition ${
                                             active
                                                 ? 'border-blue-500/40 bg-blue-500/15 text-blue-500'
@@ -250,9 +248,7 @@ export default function LeadsFilter({
                                 <button
                                     key={option.value}
                                     type="button"
-                                    onClick={() =>
-                                        handleDateFilter(option.value)
-                                    }
+                                    onClick={() => handleDateFilter(option.value)}
                                     className={`hover-app flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition ${
                                         draftDate === option.value
                                             ? 'bg-surface font-medium'
@@ -260,18 +256,12 @@ export default function LeadsFilter({
                                     }`}
                                 >
                                     <span className="flex items-center gap-2">
-                                        <Calendar
-                                            size={13}
-                                            className="opacity-50"
-                                        />
+                                        <Calendar size={13} className="opacity-50" />
                                         {option.label}
                                     </span>
 
                                     {option.value === 'custom' && (
-                                        <ChevronRight
-                                            size={14}
-                                            className="opacity-50"
-                                        />
+                                        <ChevronRight size={14} className="opacity-50" />
                                     )}
                                 </button>
                             ))}
@@ -289,11 +279,7 @@ export default function LeadsFilter({
                                     <input
                                         type="date"
                                         value={draftStartDate || ''}
-                                        onChange={(e) =>
-                                            setDraftStartDate(
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={(e) => setDraftStartDate(e.target.value)}
                                         className="border-app bg-app text-app w-full rounded-md border px-2 py-1.5 text-sm"
                                     />
                                 </div>
@@ -305,45 +291,12 @@ export default function LeadsFilter({
                                     <input
                                         type="date"
                                         value={draftEndDate || ''}
-                                        onChange={(e) =>
-                                            setDraftEndDate(
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={(e) => setDraftEndDate(e.target.value)}
                                         className="border-app bg-app text-app w-full rounded-md border px-2 py-1.5 text-sm"
                                     />
                                 </div>
                             </div>
                         )}
-                    </div>
-
-                    {/* Divider */}
-                    <div className="border-app my-3 border-t" />
-
-                    {/* =================================================
-                        APPLY / RESET
-                    ================================================= */}
-                    <div className="flex gap-2">
-                        <button
-                            type="button"
-                            onClick={handleReset}
-                            className="border-app hover-app flex-1 rounded-md border py-2 text-xs transition"
-                        >
-                            Reset
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={handleApply}
-                            disabled={applyDisabled}
-                            className={`flex-1 rounded-md py-2 text-xs font-medium text-white transition ${
-                                applyDisabled
-                                    ? 'cursor-not-allowed bg-blue-600 opacity-50'
-                                    : 'bg-blue-600 hover:opacity-90'
-                            }`}
-                        >
-                            Apply Filter
-                        </button>
                     </div>
                 </div>
             )}
