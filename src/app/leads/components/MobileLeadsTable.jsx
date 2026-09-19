@@ -82,7 +82,7 @@ export default function MobileLeadsTable({
     // =====================================================
 
     return (
-        <div className="space-y-3">
+        <div className="space-y-4">
             {leads.map((lead, index) => {
                 const isExpanded = expandedId === lead._id;
 
