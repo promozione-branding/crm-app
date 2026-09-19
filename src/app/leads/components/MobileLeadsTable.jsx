@@ -104,7 +104,7 @@ export default function MobileLeadsTable({
                                 <div className="flex w-7 shrink-0 items-center">
                                     <span className="text-xs font-medium opacity-50">#{getSerialNumber(index)}</span>
                                 </div>
-
+                                
                                 {/* =================================================
                                     NAME + PRODUCT
                                 ================================================= */}
