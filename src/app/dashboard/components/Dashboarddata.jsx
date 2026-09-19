@@ -102,7 +102,9 @@ export default function Dashboarddata() {
                         className="sm:border-app sm:bg-app flex min-w-0 flex-col items-center justify-center gap-1 rounded-lg border border-transparent bg-transparent px-1.5 py-2 shadow-none transition-all sm:flex-row sm:items-center sm:justify-start sm:gap-2.5 sm:rounded-xl sm:px-3 sm:py-2 sm:shadow-sm sm:hover:-translate-y-0.5 sm:hover:shadow-md"
                     >
                         {/* ICON — larger on mobile using fixed px */}
-                        <div className={`flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl sm:h-[40px] sm:w-[40px] sm:rounded-lg ${item.iconBg}`}>
+                        <div
+                            className={`flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl sm:h-[40px] sm:w-[40px] sm:rounded-lg ${item.iconBg}`}
+                        >
                             <Icon size={26} className={`${item.iconClass} sm:hidden`} />
                             <Icon size={22} className={`${item.iconClass} hidden sm:block`} />
                         </div>

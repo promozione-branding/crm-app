@@ -1,4 +1,3 @@
-
 // src/app/leads/components/MobileLeadsTable.jsx
 
 'use client';
@@ -60,10 +59,7 @@ export default function MobileLeadsTable({
         return (
             <div className="space-y-3">
                 {[1, 2, 3, 4].map((item) => (
-                    <div
-                        key={item}
-                        className="border-app bg-app h-28 w-full animate-pulse rounded-xl border"
-                    />
+                    <div key={item} className="border-app bg-app h-28 w-full animate-pulse rounded-xl border" />
                 ))}
             </div>
         );
@@ -76,9 +72,7 @@ export default function MobileLeadsTable({
     if (!leads?.length) {
         return (
             <div className="border-app bg-app rounded-xl border p-6 text-center">
-                <p className="text-sm font-medium opacity-60">
-                    No leads found
-                </p>
+                <p className="text-sm font-medium opacity-60">No leads found</p>
             </div>
         );
     }
@@ -93,44 +87,31 @@ export default function MobileLeadsTable({
                 const isExpanded = expandedId === lead._id;
 
                 return (
-                    <div
-                        key={lead._id}
-                        className="border-app bg-app overflow-hidden rounded-xl border shadow-sm"
-                    >
+                    <div key={lead._id} className="border-app bg-app overflow-hidden rounded-xl border shadow-sm">
                         {/* =================================================
                             MAIN CARD
                         ================================================= */}
 
                         <button
                             type="button"
-                            onClick={() =>
-                                setExpandedId((prev) =>
-                                    prev === lead._id ? null : lead._id
-                                )
-                            }
+                            onClick={() => setExpandedId((prev) => (prev === lead._id ? null : lead._id))}
                             className="hover-app w-full px-4 py-3.5 text-left transition"
                         >
                             <div className="flex min-w-0 items-stretch gap-3">
-
                                 {/* =================================================
                                     S.NO
                                 ================================================= */}
                                 <div className="flex w-7 shrink-0 items-center">
-                                    <span className="text-xs font-medium opacity-50">
-                                        #{getSerialNumber(index)}
-                                    </span>
+                                    <span className="text-xs font-medium opacity-50">#{getSerialNumber(index)}</span>
                                 </div>
 
                                 {/* =================================================
                                     NAME + PRODUCT
                                 ================================================= */}
                                 <div className="min-w-0 flex-1">
-
                                     {/* ROW 1 — NAME */}
                                     <div className="flex h-6 min-w-0 items-center">
-                                        <h3 className="min-w-0 truncate text-sm font-semibold">
-                                            {lead.name || 'Unnamed Lead'}
-                                        </h3>
+                                        <h3 className="min-w-0 truncate text-sm font-semibold">{lead.name || 'Unnamed Lead'}</h3>
                                     </div>
 
                                     {/* ROW 2 — PRODUCT */}
@@ -140,60 +121,48 @@ export default function MobileLeadsTable({
                                                 className="inline-flex max-w-full min-w-0 items-center gap-1 truncate rounded-full border border-purple-500/20 bg-purple-500/10 px-2 py-0.5 text-[11px] font-medium text-purple-400"
                                                 title={lead.product}
                                             >
-                                                <Package
-                                                    size={11}
-                                                    className="shrink-0"
-                                                />
+                                                <Package size={11} className="shrink-0" />
 
-                                                <span className="truncate">
-                                                    {lead.product}
-                                                </span>
+                                                <span className="truncate">{lead.product}</span>
                                             </span>
                                         ) : (
-                                            <span className="text-[11px] opacity-40">
-                                                No product
-                                            </span>
+                                            <span className="text-[11px] opacity-40">No product</span>
                                         )}
                                     </div>
                                 </div>
 
-                              {/* =================================================
+                                {/* =================================================
     RIGHT SIDE — STATUS + CALL
     
     Lead stage first, phone icon after it.
 ================================================= */}
-<div className="flex shrink-0 items-center gap-2">
+                                <div className="flex shrink-0 items-center gap-2">
+                                    {/* STATUS */}
+                                    <div className="flex items-center justify-start">
+                                        <span className="inline-flex max-w-full truncate rounded-lg bg-blue-500/10 px-2.5 py-1 text-[11px] font-medium text-blue-500 capitalize">
+                                            {(lead.stage || '—').replace(/_/g, ' ')}
+                                        </span>
+                                    </div>
 
-    {/* STATUS */}
-    <div className="flex items-center justify-start">
-        <span className="inline-flex max-w-full truncate rounded-lg bg-blue-500/10 px-2.5 py-1 text-[11px] font-medium capitalize text-blue-500">
-            {(lead.stage || '—').replace(/_/g, ' ')}
-        </span>
-    </div>
-
-    {/* CALL ICON */}
-    {lead.phone ? (
-        <a
-            href={`tel:${lead.phone}`}
-            onClick={(e) => e.stopPropagation()}
-            title={`Call ${lead.phone}`}
-            aria-label={`Call ${lead.phone}`}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-amber-700/40 bg-amber-900/70 text-amber-50 opacity-70 transition hover:opacity-100"
-        >
-            <Phone size={15} />
-        </a>
-    ) : null}
-</div>
+                                    {/* CALL ICON */}
+                                    {lead.phone ? (
+                                        <a
+                                            href={`tel:${lead.phone}`}
+                                            onClick={(e) => e.stopPropagation()}
+                                            title={`Call ${lead.phone}`}
+                                            aria-label={`Call ${lead.phone}`}
+                                            className="flex h-8 w-8 items-center justify-center rounded-full border border-amber-700/40 bg-amber-900/70 text-amber-50 opacity-70 transition hover:opacity-100"
+                                        >
+                                            <Phone size={15} />
+                                        </a>
+                                    ) : null}
+                                </div>
 
                                 {/* =================================================
                                     EXPAND ICON
                                 ================================================= */}
                                 <div className="flex w-5 shrink-0 items-center justify-center opacity-50">
-                                    {isExpanded ? (
-                                        <ChevronUp size={16} />
-                                    ) : (
-                                        <ChevronDown size={16} />
-                                    )}
+                                    {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                 </div>
                             </div>
                         </button>
@@ -205,38 +174,13 @@ export default function MobileLeadsTable({
                         {isExpanded && (
                             <div className="border-app bg-surface border-t">
                                 <div className="space-y-3 p-4">
+                                    <DetailRow label="Deal Value" value={lead.dealValue} />
 
-                                    <DetailRow
-                                        label="Deal Value"
-                                        value={lead.dealValue}
-                                    />
+                                    <DetailRow label="Lead Source" value={lead.source} />
 
-                                    <DetailRow
-                                        label="Lead Source"
-                                        value={lead.source}
-                                    />
+                                    <DetailRow label="Created At" value={lead.createdAt ? new Date(lead.createdAt).toLocaleDateString() : '—'} />
 
-                                    <DetailRow
-                                        label="Created At"
-                                        value={
-                                            lead.createdAt
-                                                ? new Date(
-                                                      lead.createdAt
-                                                  ).toLocaleDateString()
-                                                : '—'
-                                        }
-                                    />
-
-                                    <DetailRow
-                                        label="Last Modified"
-                                        value={
-                                            lead.updatedAt
-                                                ? new Date(
-                                                      lead.updatedAt
-                                                  ).toLocaleDateString()
-                                                : '—'
-                                        }
-                                    />
+                                    <DetailRow label="Last Modified" value={lead.updatedAt ? new Date(lead.updatedAt).toLocaleDateString() : '—'} />
 
                                     {/* EDIT */}
                                     <button
@@ -244,9 +188,7 @@ export default function MobileLeadsTable({
                                         onClick={(e) => {
                                             e.stopPropagation();
 
-                                            router.push(
-                                                `/leads/edit/${lead._id}`
-                                            );
+                                            router.push(`/leads/edit/${lead._id}`);
                                         }}
                                         className="btn-primary mt-2 w-full rounded-lg py-2.5 text-sm font-medium"
                                     >
@@ -265,24 +207,14 @@ export default function MobileLeadsTable({
 
             {setPage && (
                 <div className="border-app bg-app flex flex-col gap-3 rounded-xl border px-4 py-3 text-sm">
-
                     {/* SHOWING COUNT */}
-                    <p className="text-center opacity-70">
-                        {total > 0
-                            ? `Showing ${startItem}-${endItem} of ${total}`
-                            : 'Showing 0 of 0'}
-                    </p>
+                    <p className="text-center opacity-70">{total > 0 ? `Showing ${startItem}-${endItem} of ${total}` : 'Showing 0 of 0'}</p>
 
                     {/* CONTROLS */}
                     <div className="flex items-center justify-between gap-2">
-
                         {/* ROWS PER PAGE */}
                         {setRowsPerPage && (
-                            <select
-                                value={rowsPerPage}
-                                onChange={handleRowsPerPageChange}
-                                className="border-app bg-app text-app rounded-lg border px-2 py-2"
-                            >
+                            <select value={rowsPerPage} onChange={handleRowsPerPageChange} className="border-app bg-app text-app rounded-lg border px-2 py-2">
                                 <option value={25}>25</option>
                                 <option value={50}>50</option>
                                 <option value={75}>75</option>
@@ -291,46 +223,28 @@ export default function MobileLeadsTable({
                         )}
 
                         <div className="flex items-center gap-2">
-
                             {/* PREVIOUS */}
                             <button
                                 type="button"
                                 disabled={page <= 1}
-                                onClick={() =>
-                                    handlePageChange(page - 1)
-                                }
-                                className={`border-app h-9 rounded-lg border px-3 ${
-                                    page <= 1
-                                        ? 'cursor-not-allowed opacity-50'
-                                        : 'hover-app'
-                                }`}
+                                onClick={() => handlePageChange(page - 1)}
+                                className={`border-app h-9 rounded-lg border px-3 ${page <= 1 ? 'cursor-not-allowed opacity-50' : 'hover-app'}`}
                             >
                                 Prev
                             </button>
 
                             {/* CURRENT PAGE */}
-                            <button
-                                type="button"
-                                className="h-8 rounded-lg bg-blue-600 px-3 text-white"
-                            >
+                            <button type="button" className="h-8 rounded-lg bg-blue-600 px-3 text-white">
                                 {page}
                             </button>
 
                             {/* NEXT */}
                             <button
                                 type="button"
-                                disabled={
-                                    totalPages === 0 ||
-                                    page >= totalPages
-                                }
-                                onClick={() =>
-                                    handlePageChange(page + 1)
-                                }
+                                disabled={totalPages === 0 || page >= totalPages}
+                                onClick={() => handlePageChange(page + 1)}
                                 className={`border-app h-9 rounded-lg border px-3 ${
-                                    totalPages === 0 ||
-                                    page >= totalPages
-                                        ? 'cursor-not-allowed opacity-50'
-                                        : 'hover-app'
+                                    totalPages === 0 || page >= totalPages ? 'cursor-not-allowed opacity-50' : 'hover-app'
                                 }`}
                             >
                                 Next
@@ -350,20 +264,13 @@ export default function MobileLeadsTable({
 function DetailRow({ label, value, badge = false }) {
     return (
         <div className="flex items-start justify-between gap-4">
-            <span className="text-sm opacity-60">
-                {label}
-            </span>
+            <span className="text-sm opacity-60">{label}</span>
 
             {badge ? (
-                <span className="max-w-[60%] rounded-full bg-blue-500/10 px-3 py-1 text-right text-sm text-blue-500 capitalize">
-                    {value || '—'}
-                </span>
+                <span className="max-w-[60%] rounded-full bg-blue-500/10 px-3 py-1 text-right text-sm text-blue-500 capitalize">{value || '—'}</span>
             ) : (
-                <span className="max-w-[60%] text-right text-sm break-words">
-                    {value || '—'}
-                </span>
+                <span className="max-w-[60%] text-right text-sm break-words">{value || '—'}</span>
             )}
         </div>
     );
 }
-
