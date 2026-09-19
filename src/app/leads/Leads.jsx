@@ -14,7 +14,7 @@ import ImportLeadsModal from '@/components/user/leads/main/ImportLeadsModal';
 
 import MobileLeadsTable from './components/MobileLeadsTable';
 import LeadsActiveFilter from './components/LeadsActiveFilter';
-import LeadsFilter, { stageOptions } from './components/LeadsFilter';
+import LeadsFilter, { stageOptions, dateOptions } from './components/LeadsFilter';
 import Dashboarddata from '../dashboard/components/Dashboarddata';
 
 // ============================================================
@@ -85,7 +85,13 @@ export default function Leads() {
 
     const [search, setSearch] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(25);
-    const [selectedStage, setSelectedStage] = useState('');
+
+    // 👇 ARRAY — multi-select
+    const [selectedStage, setSelectedStage] = useState([]);
+
+    const [selectedDate, setSelectedDate] = useState('');
+    const [customStartDate, setCustomStartDate] = useState('');
+    const [customEndDate, setCustomEndDate] = useState('');
 
     const [filterOpen, setFilterOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -99,10 +105,14 @@ export default function Leads() {
     const menuRef = useRef(null);
 
     // ========================================================
-    // SELECTED STAGE LABEL
+    // SELECTED LABELS
     // ========================================================
 
-    const selectedStageLabel = stageOptions.find((option) => option.value === selectedStage)?.label;
+    const selectedStageLabels = (Array.isArray(selectedStage) ? selectedStage : [])
+        .map((val) => stageOptions.find((option) => option.value === val)?.label)
+        .filter(Boolean);
+
+    const selectedDateLabel = dateOptions.find((option) => option.value === selectedDate)?.label;
 
     // ========================================================
     // GET LEADS
@@ -118,8 +128,18 @@ export default function Leads() {
                 search: search,
             });
 
-            if (selectedStage) {
-                params.append('stage', selectedStage);
+            // 👇 append each stage separately
+            if (Array.isArray(selectedStage) && selectedStage.length > 0) {
+                selectedStage.forEach((stage) => params.append('stage', stage));
+            }
+
+            if (selectedDate) {
+                params.append('date', selectedDate);
+            }
+
+            if (selectedDate === 'custom' && customStartDate && customEndDate) {
+                params.append('startDate', customStartDate);
+                params.append('endDate', customEndDate);
             }
 
             const res = await axios.get(`/api/user/lead/all?${params.toString()}`, {
@@ -147,7 +167,7 @@ export default function Leads() {
         }, 500);
 
         return () => clearTimeout(timer);
-    }, [page, rowsPerPage, search, selectedStage]);
+    }, [page, rowsPerPage, search, selectedStage, selectedDate, customStartDate, customEndDate]);
 
     // ========================================================
     // CLOSE DROPDOWNS
@@ -176,7 +196,10 @@ export default function Leads() {
     // ========================================================
 
     const clearFilter = () => {
-        setSelectedStage('');
+        setSelectedStage([]);
+        setSelectedDate('');
+        setCustomStartDate('');
+        setCustomEndDate('');
         setPage(1);
         setFilterOpen(false);
     };
@@ -197,7 +220,6 @@ export default function Leads() {
     const handleExport = () => {
         setMenuOpen(false);
 
-        // Add your existing export logic here.
         console.log('Export leads');
     };
 
@@ -207,29 +229,15 @@ export default function Leads() {
 
     return (
         <div className="bg-surface text-app min-h-[calc(100vh-64px)] p-3 sm:p-4 md:p-6">
-            {/* ==================================================
-                HEADER
-            =================================================== */}
-
+            {/* HEADER */}
             <div className="mb-5">
-                {/* ==================================================
-                    ROW 1 — STATS
-                =================================================== */}
-
                 <div className="border-app bg-app w-full rounded-xl border px-2 py-2 shadow-sm sm:rounded-2xl sm:px-4 sm:py-3">
                     <Dashboarddata />
                 </div>
 
-                {/* ==================================================
-                    ROW 2 — SEARCH + ACTIONS
-                =================================================== */}
-
                 <div className="mt-3 w-full sm:mt-4">
                     <div className="flex w-full items-center gap-2 sm:gap-3">
-                        {/* ==========================================
-                            SEARCH
-                        =========================================== */}
-
+                        {/* SEARCH */}
                         <div className="relative min-w-0 flex-1">
                             <Search size={17} className="absolute top-1/2 left-3 -translate-y-1/2 opacity-50" />
 
@@ -245,10 +253,7 @@ export default function Leads() {
                             />
                         </div>
 
-                        {/* ==========================================
-                            ADD LEAD — DESKTOP
-                        =========================================== */}
-
+                        {/* ADD LEAD — DESKTOP */}
                         <Link
                             href="/leads/new"
                             className="btn-primary hidden h-10 shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:flex"
@@ -257,10 +262,7 @@ export default function Leads() {
                             Add Lead
                         </Link>
 
-                        {/* ==========================================
-                            ADD LEAD — MOBILE
-                        =========================================== */}
-
+                        {/* ADD LEAD — MOBILE */}
                         <Link
                             href="/leads/new"
                             className="btn-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm sm:hidden"
@@ -269,24 +271,24 @@ export default function Leads() {
                             <Plus size={18} />
                         </Link>
 
-                        {/* ==========================================
-                            FILTER
-                        =========================================== */}
-
+                        {/* FILTER */}
                         <div ref={filterRef} className="relative shrink-0">
                             <LeadsFilter
                                 selectedStage={selectedStage}
                                 setSelectedStage={setSelectedStage}
+                                selectedDate={selectedDate}
+                                setSelectedDate={setSelectedDate}
+                                customStartDate={customStartDate}
+                                setCustomStartDate={setCustomStartDate}
+                                customEndDate={customEndDate}
+                                setCustomEndDate={setCustomEndDate}
                                 filterOpen={filterOpen}
                                 setFilterOpen={setFilterOpen}
                                 setPage={setPage}
                             />
                         </div>
 
-                        {/* ==========================================
-                            MORE MENU
-                        =========================================== */}
-
+                        {/* MORE MENU */}
                         <div className="relative shrink-0" ref={menuRef}>
                             <button
                                 type="button"
@@ -299,25 +301,21 @@ export default function Leads() {
 
                             {menuOpen && (
                                 <div className="border-app bg-app absolute top-12 right-0 z-50 w-44 overflow-hidden rounded-xl border shadow-lg">
-                                    {/* EXPORT */}
                                     <button
                                         type="button"
                                         onClick={handleExport}
                                         className="hover:bg-surface flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors"
                                     >
                                         <Download size={17} className="opacity-70" />
-
                                         <span>Export Leads</span>
                                     </button>
 
-                                    {/* IMPORT */}
                                     <button
                                         type="button"
                                         onClick={handleImport}
                                         className="hover:bg-surface flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors"
                                     >
                                         <Upload size={17} className="opacity-70" />
-
                                         <span>Import Leads</span>
                                     </button>
                                 </div>
@@ -327,16 +325,18 @@ export default function Leads() {
                 </div>
             </div>
 
-            {/* ==================================================
-                ACTIVE FILTER
-            =================================================== */}
+            {/* ACTIVE FILTER */}
+            <LeadsActiveFilter
+                selectedStage={selectedStage}
+                selectedStageLabels={selectedStageLabels}
+                selectedDate={selectedDate}
+                selectedDateLabel={selectedDateLabel}
+                customStartDate={customStartDate}
+                customEndDate={customEndDate}
+                onClear={clearFilter}
+            />
 
-            <LeadsActiveFilter selectedStage={selectedStage} selectedStageLabel={selectedStageLabel} onClear={clearFilter} />
-
-            {/* ==================================================
-                DESKTOP TABLE
-            =================================================== */}
-
+            {/* DESKTOP TABLE */}
             <div className="hidden md:block">
                 <DynamicTable
                     loading={loading}
@@ -353,10 +353,7 @@ export default function Leads() {
                 />
             </div>
 
-            {/* ==================================================
-                MOBILE TABLE
-            =================================================== */}
-
+            {/* MOBILE TABLE */}
             <div className="md:hidden">
                 <MobileLeadsTable
                     loading={loading}
@@ -370,10 +367,7 @@ export default function Leads() {
                 />
             </div>
 
-            {/* ==================================================
-                IMPORT MODAL
-            =================================================== */}
-
+            {/* IMPORT MODAL */}
             <ImportLeadsModal
                 open={showImportModal}
                 setOpen={setShowImportModal}
