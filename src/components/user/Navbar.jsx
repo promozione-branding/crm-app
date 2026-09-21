@@ -11,6 +11,9 @@ import { getMe, logout } from '@/redux/user/userAuthSlice';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
+import { usePermissionMap } from '@/lib/permissions';
+import { clearPermissionCache } from '@/lib/permissions';
+
 export default function Navbar() {
     const router = useRouter();
     const dispatch = useDispatch();
@@ -20,6 +23,9 @@ export default function Navbar() {
     const [showNotification, setShowNotification] = useState(false);
     const profileRef = useRef(null);
     const notificationRef = useRef(null);
+
+    // 👇 Permission map for gating dropdown items
+    const { map } = usePermissionMap();
 
     useEffect(() => {
         dispatch(getMe());
@@ -46,13 +52,12 @@ export default function Navbar() {
             await axios.post('/api/user/auth/logout', {}, { withCredentials: true });
         } catch (error) {
             console.log('Logout API error:', error);
-            // Continue anyway — we still want to clear client state + redirect
         } finally {
-            // 1. Clear client-side state
+            // 👇 Clear permission cache so the next user gets fresh data
+            clearPermissionCache();
+
             dispatch(logout());
 
-            // 2. Hard redirect — replaces history entry, so Back button
-            //    cannot return to /tasks, /dashboard, etc.
             window.location.replace('/login');
         }
     };
@@ -113,15 +118,21 @@ export default function Navbar() {
                                 <p className="text-muted text-sm">{user?.email || ''}</p>
                             </div>
 
-                            <Link href="/profile" className="hover-app flex items-center gap-3 px-4 py-3 transition">
-                                <User size={18} />
-                                Profile
-                            </Link>
+                            {/* 👇 Profile link only if user has profile.access */}
+                            {map['profile.access'] && (
+                                <Link href="/profile" className="hover-app flex items-center gap-3 px-4 py-3 transition">
+                                    <User size={18} />
+                                    Profile
+                                </Link>
+                            )}
 
-                            <Link href="/settings" className="hover-app flex items-center gap-3 px-4 py-3 transition">
-                                <Settings size={18} />
-                                Settings
-                            </Link>
+                            {/* 👇 Settings link only if user has settings.access */}
+                            {map['settings.access'] && (
+                                <Link href="/settings" className="hover-app flex items-center gap-3 px-4 py-3 transition">
+                                    <Settings size={18} />
+                                    Settings
+                                </Link>
+                            )}
 
                             <button
                                 onClick={handleLogout}

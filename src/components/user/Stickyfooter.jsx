@@ -4,43 +4,25 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, ClipboardList, BarChart3, PhoneCall } from 'lucide-react';
 
-const menus = [
-    {
-        name: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutDashboard,
-    },
-    {
-        name: 'Leads',
-        href: '/leads',
-        icon: Users,
-    },
-    {
-        name: 'Task',
-        href: '/tasks',
-        icon: ClipboardList,
-    },
-    {
-        name: 'Reports',
-        href: '/reports',
-        icon: BarChart3,
-    },
-    {
-        name: 'Calls',
-        href: '/call-logs',
-        icon: PhoneCall,
-    },
-];
+import { MOBILE_NAV_ITEMS } from '@/constants/navigation';
+import { usePermissionMap } from '@/lib/permissions';
 
 export default function Stickyfooter() {
     const pathname = usePathname();
+    const { map, loading } = usePermissionMap();
+
+    const visibleItems = loading
+        ? []
+        : MOBILE_NAV_ITEMS.filter((item) => map[`${item.module}.access`]);
+
+    // Hide the whole footer if the user has no mobile nav permissions
+    if (!loading && visibleItems.length === 0) return null;
 
     return (
         <nav className="bg-app border-app fixed right-0 bottom-0 left-0 z-50 border-t pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_10px_rgba(0,0,0,0.05)] md:hidden">
             <div className="mx-auto flex h-16 w-full max-w-md items-center justify-between px-1 sm:px-2">
-                {menus.map((item) => {
+                {visibleItems.map((item) => {
                     const Icon = item.icon;
 
                     const active = pathname === item.href || pathname.startsWith(item.href + '/');

@@ -1,54 +1,63 @@
 // src/constants/navigation.js
 
-export const SIDEBAR_NAV = [
+import {
+    LayoutDashboard,
+    Users,
+    ClipboardList,
+    BarChart3,
+    PhoneCall,
+    Settings,
+} from 'lucide-react';
+
+/**
+ * Client app navigation.
+ *
+ * module = key from PERMISSION_MODULES
+ * Every item requires `${module}.access`
+ */
+export const NAV_ITEMS = [
     {
         module: 'dashboard',
-        label: 'Dashboard',
+        name: 'Dashboard',
         href: '/dashboard',
+        icon: LayoutDashboard,
     },
     {
         module: 'leads',
-        label: 'Leads',
+        name: 'Leads',
         href: '/leads',
+        icon: Users,
     },
     {
         module: 'tasks',
-        label: 'Tasks',
+        name: 'Task',
         href: '/tasks',
-    },
-    {
-        module: 'call_logs',
-        label: 'Call Logs',
-        href: '/call-logs',
+        icon: ClipboardList,
     },
     {
         module: 'reports',
-        label: 'Reports',
+        name: 'Reports',
         href: '/reports',
+        icon: BarChart3,
     },
     {
-        module: 'team_management',
-        label: 'Team Management',
-        href: '/team-management',
-    },
-    {
-        module: 'organization_settings',
-        label: 'Organization Settings',
-        href: '/organization-settings',
-    },
-    {
-        module: 'integration',
-        label: 'Integration',
-        href: '/integration',
+        module: 'call_logs',
+        name: 'Call Logs',
+        href: '/call-logs',
+        icon: PhoneCall,
     },
     {
         module: 'settings',
-        label: 'Settings',
+        name: 'Settings',
         href: '/settings',
-    },
-    {
-        module: 'profile',
-        label: 'Profile',
-        href: '/profile',
+        icon: Settings,
     },
 ];
+
+/**
+ * Short label for the mobile sticky footer
+ * (slightly different from the sidebar).
+ */
+export const MOBILE_NAV_ITEMS = NAV_ITEMS.filter((item) =>
+    ['dashboard', 'leads', 'tasks', 'reports', 'call_logs'].includes(item.module)
+);
