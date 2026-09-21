@@ -7,9 +7,8 @@ import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '@/redux/user/themeSlice';
 import { useEffect, useRef, useState } from 'react';
-import { getMe } from '@/redux/user/userAuthSlice';
+import { getMe, logout } from '@/redux/user/userAuthSlice';
 import axios from 'axios';
-import { logout } from '@/redux/user/userAuthSlice';
 import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
@@ -45,10 +44,16 @@ export default function Navbar() {
     const handleLogout = async () => {
         try {
             await axios.post('/api/user/auth/logout', {}, { withCredentials: true });
-            dispatch(logout());
-            router.push('/login');
         } catch (error) {
-            console.log(error);
+            console.log('Logout API error:', error);
+            // Continue anyway — we still want to clear client state + redirect
+        } finally {
+            // 1. Clear client-side state
+            dispatch(logout());
+
+            // 2. Hard redirect — replaces history entry, so Back button
+            //    cannot return to /tasks, /dashboard, etc.
+            window.location.replace('/login');
         }
     };
 
@@ -82,10 +87,8 @@ export default function Navbar() {
                         <div className="bg-card border-app absolute right-0 z-50 mt-2 w-72 overflow-hidden rounded-xl border shadow-lg">
                             <div className="border-app flex items-center justify-between border-b px-4 py-3 font-semibold">
                                 <p>Notifications</p>
-
                                 <div className="rounded-md bg-blue-500 px-1.5 py-0.5 text-xs font-light text-white">0</div>
                             </div>
-
                             <div className="text-muted p-6 text-center text-sm">No notifications yet.</div>
                         </div>
                     )}
@@ -107,7 +110,6 @@ export default function Navbar() {
                         <div className="bg-card border-app absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-xl border shadow-lg">
                             <div className="border-app border-b px-4 py-4">
                                 <p className="text-app font-semibold">{user?.name || ''}</p>
-
                                 <p className="text-muted text-sm">{user?.email || ''}</p>
                             </div>
 
@@ -121,7 +123,10 @@ export default function Navbar() {
                                 Settings
                             </Link>
 
-                            <button onClick={handleLogout} className="flex w-full items-center gap-3 px-4 py-3 text-red-500 transition hover:bg-red-500/10">
+                            <button
+                                onClick={handleLogout}
+                                className="flex w-full items-center gap-3 px-4 py-3 text-red-500 transition hover:bg-red-500/10"
+                            >
                                 <LogOut size={18} />
                                 Logout
                             </button>
