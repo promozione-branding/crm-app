@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import User from '@/models/user.model.js';
 import Lead from '@/models/leads.model.js';
 import LeadTask from '@/models/task.model.js';
+import Role from '@/models/role.model.js';
 
 // CREATE TASK
 export const createTaskService = async (user, body) => {
@@ -95,6 +96,32 @@ export const getAllTasksService = async (user, query = {}) => {
     };
 
     // ============================================================
+    // SCOPE FILTER (based on user's role permission for "tasks")
+    // ============================================================
+
+    // User model stores role in `roleId` (string) not `role`.
+    const roleId = user.roleId || user.role;
+    const role = roleId ? await Role.findById(roleId).lean() : null;
+
+    const taskPermission = role?.permissions?.find((p) => p.module === 'tasks');
+
+    const taskScope = taskPermission?.scope || 'own';
+
+    if (taskScope === 'own') {
+        filter.assignedTo = user._id;
+    } else if (taskScope === 'team') {
+        // ⚠️ Adjust `teamId` to whatever field your User model uses
+        // to define a team (e.g. teamId, departmentId, managerId).
+        const teamUserIds = await User.find({
+            companyId: user.companyId,
+            teamId: user.teamId,
+        }).distinct('_id');
+
+        filter.assignedTo = { $in: teamUserIds };
+    }
+    // scope === 'all' → no restriction
+
+    // ============================================================
     // EXISTING LEAD ID FILTER
     // ============================================================
 
@@ -121,13 +148,27 @@ export const getAllTasksService = async (user, query = {}) => {
     // IMPORTANT:
     // assignedTo remains ObjectId.
     // Do NOT change this to a name search.
+    // Must intersect with scope filter above so a user cannot
+    // bypass scope by passing an arbitrary assignedTo id.
 
     if (assignedTo) {
         if (!mongoose.Types.ObjectId.isValid(assignedTo)) {
             throw new Error('Invalid assigned user.');
         }
 
-        filter.assignedTo = assignedTo;
+        if (filter.assignedTo) {
+            const scopeIds = filter.assignedTo.$in
+                ? filter.assignedTo.$in.map((id) => id.toString())
+                : [filter.assignedTo.toString()];
+
+            if (scopeIds.includes(assignedTo.toString())) {
+                filter.assignedTo = assignedTo;
+            } else {
+                filter.assignedTo = { $in: [] };
+            }
+        } else {
+            filter.assignedTo = assignedTo;
+        }
     }
 
     // ============================================================
@@ -199,6 +240,8 @@ export const getAllTasksService = async (user, query = {}) => {
     // ============================================================
     // ASSIGNED TO SEARCH
     // Searches User name
+    // Must intersect with scope filter so a user cannot bypass
+    // scope by searching another user's name.
     // ============================================================
 
     if (assignedToSearch?.trim()) {
@@ -219,12 +262,19 @@ export const getAllTasksService = async (user, query = {}) => {
 
         const matchingUserIds = matchingUsers.map((item) => item._id);
 
-        // If no users match the search,
-        // return zero tasks instead of ignoring the filter.
+        if (filter.assignedTo) {
+            const scopeIds = filter.assignedTo.$in
+                ? filter.assignedTo.$in.map((id) => id.toString())
+                : [filter.assignedTo.toString()];
 
-        filter.assignedTo = {
-            $in: matchingUserIds,
-        };
+            const intersection = matchingUserIds.filter((id) =>
+                scopeIds.includes(id.toString())
+            );
+
+            filter.assignedTo = { $in: intersection };
+        } else {
+            filter.assignedTo = { $in: matchingUserIds };
+        }
     }
 
     // ============================================================
