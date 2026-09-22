@@ -21,7 +21,6 @@ export default function Navbar() {
     const [showProfile, setShowProfile] = useState(false);
     const [showNotification, setShowNotification] = useState(false);
 
-    // 👇 Notification state
     const [notifications, setNotifications] = useState({
         leads: [],
         tasks: [],
@@ -37,27 +36,59 @@ export default function Navbar() {
         dispatch(getMe());
     }, []);
 
-    // 👇 Load notifications + poll every 30s
+    // ---------------- NOTIFICATIONS (SSE) ----------------
     useEffect(() => {
-        let interval;
+        let eventSource;
 
         const load = async () => {
             try {
                 const res = await axios.get('/api/user/notification', {
                     withCredentials: true,
                 });
-                setNotifications(res.data?.data || { leads: [], tasks: [], unreadCount: 0 });
+                setNotifications(
+                    res.data?.data || { leads: [], tasks: [], unreadCount: 0 }
+                );
             } catch (err) {
-                // silent fail
+                // silent
             }
         };
 
         load();
-        interval = setInterval(load, 30000);
 
-        return () => clearInterval(interval);
+        eventSource = new EventSource('/api/user/notification/stream');
+
+        eventSource.addEventListener('new-notifications', (e) => {
+            try {
+                const payload = JSON.parse(e.data);
+
+                setNotifications((prev) => {
+                    const merge = (oldArr, newArr) => {
+                        const m = new Map();
+                        [...newArr, ...oldArr].forEach((n) => m.set(n._id, n));
+                        return Array.from(m.values()).slice(0, 20);
+                    };
+
+                    return {
+                        leads: merge(prev.leads, payload.leads),
+                        tasks: merge(prev.tasks, payload.tasks),
+                        unreadCount: payload.unreadCount,
+                    };
+                });
+            } catch (err) {
+                console.error('SSE PARSE ERROR:', err);
+            }
+        });
+
+        eventSource.onerror = () => {
+            // Browser auto-reconnects
+        };
+
+        return () => {
+            eventSource?.close();
+        };
     }, []);
 
+    // ---------------- CLICK OUTSIDE ----------------
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (profileRef.current && !profileRef.current.contains(e.target)) {
@@ -72,6 +103,7 @@ export default function Navbar() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    // ---------------- LOGOUT ----------------
     const handleLogout = async () => {
         try {
             await axios.post('/api/user/auth/logout', {}, { withCredentials: true });
@@ -84,16 +116,25 @@ export default function Navbar() {
         }
     };
 
-    // 👇 Click a notification → mark read + navigate
+    // ---------------- NOTIFICATION CLICK ----------------
     const handleNotificationClick = async (n) => {
         if (!n.isRead) {
             try {
-                await axios.patch(`/api/user/notification/${n._id}`, {}, { withCredentials: true });
+                await axios.patch(
+                    `/api/user/notification/${n._id}`,
+                    {},
+                    { withCredentials: true }
+                );
+
                 setNotifications((prev) => ({
                     ...prev,
                     unreadCount: Math.max(0, prev.unreadCount - 1),
-                    leads: prev.leads.map((x) => (x._id === n._id ? { ...x, isRead: true } : x)),
-                    tasks: prev.tasks.map((x) => (x._id === n._id ? { ...x, isRead: true } : x)),
+                    leads: prev.leads.map((x) =>
+                        x._id === n._id ? { ...x, isRead: true } : x
+                    ),
+                    tasks: prev.tasks.map((x) =>
+                        x._id === n._id ? { ...x, isRead: true } : x
+                    ),
                 }));
             } catch (err) {
                 // silent
@@ -106,10 +147,15 @@ export default function Navbar() {
         else if (n.refModel === 'LeadTask') router.push(`/tasks/edit/${n.refId}`);
     };
 
-    // 👇 Mark all as read
+    // ---------------- MARK ALL READ ----------------
     const handleMarkAllRead = async () => {
         try {
-            await axios.post('/api/user/notification/read-all', {}, { withCredentials: true });
+            await axios.post(
+                '/api/user/notification/read-all',
+                {},
+                { withCredentials: true }
+            );
+
             setNotifications((prev) => ({
                 leads: prev.leads.map((x) => ({ ...x, isRead: true })),
                 tasks: prev.tasks.map((x) => ({ ...x, isRead: true })),
@@ -120,6 +166,12 @@ export default function Navbar() {
         }
     };
 
+    // ---------------- VIEW ALL ----------------
+    const handleViewAll = () => {
+        setShowNotification(false);
+        router.push('/notifications');
+    };
+
     return (
         <header className="bg-app border-app text-app sticky top-0 z-50 flex h-16 items-center justify-between border-b px-6">
             <h1 className="text-xl font-semibold">
@@ -127,6 +179,7 @@ export default function Navbar() {
             </h1>
 
             <div className="flex items-center gap-3">
+                {/* THEME TOGGLE */}
                 <button
                     onClick={() => dispatch(toggleTheme())}
                     className="border-app hover-app flex h-10 w-10 items-center justify-center rounded-xl border transition"
@@ -146,8 +199,8 @@ export default function Navbar() {
                         <Bell size={20} />
 
                         {notifications.unreadCount > 0 && (
-                            <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
-                                {notifications.unreadCount > 99 ? '99+' : notifications.unreadCount}
+                            <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
+                                {notifications.unreadCount > 9 ? '9+' : notifications.unreadCount}
                             </span>
                         )}
                     </button>
@@ -180,7 +233,9 @@ export default function Navbar() {
                                 </div>
 
                                 {notifications.leads.length === 0 ? (
-                                    <div className="text-muted px-4 py-3 text-xs">No lead notifications</div>
+                                    <div className="text-muted px-4 py-3 text-xs">
+                                        No lead notifications
+                                    </div>
                                 ) : (
                                     notifications.leads.map((n) => (
                                         <button
@@ -195,14 +250,20 @@ export default function Navbar() {
                                             </div>
 
                                             <div className="min-w-0 flex-1">
-                                                <p className="text-app truncate text-sm font-medium">{n.title}</p>
-                                                <p className="text-muted truncate text-xs">{n.message}</p>
+                                                <p className="text-app truncate text-sm font-medium">
+                                                    {n.title}
+                                                </p>
+                                                <p className="text-muted truncate text-xs">
+                                                    {n.message}
+                                                </p>
                                                 <p className="text-muted mt-0.5 text-[10px]">
                                                     {new Date(n.createdAt).toLocaleString('en-IN')}
                                                 </p>
                                             </div>
 
-                                            {!n.isRead && <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />}
+                                            {!n.isRead && (
+                                                <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
+                                            )}
                                         </button>
                                     ))
                                 )}
@@ -213,7 +274,9 @@ export default function Navbar() {
                                 </div>
 
                                 {notifications.tasks.length === 0 ? (
-                                    <div className="text-muted px-4 py-3 text-xs">No task notifications</div>
+                                    <div className="text-muted px-4 py-3 text-xs">
+                                        No task notifications
+                                    </div>
                                 ) : (
                                     notifications.tasks.map((n) => (
                                         <button
@@ -228,18 +291,32 @@ export default function Navbar() {
                                             </div>
 
                                             <div className="min-w-0 flex-1">
-                                                <p className="text-app truncate text-sm font-medium">{n.title}</p>
-                                                <p className="text-muted truncate text-xs">{n.message}</p>
+                                                <p className="text-app truncate text-sm font-medium">
+                                                    {n.title}
+                                                </p>
+                                                <p className="text-muted truncate text-xs">
+                                                    {n.message}
+                                                </p>
                                                 <p className="text-muted mt-0.5 text-[10px]">
                                                     {new Date(n.createdAt).toLocaleString('en-IN')}
                                                 </p>
                                             </div>
 
-                                            {!n.isRead && <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />}
+                                            {!n.isRead && (
+                                                <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
+                                            )}
                                         </button>
                                     ))
                                 )}
                             </div>
+
+                            {/* ---------- VIEW ALL / HISTORY ---------- */}
+                            <button
+                                onClick={handleViewAll}
+                                className="border-app text-app hover-app w-full border-t px-4 py-3 text-center text-sm font-medium transition"
+                            >
+                                View all notifications →
+                            </button>
                         </div>
                     )}
                 </div>
@@ -264,14 +341,20 @@ export default function Navbar() {
                             </div>
 
                             {map['profile.access'] && (
-                                <Link href="/profile" className="hover-app flex items-center gap-3 px-4 py-3 transition">
+                                <Link
+                                    href="/profile"
+                                    className="hover-app flex items-center gap-3 px-4 py-3 transition"
+                                >
                                     <User size={18} />
                                     Profile
                                 </Link>
                             )}
 
                             {map['settings.access'] && (
-                                <Link href="/settings" className="hover-app flex items-center gap-3 px-4 py-3 transition">
+                                <Link
+                                    href="/settings"
+                                    className="hover-app flex items-center gap-3 px-4 py-3 transition"
+                                >
                                     <Settings size={18} />
                                     Settings
                                 </Link>
