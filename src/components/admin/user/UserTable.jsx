@@ -1,7 +1,8 @@
-// src/components/admin/user/UserTable.jsx
+//src/components/admin/user/UserTable.jsx
 
 import { ChevronLeft, ChevronRight, Eye, Filter, Search, Trash2 } from 'lucide-react';
 import React from 'react';
+
 
 export default function UserTable({ search, setSearch, companies, loading, setOpenFilter, setPage, page, limit, setLimit, total, totalPages }) {
     return (
