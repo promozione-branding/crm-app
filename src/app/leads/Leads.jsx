@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 
 import DynamicTable from '@/components/user/ui/DynamicTable';
 import ImportLeadsModal from '@/components/user/leads/main/ImportLeadsModal';
-
+import StageBadge from '@/components/user/ui/StageBadge';
 import MobileLeadsTable from './components/MobileLeadsTable';
 import LeadsActiveFilter from './components/LeadsActiveFilter';
 import LeadsFilter, { stageOptions, dateOptions } from './components/LeadsFilter';
@@ -37,12 +37,12 @@ const columns = [
         label: 'Phone',
         sortable: true,
     },
-    {
-        key: 'stage',
-        label: 'Stage',
-        sortable: true,
-        render: (lead) => <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs text-blue-500 capitalize">{lead.stage || '—'}</span>,
-    },
+   {
+    key: 'stage',
+    label: 'Stage',
+    sortable: true,
+    render: (lead) => <StageBadge stage={lead.stage} />,
+},,
     {
         key: 'dealValue',
         label: 'Deal Value',

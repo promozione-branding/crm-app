@@ -2,7 +2,7 @@
 
 'use client';
 
-import { ChevronDown, ChevronUp, MoreVertical } from 'lucide-react';
+import { ChevronDown, ChevronUp, MoreVertical, Eye } from 'lucide-react';
 
 const DynamicTable = ({
     loading = false,
@@ -184,7 +184,7 @@ const DynamicTable = ({
                                                 onClick={() => onAction(row)}
                                                 className="btn-primary flex h-8 w-8 items-center justify-center rounded-lg"
                                             >
-                                                <MoreVertical size={18} />
+                                                <Eye size={18} />
                                             </button>
                                         </td>
                                     )}

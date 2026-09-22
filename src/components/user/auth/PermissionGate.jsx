@@ -9,7 +9,7 @@ export default function PermissionGate({
     module,
     action = 'access',
     children,
-    loading = null,
+    loading = null, 
     message,
 }) {
     const { permissions, loading: permissionsLoading } = usePermissions();
