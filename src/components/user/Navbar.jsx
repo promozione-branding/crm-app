@@ -1,5 +1,3 @@
-// src/components/user/Navbar.jsx
-
 'use client';
 
 import { Bell, Moon, Sun, UserCircle, Settings, User, LogOut } from 'lucide-react';
@@ -19,16 +17,45 @@ export default function Navbar() {
     const dispatch = useDispatch();
     const theme = useSelector((state) => state.theme.mode);
     const user = useSelector((state) => state.userAuth.user);
+
     const [showProfile, setShowProfile] = useState(false);
     const [showNotification, setShowNotification] = useState(false);
+
+    // 👇 Notification state
+    const [notifications, setNotifications] = useState({
+        leads: [],
+        tasks: [],
+        unreadCount: 0,
+    });
+
     const profileRef = useRef(null);
     const notificationRef = useRef(null);
 
-    // 👇 Permission map for gating dropdown items
     const { map } = usePermissionMap();
 
     useEffect(() => {
         dispatch(getMe());
+    }, []);
+
+    // 👇 Load notifications + poll every 30s
+    useEffect(() => {
+        let interval;
+
+        const load = async () => {
+            try {
+                const res = await axios.get('/api/user/notification', {
+                    withCredentials: true,
+                });
+                setNotifications(res.data?.data || { leads: [], tasks: [], unreadCount: 0 });
+            } catch (err) {
+                // silent fail
+            }
+        };
+
+        load();
+        interval = setInterval(load, 30000);
+
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
@@ -36,14 +63,12 @@ export default function Navbar() {
             if (profileRef.current && !profileRef.current.contains(e.target)) {
                 setShowProfile(false);
             }
-
             if (notificationRef.current && !notificationRef.current.contains(e.target)) {
                 setShowNotification(false);
             }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
-
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
@@ -53,12 +78,45 @@ export default function Navbar() {
         } catch (error) {
             console.log('Logout API error:', error);
         } finally {
-            // 👇 Clear permission cache so the next user gets fresh data
             clearPermissionCache();
-
             dispatch(logout());
-
             window.location.replace('/login');
+        }
+    };
+
+    // 👇 Click a notification → mark read + navigate
+    const handleNotificationClick = async (n) => {
+        if (!n.isRead) {
+            try {
+                await axios.patch(`/api/user/notification/${n._id}`, {}, { withCredentials: true });
+                setNotifications((prev) => ({
+                    ...prev,
+                    unreadCount: Math.max(0, prev.unreadCount - 1),
+                    leads: prev.leads.map((x) => (x._id === n._id ? { ...x, isRead: true } : x)),
+                    tasks: prev.tasks.map((x) => (x._id === n._id ? { ...x, isRead: true } : x)),
+                }));
+            } catch (err) {
+                // silent
+            }
+        }
+
+        setShowNotification(false);
+
+        if (n.refModel === 'Lead') router.push(`/leads/edit/${n.refId}`);
+        else if (n.refModel === 'LeadTask') router.push(`/tasks/edit/${n.refId}`);
+    };
+
+    // 👇 Mark all as read
+    const handleMarkAllRead = async () => {
+        try {
+            await axios.post('/api/user/notification/read-all', {}, { withCredentials: true });
+            setNotifications((prev) => ({
+                leads: prev.leads.map((x) => ({ ...x, isRead: true })),
+                tasks: prev.tasks.map((x) => ({ ...x, isRead: true })),
+                unreadCount: 0,
+            }));
+        } catch (err) {
+            // silent
         }
     };
 
@@ -76,30 +134,117 @@ export default function Navbar() {
                     {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                 </button>
 
-                {/* Notification */}
+                {/* ================= NOTIFICATION ================= */}
                 <div className="relative" ref={notificationRef}>
                     <button
                         onClick={() => {
                             setShowNotification((prev) => !prev);
                             setShowProfile(false);
                         }}
-                        className="border-app hover-app flex h-10 w-10 items-center justify-center rounded-xl border transition"
+                        className="border-app hover-app relative flex h-10 w-10 items-center justify-center rounded-xl border transition"
                     >
                         <Bell size={20} />
+
+                        {notifications.unreadCount > 0 && (
+                            <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                                {notifications.unreadCount > 99 ? '99+' : notifications.unreadCount}
+                            </span>
+                        )}
                     </button>
 
                     {showNotification && (
-                        <div className="bg-card border-app absolute right-0 z-50 mt-2 w-72 overflow-hidden rounded-xl border shadow-lg">
+                        <div className="bg-card border-app absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-xl border shadow-lg">
                             <div className="border-app flex items-center justify-between border-b px-4 py-3 font-semibold">
                                 <p>Notifications</p>
-                                <div className="rounded-md bg-blue-500 px-1.5 py-0.5 text-xs font-light text-white">0</div>
+
+                                <div className="flex items-center gap-2">
+                                    <div className="rounded-md bg-blue-500 px-1.5 py-0.5 text-xs font-light text-white">
+                                        {notifications.unreadCount}
+                                    </div>
+
+                                    {notifications.unreadCount > 0 && (
+                                        <button
+                                            onClick={handleMarkAllRead}
+                                            className="text-xs text-blue-500 hover:underline"
+                                        >
+                                            Mark all
+                                        </button>
+                                    )}
+                                </div>
                             </div>
-                            <div className="text-muted p-6 text-center text-sm">No notifications yet.</div>
+
+                            <div className="max-h-96 overflow-y-auto">
+                                {/* ---------- LEADS ---------- */}
+                                <div className="border-app bg-app/50 border-b px-4 py-2 text-xs font-semibold uppercase opacity-70">
+                                    Leads
+                                </div>
+
+                                {notifications.leads.length === 0 ? (
+                                    <div className="text-muted px-4 py-3 text-xs">No lead notifications</div>
+                                ) : (
+                                    notifications.leads.map((n) => (
+                                        <button
+                                            key={n._id}
+                                            onClick={() => handleNotificationClick(n)}
+                                            className={`border-app flex w-full items-start gap-3 border-b px-4 py-3 text-left transition ${
+                                                !n.isRead ? 'bg-blue-500/5' : ''
+                                            } hover:bg-blue-500/10`}
+                                        >
+                                            <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-500">
+                                                <User size={14} />
+                                            </div>
+
+                                            <div className="min-w-0 flex-1">
+                                                <p className="text-app truncate text-sm font-medium">{n.title}</p>
+                                                <p className="text-muted truncate text-xs">{n.message}</p>
+                                                <p className="text-muted mt-0.5 text-[10px]">
+                                                    {new Date(n.createdAt).toLocaleString('en-IN')}
+                                                </p>
+                                            </div>
+
+                                            {!n.isRead && <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />}
+                                        </button>
+                                    ))
+                                )}
+
+                                {/* ---------- TASKS ---------- */}
+                                <div className="border-app bg-app/50 border-b px-4 py-2 text-xs font-semibold uppercase opacity-70">
+                                    Tasks
+                                </div>
+
+                                {notifications.tasks.length === 0 ? (
+                                    <div className="text-muted px-4 py-3 text-xs">No task notifications</div>
+                                ) : (
+                                    notifications.tasks.map((n) => (
+                                        <button
+                                            key={n._id}
+                                            onClick={() => handleNotificationClick(n)}
+                                            className={`border-app flex w-full items-start gap-3 border-b px-4 py-3 text-left transition ${
+                                                !n.isRead ? 'bg-blue-500/5' : ''
+                                            } hover:bg-blue-500/10`}
+                                        >
+                                            <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500">
+                                                <Bell size={14} />
+                                            </div>
+
+                                            <div className="min-w-0 flex-1">
+                                                <p className="text-app truncate text-sm font-medium">{n.title}</p>
+                                                <p className="text-muted truncate text-xs">{n.message}</p>
+                                                <p className="text-muted mt-0.5 text-[10px]">
+                                                    {new Date(n.createdAt).toLocaleString('en-IN')}
+                                                </p>
+                                            </div>
+
+                                            {!n.isRead && <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />}
+                                        </button>
+                                    ))
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>
 
-                {/* Profile */}
+                {/* ================= PROFILE ================= */}
                 <div className="relative" ref={profileRef}>
                     <button
                         onClick={() => {
@@ -118,7 +263,6 @@ export default function Navbar() {
                                 <p className="text-muted text-sm">{user?.email || ''}</p>
                             </div>
 
-                            {/* 👇 Profile link only if user has profile.access */}
                             {map['profile.access'] && (
                                 <Link href="/profile" className="hover-app flex items-center gap-3 px-4 py-3 transition">
                                     <User size={18} />
@@ -126,7 +270,6 @@ export default function Navbar() {
                                 </Link>
                             )}
 
-                            {/* 👇 Settings link only if user has settings.access */}
                             {map['settings.access'] && (
                                 <Link href="/settings" className="hover-app flex items-center gap-3 px-4 py-3 transition">
                                     <Settings size={18} />
@@ -134,7 +277,10 @@ export default function Navbar() {
                                 </Link>
                             )}
 
-                            <button onClick={handleLogout} className="flex w-full items-center gap-3 px-4 py-3 text-red-500 transition hover:bg-red-500/10">
+                            <button
+                                onClick={handleLogout}
+                                className="flex w-full items-center gap-3 px-4 py-3 text-red-500 transition hover:bg-red-500/10"
+                            >
                                 <LogOut size={18} />
                                 Logout
                             </button>
