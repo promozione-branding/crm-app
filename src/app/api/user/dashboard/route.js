@@ -42,6 +42,8 @@ export async function GET(request) {
             callsByStatus,
             callsByCaller,
             recentCalls,
+            recentLeads,
+            recentTasks,
         ] = await Promise.all([
             User.countDocuments({ companyId }),
 
@@ -113,6 +115,24 @@ export async function GET(request) {
                 .populate('callerId', 'name email')
                 .populate('refId', 'name phone')
                 .lean(),
+
+            // ---- Latest 5 leads (updated recently)
+            Lead.find({ companyId })
+                .sort({ updatedAt: -1 })
+                .limit(5)
+                .populate('assignedTo', 'name')
+                .select('name phone companyName stage status assignedTo updatedAt createdAt')
+                .lean(),
+
+            // ---- Latest 5 tasks (updated recently)
+            LeadTask.find({ companyId })
+                .sort({ updatedAt: -1 })
+                .limit(5)
+                .populate('assignedTo', 'name')
+                .populate('leadId', 'name phone')
+                .populate('createdBy', 'name')
+                .select('title status priority assignedTo leadId createdBy dueDate updatedAt createdAt')
+                .lean(),
         ]);
 
         // ---- Convert byStatus array to a clean object
@@ -131,6 +151,10 @@ export async function GET(request) {
 
                 // ---- Flat calls count (for the top stat card)
                 calls: callsTotal,
+
+                // ---- Recent lists for the dashboard
+                recentLeads,
+                recentTasks,
 
                 // ---- Detailed call metrics
                 callsDetail: {
