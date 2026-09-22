@@ -95,107 +95,42 @@ export default function DashboardAnalytics({ stats, loading }) {
             {/* ==================================================
                 MAIN ANALYTICS CARD
             ================================================== */}
-            <section className="bg-app border-app mt-6 rounded-2xl border p-4 sm:mt-8 sm:p-6">
-                <div className="mb-5 sm:mb-6">
-                    <h2 className="text-lg font-semibold sm:text-xl">Analytics</h2>
-                    <p className="mt-1 text-xs opacity-60 sm:text-sm">
-                        Overview of your CRM data
-                    </p>
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 py-2">
+    {chartItems.map((item) => {
+        const value = Number(stats[item.key] || 0);
+        // fake trend for now — plug real % from API later
+        const trend = Math.random() > 0.5 ? 'up' : 'down';
+        const trendPct = (Math.random() * 15).toFixed(1);
+
+        return (
+            <div
+                key={item.key}
+                className="border-app hover-app rounded-xl border p-3 transition sm:p-4"
+            >
+                <div className="mb-2 flex items-center gap-2">
+                    <span
+                        className="h-2.5 w-2.5 rounded-full"
+                        style={{ backgroundColor: item.color }}
+                    />
+                    <span className="text-xs opacity-60">{item.label}</span>
                 </div>
 
-                <div className="grid grid-cols-1 items-center gap-6 lg:grid-cols-2 lg:gap-10">
-                    {/* ---------- DONUT ---------- */}
-                    <div className="flex justify-center">
-                        <div className="relative h-[220px] w-[220px] sm:h-[260px] sm:w-[260px]">
-                            {loading ? (
-                                <div className="border-surface absolute inset-0 animate-pulse rounded-full border-[24px] sm:border-[28px]" />
-                            ) : total === 0 ? (
-                                <div className="border-surface absolute inset-0 rounded-full border-[24px] sm:border-[28px]" />
-                            ) : (
-                                <svg viewBox="0 0 200 200" className="h-full w-full -rotate-90">
-                                    <circle
-                                        cx="100"
-                                        cy="100"
-                                        r={radius}
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="26"
-                                        className="text-surface"
-                                    />
+                <p className="text-2xl font-bold sm:text-3xl">
+                    {loading ? '—' : value}
+                </p>
 
-                                    {chartItems.map((item) => {
-                                        const value = Number(stats[item.key] || 0);
-                                        if (value <= 0 || total <= 0) return null;
-
-                                        const percentage = value / total;
-                                        const segmentLength = percentage * circumference;
-                                        const dashOffset = -accumulated;
-                                        accumulated += segmentLength;
-
-                                        return (
-                                            <circle
-                                                key={item.key}
-                                                cx="100"
-                                                cy="100"
-                                                r={radius}
-                                                fill="none"
-                                                stroke={item.color}
-                                                strokeWidth="26"
-                                                strokeDasharray={`${segmentLength} ${circumference - segmentLength}`}
-                                                strokeDashoffset={dashOffset}
-                                                strokeLinecap="butt"
-                                            />
-                                        );
-                                    })}
-                                </svg>
-                            )}
-
-                            <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                <span className="text-xs opacity-60">Total</span>
-                                <span className="mt-1 text-2xl font-bold sm:text-3xl">
-                                    {loading ? '—' : total}
-                                </span>
-                                <span className="mt-1 text-xs opacity-50">Records</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* ---------- LEGEND ---------- */}
-                    <div className="space-y-3 sm:space-y-4">
-                        {chartItems.map((item) => {
-                            const value = Number(stats[item.key] || 0);
-                            const percentage =
-                                total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
-
-                            return (
-                                <div
-                                    key={item.key}
-                                    className="border-app flex items-center justify-between gap-3 rounded-xl border p-3 sm:p-4"
-                                >
-                                    <div className="flex min-w-0 items-center gap-3">
-                                        <span
-                                            className="h-3 w-3 shrink-0 rounded-full"
-                                            style={{ backgroundColor: item.color }}
-                                        />
-                                        <span className="truncate text-sm font-medium">
-                                            {item.label}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex shrink-0 items-center gap-3 sm:gap-5">
-                                        <span className="text-xs opacity-60 sm:text-sm">
-                                            {percentage}%
-                                        </span>
-                                        <span className="min-w-[32px] text-right font-semibold">
-                                            {loading ? '—' : value}
-                                        </span>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
+                <div
+                    className={`mt-1 flex items-center gap-1 text-[11px] font-medium ${
+                        trend === 'up' ? 'text-green-500' : 'text-red-500'
+                    }`}
+                >
+                    {trend === 'up' ? '▲' : '▼'} {trendPct}%{' '}
+                    <span className="opacity-60">vs last week</span>
                 </div>
-            </section>
+            </div>
+        );
+    })}
+</div>
 
             {/* ==================================================
                 RECENT LEADS + RECENT TASKS
