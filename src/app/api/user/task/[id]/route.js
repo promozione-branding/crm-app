@@ -25,7 +25,7 @@ export async function GET(request, { params }) {
 
 // PUT /api/user/task/:id
 export async function PUT(request, { params }) {
-    try { 
+    try {
         await connectDB();
         const user = await getCurrentUser(request);
         const { id } = await params;
@@ -44,16 +44,20 @@ export async function PUT(request, { params }) {
             null;
 
         if (newAssignedTo && previousAssignedTo !== newAssignedTo) {
-            await Notification.create({
-                companyId: task.companyId,
-                recipient: newAssignedTo,
-                actor: user._id,
-                type: 'task_assigned',
-                title: 'New Task Assigned',
-                message: `${task.title} — due ${new Date(task.dueDate).toLocaleDateString('en-IN')}`,
-                refModel: 'LeadTask',
-                refId: task._id,
-            });
+            try {
+                await Notification.create({
+                    companyId: task.companyId,
+                    recipient: newAssignedTo,
+                    actor: user._id,
+                    type: 'task_assigned',
+                    title: 'New Task Assigned',
+                    message: `${task.title} — due ${new Date(task.dueDate).toLocaleDateString('en-IN')}`,
+                    refModel: 'LeadTask',
+                    refId: task._id,
+                });
+            } catch (notifErr) {
+                console.error('❌ Task notification failed:', notifErr);
+            }
         }
 
         return NextResponse.json({ success: true, message: 'Task updated successfully.', data: task });
