@@ -3,7 +3,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Phone, UserRound, Package } from 'lucide-react';
+import { ChevronDown, ChevronUp, Phone, Package } from 'lucide-react';
+import StageBadge from '@/components/user/ui/StageBadge';
+
 
 export default function MobileLeadsTable({
     loading,
@@ -18,35 +20,20 @@ export default function MobileLeadsTable({
 }) {
     const [expandedId, setExpandedId] = useState(null);
 
-    // =====================================================
-    // SERIAL NUMBER
-    // =====================================================
-
     const getSerialNumber = (index) => (page - 1) * rowsPerPage + index + 1;
 
-    // =====================================================
-    // PAGINATION CALC
-    // =====================================================
-
     const totalPages = Math.ceil(total / rowsPerPage);
-
     const startItem = total > 0 ? (page - 1) * rowsPerPage + 1 : 0;
-
     const endItem = total > 0 ? Math.min(page * rowsPerPage, total) : 0;
 
     const handlePageChange = (newPage) => {
         if (newPage < 1) return;
-
-        if (totalPages > 0 && newPage > totalPages) {
-            return;
-        }
-
+        if (totalPages > 0 && newPage > totalPages) return;
         setPage?.(newPage);
     };
 
     const handleRowsPerPageChange = (e) => {
         const value = Number(e.target.value);
-
         setRowsPerPage?.(value);
         setPage?.(1);
     };
@@ -88,33 +75,23 @@ export default function MobileLeadsTable({
 
                 return (
                     <div key={lead._id} className="border-app bg-app overflow-hidden rounded-xl border shadow-sm">
-                        {/* =================================================
-                            MAIN CARD
-                        ================================================= */}
-
                         <button
                             type="button"
                             onClick={() => setExpandedId((prev) => (prev === lead._id ? null : lead._id))}
                             className="hover-app w-full px-4 py-3.5 text-left transition"
                         >
                             <div className="flex min-w-0 items-stretch gap-3">
-                                {/* =================================================
-                                    S.NO
-                                ================================================= */}
+                                {/* S.NO */}
                                 <div className="flex w-7 shrink-0 items-center">
                                     <span className="text-xs font-medium opacity-50">#{getSerialNumber(index)}</span>
                                 </div>
 
-                                {/* =================================================
-                                    NAME + PRODUCT
-                                ================================================= */}
+                                {/* NAME + PRODUCT */}
                                 <div className="min-w-0 flex-1">
-                                    {/* ROW 1 — NAME */}
                                     <div className="flex h-6 min-w-0 items-center">
                                         <h3 className="min-w-0 truncate text-sm font-semibold">{lead.name || 'Unnamed Lead'}</h3>
                                     </div>
 
-                                    {/* ROW 2 — PRODUCT */}
                                     <div className="mt-1.5 flex h-6 min-w-0 items-center">
                                         {lead.product ? (
                                             <span
@@ -122,7 +99,6 @@ export default function MobileLeadsTable({
                                                 title={lead.product}
                                             >
                                                 <Package size={11} className="shrink-0" />
-
                                                 <span className="truncate">{lead.product}</span>
                                             </span>
                                         ) : (
@@ -131,20 +107,11 @@ export default function MobileLeadsTable({
                                     </div>
                                 </div>
 
-                                {/* =================================================
-    RIGHT SIDE — STATUS + CALL
-    
-    Lead stage first, phone icon after it.
-================================================= */}
+                                {/* RIGHT SIDE — STAGE + CALL */}
                                 <div className="flex shrink-0 items-center gap-2">
-                                    {/* STATUS */}
-                                    <div className="flex items-center justify-start">
-                                        <span className="inline-flex max-w-full truncate rounded-lg bg-blue-500/10 px-2.5 py-1 text-[11px] font-medium text-blue-500 capitalize">
-                                            {(lead.stage || '—').replace(/_/g, ' ')}
-                                        </span>
-                                    </div>
+                                    {/* 👇 REUSE StageBadge — same colors as desktop */}
+                                    <StageBadge stage={lead.stage} />
 
-                                    {/* CALL ICON */}
                                     {lead.phone ? (
                                         <a
                                             href={`tel:${lead.phone}`}
@@ -158,36 +125,32 @@ export default function MobileLeadsTable({
                                     ) : null}
                                 </div>
 
-                                {/* =================================================
-                                    EXPAND ICON
-                                ================================================= */}
+                                {/* EXPAND ICON */}
                                 <div className="flex w-5 shrink-0 items-center justify-center opacity-50">
                                     {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                 </div>
                             </div>
                         </button>
 
-                        {/* =================================================
-                            EXPANDED DETAILS
-                        ================================================= */}
-
+                        {/* EXPANDED DETAILS */}
                         {isExpanded && (
                             <div className="border-app bg-surface border-t">
                                 <div className="space-y-3 p-4">
                                     <DetailRow label="Deal Value" value={lead.dealValue} />
-
                                     <DetailRow label="Lead Source" value={lead.source} />
+                                    <DetailRow
+                                        label="Created At"
+                                        value={lead.createdAt ? new Date(lead.createdAt).toLocaleDateString() : '—'}
+                                    />
+                                    <DetailRow
+                                        label="Last Modified"
+                                        value={lead.updatedAt ? new Date(lead.updatedAt).toLocaleDateString() : '—'}
+                                    />
 
-                                    <DetailRow label="Created At" value={lead.createdAt ? new Date(lead.createdAt).toLocaleDateString() : '—'} />
-
-                                    <DetailRow label="Last Modified" value={lead.updatedAt ? new Date(lead.updatedAt).toLocaleDateString() : '—'} />
-
-                                    {/* EDIT */}
                                     <button
                                         type="button"
                                         onClick={(e) => {
                                             e.stopPropagation();
-
                                             router.push(`/leads/edit/${lead._id}`);
                                         }}
                                         className="btn-primary mt-2 w-full rounded-lg py-2.5 text-sm font-medium"
@@ -201,20 +164,20 @@ export default function MobileLeadsTable({
                 );
             })}
 
-            {/* =====================================================
-                PAGINATION
-            ===================================================== */}
-
+            {/* PAGINATION */}
             {setPage && (
                 <div className="border-app bg-app flex flex-col gap-3 rounded-xl border px-4 py-3 text-sm">
-                    {/* SHOWING COUNT */}
-                    <p className="text-center opacity-70">{total > 0 ? `Showing ${startItem}-${endItem} of ${total}` : 'Showing 0 of 0'}</p>
+                    <p className="text-center opacity-70">
+                        {total > 0 ? `Showing ${startItem}-${endItem} of ${total}` : 'Showing 0 of 0'}
+                    </p>
 
-                    {/* CONTROLS */}
                     <div className="flex items-center justify-between gap-2">
-                        {/* ROWS PER PAGE */}
                         {setRowsPerPage && (
-                            <select value={rowsPerPage} onChange={handleRowsPerPageChange} className="border-app bg-app text-app rounded-lg border px-2 py-2">
+                            <select
+                                value={rowsPerPage}
+                                onChange={handleRowsPerPageChange}
+                                className="border-app bg-app text-app rounded-lg border px-2 py-2"
+                            >
                                 <option value={25}>25</option>
                                 <option value={50}>50</option>
                                 <option value={75}>75</option>
@@ -223,7 +186,6 @@ export default function MobileLeadsTable({
                         )}
 
                         <div className="flex items-center gap-2">
-                            {/* PREVIOUS */}
                             <button
                                 type="button"
                                 disabled={page <= 1}
@@ -233,12 +195,10 @@ export default function MobileLeadsTable({
                                 Prev
                             </button>
 
-                            {/* CURRENT PAGE */}
                             <button type="button" className="h-8 rounded-lg bg-blue-600 px-3 text-white">
                                 {page}
                             </button>
 
-                            {/* NEXT */}
                             <button
                                 type="button"
                                 disabled={totalPages === 0 || page >= totalPages}
@@ -267,7 +227,9 @@ function DetailRow({ label, value, badge = false }) {
             <span className="text-sm opacity-60">{label}</span>
 
             {badge ? (
-                <span className="max-w-[60%] rounded-full bg-blue-500/10 px-3 py-1 text-right text-sm text-blue-500 capitalize">{value || '—'}</span>
+                <span className="max-w-[60%] rounded-full bg-blue-500/10 px-3 py-1 text-right text-sm text-blue-500 capitalize">
+                    {value || '—'}
+                </span>
             ) : (
                 <span className="max-w-[60%] text-right text-sm break-words">{value || '—'}</span>
             )}
