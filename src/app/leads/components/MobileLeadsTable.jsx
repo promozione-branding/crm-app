@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Phone, Package } from 'lucide-react';
 import StageBadge from '@/components/user/ui/StageBadge';
-
+import { useCallLog } from '@/hooks/useCallLog';
 
 export default function MobileLeadsTable({
     loading,
@@ -19,6 +19,9 @@ export default function MobileLeadsTable({
     setRowsPerPage,
 }) {
     const [expandedId, setExpandedId] = useState(null);
+
+    // 👇 Call logging hook
+    const { logCall } = useCallLog();
 
     const getSerialNumber = (index) => (page - 1) * rowsPerPage + index + 1;
 
@@ -36,6 +39,29 @@ export default function MobileLeadsTable({
         const value = Number(e.target.value);
         setRowsPerPage?.(value);
         setPage?.(1);
+    };
+
+    const toggleExpand = (leadId) => {
+        setExpandedId((prev) => (prev === leadId ? null : leadId));
+    };
+
+    // =====================================================
+    // CALL HANDLER
+    // =====================================================
+
+    const handleCallClick = async (e, lead) => {
+        e.stopPropagation();
+
+        // Log the call (fire and forget)
+        logCall({
+            refId: lead._id,
+            phoneNumber: lead.phone,
+            refModel: 'Lead',
+            source: 'mobile_card',
+        });
+
+        // Open the dialer
+        window.location.href = `tel:${lead.phone}`;
     };
 
     // =====================================================
@@ -75,10 +101,18 @@ export default function MobileLeadsTable({
 
                 return (
                     <div key={lead._id} className="border-app bg-app overflow-hidden rounded-xl border shadow-sm">
-                        <button
-                            type="button"
-                            onClick={() => setExpandedId((prev) => (prev === lead._id ? null : lead._id))}
-                            className="hover-app w-full px-4 py-3.5 text-left transition"
+                        {/* ✅ Outer is a DIV now — no nested button error */}
+                        <div
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => toggleExpand(lead._id)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    toggleExpand(lead._id);
+                                }
+                            }}
+                            className="hover-app w-full cursor-pointer px-4 py-3.5 text-left transition"
                         >
                             <div className="flex min-w-0 items-stretch gap-3">
                                 {/* S.NO */}
@@ -109,19 +143,18 @@ export default function MobileLeadsTable({
 
                                 {/* RIGHT SIDE — STAGE + CALL */}
                                 <div className="flex shrink-0 items-center gap-2">
-                                    {/* 👇 REUSE StageBadge — same colors as desktop */}
                                     <StageBadge stage={lead.stage} />
 
                                     {lead.phone ? (
-                                        <a
-                                            href={`tel:${lead.phone}`}
-                                            onClick={(e) => e.stopPropagation()}
+                                        <button
+                                            type="button"
+                                            onClick={(e) => handleCallClick(e, lead)}
                                             title={`Call ${lead.phone}`}
                                             aria-label={`Call ${lead.phone}`}
                                             className="flex h-8 w-8 items-center justify-center rounded-full border border-amber-700/40 bg-amber-900/70 text-amber-50 opacity-70 transition hover:opacity-100"
                                         >
                                             <Phone size={15} />
-                                        </a>
+                                        </button>
                                     ) : null}
                                 </div>
 
@@ -130,7 +163,7 @@ export default function MobileLeadsTable({
                                     {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                 </div>
                             </div>
-                        </button>
+                        </div>
 
                         {/* EXPANDED DETAILS */}
                         {isExpanded && (
