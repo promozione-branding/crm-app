@@ -19,10 +19,7 @@ export async function GET(req) {
 
         const decoded = jwt.verify(token, ENV.JWT_CLIENT_SECRET);
 
-        const user = await User.findById(decoded.id)
-            .select('-password')
-            .populate('roleId', 'name permissions isSystemRole')
-            .lean();
+        const user = await User.findById(decoded.id).select('-password').populate('roleId', 'name permissions isSystemRole').lean();
 
         if (!user) {
             return NextResponse.json({ success: false, message: 'User not found.' }, { status: 404 });

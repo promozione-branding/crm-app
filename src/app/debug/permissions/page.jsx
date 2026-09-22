@@ -28,10 +28,7 @@ export default function DebugPermissionsPage() {
     const totalModules = PERMISSION_MODULES.length;
     const grantedModules = permissions.length;
 
-    const totalAllowedActions = permissions.reduce(
-        (sum, p) => sum + (Array.isArray(p.actions) ? p.actions.length : 0),
-        0
-    );
+    const totalAllowedActions = permissions.reduce((sum, p) => sum + (Array.isArray(p.actions) ? p.actions.length : 0), 0);
 
     const isAllowed = hasPermission(permissions, testModule, testAction);
 
@@ -63,9 +60,7 @@ export default function DebugPermissionsPage() {
                                 {grantedModules}/{totalModules} modules
                             </span>
 
-                            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 font-mono text-emerald-500">
-                                {totalAllowedActions} actions
-                            </span>
+                            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 font-mono text-emerald-500">{totalAllowedActions} actions</span>
                         </div>
                     </div>
                 </div>
@@ -77,16 +72,12 @@ export default function DebugPermissionsPage() {
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="bg-app border-app rounded-2xl border p-5">
                         <h2 className="mb-3 text-sm font-semibold">👤 User</h2>
-                        <pre className="bg-surface border-app overflow-auto rounded-lg border p-3 text-xs">
-                            {JSON.stringify(user, null, 2)}
-                        </pre>
+                        <pre className="bg-surface border-app overflow-auto rounded-lg border p-3 text-xs">{JSON.stringify(user, null, 2)}</pre>
                     </div>
 
                     <div className="bg-app border-app rounded-2xl border p-5">
                         <h2 className="mb-3 text-sm font-semibold">🎭 Role</h2>
-                        <pre className="bg-surface border-app overflow-auto rounded-lg border p-3 text-xs">
-                            {JSON.stringify(role, null, 2)}
-                        </pre>
+                        <pre className="bg-surface border-app overflow-auto rounded-lg border p-3 text-xs">{JSON.stringify(role, null, 2)}</pre>
                     </div>
                 </div>
 
@@ -97,9 +88,7 @@ export default function DebugPermissionsPage() {
                 <div className="bg-app border-app rounded-2xl border p-5">
                     <h2 className="mb-3 text-sm font-semibold">🧪 Interactive Tester</h2>
 
-                    <p className="text-muted mb-3 text-xs">
-                        Pick any module + action → see instantly if the current user is allowed.
-                    </p>
+                    <p className="text-muted mb-3 text-xs">Pick any module + action → see instantly if the current user is allowed.</p>
 
                     <div className="flex flex-wrap items-center gap-2">
                         <select
@@ -152,9 +141,7 @@ export default function DebugPermissionsPage() {
 
                 <div className="bg-app border-app rounded-2xl border p-5">
                     <h2 className="mb-3 text-sm font-semibold">📦 Raw Permissions Array</h2>
-                    <pre className="bg-surface border-app overflow-auto rounded-lg border p-3 text-xs">
-                        {JSON.stringify(permissions, null, 2)}
-                    </pre>
+                    <pre className="bg-surface border-app overflow-auto rounded-lg border p-3 text-xs">{JSON.stringify(permissions, null, 2)}</pre>
                 </div>
 
                 {/* ============================================ */}
@@ -191,9 +178,7 @@ export default function DebugPermissionsPage() {
 
                                             <td className="p-2">
                                                 {scope ? (
-                                                    <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-blue-500">
-                                                        {scope}
-                                                    </span>
+                                                    <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-blue-500">{scope}</span>
                                                 ) : (
                                                     <span className="text-muted">—</span>
                                                 )}
@@ -251,17 +236,13 @@ export default function DebugPermissionsPage() {
                                 <div
                                     key={`${mod}.${act}`}
                                     className={`rounded-lg border p-2 text-xs ${
-                                        ok
-                                            ? 'border-emerald-500/30 bg-emerald-500/5'
-                                            : 'border-red-500/30 bg-red-500/5'
+                                        ok ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-red-500/30 bg-red-500/5'
                                     }`}
                                 >
                                     <div className="font-mono">
                                         {mod}.{act}
                                     </div>
-                                    <div className={ok ? 'text-emerald-500' : 'text-red-500'}>
-                                        {ok ? 'ALLOWED' : 'DENIED'}
-                                    </div>
+                                    <div className={ok ? 'text-emerald-500' : 'text-red-500'}>{ok ? 'ALLOWED' : 'DENIED'}</div>
                                 </div>
                             );
                         })}

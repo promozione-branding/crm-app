@@ -12,9 +12,7 @@ export default function Stickyfooter() {
     const pathname = usePathname();
     const { map, loading } = usePermissionMap();
 
-    const visibleItems = loading
-        ? []
-        : MOBILE_NAV_ITEMS.filter((item) => map[`${item.module}.access`]);
+    const visibleItems = loading ? [] : MOBILE_NAV_ITEMS.filter((item) => map[`${item.module}.access`]);
 
     // Hide the whole footer if the user has no mobile nav permissions
     if (!loading && visibleItems.length === 0) return null;

@@ -17,9 +17,7 @@ export default function Sidebar() {
 
     // 👇 Filter items by permission. While loading, show nothing
     //    to avoid a flash of unauthorized links.
-    const visibleItems = loading
-        ? []
-        : NAV_ITEMS.filter((item) => map[`${item.module}.access`]);
+    const visibleItems = loading ? [] : NAV_ITEMS.filter((item) => map[`${item.module}.access`]);
 
     return (
         <aside
@@ -77,9 +75,7 @@ export default function Sidebar() {
 
                 {/* Empty state if user has NO nav permissions */}
                 {!loading && visibleItems.length === 0 && open && (
-                    <div className="text-muted px-3 py-6 text-center text-xs">
-                        No modules available for your role.
-                    </div>
+                    <div className="text-muted px-3 py-6 text-center text-xs">No modules available for your role.</div>
                 )}
             </nav>
 

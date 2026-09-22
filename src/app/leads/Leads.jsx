@@ -37,12 +37,13 @@ const columns = [
         label: 'Phone',
         sortable: true,
     },
-   {
-    key: 'stage',
-    label: 'Stage',
-    sortable: true,
-    render: (lead) => <StageBadge stage={lead.stage} />,
-},,
+    {
+        key: 'stage',
+        label: 'Stage',
+        sortable: true,
+        render: (lead) => <StageBadge stage={lead.stage} />,
+    },
+    ,
     {
         key: 'dealValue',
         label: 'Deal Value',

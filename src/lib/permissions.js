@@ -108,11 +108,7 @@ export function usePermissions() {
                 return payload;
             })
             .catch((err) => {
-                console.error(
-                    '[usePermissions] FAILED:',
-                    err?.response?.status,
-                    err?.response?.data || err?.message
-                );
+                console.error('[usePermissions] FAILED:', err?.response?.status, err?.response?.data || err?.message);
 
                 return { user: null, role: null, permissions: [] };
             });

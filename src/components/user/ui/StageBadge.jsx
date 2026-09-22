@@ -1,4 +1,3 @@
-
 const stageStyles = {
     new: 'bg-cyan-500/10 text-cyan-600',
     contacted: 'bg-yellow-500/10 text-yellow-600',
@@ -12,22 +11,11 @@ const stageStyles = {
 const formatStage = (stage) => {
     if (!stage) return '—';
 
-    return stage
-        .replace(/_/g, ' ')
-        .replace(/\b\w/g, (char) => char.toUpperCase());
+    return stage.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
 export default function StageBadge({ stage }) {
-    const styles =
-        stageStyles[stage?.toLowerCase()] ||
-        'bg-gray-500/10 text-gray-600';
+    const styles = stageStyles[stage?.toLowerCase()] || 'bg-gray-500/10 text-gray-600';
 
-    return (
-        <span
-            className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${styles}`}
-        >
-            {formatStage(stage)}
-        </span>
-    );
+    return <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${styles}`}>{formatStage(stage)}</span>;
 }
-

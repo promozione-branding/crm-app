@@ -1,13 +1,6 @@
 // src/constants/navigation.js
 
-import {
-    LayoutDashboard,
-    Users,
-    ClipboardList,
-    BarChart3,
-    PhoneCall,
-    Settings,
-} from 'lucide-react';
+import { LayoutDashboard, Users, ClipboardList, BarChart3, PhoneCall, Settings } from 'lucide-react';
 
 /**
  * Client app navigation.
@@ -58,6 +51,4 @@ export const NAV_ITEMS = [
  * Short label for the mobile sticky footer
  * (slightly different from the sidebar).
  */
-export const MOBILE_NAV_ITEMS = NAV_ITEMS.filter((item) =>
-    ['dashboard', 'leads', 'tasks', 'reports', 'call_logs'].includes(item.module)
-);
+export const MOBILE_NAV_ITEMS = NAV_ITEMS.filter((item) => ['dashboard', 'leads', 'tasks', 'reports', 'call_logs'].includes(item.module));

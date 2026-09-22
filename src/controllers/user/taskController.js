@@ -157,9 +157,7 @@ export const getAllTasksService = async (user, query = {}) => {
         }
 
         if (filter.assignedTo) {
-            const scopeIds = filter.assignedTo.$in
-                ? filter.assignedTo.$in.map((id) => id.toString())
-                : [filter.assignedTo.toString()];
+            const scopeIds = filter.assignedTo.$in ? filter.assignedTo.$in.map((id) => id.toString()) : [filter.assignedTo.toString()];
 
             if (scopeIds.includes(assignedTo.toString())) {
                 filter.assignedTo = assignedTo;
@@ -263,13 +261,9 @@ export const getAllTasksService = async (user, query = {}) => {
         const matchingUserIds = matchingUsers.map((item) => item._id);
 
         if (filter.assignedTo) {
-            const scopeIds = filter.assignedTo.$in
-                ? filter.assignedTo.$in.map((id) => id.toString())
-                : [filter.assignedTo.toString()];
+            const scopeIds = filter.assignedTo.$in ? filter.assignedTo.$in.map((id) => id.toString()) : [filter.assignedTo.toString()];
 
-            const intersection = matchingUserIds.filter((id) =>
-                scopeIds.includes(id.toString())
-            );
+            const intersection = matchingUserIds.filter((id) => scopeIds.includes(id.toString()));
 
             filter.assignedTo = { $in: intersection };
         } else {

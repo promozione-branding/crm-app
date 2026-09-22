@@ -36,7 +36,7 @@ export default function TaskCard({ task, onAction, sno }) {
     // ============================================================
 
     return (
-        <div className="border-app bg-app overflow-hidden rounded-lg border mb-3 last:mb-0">
+        <div className="border-app bg-app mb-3 overflow-hidden rounded-lg border last:mb-0">
             {/* ==================================================
                 COMPACT TASK ROW
             ================================================== */}

@@ -5,13 +5,7 @@
 import { hasPermission, usePermissions } from '@/lib/permissions';
 import NoAccess from './NoAccess';
 
-export default function PermissionGate({
-    module,
-    action = 'access',
-    children,
-    loading = null, 
-    message,
-}) {
+export default function PermissionGate({ module, action = 'access', children, loading = null, message }) {
     const { permissions, loading: permissionsLoading } = usePermissions();
 
     if (permissionsLoading) {

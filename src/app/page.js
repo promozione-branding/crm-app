@@ -11,7 +11,6 @@ export default function Home() {
                 <div className="flex items-center gap-3">
                     <Image src="/logoo.webp" alt="Logo" width={120} height={40} className="object-contain" />
                 </div>
-                
 
                 <button className="flex items-center gap-1 rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600">
                     Book a Demo <ArrowRight size={18} />

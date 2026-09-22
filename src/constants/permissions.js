@@ -26,7 +26,7 @@ export const PERMISSION_ACTIONS = [
         label: 'Export',
     },
     {
-        key: 'mass_edit', 
+        key: 'mass_edit',
         label: 'Mass Edit',
     },
     {
