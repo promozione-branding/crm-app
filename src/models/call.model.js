@@ -69,16 +69,7 @@ const CallSchema = new mongoose.Schema(
         // ---- OUTCOME / DISPOSITION (updated after the call)
         outcome: {
             type: String,
-            enum: [
-                '',
-                'connected',
-                'not_connected',
-                'interested',
-                'not_interested',
-                'callback',
-                'wrong_number',
-                'converted',
-            ],
+            enum: ['', 'connected', 'not_connected', 'interested', 'not_interested', 'callback', 'wrong_number', 'converted'],
             default: '',
         },
 

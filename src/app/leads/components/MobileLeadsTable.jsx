@@ -171,14 +171,8 @@ export default function MobileLeadsTable({
                                 <div className="space-y-3 p-4">
                                     <DetailRow label="Deal Value" value={lead.dealValue} />
                                     <DetailRow label="Lead Source" value={lead.source} />
-                                    <DetailRow
-                                        label="Created At"
-                                        value={lead.createdAt ? new Date(lead.createdAt).toLocaleDateString() : '—'}
-                                    />
-                                    <DetailRow
-                                        label="Last Modified"
-                                        value={lead.updatedAt ? new Date(lead.updatedAt).toLocaleDateString() : '—'}
-                                    />
+                                    <DetailRow label="Created At" value={lead.createdAt ? new Date(lead.createdAt).toLocaleDateString() : '—'} />
+                                    <DetailRow label="Last Modified" value={lead.updatedAt ? new Date(lead.updatedAt).toLocaleDateString() : '—'} />
 
                                     <button
                                         type="button"
@@ -200,17 +194,11 @@ export default function MobileLeadsTable({
             {/* PAGINATION */}
             {setPage && (
                 <div className="border-app bg-app flex flex-col gap-3 rounded-xl border px-4 py-3 text-sm">
-                    <p className="text-center opacity-70">
-                        {total > 0 ? `Showing ${startItem}-${endItem} of ${total}` : 'Showing 0 of 0'}
-                    </p>
+                    <p className="text-center opacity-70">{total > 0 ? `Showing ${startItem}-${endItem} of ${total}` : 'Showing 0 of 0'}</p>
 
                     <div className="flex items-center justify-between gap-2">
                         {setRowsPerPage && (
-                            <select
-                                value={rowsPerPage}
-                                onChange={handleRowsPerPageChange}
-                                className="border-app bg-app text-app rounded-lg border px-2 py-2"
-                            >
+                            <select value={rowsPerPage} onChange={handleRowsPerPageChange} className="border-app bg-app text-app rounded-lg border px-2 py-2">
                                 <option value={25}>25</option>
                                 <option value={50}>50</option>
                                 <option value={75}>75</option>
@@ -260,9 +248,7 @@ function DetailRow({ label, value, badge = false }) {
             <span className="text-sm opacity-60">{label}</span>
 
             {badge ? (
-                <span className="max-w-[60%] rounded-full bg-blue-500/10 px-3 py-1 text-right text-sm text-blue-500 capitalize">
-                    {value || '—'}
-                </span>
+                <span className="max-w-[60%] rounded-full bg-blue-500/10 px-3 py-1 text-right text-sm text-blue-500 capitalize">{value || '—'}</span>
             ) : (
                 <span className="max-w-[60%] text-right text-sm break-words">{value || '—'}</span>
             )}

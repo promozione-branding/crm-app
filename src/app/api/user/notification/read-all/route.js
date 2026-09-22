@@ -14,32 +14,20 @@ export async function POST(request) {
         const token = request.cookies.get(ENV.CLIENT_COOKIE_NAME)?.value;
 
         if (!token) {
-            return NextResponse.json(
-                { success: false, message: 'Not authenticated' },
-                { status: 401 }
-            );
+            return NextResponse.json({ success: false, message: 'Not authenticated' }, { status: 401 });
         }
 
         const decoded = jwt.verify(token, ENV.JWT_CLIENT_SECRET);
         const user = await User.findById(decoded.id);
 
         if (!user) {
-            return NextResponse.json(
-                { success: false, message: 'Unauthorized' },
-                { status: 401 }
-            );
+            return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
         }
 
-        await Notification.updateMany(
-            { recipient: user._id, isRead: false },
-            { isRead: true }
-        );
+        await Notification.updateMany({ recipient: user._id, isRead: false }, { isRead: true });
 
         return NextResponse.json({ success: true, message: 'All marked as read' });
     } catch (error) {
-        return NextResponse.json(
-            { success: false, message: error.message },
-            { status: 400 }
-        );
+        return NextResponse.json({ success: false, message: error.message }, { status: 400 });
     }
 }

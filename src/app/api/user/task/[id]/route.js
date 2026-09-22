@@ -38,10 +38,7 @@ export async function PUT(request, { params }) {
         const task = await updateTaskService(user, id, body);
 
         // 👇 Notify new assignee if changed
-        const newAssignedTo =
-            task?.assignedTo?._id?.toString() ||
-            task?.assignedTo?.toString() ||
-            null;
+        const newAssignedTo = task?.assignedTo?._id?.toString() || task?.assignedTo?.toString() || null;
 
         if (newAssignedTo && previousAssignedTo !== newAssignedTo) {
             try {

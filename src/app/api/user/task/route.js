@@ -17,11 +17,7 @@ export async function POST(request) {
         const task = await createTaskService(user, body);
 
         // 👇 Notify assignee on create
-        const assignedTo =
-            task?.assignedTo?._id?.toString() ||
-            task?.assignedTo?.toString() ||
-            body?.assignedTo?.toString() ||
-            null;
+        const assignedTo = task?.assignedTo?._id?.toString() || task?.assignedTo?.toString() || body?.assignedTo?.toString() || null;
 
         if (assignedTo) {
             try {

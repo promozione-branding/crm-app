@@ -14,20 +14,14 @@ export async function GET(request) {
         const token = request.cookies.get(ENV.CLIENT_COOKIE_NAME)?.value;
 
         if (!token) {
-            return NextResponse.json(
-                { success: false, message: 'Not authenticated' },
-                { status: 401 }
-            );
+            return NextResponse.json({ success: false, message: 'Not authenticated' }, { status: 401 });
         }
 
         const decoded = jwt.verify(token, ENV.JWT_CLIENT_SECRET);
         const user = await User.findById(decoded.id);
 
         if (!user) {
-            return NextResponse.json(
-                { success: false, message: 'Unauthorized' },
-                { status: 401 }
-            );
+            return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
         }
 
         const { searchParams } = new URL(request.url);
@@ -48,11 +42,7 @@ export async function GET(request) {
         const skip = (page - 1) * limit;
 
         const [items, total] = await Promise.all([
-            Notification.find(filter)
-                .sort({ createdAt: -1 })
-                .skip(skip)
-                .limit(limit)
-                .lean(),
+            Notification.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
 
             Notification.countDocuments(filter),
         ]);
@@ -70,9 +60,6 @@ export async function GET(request) {
             },
         });
     } catch (error) {
-        return NextResponse.json(
-            { success: false, message: error.message },
-            { status: 400 }
-        );
+        return NextResponse.json({ success: false, message: error.message }, { status: 400 });
     }
 }

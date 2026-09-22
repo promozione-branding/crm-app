@@ -45,9 +45,7 @@ export default function Navbar() {
                 const res = await axios.get('/api/user/notification', {
                     withCredentials: true,
                 });
-                setNotifications(
-                    res.data?.data || { leads: [], tasks: [], unreadCount: 0 }
-                );
+                setNotifications(res.data?.data || { leads: [], tasks: [], unreadCount: 0 });
             } catch (err) {
                 // silent
             }
@@ -120,21 +118,13 @@ export default function Navbar() {
     const handleNotificationClick = async (n) => {
         if (!n.isRead) {
             try {
-                await axios.patch(
-                    `/api/user/notification/${n._id}`,
-                    {},
-                    { withCredentials: true }
-                );
+                await axios.patch(`/api/user/notification/${n._id}`, {}, { withCredentials: true });
 
                 setNotifications((prev) => ({
                     ...prev,
                     unreadCount: Math.max(0, prev.unreadCount - 1),
-                    leads: prev.leads.map((x) =>
-                        x._id === n._id ? { ...x, isRead: true } : x
-                    ),
-                    tasks: prev.tasks.map((x) =>
-                        x._id === n._id ? { ...x, isRead: true } : x
-                    ),
+                    leads: prev.leads.map((x) => (x._id === n._id ? { ...x, isRead: true } : x)),
+                    tasks: prev.tasks.map((x) => (x._id === n._id ? { ...x, isRead: true } : x)),
                 }));
             } catch (err) {
                 // silent
@@ -150,11 +140,7 @@ export default function Navbar() {
     // ---------------- MARK ALL READ ----------------
     const handleMarkAllRead = async () => {
         try {
-            await axios.post(
-                '/api/user/notification/read-all',
-                {},
-                { withCredentials: true }
-            );
+            await axios.post('/api/user/notification/read-all', {}, { withCredentials: true });
 
             setNotifications((prev) => ({
                 leads: prev.leads.map((x) => ({ ...x, isRead: true })),
@@ -211,15 +197,10 @@ export default function Navbar() {
                                 <p>Notifications</p>
 
                                 <div className="flex items-center gap-2">
-                                    <div className="rounded-md bg-blue-500 px-1.5 py-0.5 text-xs font-light text-white">
-                                        {notifications.unreadCount}
-                                    </div>
+                                    <div className="rounded-md bg-blue-500 px-1.5 py-0.5 text-xs font-light text-white">{notifications.unreadCount}</div>
 
                                     {notifications.unreadCount > 0 && (
-                                        <button
-                                            onClick={handleMarkAllRead}
-                                            className="text-xs text-blue-500 hover:underline"
-                                        >
+                                        <button onClick={handleMarkAllRead} className="text-xs text-blue-500 hover:underline">
                                             Mark all
                                         </button>
                                     )}
@@ -228,14 +209,10 @@ export default function Navbar() {
 
                             <div className="max-h-96 overflow-y-auto">
                                 {/* ---------- LEADS ---------- */}
-                                <div className="border-app bg-app/50 border-b px-4 py-2 text-xs font-semibold uppercase opacity-70">
-                                    Leads
-                                </div>
+                                <div className="border-app bg-app/50 border-b px-4 py-2 text-xs font-semibold uppercase opacity-70">Leads</div>
 
                                 {notifications.leads.length === 0 ? (
-                                    <div className="text-muted px-4 py-3 text-xs">
-                                        No lead notifications
-                                    </div>
+                                    <div className="text-muted px-4 py-3 text-xs">No lead notifications</div>
                                 ) : (
                                     notifications.leads.map((n) => (
                                         <button
@@ -250,33 +227,21 @@ export default function Navbar() {
                                             </div>
 
                                             <div className="min-w-0 flex-1">
-                                                <p className="text-app truncate text-sm font-medium">
-                                                    {n.title}
-                                                </p>
-                                                <p className="text-muted truncate text-xs">
-                                                    {n.message}
-                                                </p>
-                                                <p className="text-muted mt-0.5 text-[10px]">
-                                                    {new Date(n.createdAt).toLocaleString('en-IN')}
-                                                </p>
+                                                <p className="text-app truncate text-sm font-medium">{n.title}</p>
+                                                <p className="text-muted truncate text-xs">{n.message}</p>
+                                                <p className="text-muted mt-0.5 text-[10px]">{new Date(n.createdAt).toLocaleString('en-IN')}</p>
                                             </div>
 
-                                            {!n.isRead && (
-                                                <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
-                                            )}
+                                            {!n.isRead && <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />}
                                         </button>
                                     ))
                                 )}
 
                                 {/* ---------- TASKS ---------- */}
-                                <div className="border-app bg-app/50 border-b px-4 py-2 text-xs font-semibold uppercase opacity-70">
-                                    Tasks
-                                </div>
+                                <div className="border-app bg-app/50 border-b px-4 py-2 text-xs font-semibold uppercase opacity-70">Tasks</div>
 
                                 {notifications.tasks.length === 0 ? (
-                                    <div className="text-muted px-4 py-3 text-xs">
-                                        No task notifications
-                                    </div>
+                                    <div className="text-muted px-4 py-3 text-xs">No task notifications</div>
                                 ) : (
                                     notifications.tasks.map((n) => (
                                         <button
@@ -291,20 +256,12 @@ export default function Navbar() {
                                             </div>
 
                                             <div className="min-w-0 flex-1">
-                                                <p className="text-app truncate text-sm font-medium">
-                                                    {n.title}
-                                                </p>
-                                                <p className="text-muted truncate text-xs">
-                                                    {n.message}
-                                                </p>
-                                                <p className="text-muted mt-0.5 text-[10px]">
-                                                    {new Date(n.createdAt).toLocaleString('en-IN')}
-                                                </p>
+                                                <p className="text-app truncate text-sm font-medium">{n.title}</p>
+                                                <p className="text-muted truncate text-xs">{n.message}</p>
+                                                <p className="text-muted mt-0.5 text-[10px]">{new Date(n.createdAt).toLocaleString('en-IN')}</p>
                                             </div>
 
-                                            {!n.isRead && (
-                                                <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
-                                            )}
+                                            {!n.isRead && <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />}
                                         </button>
                                     ))
                                 )}
@@ -341,29 +298,20 @@ export default function Navbar() {
                             </div>
 
                             {map['profile.access'] && (
-                                <Link
-                                    href="/profile"
-                                    className="hover-app flex items-center gap-3 px-4 py-3 transition"
-                                >
+                                <Link href="/profile" className="hover-app flex items-center gap-3 px-4 py-3 transition">
                                     <User size={18} />
                                     Profile
                                 </Link>
                             )}
 
                             {map['settings.access'] && (
-                                <Link
-                                    href="/settings"
-                                    className="hover-app flex items-center gap-3 px-4 py-3 transition"
-                                >
+                                <Link href="/settings" className="hover-app flex items-center gap-3 px-4 py-3 transition">
                                     <Settings size={18} />
                                     Settings
                                 </Link>
                             )}
 
-                            <button
-                                onClick={handleLogout}
-                                className="flex w-full items-center gap-3 px-4 py-3 text-red-500 transition hover:bg-red-500/10"
-                            >
+                            <button onClick={handleLogout} className="flex w-full items-center gap-3 px-4 py-3 text-red-500 transition hover:bg-red-500/10">
                                 <LogOut size={18} />
                                 Logout
                             </button>

@@ -4,14 +4,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import {
-    UserPlus,
-    CheckCircle2,
-    Clock,
-    ArrowRight,
-    Users as UsersIcon,
-    ClipboardList,
-} from 'lucide-react';
+import { UserPlus, CheckCircle2, Clock, ArrowRight, Users as UsersIcon, ClipboardList } from 'lucide-react';
 
 // ============================================================
 // CHART ITEMS
@@ -77,11 +70,7 @@ const timeAgo = (date) => {
 // ============================================================
 
 export default function DashboardAnalytics({ stats, loading }) {
-    const total =
-        Number(stats.users || 0) +
-        Number(stats.leads || 0) +
-        Number(stats.calls || 0) +
-        Number(stats.tasks || 0);
+    const total = Number(stats.users || 0) + Number(stats.leads || 0) + Number(stats.calls || 0) + Number(stats.tasks || 0);
 
     const radius = 72;
     const circumference = 2 * Math.PI * radius;
@@ -95,42 +84,29 @@ export default function DashboardAnalytics({ stats, loading }) {
             {/* ==================================================
                 MAIN ANALYTICS CARD
             ================================================== */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 py-2">
-    {chartItems.map((item) => {
-        const value = Number(stats[item.key] || 0);
-        // fake trend for now — plug real % from API later
-        const trend = Math.random() > 0.5 ? 'up' : 'down';
-        const trendPct = (Math.random() * 15).toFixed(1);
+            <div className="grid grid-cols-2 gap-3 py-2 sm:gap-4">
+                {chartItems.map((item) => {
+                    const value = Number(stats[item.key] || 0);
+                    // fake trend for now — plug real % from API later
+                    const trend = Math.random() > 0.5 ? 'up' : 'down';
+                    const trendPct = (Math.random() * 15).toFixed(1);
 
-        return (
-            <div
-                key={item.key}
-                className="border-app hover-app rounded-xl border p-3 transition sm:p-4"
-            >
-                <div className="mb-2 flex items-center gap-2">
-                    <span
-                        className="h-2.5 w-2.5 rounded-full"
-                        style={{ backgroundColor: item.color }}
-                    />
-                    <span className="text-xs opacity-60">{item.label}</span>
-                </div>
+                    return (
+                        <div key={item.key} className="border-app hover-app rounded-xl border p-3 transition sm:p-4">
+                            <div className="mb-2 flex items-center gap-2">
+                                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                                <span className="text-xs opacity-60">{item.label}</span>
+                            </div>
 
-                <p className="text-2xl font-bold sm:text-3xl">
-                    {loading ? '—' : value}
-                </p>
+                            <p className="text-2xl font-bold sm:text-3xl">{loading ? '—' : value}</p>
 
-                <div
-                    className={`mt-1 flex items-center gap-1 text-[11px] font-medium ${
-                        trend === 'up' ? 'text-green-500' : 'text-red-500'
-                    }`}
-                >
-                    {trend === 'up' ? '▲' : '▼'} {trendPct}%{' '}
-                    <span className="opacity-60">vs last week</span>
-                </div>
+                            <div className={`mt-1 flex items-center gap-1 text-[11px] font-medium ${trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
+                                {trend === 'up' ? '▲' : '▼'} {trendPct}% <span className="opacity-60">vs last week</span>
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
-        );
-    })}
-</div>
 
             {/* ==================================================
                 RECENT LEADS + RECENT TASKS
@@ -144,19 +120,12 @@ export default function DashboardAnalytics({ stats, loading }) {
                                 <UserPlus size={16} />
                             </div>
                             <div>
-                                <h3 className="text-sm font-semibold sm:text-base">
-                                    Recent Leads
-                                </h3>
-                                <p className="text-[11px] opacity-60 sm:text-xs">
-                                    Latest 5 leads
-                                </p>
+                                <h3 className="text-sm font-semibold sm:text-base">Recent Leads</h3>
+                                <p className="text-[11px] opacity-60 sm:text-xs">Latest 5 leads</p>
                             </div>
                         </div>
 
-                        <Link
-                            href="/leads"
-                            className="text-muted hover-app flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium transition"
-                        >
+                        <Link href="/leads" className="text-muted hover-app flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium transition">
                             View all <ArrowRight size={13} />
                         </Link>
                     </div>
@@ -164,18 +133,11 @@ export default function DashboardAnalytics({ stats, loading }) {
                     {loading ? (
                         <div className="space-y-2">
                             {[1, 2, 3, 4, 5].map((i) => (
-                                <div
-                                    key={i}
-                                    className="border-app h-14 w-full animate-pulse rounded-xl border"
-                                />
+                                <div key={i} className="border-app h-14 w-full animate-pulse rounded-xl border" />
                             ))}
                         </div>
                     ) : recentLeads.length === 0 ? (
-                        <EmptyMini
-                            icon={UsersIcon}
-                            label="No leads yet"
-                            hint="Leads will appear here once added."
-                        />
+                        <EmptyMini icon={UsersIcon} label="No leads yet" hint="Leads will appear here once added." />
                     ) : (
                         <div className="space-y-2">
                             {recentLeads.map((lead) => (
@@ -196,13 +158,9 @@ export default function DashboardAnalytics({ stats, loading }) {
 
                                     {/* INFO */}
                                     <div className="min-w-0 flex-1">
-                                        <p className="truncate text-sm font-medium">
-                                            {lead.name || '—'}
-                                        </p>
+                                        <p className="truncate text-sm font-medium">{lead.name || '—'}</p>
                                         <p className="truncate text-[11px] opacity-60">
-                                            {lead.assignedTo?.name
-                                                ? `Assigned to ${lead.assignedTo.name}`
-                                                : lead.companyName || lead.phone || '—'}
+                                            {lead.assignedTo?.name ? `Assigned to ${lead.assignedTo.name}` : lead.companyName || lead.phone || '—'}
                                         </p>
                                     </div>
 
@@ -211,16 +169,13 @@ export default function DashboardAnalytics({ stats, loading }) {
                                         {lead.stage && (
                                             <span
                                                 className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                                                    STAGE_STYLES[lead.stage] ||
-                                                    'bg-gray-500/10 text-gray-600'
+                                                    STAGE_STYLES[lead.stage] || 'bg-gray-500/10 text-gray-600'
                                                 }`}
                                             >
                                                 {formatLabel(lead.stage)}
                                             </span>
                                         )}
-                                        <span className="text-[10px] opacity-50">
-                                            {timeAgo(lead.updatedAt)}
-                                        </span>
+                                        <span className="text-[10px] opacity-50">{timeAgo(lead.updatedAt)}</span>
                                     </div>
                                 </Link>
                             ))}
@@ -236,19 +191,12 @@ export default function DashboardAnalytics({ stats, loading }) {
                                 <ClipboardList size={16} />
                             </div>
                             <div>
-                                <h3 className="text-sm font-semibold sm:text-base">
-                                    Recent Tasks
-                                </h3>
-                                <p className="text-[11px] opacity-60 sm:text-xs">
-                                    Latest 5 tasks
-                                </p>
+                                <h3 className="text-sm font-semibold sm:text-base">Recent Tasks</h3>
+                                <p className="text-[11px] opacity-60 sm:text-xs">Latest 5 tasks</p>
                             </div>
                         </div>
 
-                        <Link
-                            href="/tasks"
-                            className="text-muted hover-app flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium transition"
-                        >
+                        <Link href="/tasks" className="text-muted hover-app flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium transition">
                             View all <ArrowRight size={13} />
                         </Link>
                     </div>
@@ -256,18 +204,11 @@ export default function DashboardAnalytics({ stats, loading }) {
                     {loading ? (
                         <div className="space-y-2">
                             {[1, 2, 3, 4, 5].map((i) => (
-                                <div
-                                    key={i}
-                                    className="border-app h-14 w-full animate-pulse rounded-xl border"
-                                />
+                                <div key={i} className="border-app h-14 w-full animate-pulse rounded-xl border" />
                             ))}
                         </div>
                     ) : recentTasks.length === 0 ? (
-                        <EmptyMini
-                            icon={ClipboardList}
-                            label="No tasks yet"
-                            hint="Tasks will appear here once assigned."
-                        />
+                        <EmptyMini icon={ClipboardList} label="No tasks yet" hint="Tasks will appear here once assigned." />
                     ) : (
                         <div className="space-y-2">
                             {recentTasks.map((task) => (
@@ -278,18 +219,12 @@ export default function DashboardAnalytics({ stats, loading }) {
                                 >
                                     {/* ICON */}
                                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-orange-500/10 text-orange-500">
-                                        {task.status === 'completed' ? (
-                                            <CheckCircle2 size={15} />
-                                        ) : (
-                                            <Clock size={15} />
-                                        )}
+                                        {task.status === 'completed' ? <CheckCircle2 size={15} /> : <Clock size={15} />}
                                     </div>
 
                                     {/* INFO */}
                                     <div className="min-w-0 flex-1">
-                                        <p className="truncate text-sm font-medium">
-                                            {task.title || '—'}
-                                        </p>
+                                        <p className="truncate text-sm font-medium">{task.title || '—'}</p>
                                         <p className="truncate text-[11px] opacity-60">
                                             {task.assignedTo?.name
                                                 ? `Assigned to ${task.assignedTo.name}`
@@ -304,16 +239,13 @@ export default function DashboardAnalytics({ stats, loading }) {
                                         {task.status && (
                                             <span
                                                 className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                                                    STATUS_STYLES[task.status] ||
-                                                    'bg-gray-500/10 text-gray-600'
+                                                    STATUS_STYLES[task.status] || 'bg-gray-500/10 text-gray-600'
                                                 }`}
                                             >
                                                 {formatLabel(task.status)}
                                             </span>
                                         )}
-                                        <span className="text-[10px] opacity-50">
-                                            {timeAgo(task.updatedAt)}
-                                        </span>
+                                        <span className="text-[10px] opacity-50">{timeAgo(task.updatedAt)}</span>
                                     </div>
                                 </Link>
                             ))}

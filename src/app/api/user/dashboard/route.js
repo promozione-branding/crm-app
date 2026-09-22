@@ -17,10 +17,7 @@ export async function GET(request) {
         const user = await getCurrentUser(request);
 
         if (!user) {
-            return NextResponse.json(
-                { success: false, message: 'User not found.' },
-                { status: 401 }
-            );
+            return NextResponse.json({ success: false, message: 'User not found.' }, { status: 401 });
         }
 
         const companyId = user.companyId;
@@ -73,10 +70,7 @@ export async function GET(request) {
             }),
 
             // ---- Calls grouped by status (initiated, completed, missed, etc.)
-            Call.aggregate([
-                { $match: { companyId } },
-                { $group: { _id: '$status', count: { $sum: 1 } } },
-            ]),
+            Call.aggregate([{ $match: { companyId } }, { $group: { _id: '$status', count: { $sum: 1 } } }]),
 
             // ---- Calls grouped by caller (who calls most)
             Call.aggregate([
@@ -109,12 +103,7 @@ export async function GET(request) {
             ]),
 
             // ---- Latest 5 calls with caller + lead info
-            Call.find({ companyId })
-                .sort({ calledAt: -1 })
-                .limit(5)
-                .populate('callerId', 'name email')
-                .populate('refId', 'name phone')
-                .lean(),
+            Call.find({ companyId }).sort({ calledAt: -1 }).limit(5).populate('callerId', 'name email').populate('refId', 'name phone').lean(),
 
             // ---- Latest 5 leads (updated recently)
             Lead.find({ companyId })
@@ -178,9 +167,6 @@ export async function GET(request) {
     } catch (error) {
         console.error('GET DASHBOARD ERROR:', error);
 
-        return NextResponse.json(
-            { success: false, message: error.message || 'Failed to fetch dashboard data.' },
-            { status: 400 }
-        );
+        return NextResponse.json({ success: false, message: error.message || 'Failed to fetch dashboard data.' }, { status: 400 });
     }
 }

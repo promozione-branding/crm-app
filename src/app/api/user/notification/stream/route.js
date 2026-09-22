@@ -64,9 +64,7 @@ export async function GET(request) {
                             unreadCount,
                         });
 
-                        controller.enqueue(
-                            encoder.encode(`event: new-notifications\ndata: ${payload}\n\n`)
-                        );
+                        controller.enqueue(encoder.encode(`event: new-notifications\ndata: ${payload}\n\n`));
                     } else {
                         // keepalive ping every 5s
                         controller.enqueue(encoder.encode(`: ping\n\n`));

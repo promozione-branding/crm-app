@@ -31,11 +31,7 @@ const formatLabel = (val) => {
 
 function CallStatusBadge({ status }) {
     const cls = statusStyles[status?.toLowerCase()] || 'bg-gray-500/10 text-gray-600';
-    return (
-        <span className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-medium ${cls}`}>
-            {formatLabel(status)}
-        </span>
-    );
+    return <span className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-medium ${cls}`}>{formatLabel(status)}</span>;
 }
 
 // ============================================================
@@ -50,9 +46,7 @@ const columns = [
         render: (row) => (
             <div className="flex flex-col">
                 <span className="font-medium">{row.callerId?.name || '—'}</span>
-                {row.callerRole && (
-                    <span className="text-[10px] opacity-60">{row.callerRole}</span>
-                )}
+                {row.callerRole && <span className="text-[10px] opacity-60">{row.callerRole}</span>}
             </div>
         ),
     },
@@ -63,9 +57,7 @@ const columns = [
         render: (row) => (
             <div className="flex flex-col">
                 <span className="font-medium">{row.refId?.name || '—'}</span>
-                {row.refId?.phone && (
-                    <span className="text-[10px] opacity-60">{row.refId.phone}</span>
-                )}
+                {row.refId?.phone && <span className="text-[10px] opacity-60">{row.refId.phone}</span>}
             </div>
         ),
     },
@@ -114,9 +106,7 @@ function MobileCallCard({ call, router }) {
     const [expanded, setExpanded] = useState(false);
 
     const durationSec = Number(call.durationSeconds) || 0;
-    const durationText = durationSec
-        ? `${Math.floor(durationSec / 60)}m ${durationSec % 60}s`
-        : '—';
+    const durationText = durationSec ? `${Math.floor(durationSec / 60)}m ${durationSec % 60}s` : '—';
 
     const handleOpenLead = () => {
         const leadId = call?.refId?._id;
@@ -142,9 +132,7 @@ function MobileCallCard({ call, router }) {
                     {/* LEAD + CALLER */}
                     <div className="min-w-0 flex-1">
                         <div className="flex h-6 min-w-0 items-center gap-2">
-                            <h3 className="min-w-0 truncate text-sm font-semibold">
-                                {call.refId?.name || 'Unknown Lead'}
-                            </h3>
+                            <h3 className="min-w-0 truncate text-sm font-semibold">{call.refId?.name || 'Unknown Lead'}</h3>
                         </div>
 
                         <div className="mt-1.5 flex h-6 min-w-0 items-center gap-2 text-[11px] opacity-70">
@@ -160,9 +148,7 @@ function MobileCallCard({ call, router }) {
                     <div className="flex shrink-0 items-center gap-2">
                         <CallStatusBadge status={call.status} />
 
-                        <div className="flex w-5 items-center justify-center opacity-50">
-                            {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                        </div>
+                        <div className="flex w-5 items-center justify-center opacity-50">{expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</div>
                     </div>
                 </div>
             </div>
@@ -176,10 +162,7 @@ function MobileCallCard({ call, router }) {
                             label="Number"
                             value={
                                 call.phoneNumber ? (
-                                    <a
-                                        href={`tel:${call.phoneNumber}`}
-                                        className="text-blue-500 hover:underline"
-                                    >
+                                    <a href={`tel:${call.phoneNumber}`} className="text-blue-500 hover:underline">
                                         {call.phoneNumber}
                                     </a>
                                 ) : (
@@ -188,15 +171,7 @@ function MobileCallCard({ call, router }) {
                             }
                         />
 
-                        <DetailRow
-                            icon={Calendar}
-                            label="Called At"
-                            value={
-                                call.calledAt
-                                    ? new Date(call.calledAt).toLocaleString('en-IN')
-                                    : '—'
-                            }
-                        />
+                        <DetailRow icon={Calendar} label="Called At" value={call.calledAt ? new Date(call.calledAt).toLocaleString('en-IN') : '—'} />
 
                         <DetailRow label="Duration" value={durationText} />
                         <DetailRow label="Source" value={formatLabel(call.source)} />
@@ -204,17 +179,13 @@ function MobileCallCard({ call, router }) {
 
                         {call.notes && (
                             <div>
-                                <p className="text-muted text-xs mb-1">Notes</p>
+                                <p className="text-muted mb-1 text-xs">Notes</p>
                                 <p className="text-app text-sm whitespace-pre-wrap">{call.notes}</p>
                             </div>
                         )}
 
                         {call.refId?._id && (
-                            <button
-                                type="button"
-                                onClick={handleOpenLead}
-                                className="btn-primary mt-2 w-full rounded-lg py-2.5 text-sm font-medium"
-                            >
+                            <button type="button" onClick={handleOpenLead} className="btn-primary mt-2 w-full rounded-lg py-2.5 text-sm font-medium">
                                 View Lead
                             </button>
                         )}
@@ -228,14 +199,12 @@ function MobileCallCard({ call, router }) {
 function DetailRow({ icon: Icon, label, value }) {
     return (
         <div className="flex items-start justify-between gap-4">
-            <span className="text-sm opacity-60 flex items-center gap-1.5">
+            <span className="flex items-center gap-1.5 text-sm opacity-60">
                 {Icon && <Icon size={13} />}
                 {label}
             </span>
 
-            <span className="max-w-[60%] text-right text-sm break-words">
-                {value || '—'}
-            </span>
+            <span className="max-w-[60%] text-right text-sm break-words">{value || '—'}</span>
         </div>
     );
 }
@@ -257,9 +226,7 @@ function MobilePagination({ page, setPage, total, rowsPerPage, setRowsPerPage })
 
     return (
         <div className="border-app bg-app flex flex-col gap-3 rounded-xl border px-4 py-3 text-sm">
-            <p className="text-center opacity-70">
-                {total > 0 ? `Showing ${startItem}-${endItem} of ${total}` : 'Showing 0 of 0'}
-            </p>
+            <p className="text-center opacity-70">{total > 0 ? `Showing ${startItem}-${endItem} of ${total}` : 'Showing 0 of 0'}</p>
 
             <div className="flex items-center justify-between gap-2">
                 {setRowsPerPage && (
@@ -297,9 +264,7 @@ function MobilePagination({ page, setPage, total, rowsPerPage, setRowsPerPage })
                         disabled={totalPages === 0 || page >= totalPages}
                         onClick={() => go(page + 1)}
                         className={`border-app h-9 rounded-lg border px-3 ${
-                            totalPages === 0 || page >= totalPages
-                                ? 'cursor-not-allowed opacity-50'
-                                : 'hover-app'
+                            totalPages === 0 || page >= totalPages ? 'cursor-not-allowed opacity-50' : 'hover-app'
                         }`}
                     >
                         Next
@@ -405,7 +370,7 @@ export default function CallLog() {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search number, notes..."
-                        className="border-app bg-surface text-app w-full rounded-lg border py-2 pl-9 pr-3 text-sm"
+                        className="border-app bg-surface text-app w-full rounded-lg border py-2 pr-3 pl-9 text-sm"
                     />
                 </div>
 
@@ -433,10 +398,7 @@ export default function CallLog() {
                 <>
                     <div className="space-y-3 md:hidden">
                         {[1, 2, 3, 4].map((i) => (
-                            <div
-                                key={i}
-                                className="border-app bg-app h-20 w-full animate-pulse rounded-xl border"
-                            />
+                            <div key={i} className="border-app bg-app h-20 w-full animate-pulse rounded-xl border" />
                         ))}
                     </div>
 
@@ -488,20 +450,10 @@ export default function CallLog() {
                     {/* MOBILE / TABLET */}
                     <div className="space-y-3 md:hidden">
                         {calls.map((call) => (
-                            <MobileCallCard
-                                key={call._id}
-                                call={call}
-                                router={router}
-                            />
+                            <MobileCallCard key={call._id} call={call} router={router} />
                         ))}
 
-                        <MobilePagination
-                            page={page}
-                            setPage={setPage}
-                            total={total}
-                            rowsPerPage={rowsPerPage}
-                            setRowsPerPage={setRowsPerPage}
-                        />
+                        <MobilePagination page={page} setPage={setPage} total={total} rowsPerPage={rowsPerPage} setRowsPerPage={setRowsPerPage} />
                     </div>
 
                     {/* DESKTOP */}

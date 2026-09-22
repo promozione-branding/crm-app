@@ -15,32 +15,20 @@ export async function PATCH(request, { params }) {
         const token = request.cookies.get(ENV.CLIENT_COOKIE_NAME)?.value;
 
         if (!token) {
-            return NextResponse.json(
-                { success: false, message: 'Not authenticated' },
-                { status: 401 }
-            );
+            return NextResponse.json({ success: false, message: 'Not authenticated' }, { status: 401 });
         }
 
         const decoded = jwt.verify(token, ENV.JWT_CLIENT_SECRET);
         const user = await User.findById(decoded.id);
 
         if (!user) {
-            return NextResponse.json(
-                { success: false, message: 'Unauthorized' },
-                { status: 401 }
-            );
+            return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
         }
 
-        await Notification.findOneAndUpdate(
-            { _id: id, recipient: user._id },
-            { isRead: true }
-        );
+        await Notification.findOneAndUpdate({ _id: id, recipient: user._id }, { isRead: true });
 
         return NextResponse.json({ success: true, message: 'Marked as read' });
     } catch (error) {
-        return NextResponse.json(
-            { success: false, message: error.message },
-            { status: 400 }
-        );
+        return NextResponse.json({ success: false, message: error.message }, { status: 400 });
     }
 }

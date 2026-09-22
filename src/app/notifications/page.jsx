@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { Bell, User as UserIcon, CheckCircle2, Filter } from 'lucide-react';
 
-
 export default function NotificationsHistoryPage() {
     const router = useRouter();
 
@@ -64,15 +63,9 @@ export default function NotificationsHistoryPage() {
         // mark read
         if (!n.isRead) {
             try {
-                await axios.patch(
-                    `/api/user/notification/${n._id}`,
-                    {},
-                    { withCredentials: true }
-                );
+                await axios.patch(`/api/user/notification/${n._id}`, {}, { withCredentials: true });
 
-                setData((prev) =>
-                    prev.map((x) => (x._id === n._id ? { ...x, isRead: true } : x))
-                );
+                setData((prev) => prev.map((x) => (x._id === n._id ? { ...x, isRead: true } : x)));
             } catch (err) {
                 // silent
             }
@@ -117,17 +110,13 @@ export default function NotificationsHistoryPage() {
                         <option value="true">Read only</option>
                     </select>
 
-                    <div className="text-muted ml-auto text-xs">
-                        Total: {pagination.total || 0}
-                    </div>
+                    <div className="text-muted ml-auto text-xs">Total: {pagination.total || 0}</div>
                 </div>
 
                 {/* List */}
                 {loading ? (
-    <div className="border-app bg-app text-muted rounded-xl border p-10 text-center text-sm">
-        Loading notifications...
-    </div>
-) : data.length === 0 ? (
+                    <div className="border-app bg-app text-muted rounded-xl border p-10 text-center text-sm">Loading notifications...</div>
+                ) : data.length === 0 ? (
                     <div className="border-app bg-app rounded-xl border p-10 text-center">
                         <Bell size={40} className="text-muted mx-auto mb-3 opacity-40" />
                         <p className="text-muted text-sm">No notifications found.</p>
@@ -147,9 +136,7 @@ export default function NotificationsHistoryPage() {
                                 >
                                     <div
                                         className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
-                                            isLead
-                                                ? 'bg-blue-500/10 text-blue-500'
-                                                : 'bg-emerald-500/10 text-emerald-500'
+                                            isLead ? 'bg-blue-500/10 text-blue-500' : 'bg-emerald-500/10 text-emerald-500'
                                         }`}
                                     >
                                         {isLead ? <UserIcon size={16} /> : <CheckCircle2 size={16} />}
@@ -157,14 +144,8 @@ export default function NotificationsHistoryPage() {
 
                                     <div className="min-w-0 flex-1">
                                         <div className="flex items-center gap-2">
-                                            <p className="text-app truncate text-sm font-semibold">
-                                                {n.title}
-                                            </p>
-                                            {!n.isRead && (
-                                                <span className="rounded-full bg-blue-500 px-2 py-0.5 text-[10px] font-bold text-white">
-                                                    New
-                                                </span>
-                                            )}
+                                            <p className="text-app truncate text-sm font-semibold">{n.title}</p>
+                                            {!n.isRead && <span className="rounded-full bg-blue-500 px-2 py-0.5 text-[10px] font-bold text-white">New</span>}
                                         </div>
                                         <p className="text-muted mt-0.5 text-sm">{n.message}</p>
                                         <p className="text-muted mt-1 text-[11px]">
@@ -180,9 +161,7 @@ export default function NotificationsHistoryPage() {
 
                                     <span
                                         className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                                            isLead
-                                                ? 'bg-blue-500/10 text-blue-500'
-                                                : 'bg-emerald-500/10 text-emerald-500'
+                                            isLead ? 'bg-blue-500/10 text-blue-500' : 'bg-emerald-500/10 text-emerald-500'
                                         }`}
                                     >
                                         {isLead ? 'Lead' : 'Task'}
