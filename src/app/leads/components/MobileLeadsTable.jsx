@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Phone, Package } from 'lucide-react';
-import StageBadge from '@/components/user/ui/StageBadge';
+import StageBadge from '@/components/user/ui/LeadStageBadge';
 import { useCallLog } from '@/hooks/useCallLog';
 
 export default function MobileLeadsTable({

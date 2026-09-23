@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 
 import DynamicTable from '@/components/user/ui/DynamicTable';
 import ImportLeadsModal from '@/components/user/leads/main/ImportLeadsModal';
-import StageBadge from '@/components/user/ui/StageBadge';
+import StageBadge from '@/components/user/ui/LeadStageBadge';
 import MobileLeadsTable from './components/MobileLeadsTable';
 import LeadsActiveFilter from './components/LeadsActiveFilter';
 import LeadsFilter, { stageOptions, dateOptions } from './components/LeadsFilter';

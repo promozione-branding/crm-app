@@ -1,4 +1,4 @@
-const stageStyles = {
+const leadstageStyles = {
     new: 'bg-cyan-500/10 text-cyan-600',
     contacted: 'bg-yellow-500/10 text-yellow-600',
     qualified: 'bg-violet-500/10 text-violet-600',
@@ -15,7 +15,7 @@ const formatStage = (stage) => {
 };
 
 export default function StageBadge({ stage }) {
-    const styles = stageStyles[stage?.toLowerCase()] || 'bg-gray-500/10 text-gray-600';
+    const styles = leadstageStyles[stage?.toLowerCase()] || 'bg-gray-500/10 text-gray-600';
 
     return <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${styles}`}>{formatStage(stage)}</span>;
 }
