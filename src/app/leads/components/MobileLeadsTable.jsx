@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Phone, Package } from 'lucide-react';
-import StageBadge from '@/components/user/ui/LeadStageBadge';
+import LeadStageBadge from '@/components/user/ui/LeadStageBadge';
 import { useCallLog } from '@/hooks/useCallLog';
 
 export default function MobileLeadsTable({
@@ -143,7 +143,7 @@ export default function MobileLeadsTable({
 
                                 {/* RIGHT SIDE — STAGE + CALL */}
                                 <div className="flex shrink-0 items-center gap-2">
-                                    <StageBadge stage={lead.stage} />
+                                    <LeadStageBadge stage={lead.stage} />
 
                                     {lead.phone ? (
                                         <button

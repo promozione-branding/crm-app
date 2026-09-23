@@ -14,7 +14,7 @@ const formatStage = (stage) => {
     return stage.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
-export default function StageBadge({ stage }) {
+export default function LeadStageBadge({ stage }) {
     const styles = leadstageStyles[stage?.toLowerCase()] || 'bg-gray-500/10 text-gray-600';
 
     return <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${styles}`}>{formatStage(stage)}</span>;
