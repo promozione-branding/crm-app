@@ -1,3 +1,4 @@
+
 // src/components/user/leads/form/Stage.jsx
 
 'use client';
@@ -5,6 +6,8 @@
 import { GitBranch } from 'lucide-react';
 
 export default function Stage({ stage = [] }) {
+    const sortedStage = [...stage].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
     return (
         <div className="bg-card border-app overflow-hidden rounded-2xl border p-5">
             <h3 className="text-muted text-xs font-semibold tracking-widest uppercase">Stage History</h3>
@@ -23,10 +26,10 @@ export default function Stage({ stage = [] }) {
                 </div>
             ) : (
                 <div className="space-y-5">
-                    {stage.map((item, idx) => (
+                    {sortedStage.map((item, idx) => (
                         <div key={item._id} className="relative pl-8">
                             {/* Timeline line */}
-                            {idx !== stage.length - 1 && <div className="border-app absolute top-1.5 bottom-0 left-3 h-25 w-px border" />}
+                            {idx !== sortedStage.length - 1 && <div className="border-app absolute top-1.5 bottom-0 left-3 h-25 w-px border" />}
 
                             {/* Timeline dot */}
                             <div className="bg-surface absolute top-1.5 left-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-blue-500">

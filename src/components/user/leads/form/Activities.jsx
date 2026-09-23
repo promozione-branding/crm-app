@@ -5,6 +5,8 @@
 import { Activity } from 'lucide-react';
 
 export default function Activities({ activities = [] }) {
+    const sortedActivities = [...activities].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
     return (
         <div className="bg-card border-app overflow-hidden rounded-2xl border p-5">
             <h3 className="text-muted text-xs font-semibold tracking-widest uppercase">Activities</h3>
@@ -23,10 +25,10 @@ export default function Activities({ activities = [] }) {
                 </div>
             ) : (
                 <div className="space-y-5">
-                    {activities.map((activity, idx) => (
+                    {sortedActivities.map((activity, idx) => (
                         <div key={activity._id} className="relative pl-8">
                             {/* Timeline */}
-                            {idx !== activities.length - 1 && <div className="border-app absolute top-1.5 bottom-0 left-3 h-24 w-px border" />}
+                            {idx !== sortedActivities.length - 1 && <div className="border-app absolute top-1.5 bottom-0 left-3 h-24 w-px border" />}
 
                             {/* Dot */}
                             <div className="bg-surface absolute top-1.5 left-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-blue-500">
