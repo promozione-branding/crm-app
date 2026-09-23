@@ -115,15 +115,9 @@ export default function Dashboard() {
 
     useEffect(() => {
         getDashboardStats();
+
         getDashboardAnalytics();
     }, []);
-
-    // ========================================================
-    // CHECK ADMIN
-    // ========================================================
-
-    const isAdmin =
-        analytics?.isAdmin === true;
 
     // ========================================================
     // UI
@@ -150,15 +144,12 @@ export default function Dashboard() {
 
             {/* ==================================================
                 TOP STATS
-                ADMIN ONLY
             ================================================== */}
 
-            {isAdmin && (
-                <DashboardStats
-                    stats={stats}
-                    loading={loading}
-                />
-            )}
+            <DashboardStats
+                stats={stats}
+                loading={loading}
+            />
 
             {/* ==================================================
                 ANALYTICS
