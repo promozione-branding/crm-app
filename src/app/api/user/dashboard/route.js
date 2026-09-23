@@ -14,159 +14,486 @@ export async function GET(request) {
     try {
         await connectDB();
 
+        // ============================================================
+        // CURRENT USER
+        // ============================================================
+
         const user = await getCurrentUser(request);
 
         if (!user) {
-            return NextResponse.json({ success: false, message: 'User not found.' }, { status: 401 });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: 'User not found.',
+                },
+                {
+                    status: 401,
+                }
+            );
         }
 
         const companyId = user.companyId;
+        const userId = user._id;
 
-        // ---- Time ranges for calls
+        // ============================================================
+        // GET USER ROLE
+        // ============================================================
+
+        await user.populate({
+            path: 'roleId',
+            select: 'name isSystemRole permissions',
+        });
+
+        // ============================================================
+        // ADMIN CHECK
+        // ============================================================
+
+        /*
+         * Your Admin role is:
+         *
+         * name: Admin
+         * isSystemRole: true
+         */
+
+        const isAdmin =
+            user.roleId?.isSystemRole === true &&
+            user.roleId?.name?.toLowerCase() === 'admin';
+
+        // ============================================================
+        // DASHBOARD VISIBILITY
+        // ============================================================
+
+        /*
+         * ADMIN
+         * -----
+         * Sees everything belonging to the company.
+         *
+         * OTHER USERS
+         * ------------
+         *
+         * Leads:
+         *     assigned to them
+         *
+         * Tasks:
+         *     created by them OR assigned to them
+         *
+         * Calls:
+         *     made by them
+         */
+
+        const leadVisibilityFilter = isAdmin
+            ? {
+                  companyId,
+              }
+            : {
+                  companyId,
+
+                  assignedTo: userId,
+              };
+
+        const taskVisibilityFilter = isAdmin
+            ? {
+                  companyId,
+              }
+            : {
+                  companyId,
+
+                  $or: [
+                      {
+                          createdBy: userId,
+                      },
+                      {
+                          assignedTo: userId,
+                      },
+                  ],
+              };
+
+        const callVisibilityFilter = isAdmin
+            ? {
+                  companyId,
+              }
+            : {
+                  companyId,
+
+                  callerId: userId,
+              };
+
+        // ============================================================
+        // TIME RANGES
+        // ============================================================
+
         const now = new Date();
-        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        const startOfMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+        const startOfToday = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+        const startOfWeek = new Date(
+            now.getTime() -
+                7 * 24 * 60 * 60 * 1000
+        );
+
+        const startOfMonth = new Date(
+            now.getTime() -
+                30 * 24 * 60 * 60 * 1000
+        );
+
+        // ============================================================
+        // DASHBOARD DATA
+        // ============================================================
 
         const [
             usersCount,
+
             leadsCount,
+
             tasksCount,
+
             callsTotal,
+
             callsToday,
+
             callsWeek,
+
             callsMonth,
+
             callsByStatus,
+
             callsByCaller,
+
             recentCalls,
+
             recentLeads,
+
             recentTasks,
         ] = await Promise.all([
-            User.countDocuments({ companyId }),
+            // ========================================================
+            // USERS
+            // ========================================================
 
-            Lead.countDocuments({ companyId }),
+            /*
+             * Admin:
+             *     All users in company.
+             *
+             * Other users:
+             *     Only themselves.
+             */
 
-            LeadTask.countDocuments({ companyId }),
+            isAdmin
+                ? User.countDocuments({
+                      companyId,
+                  })
+                : User.countDocuments({
+                      companyId,
 
-            // ---- Total calls
-            Call.countDocuments({ companyId }),
+                      _id: userId,
+                  }),
 
-            // ---- Calls today
+            // ========================================================
+            // LEADS
+            // ========================================================
+
+            Lead.countDocuments(
+                leadVisibilityFilter
+            ),
+
+            // ========================================================
+            // TASKS
+            // ========================================================
+
+            LeadTask.countDocuments(
+                taskVisibilityFilter
+            ),
+
+            // ========================================================
+            // TOTAL CALLS
+            // ========================================================
+
+            Call.countDocuments(
+                callVisibilityFilter
+            ),
+
+            // ========================================================
+            // CALLS TODAY
+            // ========================================================
+
             Call.countDocuments({
-                companyId,
-                calledAt: { $gte: startOfToday },
+                ...callVisibilityFilter,
+
+                calledAt: {
+                    $gte: startOfToday,
+                },
             }),
 
-            // ---- Calls last 7 days
+            // ========================================================
+            // CALLS LAST 7 DAYS
+            // ========================================================
+
             Call.countDocuments({
-                companyId,
-                calledAt: { $gte: startOfWeek },
+                ...callVisibilityFilter,
+
+                calledAt: {
+                    $gte: startOfWeek,
+                },
             }),
 
-            // ---- Calls last 30 days
+            // ========================================================
+            // CALLS LAST 30 DAYS
+            // ========================================================
+
             Call.countDocuments({
-                companyId,
-                calledAt: { $gte: startOfMonth },
+                ...callVisibilityFilter,
+
+                calledAt: {
+                    $gte: startOfMonth,
+                },
             }),
 
-            // ---- Calls grouped by status (initiated, completed, missed, etc.)
-            Call.aggregate([{ $match: { companyId } }, { $group: { _id: '$status', count: { $sum: 1 } } }]),
+            // ========================================================
+            // CALLS BY STATUS
+            // ========================================================
 
-            // ---- Calls grouped by caller (who calls most)
             Call.aggregate([
-                { $match: { companyId } },
+                {
+                    $match: callVisibilityFilter,
+                },
+
+                {
+                    $group: {
+                        _id: '$status',
+
+                        count: {
+                            $sum: 1,
+                        },
+                    },
+                },
+            ]),
+
+            // ========================================================
+            // CALLS BY CALLER
+            // ========================================================
+
+            Call.aggregate([
+                {
+                    $match: callVisibilityFilter,
+                },
+
                 {
                     $group: {
                         _id: '$callerId',
-                        count: { $sum: 1 },
+
+                        count: {
+                            $sum: 1,
+                        },
                     },
                 },
-                { $sort: { count: -1 } },
-                { $limit: 5 },
+
+                {
+                    $sort: {
+                        count: -1,
+                    },
+                },
+
+                {
+                    $limit: 5,
+                },
+
                 {
                     $lookup: {
                         from: 'users',
+
                         localField: '_id',
+
                         foreignField: '_id',
+
                         as: 'user',
                     },
                 },
-                { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+
+                {
+                    $unwind: {
+                        path: '$user',
+
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+
                 {
                     $project: {
                         _id: 1,
+
                         count: 1,
+
                         name: '$user.name',
+
                         email: '$user.email',
                     },
                 },
             ]),
 
-            // ---- Latest 5 calls with caller + lead info
-            Call.find({ companyId }).sort({ calledAt: -1 }).limit(5).populate('callerId', 'name email').populate('refId', 'name phone').lean(),
+            // ========================================================
+            // RECENT CALLS
+            // ========================================================
 
-            // ---- Latest 5 leads (updated recently)
-            Lead.find({ companyId })
-                .sort({ updatedAt: -1 })
+            Call.find(callVisibilityFilter)
+                .sort({
+                    calledAt: -1,
+                })
                 .limit(5)
-                .populate('assignedTo', 'name')
-                .select('name phone companyName stage status assignedTo updatedAt createdAt')
+                .populate(
+                    'callerId',
+                    'name email'
+                )
+                .populate(
+                    'refId',
+                    'name phone'
+                )
                 .lean(),
 
-            // ---- Latest 5 tasks (updated recently)
-            LeadTask.find({ companyId })
-                .sort({ updatedAt: -1 })
+            // ========================================================
+            // RECENT LEADS
+            // ========================================================
+
+            Lead.find(leadVisibilityFilter)
+                .sort({
+                    updatedAt: -1,
+                })
                 .limit(5)
-                .populate('assignedTo', 'name')
-                .populate('leadId', 'name phone')
-                .populate('createdBy', 'name')
-                .select('title status priority assignedTo leadId createdBy dueDate updatedAt createdAt')
+                .populate(
+                    'assignedTo',
+                    'name'
+                )
+                .select(
+                    'name phone companyName stage status assignedTo updatedAt createdAt'
+                )
+                .lean(),
+
+            // ========================================================
+            // RECENT TASKS
+            // ========================================================
+
+            LeadTask.find(taskVisibilityFilter)
+                .sort({
+                    updatedAt: -1,
+                })
+                .limit(5)
+                .populate(
+                    'assignedTo',
+                    'name'
+                )
+                .populate(
+                    'leadId',
+                    'name phone'
+                )
+                .populate(
+                    'createdBy',
+                    'name'
+                )
+                .select(
+                    'title status priority assignedTo leadId createdBy dueDate updatedAt createdAt'
+                )
                 .lean(),
         ]);
 
-        // ---- Convert byStatus array to a clean object
-        const statusMap = callsByStatus.reduce((acc, item) => {
-            acc[item._id] = item.count;
-            return acc;
-        }, {});
+        // ============================================================
+        // CALL STATUS MAP
+        // ============================================================
+
+        const statusMap = callsByStatus.reduce(
+            (acc, item) => {
+                acc[item._id] = item.count;
+
+                return acc;
+            },
+            {}
+        );
+
+        // ============================================================
+        // RESPONSE
+        // ============================================================
 
         return NextResponse.json({
             success: true,
 
             data: {
+                // ====================================================
+                // TOP STATS
+                // ====================================================
+
                 users: usersCount,
+
                 leads: leadsCount,
+
                 tasks: tasksCount,
 
-                // ---- Flat calls count (for the top stat card)
                 calls: callsTotal,
 
-                // ---- Recent lists for the dashboard
+                // ====================================================
+                // RECENT DATA
+                // ====================================================
+
                 recentLeads,
+
                 recentTasks,
 
-                // ---- Detailed call metrics
+                // ====================================================
+                // CALL DETAILS
+                // ====================================================
+
                 callsDetail: {
                     total: callsTotal,
+
                     today: callsToday,
+
                     week: callsWeek,
+
                     month: callsMonth,
+
                     byStatus: {
-                        initiated: statusMap.initiated || 0,
-                        completed: statusMap.completed || 0,
-                        missed: statusMap.missed || 0,
-                        busy: statusMap.busy || 0,
-                        no_answer: statusMap.no_answer || 0,
-                        failed: statusMap.failed || 0,
+                        initiated:
+                            statusMap.initiated || 0,
+
+                        completed:
+                            statusMap.completed || 0,
+
+                        missed:
+                            statusMap.missed || 0,
+
+                        busy:
+                            statusMap.busy || 0,
+
+                        no_answer:
+                            statusMap.no_answer || 0,
+
+                        failed:
+                            statusMap.failed || 0,
                     },
+
                     byCaller: callsByCaller,
+
                     recent: recentCalls,
                 },
             },
         });
     } catch (error) {
-        console.error('GET DASHBOARD ERROR:', error);
+        console.error(
+            'GET DASHBOARD ERROR:',
+            error
+        );
 
-        return NextResponse.json({ success: false, message: error.message || 'Failed to fetch dashboard data.' }, { status: 400 });
+        return NextResponse.json(
+            {
+                success: false,
+
+                message:
+                    error.message ||
+                    'Failed to fetch dashboard data.',
+            },
+            {
+                status: 400,
+            }
+        );
     }
 }

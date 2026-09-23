@@ -33,7 +33,7 @@ const statsConfig = [
         key: 'tasks',
         title: 'Tasks',
         icon: ClipboardList,
-        color: 'text-orange-500',
+        color: 'text-orange-500', 
     },
 ];
 
