@@ -54,22 +54,31 @@ export default function PermissionModal({ role, isOpen, onClose, fetchRoles }) {
      */
 
     const buildPermissionState = (rolePermissions = []) => {
-        const state = {};
+    const state = {};
 
-        PERMISSION_MODULES.forEach((module) => {
-            const existingPermission = rolePermissions.find((permission) => permission?.module === module.key);
+    PERMISSION_MODULES.forEach((module) => {
+        const existingPermission = rolePermissions.find(
+            (permission) => permission?.module === module.key
+        );
 
-            state[module.key] = {
-                scope: existingPermission?.scope || 'own',
-            };
+        state[module.key] = {
+            // New/default role = ALL
+            scope: existingPermission?.scope || 'all',
+        };
 
-            PERMISSION_ACTIONS.forEach((action) => {
-                state[module.key][action.key] = existingPermission?.actions?.includes(action.key) || false;
-            });
+        PERMISSION_ACTIONS.forEach((action) => {
+            const available = module.actions.includes(action.key);
+
+            state[module.key][action.key] = available
+                ? existingPermission
+                    ? existingPermission.actions?.includes(action.key)
+                    : true
+                : false;
         });
+    });
 
-        return state;
-    };
+    return state;
+};
 
     // LOAD PERMISSIONS
     useEffect(() => {
@@ -138,7 +147,7 @@ export default function PermissionModal({ role, isOpen, onClose, fetchRoles }) {
                     permissionArray.push({
                         module: module.key,
                         actions,
-                        scope: modulePermission.scope || 'own',
+                        scope: modulePermission.scope || 'all',
                     });
                 }
             });

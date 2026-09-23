@@ -62,63 +62,83 @@ export default function Roles({ fetchRoles, roles = [], loading }) {
     };
 
     const handleSave = async () => {
-        const name = form.name?.trim();
+    const name = form.name?.trim();
 
-        if (!name) {
-            toast.error('Role name is required');
-            return;
-        }
+    if (!name) {
+        toast.error('Role name is required');
+        return;
+    }
 
-        const isEdit = Boolean(form._id);
+    const isEdit = Boolean(form._id);
 
-        const toastId = toast.loading(isEdit ? 'Updating role...' : 'Creating role...');
+    const toastId = toast.loading(
+        isEdit ? 'Updating role...' : 'Creating role...'
+    );
 
-        try {
-            setSaving(true);
+    try {
+        setSaving(true);
 
-            const payload = {
-                name,
-                description: form.description?.trim() || '',
-            };
+        const payload = {
+            name,
+            description: form.description?.trim() || '',
+        };
 
-            let response;
+        let response;
 
-            if (isEdit) {
-                response = await axios.put(`/api/user/roles/${form._id}`, payload, {
+        if (isEdit) {
+            response = await axios.put(
+                `/api/user/roles/${form._id}`,
+                payload,
+                {
                     withCredentials: true,
-                });
-            } else {
-                response = await axios.post(
-                    '/api/user/roles',
-                    {
-                        ...payload,
-                        permissions: [],
-                    },
-                    {
-                        withCredentials: true,
-                    }
-                );
-            }
-
-            if (!response.data.success) {
-                throw new Error(response.data.message || `Failed to ${isEdit ? 'update' : 'create'} role`);
-            }
-
-            toast.success(response.data.message || `Role ${isEdit ? 'updated' : 'created'} successfully`, { id: toastId });
-
-            await fetchRoles();
-
-            closeFormModal();
-        } catch (error) {
-            console.error(isEdit ? 'UPDATE ROLE ERROR:' : 'CREATE ROLE ERROR:', error);
-
-            toast.error(error?.response?.data?.message || error.message || `Failed to ${isEdit ? 'update' : 'create'} role`, {
-                id: toastId,
-            });
-        } finally {
-            setSaving(false);
+                }
+            );
+        } else {
+            response = await axios.post(
+                '/api/user/roles',
+                payload,
+                {
+                    withCredentials: true,
+                }
+            );
         }
-    };
+
+        if (!response.data.success) {
+            throw new Error(
+                response.data.message ||
+                    `Failed to ${isEdit ? 'update' : 'create'} role`
+            );
+        }
+
+        toast.success(
+            response.data.message ||
+                `Role ${isEdit ? 'updated' : 'created'} successfully`,
+            {
+                id: toastId,
+            }
+        );
+
+        await fetchRoles();
+
+        closeFormModal();
+    } catch (error) {
+        console.error(
+            isEdit ? 'UPDATE ROLE ERROR:' : 'CREATE ROLE ERROR:',
+            error
+        );
+
+        toast.error(
+            error?.response?.data?.message ||
+                error.message ||
+                `Failed to ${isEdit ? 'update' : 'create'} role`,
+            {
+                id: toastId,
+            }
+        );
+    } finally {
+        setSaving(false);
+    }
+};
 
     useEffect(() => {
         fetchRoles();

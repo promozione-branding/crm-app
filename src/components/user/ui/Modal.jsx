@@ -56,7 +56,7 @@ export default function Modal({ isOpen, onClose, children, size = 'md' }) {
     const handleBackdropClick = (e) => {
         if (modalRef.current && !modalRef.current.contains(e.target)) {
             onClose();
-        }
+        } 
     };
 
     const content = Array.isArray(children) ? children : [children];

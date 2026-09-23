@@ -62,14 +62,32 @@ export const PERMISSION_MODULES = [
         key: 'leads',
         name: 'Leads',
         path: '/leads',
-        actions: ['access', 'add', 'edit', 'delete', 'import', 'export', 'mass_edit', 'customize'],
+        actions: [
+            'access',
+            'add',
+            'edit',
+            'delete',
+            'import',
+            'export',
+            'mass_edit',
+            'customize',
+        ],
     },
 
     {
         key: 'clients',
         name: 'Clients',
         path: '/clients',
-        actions: ['access', 'add', 'edit', 'delete', 'import', 'export', 'mass_edit', 'customize'],
+        actions: [
+            'access',
+            'add',
+            'edit',
+            'delete',
+            'import',
+            'export',
+            'mass_edit',
+            'customize',
+        ],
     },
 
     {
@@ -111,7 +129,15 @@ export const PERMISSION_MODULES = [
         key: 'team_management',
         name: 'Team Management',
         path: '/team-management',
-        actions: ['access', 'add', 'edit', 'delete', 'import', 'export', 'mass_edit'],
+        actions: [
+            'access',
+            'add',
+            'edit',
+            'delete',
+            'import',
+            'export',
+            'mass_edit',
+        ],
     },
 
     {
@@ -128,3 +154,18 @@ export const PERMISSION_MODULES = [
         actions: ['access', 'edit', 'customize'],
     },
 ];
+
+
+/**
+ * Default permissions for a newly created role.
+ *
+ * Every available action for every module is enabled.
+ * Every module gets scope = "all".
+ */
+export const getDefaultRolePermissions = () => {
+    return PERMISSION_MODULES.map((module) => ({
+        module: module.key,
+        actions: [...module.actions],
+        scope: 'all',
+    }));
+};
