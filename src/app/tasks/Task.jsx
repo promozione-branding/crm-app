@@ -8,7 +8,7 @@ import DynamicTable from '@/components/user/ui/DynamicTable';
 import TaskMobileList from './components/TaskMobileList';
 import SearchAndFilterTask from './components/SearchAndFilterTask';
 import Dashboarddata from '../dashboard/components/Dashboarddata';
-
+import { PriorityBadge, StatusBadge } from './components/TaskBadges';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -31,18 +31,20 @@ const columns = [
     },
 
     {
-        key: 'priority',
-        label: 'Priority',
-        sortable: true,
-    },
+    key: 'priority',
+    label: 'Priority',
+    sortable: true,
+
+    render: (task) => <PriorityBadge priority={task.priority} />,
+},,
 
     {
-        key: 'status',
-        label: 'Status',
-        sortable: true,
+    key: 'status',
+    label: 'Status',
+    sortable: true,
 
-        render: (task) => <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs text-blue-500 capitalize">{task.status}</span>,
-    },
+    render: (task) => <StatusBadge status={task.status} />,
+},,
 
     {
         key: 'createdBy.name',
