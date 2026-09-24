@@ -18,10 +18,10 @@ export function startReminderCron() {
 
     cronStarted = true;
 
-    console.log('========================================');
-    console.log('⏰ REMINDER CRON STARTED');
-    console.log('⏰ Schedule: Every minute');
-    console.log('========================================');
+    // console.log('========================================');
+    // console.log('⏰ REMINDER CRON STARTED');
+    // console.log('⏰ Schedule: Every minute');
+    // console.log('========================================');
 
     cron.schedule('* * * * *', async () => {
         if (cronRunning) {
