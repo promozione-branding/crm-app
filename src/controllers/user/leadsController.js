@@ -8,11 +8,20 @@ import Meeting from '@/models/meeting.model.js';
 import { hasPermission } from '@/utils/permissions.js';
 import { applyLeadScope } from '@/utils/dataScope.js';
 import Role from '@/models/role.model';
+import {
+    sendNewLeadAdminEmail,
+    sendLeadStatusChangedAdminEmail,
+    sendLeadAssignedEmail,
+} from '@/lib/mail/notificationMail.js';
 
 export const createLeadService = async (userId, companyId, body) => {
     if (!userId || !companyId) {
         throw new Error('User Info not found.');
     }
+
+    console.log(
+        `[EMAIL FLOW] 🆕 Creating lead. User: ${userId}, Company: ${companyId}`
+    );
 
     const lead = await Lead.create({
         ...body,
@@ -37,6 +46,63 @@ export const createLeadService = async (userId, companyId, body) => {
             },
         ],
     });
+
+    console.log(
+        `[EMAIL FLOW] ✅ Lead created: ${lead._id}`
+    );
+
+    // --------------------------------------------------------
+    // NEW LEAD → ADMIN
+    // --------------------------------------------------------
+
+    try {
+        const createdBy = await User.findById(userId)
+            .select('name email');
+
+        await sendNewLeadAdminEmail({
+            lead,
+            createdBy,
+        });
+    } catch (error) {
+        console.error(
+            '[EMAIL FLOW] ❌ New lead admin email failed:',
+            error
+        );
+    }
+
+    // --------------------------------------------------------
+    // NEW LEAD ASSIGNED → ASSIGNED USER
+    // --------------------------------------------------------
+
+    if (body.assignedTo) {
+        try {
+            const assignedUser = await User.findOne({
+                _id: body.assignedTo,
+                companyId,
+                status: 'active',
+            }).select('name email');
+
+            if (!assignedUser) {
+                console.error(
+                    `[EMAIL FLOW] ❌ Assigned user not found: ${body.assignedTo}`
+                );
+            } else {
+                const assignedBy = await User.findById(userId)
+                    .select('name email');
+
+                await sendLeadAssignedEmail({
+                    lead,
+                    assignedUser,
+                    assignedBy,
+                });
+            }
+        } catch (error) {
+            console.error(
+                '[EMAIL FLOW] ❌ New lead assignment email failed:',
+                error
+            );
+        }
+    }
 
     return lead;
 };
@@ -158,6 +224,15 @@ export const updateLeadService = async (user, leadId, body) => {
         throw new Error('Lead not found.');
     }
 
+    // ============================================================
+    // CAPTURE PREVIOUS VALUES FOR EMAIL NOTIFICATIONS
+    // ============================================================
+
+    const previousStatus = lead.status;
+    const previousStage = lead.stage;
+    const previousAssignedTo =
+        lead.assignedTo?.toString() || null;
+
     const changedFields = [];
 
     // Basic Fields
@@ -208,7 +283,7 @@ export const updateLeadService = async (user, leadId, body) => {
     }
 
     // Assigned User
-    const oldAssigned = lead.assignedTo?.toString() || '';
+    const oldAssigned = previousAssignedTo || '';
     const newAssigned = body.assignedTo || '';
     if (oldAssigned !== newAssigned) {
         lead.assignedTo = newAssigned || null;
@@ -258,6 +333,76 @@ export const updateLeadService = async (user, leadId, body) => {
     });
 
     await lead.save();
+
+    // ============================================================
+    // EMAIL NOTIFICATIONS
+    // ============================================================
+
+    try {
+        const updatedBy = await User.findById(user._id)
+            .select('name email');
+
+        // --------------------------------------------------------
+        // STATUS / STAGE CHANGE → ADMIN
+        // --------------------------------------------------------
+
+        const statusChanged =
+            previousStatus !== lead.status;
+
+        const stageChanged =
+            previousStage !== lead.stage;
+
+        if (statusChanged || stageChanged) {
+            console.log(
+                `[EMAIL FLOW] 🔄 Lead status/stage changed: ${lead._id}`
+            );
+
+            await sendLeadStatusChangedAdminEmail({
+                lead,
+                changedBy: updatedBy,
+                oldStatus: previousStatus,
+                newStatus: lead.status,
+                oldStage: previousStage,
+                newStage: lead.stage,
+            });
+        }
+
+        // --------------------------------------------------------
+        // ASSIGNMENT CHANGE → ASSIGNED USER
+        // --------------------------------------------------------
+
+        const newAssignedTo =
+            lead.assignedTo?.toString() || null;
+
+        if (
+            newAssignedTo &&
+            previousAssignedTo !== newAssignedTo
+        ) {
+            console.log(
+                `[EMAIL FLOW] 👤 Lead assignment changed: ${previousAssignedTo} → ${newAssignedTo}`
+            );
+
+            const assignedUser = await User.findById(newAssignedTo)
+                .select('name email');
+
+            if (!assignedUser) {
+                console.error(
+                    `[EMAIL FLOW] ❌ Assigned user not found: ${newAssignedTo}`
+                );
+            } else {
+                await sendLeadAssignedEmail({
+                    lead,
+                    assignedUser,
+                    assignedBy: updatedBy,
+                });
+            }
+        }
+    } catch (error) {
+        console.error(
+            '[EMAIL FLOW] ❌ Lead update email processing failed:',
+            error
+        );
+    }
 
     return await Lead.findById(lead._id)
         .populate('assignedTo', 'name email phone role')

@@ -4,6 +4,9 @@ import mongoose from 'mongoose';
 import Meeting from '@/models/meeting.model.js';
 import Lead from '@/models/leads.model.js';
 import User from '@/models/user.model.js';
+import {
+    sendMeetingAssignedEmail,
+} from '@/lib/mail/notificationMail.js';
 
 // CREATE MEETING
 export const createMeetingService = async (user, body) => {
@@ -109,6 +112,45 @@ export const createMeetingService = async (user, body) => {
     });
 
     await lead.save();
+
+    // ============================================================
+    // MEETING ASSIGNMENT EMAIL
+    // ============================================================
+
+    try {
+        console.log(
+            `[EMAIL FLOW] 📅 New meeting assigned: ${meeting._id}`
+        );
+
+        const assignedUser = await User.findById(assignedTo)
+            .select('name email');
+
+        if (!assignedUser) {
+            console.error(
+                `[EMAIL FLOW] ❌ Meeting assigned user not found: ${assignedTo}`
+            );
+        } else {
+            const assignedBy = await User.findById(user._id)
+                .select('name email');
+
+            const emailMeeting = await Meeting.findById(meeting._id)
+                .populate('leadId', 'name phone email companyName')
+                .populate('assignedTo', 'name email phone role')
+                .populate('createdBy', 'name email');
+
+            await sendMeetingAssignedEmail({
+                meeting: emailMeeting,
+                assignedUser,
+                assignedBy,
+            });
+        }
+    } catch (error) {
+        console.error(
+            '[EMAIL FLOW] ❌ New meeting assignment email failed:',
+            error
+        );
+    }
+
     return await Meeting.findById(meeting._id)
         .populate('leadId', 'name phone email companyName')
         .populate('assignedTo', 'name email phone role')
@@ -176,6 +218,13 @@ export const updateMeetingService = async (user, meetingId, body) => {
     if (!meeting) {
         throw new Error('Meeting not found.');
     }
+
+    // ============================================================
+    // CAPTURE PREVIOUS ASSIGNEE
+    // ============================================================
+
+    const previousAssignedTo =
+        meeting.assignedTo?.toString() || null;
 
     // Basic fields
     if (body.title !== undefined) {
@@ -295,6 +344,53 @@ export const updateMeetingService = async (user, meetingId, body) => {
     }
 
     await meeting.save();
+
+    // ============================================================
+    // MEETING ASSIGNMENT EMAIL
+    // ============================================================
+
+    try {
+        const newAssignedTo =
+            meeting.assignedTo?.toString() || null;
+
+        if (
+            newAssignedTo &&
+            previousAssignedTo !== newAssignedTo
+        ) {
+            console.log(
+                `[EMAIL FLOW] 👤 Meeting assignment changed: ${previousAssignedTo} → ${newAssignedTo}`
+            );
+
+            const assignedUser = await User.findById(newAssignedTo)
+                .select('name email');
+
+            if (!assignedUser) {
+                console.error(
+                    `[EMAIL FLOW] ❌ Meeting assigned user not found: ${newAssignedTo}`
+                );
+            } else {
+                const assignedBy = await User.findById(user._id)
+                    .select('name email');
+
+                const emailMeeting = await Meeting.findById(meeting._id)
+                    .populate('leadId', 'name phone email companyName')
+                    .populate('assignedTo', 'name email phone role')
+                    .populate('createdBy', 'name email');
+
+                await sendMeetingAssignedEmail({
+                    meeting: emailMeeting,
+                    assignedUser,
+                    assignedBy,
+                });
+            }
+        }
+    } catch (error) {
+        console.error(
+            '[EMAIL FLOW] ❌ Meeting assignment email failed:',
+            error
+        );
+    }
+
     return await Meeting.findById(meeting._id)
         .populate('leadId', 'name phone email companyName')
         .populate('assignedTo', 'name email phone role')
