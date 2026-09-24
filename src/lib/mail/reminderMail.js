@@ -85,15 +85,11 @@ export async function sendNewLeadEmail({ lead }) {
     }
 
     if (!lead.email) {
-        console.error(
-            '❌ Lead was created WITHOUT an email address.'
-        );
+        console.error('❌ Lead was created WITHOUT an email address.');
         return;
     }
 
-    console.log(
-        `📧 Attempting to send email to: ${lead.email}`
-    );
+    console.log(`📧 Attempting to send email to: ${lead.email}`);
 
     try {
         // Verify SMTP connection
@@ -101,16 +97,14 @@ export async function sendNewLeadEmail({ lead }) {
 
         console.log('✅ Gmail SMTP connection verified.');
 
-        const result =
-            await transporter.sendMail({
-                from: `"CRM" <${process.env.YOUR_EMAIL_ADDRESS}>`,
+        const result = await transporter.sendMail({
+            from: `"CRM" <${process.env.YOUR_EMAIL_ADDRESS}>`,
 
-                to: lead.email,
+            to: lead.email,
 
-                subject:
-                    'Thank you for contacting us',
+            subject: 'Thank you for contacting us',
 
-                html: `
+            html: `
                     <div style="
                         font-family: Arial, sans-serif;
                         max-width: 600px;
@@ -174,53 +168,29 @@ export async function sendNewLeadEmail({ lead }) {
 
                     </div>
                 `,
-            });
+        });
 
-        console.log(
-            '========================================'
-        );
+        console.log('========================================');
 
-        console.log(
-            '✅ NEW LEAD EMAIL SENT SUCCESSFULLY'
-        );
+        console.log('✅ NEW LEAD EMAIL SENT SUCCESSFULLY');
 
-        console.log(
-            '📨 Message ID:',
-            result.messageId
-        );
+        console.log('📨 Message ID:', result.messageId);
 
-        console.log(
-            '📬 Sent To:',
-            lead.email
-        );
+        console.log('📬 Sent To:', lead.email);
 
-        console.log(
-            '========================================'
-        );
+        console.log('========================================');
 
         return result;
     } catch (error) {
-        console.error(
-            '========================================'
-        );
+        console.error('========================================');
 
-        console.error(
-            '❌ NEW LEAD EMAIL FAILED'
-        );
+        console.error('❌ NEW LEAD EMAIL FAILED');
 
-        console.error(
-            'Recipient:',
-            lead.email
-        );
+        console.error('Recipient:', lead.email);
 
-        console.error(
-            'Error:',
-            error
-        );
+        console.error('Error:', error);
 
-        console.error(
-            '========================================'
-        );
+        console.error('========================================');
     }
 }
 // ============================================================
@@ -250,11 +220,7 @@ function formatTime(date) {
 // MEETING REMINDER
 // ============================================================
 
-export async function sendMeetingReminderEmail({
-    to,
-    userName,
-    meeting,
-}) {
+export async function sendMeetingReminderEmail({ to, userName, meeting }) {
     const date = formatDate(meeting.startAt);
     const time = formatTime(meeting.startAt);
 
@@ -356,11 +322,7 @@ export async function sendMeetingReminderEmail({
 // TASK REMINDER
 // ============================================================
 
-export async function sendTaskReminderEmail({
-    to,
-    userName,
-    task,
-}) {
+export async function sendTaskReminderEmail({ to, userName, task }) {
     const date = formatDate(task.dueDate);
     const time = formatTime(task.dueDate);
 

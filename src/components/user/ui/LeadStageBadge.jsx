@@ -1,3 +1,5 @@
+// src/components/user/ui/LeadStageBadge.jsx
+
 const leadstageStyles = {
     new: 'bg-cyan-500/10 text-cyan-600',
     contacted: 'bg-yellow-500/10 text-yellow-600',

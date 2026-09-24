@@ -1,12 +1,8 @@
+// src/app/dashboard/components/DashboardStats.jsx
+
 'use client';
 
-import {
-    Users,
-    UserPlus,
-    Phone,
-    ClipboardList,
-    Trophy,
-} from 'lucide-react';
+import { Users, UserPlus, Phone, ClipboardList, Trophy } from 'lucide-react';
 
 import StatCard from './StatCard';
 
@@ -76,13 +72,8 @@ const userStatsConfig = [
 // COMPONENT
 // ============================================================
 
-export default function DashboardStats({
-    stats,
-    loading,
-}) {
-    const config = stats?.isAdmin
-        ? adminStatsConfig
-        : userStatsConfig;
+export default function DashboardStats({ stats, loading }) {
+    const config = stats?.isAdmin ? adminStatsConfig : userStatsConfig;
 
     return (
         <div className="grid w-full grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:grid-cols-4 lg:gap-6">
@@ -90,27 +81,8 @@ export default function DashboardStats({
                 const Icon = item.icon;
 
                 return (
-                    <div
-                        key={item.key}
-                        className="w-full min-w-0"
-                    >
-                        <StatCard
-                            title={
-                                item.title
-                            }
-                            value={
-                                stats?.[
-                                    item.key
-                                ] ?? 0
-                            }
-                            icon={Icon}
-                            color={
-                                item.color
-                            }
-                            loading={
-                                loading
-                            }
-                        />
+                    <div key={item.key} className="w-full min-w-0">
+                        <StatCard title={item.title} value={stats?.[item.key] ?? 0} icon={Icon} color={item.color} loading={loading} />
                     </div>
                 );
             })}

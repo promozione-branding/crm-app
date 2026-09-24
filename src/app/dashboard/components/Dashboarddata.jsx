@@ -9,7 +9,7 @@ import { Users, UserPlus, Phone, ClipboardList } from 'lucide-react';
 // ============================================================
 // DEFAULT STATS
 // ============================================================
- 
+
 const defaultStats = {
     users: 0,
     leads: 0,

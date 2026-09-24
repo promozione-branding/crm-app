@@ -4,9 +4,7 @@ import mongoose from 'mongoose';
 import Meeting from '@/models/meeting.model.js';
 import Lead from '@/models/leads.model.js';
 import User from '@/models/user.model.js';
-import {
-    sendMeetingAssignedEmail,
-} from '@/lib/mail/notificationMail.js';
+import { sendMeetingAssignedEmail } from '@/lib/mail/notificationMail.js';
 
 // CREATE MEETING
 export const createMeetingService = async (user, body) => {
@@ -118,20 +116,14 @@ export const createMeetingService = async (user, body) => {
     // ============================================================
 
     try {
-        console.log(
-            `[EMAIL FLOW] 📅 New meeting assigned: ${meeting._id}`
-        );
+        console.log(`[EMAIL FLOW] 📅 New meeting assigned: ${meeting._id}`);
 
-        const assignedUser = await User.findById(assignedTo)
-            .select('name email');
+        const assignedUser = await User.findById(assignedTo).select('name email');
 
         if (!assignedUser) {
-            console.error(
-                `[EMAIL FLOW] ❌ Meeting assigned user not found: ${assignedTo}`
-            );
+            console.error(`[EMAIL FLOW] ❌ Meeting assigned user not found: ${assignedTo}`);
         } else {
-            const assignedBy = await User.findById(user._id)
-                .select('name email');
+            const assignedBy = await User.findById(user._id).select('name email');
 
             const emailMeeting = await Meeting.findById(meeting._id)
                 .populate('leadId', 'name phone email companyName')
@@ -145,10 +137,7 @@ export const createMeetingService = async (user, body) => {
             });
         }
     } catch (error) {
-        console.error(
-            '[EMAIL FLOW] ❌ New meeting assignment email failed:',
-            error
-        );
+        console.error('[EMAIL FLOW] ❌ New meeting assignment email failed:', error);
     }
 
     return await Meeting.findById(meeting._id)
@@ -223,8 +212,7 @@ export const updateMeetingService = async (user, meetingId, body) => {
     // CAPTURE PREVIOUS ASSIGNEE
     // ============================================================
 
-    const previousAssignedTo =
-        meeting.assignedTo?.toString() || null;
+    const previousAssignedTo = meeting.assignedTo?.toString() || null;
 
     // Basic fields
     if (body.title !== undefined) {
@@ -350,27 +338,17 @@ export const updateMeetingService = async (user, meetingId, body) => {
     // ============================================================
 
     try {
-        const newAssignedTo =
-            meeting.assignedTo?.toString() || null;
+        const newAssignedTo = meeting.assignedTo?.toString() || null;
 
-        if (
-            newAssignedTo &&
-            previousAssignedTo !== newAssignedTo
-        ) {
-            console.log(
-                `[EMAIL FLOW] 👤 Meeting assignment changed: ${previousAssignedTo} → ${newAssignedTo}`
-            );
+        if (newAssignedTo && previousAssignedTo !== newAssignedTo) {
+            console.log(`[EMAIL FLOW] 👤 Meeting assignment changed: ${previousAssignedTo} → ${newAssignedTo}`);
 
-            const assignedUser = await User.findById(newAssignedTo)
-                .select('name email');
+            const assignedUser = await User.findById(newAssignedTo).select('name email');
 
             if (!assignedUser) {
-                console.error(
-                    `[EMAIL FLOW] ❌ Meeting assigned user not found: ${newAssignedTo}`
-                );
+                console.error(`[EMAIL FLOW] ❌ Meeting assigned user not found: ${newAssignedTo}`);
             } else {
-                const assignedBy = await User.findById(user._id)
-                    .select('name email');
+                const assignedBy = await User.findById(user._id).select('name email');
 
                 const emailMeeting = await Meeting.findById(meeting._id)
                     .populate('leadId', 'name phone email companyName')
@@ -385,10 +363,7 @@ export const updateMeetingService = async (user, meetingId, body) => {
             }
         }
     } catch (error) {
-        console.error(
-            '[EMAIL FLOW] ❌ Meeting assignment email failed:',
-            error
-        );
+        console.error('[EMAIL FLOW] ❌ Meeting assignment email failed:', error);
     }
 
     return await Meeting.findById(meeting._id)

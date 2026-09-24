@@ -56,7 +56,6 @@ export async function GET(req) {
     }
 }
 
-
 // CREATE ROLE
 export async function POST(req) {
     try {
@@ -64,10 +63,7 @@ export async function POST(req) {
 
         const body = await req.json();
 
-        const {
-            name,
-            description = '',
-        } = body;
+        const { name, description = '' } = body;
 
         const user = await getCurrentUser(req);
 

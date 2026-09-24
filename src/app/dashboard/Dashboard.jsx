@@ -25,17 +25,13 @@ const defaultStats = {
 // ============================================================
 
 export default function Dashboard() {
-    const [stats, setStats] =
-        useState(defaultStats);
+    const [stats, setStats] = useState(defaultStats);
 
-    const [analytics, setAnalytics] =
-        useState(null);
+    const [analytics, setAnalytics] = useState(null);
 
-    const [loading, setLoading] =
-        useState(true);
+    const [loading, setLoading] = useState(true);
 
-    const [analyticsLoading, setAnalyticsLoading] =
-        useState(true);
+    const [analyticsLoading, setAnalyticsLoading] = useState(true);
 
     // ========================================================
     // GET DASHBOARD STATS
@@ -45,12 +41,9 @@ export default function Dashboard() {
         try {
             setLoading(true);
 
-            const res = await axios.get(
-                '/api/user/dashboard',
-                {
-                    withCredentials: true,
-                }
-            );
+            const res = await axios.get('/api/user/dashboard', {
+                withCredentials: true,
+            });
 
             if (res.data?.success) {
                 setStats({
@@ -59,15 +52,9 @@ export default function Dashboard() {
                 });
             }
         } catch (error) {
-            console.error(
-                'Failed to load dashboard:',
-                error
-            );
+            console.error('Failed to load dashboard:', error);
 
-            toast.error(
-                error?.response?.data?.message ||
-                    'Failed to load dashboard.'
-            );
+            toast.error(error?.response?.data?.message || 'Failed to load dashboard.');
         } finally {
             setLoading(false);
         }
@@ -77,37 +64,25 @@ export default function Dashboard() {
     // GET DASHBOARD ANALYTICS
     // ========================================================
 
-    const getDashboardAnalytics =
-        async () => {
-            try {
-                setAnalyticsLoading(true);
+    const getDashboardAnalytics = async () => {
+        try {
+            setAnalyticsLoading(true);
 
-                const res = await axios.get(
-                    '/api/user/dashboard/analytics',
-                    {
-                        withCredentials: true,
-                    }
-                );
+            const res = await axios.get('/api/user/dashboard/analytics', {
+                withCredentials: true,
+            });
 
-                if (res.data?.success) {
-                    setAnalytics(
-                        res.data.data || null
-                    );
-                }
-            } catch (error) {
-                console.error(
-                    'Failed to load dashboard analytics:',
-                    error
-                );
-
-                toast.error(
-                    error?.response?.data?.message ||
-                        'Failed to load dashboard analytics.'
-                );
-            } finally {
-                setAnalyticsLoading(false);
+            if (res.data?.success) {
+                setAnalytics(res.data.data || null);
             }
-        };
+        } catch (error) {
+            console.error('Failed to load dashboard analytics:', error);
+
+            toast.error(error?.response?.data?.message || 'Failed to load dashboard analytics.');
+        } finally {
+            setAnalyticsLoading(false);
+        }
+    };
 
     // ========================================================
     // INITIAL LOAD
@@ -125,41 +100,27 @@ export default function Dashboard() {
 
     return (
         <div className="bg-surface text-app min-h-screen p-4 sm:p-6">
-
             {/* ==================================================
                 HEADER
             ================================================== */}
 
             <div className="mb-6 sm:mb-8">
+                <h1 className="text-2xl font-bold sm:text-3xl">Dashboard</h1>
 
-                <h1 className="text-2xl font-bold sm:text-3xl">
-                    Dashboard
-                </h1>
-
-                <p className="mt-1 text-xs opacity-70 sm:text-sm">
-                    Welcome to your CRM dashboard.
-                </p>
-
+                <p className="mt-1 text-xs opacity-70 sm:text-sm">Welcome to your CRM dashboard.</p>
             </div>
 
             {/* ==================================================
                 TOP STATS
             ================================================== */}
 
-            <DashboardStats
-                stats={stats}
-                loading={loading}
-            />
+            <DashboardStats stats={stats} loading={loading} />
 
             {/* ==================================================
                 ANALYTICS
             ================================================== */}
 
-            <DashboardAnalytics
-                analytics={analytics}
-                loading={analyticsLoading}
-            />
-
+            <DashboardAnalytics analytics={analytics} loading={analyticsLoading} />
         </div>
     );
 }

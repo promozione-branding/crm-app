@@ -1,3 +1,5 @@
+// src/lib/mail/notificationMail.js
+
 import nodemailer from 'nodemailer';
 import User from '@/models/user.model.js';
 import Role from '@/models/role.model.js';
@@ -17,12 +19,7 @@ const transporter = nodemailer.createTransport({
 function escapeHtml(value) {
     if (value === null || value === undefined) return '';
 
-    return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+    return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
 
 function formatDateTime(date) {
@@ -47,9 +44,7 @@ function getFrom() {
 
 export async function getCompanyAdmins(companyId) {
     try {
-        console.log(
-            `[EMAIL] 🔎 Finding admins for company: ${companyId}`
-        );
+        console.log(`[EMAIL] 🔎 Finding admins for company: ${companyId}`);
 
         const adminRoles = await Role.find({
             companyId,
@@ -59,9 +54,7 @@ export async function getCompanyAdmins(companyId) {
         }).select('_id name');
 
         if (!adminRoles.length) {
-            console.error(
-                `[EMAIL] ❌ No Admin role found for company: ${companyId}`
-            );
+            console.error(`[EMAIL] ❌ No Admin role found for company: ${companyId}`);
 
             return [];
         }
@@ -74,16 +67,11 @@ export async function getCompanyAdmins(companyId) {
             status: 'active',
         }).select('name email');
 
-        console.log(
-            `[EMAIL] 👑 Found ${admins.length} active admin(s)`
-        );
+        console.log(`[EMAIL] 👑 Found ${admins.length} active admin(s)`);
 
         return admins;
     } catch (error) {
-        console.error(
-            '[EMAIL] ❌ Failed to find company admins:',
-            error
-        );
+        console.error('[EMAIL] ❌ Failed to find company admins:', error);
 
         return [];
     }
@@ -93,25 +81,16 @@ export async function getCompanyAdmins(companyId) {
 // NEW LEAD → ADMIN
 // ============================================================
 
-export async function sendNewLeadAdminEmail({
-    lead,
-    createdBy,
-}) {
+export async function sendNewLeadAdminEmail({ lead, createdBy }) {
     try {
-        console.log(
-            `[EMAIL] 🆕 Preparing new lead email: ${lead?._id}`
-        );
+        console.log(`[EMAIL] 🆕 Preparing new lead email: ${lead?._id}`);
 
         const admins = await getCompanyAdmins(lead.companyId);
 
-        const recipients = admins
-            .map((admin) => admin.email)
-            .filter(Boolean);
+        const recipients = admins.map((admin) => admin.email).filter(Boolean);
 
         if (!recipients.length) {
-            console.error(
-                `[EMAIL] ❌ No admin email found for lead: ${lead?._id}`
-            );
+            console.error(`[EMAIL] ❌ No admin email found for lead: ${lead?._id}`);
             return;
         }
 
@@ -144,9 +123,7 @@ export async function sendNewLeadAdminEmail({
             </div>
         `;
 
-        console.log(
-            `[EMAIL] 📤 Sending new lead email to: ${recipients.join(', ')}`
-        );
+        console.log(`[EMAIL] 📤 Sending new lead email to: ${recipients.join(', ')}`);
 
         const result = await transporter.sendMail({
             from: getFrom(),
@@ -155,14 +132,9 @@ export async function sendNewLeadAdminEmail({
             html,
         });
 
-        console.log(
-            `[EMAIL] ✅ New lead email sent: ${result.messageId}`
-        );
+        console.log(`[EMAIL] ✅ New lead email sent: ${result.messageId}`);
     } catch (error) {
-        console.error(
-            `[EMAIL] ❌ New lead email failed:`,
-            error
-        );
+        console.error(`[EMAIL] ❌ New lead email failed:`, error);
     }
 }
 
@@ -170,42 +142,25 @@ export async function sendNewLeadAdminEmail({
 // LEAD STATUS / STAGE CHANGED → ADMIN
 // ============================================================
 
-export async function sendLeadStatusChangedAdminEmail({
-    lead,
-    changedBy,
-    oldStatus,
-    newStatus,
-    oldStage,
-    newStage,
-}) {
+export async function sendLeadStatusChangedAdminEmail({ lead, changedBy, oldStatus, newStatus, oldStage, newStage }) {
     try {
-        console.log(
-            `[EMAIL] 🔄 Preparing lead status email: ${lead?._id}`
-        );
+        console.log(`[EMAIL] 🔄 Preparing lead status email: ${lead?._id}`);
 
         const admins = await getCompanyAdmins(lead.companyId);
 
-        const recipients = admins
-            .map((admin) => admin.email)
-            .filter(Boolean);
+        const recipients = admins.map((admin) => admin.email).filter(Boolean);
 
         if (!recipients.length) {
-            console.error(
-                `[EMAIL] ❌ No admin email found for status change`
-            );
+            console.error(`[EMAIL] ❌ No admin email found for status change`);
             return;
         }
 
-        const statusChanged =
-            oldStatus !== newStatus;
+        const statusChanged = oldStatus !== newStatus;
 
-        const stageChanged =
-            oldStage !== newStage;
+        const stageChanged = oldStage !== newStage;
 
         if (!statusChanged && !stageChanged) {
-            console.log(
-                `[EMAIL] ℹ️ No status/stage change detected`
-            );
+            console.log(`[EMAIL] ℹ️ No status/stage change detected`);
             return;
         }
 
@@ -259,9 +214,7 @@ export async function sendLeadStatusChangedAdminEmail({
             </div>
         `;
 
-        console.log(
-            `[EMAIL] 📤 Sending lead status email to: ${recipients.join(', ')}`
-        );
+        console.log(`[EMAIL] 📤 Sending lead status email to: ${recipients.join(', ')}`);
 
         const result = await transporter.sendMail({
             from: getFrom(),
@@ -270,14 +223,9 @@ export async function sendLeadStatusChangedAdminEmail({
             html,
         });
 
-        console.log(
-            `[EMAIL] ✅ Lead status email sent: ${result.messageId}`
-        );
+        console.log(`[EMAIL] ✅ Lead status email sent: ${result.messageId}`);
     } catch (error) {
-        console.error(
-            `[EMAIL] ❌ Lead status email failed:`,
-            error
-        );
+        console.error(`[EMAIL] ❌ Lead status email failed:`, error);
     }
 }
 
@@ -285,20 +233,12 @@ export async function sendLeadStatusChangedAdminEmail({
 // LEAD ASSIGNED → ASSIGNED USER
 // ============================================================
 
-export async function sendLeadAssignedEmail({
-    lead,
-    assignedUser,
-    assignedBy,
-}) {
+export async function sendLeadAssignedEmail({ lead, assignedUser, assignedBy }) {
     try {
-        console.log(
-            `[EMAIL] 👤 Preparing lead assignment email: ${lead?._id}`
-        );
+        console.log(`[EMAIL] 👤 Preparing lead assignment email: ${lead?._id}`);
 
         if (!assignedUser?.email) {
-            console.error(
-                `[EMAIL] ❌ Assigned user email missing`
-            );
+            console.error(`[EMAIL] ❌ Assigned user email missing`);
             return;
         }
 
@@ -337,9 +277,7 @@ export async function sendLeadAssignedEmail({
             </div>
         `;
 
-        console.log(
-            `[EMAIL] 📤 Sending lead assignment email to: ${assignedUser.email}`
-        );
+        console.log(`[EMAIL] 📤 Sending lead assignment email to: ${assignedUser.email}`);
 
         const result = await transporter.sendMail({
             from: getFrom(),
@@ -348,14 +286,9 @@ export async function sendLeadAssignedEmail({
             html,
         });
 
-        console.log(
-            `[EMAIL] ✅ Lead assignment email sent: ${result.messageId}`
-        );
+        console.log(`[EMAIL] ✅ Lead assignment email sent: ${result.messageId}`);
     } catch (error) {
-        console.error(
-            `[EMAIL] ❌ Lead assignment email failed:`,
-            error
-        );
+        console.error(`[EMAIL] ❌ Lead assignment email failed:`, error);
     }
 }
 
@@ -363,20 +296,12 @@ export async function sendLeadAssignedEmail({
 // TASK ASSIGNED → ASSIGNED USER
 // ============================================================
 
-export async function sendTaskAssignedEmail({
-    task,
-    assignedUser,
-    assignedBy,
-}) {
+export async function sendTaskAssignedEmail({ task, assignedUser, assignedBy }) {
     try {
-        console.log(
-            `[EMAIL] 📋 Preparing task assignment email: ${task?._id}`
-        );
+        console.log(`[EMAIL] 📋 Preparing task assignment email: ${task?._id}`);
 
         if (!assignedUser?.email) {
-            console.error(
-                `[EMAIL] ❌ Task assigned user email missing`
-            );
+            console.error(`[EMAIL] ❌ Task assigned user email missing`);
             return;
         }
 
@@ -422,9 +347,7 @@ export async function sendTaskAssignedEmail({
             </div>
         `;
 
-        console.log(
-            `[EMAIL] 📤 Sending task assignment email to: ${assignedUser.email}`
-        );
+        console.log(`[EMAIL] 📤 Sending task assignment email to: ${assignedUser.email}`);
 
         const result = await transporter.sendMail({
             from: getFrom(),
@@ -433,14 +356,9 @@ export async function sendTaskAssignedEmail({
             html,
         });
 
-        console.log(
-            `[EMAIL] ✅ Task assignment email sent: ${result.messageId}`
-        );
+        console.log(`[EMAIL] ✅ Task assignment email sent: ${result.messageId}`);
     } catch (error) {
-        console.error(
-            `[EMAIL] ❌ Task assignment email failed:`,
-            error
-        );
+        console.error(`[EMAIL] ❌ Task assignment email failed:`, error);
     }
 }
 
@@ -448,20 +366,12 @@ export async function sendTaskAssignedEmail({
 // MEETING ASSIGNED → ASSIGNED USER
 // ============================================================
 
-export async function sendMeetingAssignedEmail({
-    meeting,
-    assignedUser,
-    assignedBy,
-}) {
+export async function sendMeetingAssignedEmail({ meeting, assignedUser, assignedBy }) {
     try {
-        console.log(
-            `[EMAIL] 📅 Preparing meeting assignment email: ${meeting?._id}`
-        );
+        console.log(`[EMAIL] 📅 Preparing meeting assignment email: ${meeting?._id}`);
 
         if (!assignedUser?.email) {
-            console.error(
-                `[EMAIL] ❌ Meeting assigned user email missing`
-            );
+            console.error(`[EMAIL] ❌ Meeting assigned user email missing`);
             return;
         }
 
@@ -510,9 +420,7 @@ export async function sendMeetingAssignedEmail({
             </div>
         `;
 
-        console.log(
-            `[EMAIL] 📤 Sending meeting assignment email to: ${assignedUser.email}`
-        );
+        console.log(`[EMAIL] 📤 Sending meeting assignment email to: ${assignedUser.email}`);
 
         const result = await transporter.sendMail({
             from: getFrom(),
@@ -521,13 +429,8 @@ export async function sendMeetingAssignedEmail({
             html,
         });
 
-        console.log(
-            `[EMAIL] ✅ Meeting assignment email sent: ${result.messageId}`
-        );
+        console.log(`[EMAIL] ✅ Meeting assignment email sent: ${result.messageId}`);
     } catch (error) {
-        console.error(
-            `[EMAIL] ❌ Meeting assignment email failed:`,
-            error
-        );
+        console.error(`[EMAIL] ❌ Meeting assignment email failed:`, error);
     }
 }

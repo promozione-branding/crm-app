@@ -8,20 +8,14 @@ import Meeting from '@/models/meeting.model.js';
 import { hasPermission } from '@/utils/permissions.js';
 import { applyLeadScope } from '@/utils/dataScope.js';
 import Role from '@/models/role.model';
-import {
-    sendNewLeadAdminEmail,
-    sendLeadStatusChangedAdminEmail,
-    sendLeadAssignedEmail,
-} from '@/lib/mail/notificationMail.js';
+import { sendNewLeadAdminEmail, sendLeadStatusChangedAdminEmail, sendLeadAssignedEmail } from '@/lib/mail/notificationMail.js';
 
 export const createLeadService = async (userId, companyId, body) => {
     if (!userId || !companyId) {
         throw new Error('User Info not found.');
     }
 
-    console.log(
-        `[EMAIL FLOW] 🆕 Creating lead. User: ${userId}, Company: ${companyId}`
-    );
+    console.log(`[EMAIL FLOW] 🆕 Creating lead. User: ${userId}, Company: ${companyId}`);
 
     const lead = await Lead.create({
         ...body,
@@ -47,27 +41,21 @@ export const createLeadService = async (userId, companyId, body) => {
         ],
     });
 
-    console.log(
-        `[EMAIL FLOW] ✅ Lead created: ${lead._id}`
-    );
+    console.log(`[EMAIL FLOW] ✅ Lead created: ${lead._id}`);
 
     // --------------------------------------------------------
     // NEW LEAD → ADMIN
     // --------------------------------------------------------
 
     try {
-        const createdBy = await User.findById(userId)
-            .select('name email');
+        const createdBy = await User.findById(userId).select('name email');
 
         await sendNewLeadAdminEmail({
             lead,
             createdBy,
         });
     } catch (error) {
-        console.error(
-            '[EMAIL FLOW] ❌ New lead admin email failed:',
-            error
-        );
+        console.error('[EMAIL FLOW] ❌ New lead admin email failed:', error);
     }
 
     // --------------------------------------------------------
@@ -83,12 +71,9 @@ export const createLeadService = async (userId, companyId, body) => {
             }).select('name email');
 
             if (!assignedUser) {
-                console.error(
-                    `[EMAIL FLOW] ❌ Assigned user not found: ${body.assignedTo}`
-                );
+                console.error(`[EMAIL FLOW] ❌ Assigned user not found: ${body.assignedTo}`);
             } else {
-                const assignedBy = await User.findById(userId)
-                    .select('name email');
+                const assignedBy = await User.findById(userId).select('name email');
 
                 await sendLeadAssignedEmail({
                     lead,
@@ -97,10 +82,7 @@ export const createLeadService = async (userId, companyId, body) => {
                 });
             }
         } catch (error) {
-            console.error(
-                '[EMAIL FLOW] ❌ New lead assignment email failed:',
-                error
-            );
+            console.error('[EMAIL FLOW] ❌ New lead assignment email failed:', error);
         }
     }
 
@@ -230,8 +212,7 @@ export const updateLeadService = async (user, leadId, body) => {
 
     const previousStatus = lead.status;
     const previousStage = lead.stage;
-    const previousAssignedTo =
-        lead.assignedTo?.toString() || null;
+    const previousAssignedTo = lead.assignedTo?.toString() || null;
 
     const changedFields = [];
 
@@ -339,23 +320,18 @@ export const updateLeadService = async (user, leadId, body) => {
     // ============================================================
 
     try {
-        const updatedBy = await User.findById(user._id)
-            .select('name email');
+        const updatedBy = await User.findById(user._id).select('name email');
 
         // --------------------------------------------------------
         // STATUS / STAGE CHANGE → ADMIN
         // --------------------------------------------------------
 
-        const statusChanged =
-            previousStatus !== lead.status;
+        const statusChanged = previousStatus !== lead.status;
 
-        const stageChanged =
-            previousStage !== lead.stage;
+        const stageChanged = previousStage !== lead.stage;
 
         if (statusChanged || stageChanged) {
-            console.log(
-                `[EMAIL FLOW] 🔄 Lead status/stage changed: ${lead._id}`
-            );
+            console.log(`[EMAIL FLOW] 🔄 Lead status/stage changed: ${lead._id}`);
 
             await sendLeadStatusChangedAdminEmail({
                 lead,
@@ -371,24 +347,15 @@ export const updateLeadService = async (user, leadId, body) => {
         // ASSIGNMENT CHANGE → ASSIGNED USER
         // --------------------------------------------------------
 
-        const newAssignedTo =
-            lead.assignedTo?.toString() || null;
+        const newAssignedTo = lead.assignedTo?.toString() || null;
 
-        if (
-            newAssignedTo &&
-            previousAssignedTo !== newAssignedTo
-        ) {
-            console.log(
-                `[EMAIL FLOW] 👤 Lead assignment changed: ${previousAssignedTo} → ${newAssignedTo}`
-            );
+        if (newAssignedTo && previousAssignedTo !== newAssignedTo) {
+            console.log(`[EMAIL FLOW] 👤 Lead assignment changed: ${previousAssignedTo} → ${newAssignedTo}`);
 
-            const assignedUser = await User.findById(newAssignedTo)
-                .select('name email');
+            const assignedUser = await User.findById(newAssignedTo).select('name email');
 
             if (!assignedUser) {
-                console.error(
-                    `[EMAIL FLOW] ❌ Assigned user not found: ${newAssignedTo}`
-                );
+                console.error(`[EMAIL FLOW] ❌ Assigned user not found: ${newAssignedTo}`);
             } else {
                 await sendLeadAssignedEmail({
                     lead,
@@ -398,10 +365,7 @@ export const updateLeadService = async (user, leadId, body) => {
             }
         }
     } catch (error) {
-        console.error(
-            '[EMAIL FLOW] ❌ Lead update email processing failed:',
-            error
-        );
+        console.error('[EMAIL FLOW] ❌ Lead update email processing failed:', error);
     }
 
     return await Lead.findById(lead._id)

@@ -1,3 +1,5 @@
+// src/controllers/user/reportsController.js
+
 import Lead from '@/models/leads.model.js';
 import LeadTask from '@/models/task.model.js';
 import Call from '@/models/call.model.js';
@@ -37,17 +39,9 @@ function getDateRange(range, from, to) {
 
     // TODAY
     if (range === 'today') {
-        const start = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate()
-        );
+        const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-        const end = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() + 1
-        );
+        const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
         return { start, end };
     }
@@ -67,11 +61,7 @@ function getDateRange(range, from, to) {
     // THIS MONTH
     if (range === 'this_month') {
         return {
-            start: new Date(
-                now.getFullYear(),
-                now.getMonth(),
-                1
-            ),
+            start: new Date(now.getFullYear(), now.getMonth(), 1),
             end: now,
         };
     }
@@ -79,26 +69,14 @@ function getDateRange(range, from, to) {
     // LAST MONTH
     if (range === 'last_month') {
         return {
-            start: new Date(
-                now.getFullYear(),
-                now.getMonth() - 1,
-                1
-            ),
-            end: new Date(
-                now.getFullYear(),
-                now.getMonth(),
-                1
-            ),
+            start: new Date(now.getFullYear(), now.getMonth() - 1, 1),
+            end: new Date(now.getFullYear(), now.getMonth(), 1),
         };
     }
 
     // LAST 3 MONTHS
     if (range === 'last_3_months') {
-        const start = new Date(
-            now.getFullYear(),
-            now.getMonth() - 2,
-            1
-        );
+        const start = new Date(now.getFullYear(), now.getMonth() - 2, 1);
 
         return {
             start,
@@ -108,21 +86,12 @@ function getDateRange(range, from, to) {
 
     // DEFAULT
     return {
-        start: new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            1
-        ),
+        start: new Date(now.getFullYear(), now.getMonth(), 1),
         end: now,
     };
 }
 
-export const getReportsService = async ({
-    user,
-    range = 'this_month',
-    from,
-    to,
-}) => {
+export const getReportsService = async ({ user, range = 'this_month', from, to }) => {
     if (!user) {
         throw new Error('User not found.');
     }
@@ -130,15 +99,9 @@ export const getReportsService = async ({
     const companyId = user.companyId;
     const userId = user._id;
 
-    const isAdmin =
-        user.roleId?.isSystemRole === true &&
-        user.roleId?.name?.toLowerCase() === 'admin';
+    const isAdmin = user.roleId?.isSystemRole === true && user.roleId?.name?.toLowerCase() === 'admin';
 
-    const { start, end } = getDateRange(
-        range,
-        from,
-        to
-    );
+    const { start, end } = getDateRange(range, from, to);
 
     // ============================================================
     // DATA VISIBILITY
@@ -155,10 +118,7 @@ export const getReportsService = async ({
         ? { companyId }
         : {
               companyId,
-              $or: [
-                  { createdBy: userId },
-                  { assignedTo: userId },
-              ],
+              $or: [{ createdBy: userId }, { assignedTo: userId }],
           };
 
     const callFilter = isAdmin
@@ -200,17 +160,7 @@ export const getReportsService = async ({
     // REPORT QUERIES
     // ============================================================
 
-    const [
-        totalLeads,
-        leadsByStage,
-        leadValue,
-        totalTasks,
-        tasksByStatus,
-        taskTiming,
-        totalCalls,
-        callsByStatus,
-        callStats,
-    ] = await Promise.all([
+    const [totalLeads, leadsByStage, leadValue, totalTasks, tasksByStatus, taskTiming, totalCalls, callsByStatus, callStats] = await Promise.all([
         // --------------------------------------------------------
         // LEADS
         // --------------------------------------------------------
@@ -257,10 +207,7 @@ export const getReportsService = async ({
                             $cond: [
                                 { $eq: ['$stage', 'won'] },
                                 {
-                                    $ifNull: [
-                                        '$dealValue',
-                                        0,
-                                    ],
+                                    $ifNull: ['$dealValue', 0],
                                 },
                                 0,
                             ],
@@ -272,10 +219,7 @@ export const getReportsService = async ({
                             $cond: [
                                 { $eq: ['$stage', 'lost'] },
                                 {
-                                    $ifNull: [
-                                        '$dealValue',
-                                        0,
-                                    ],
+                                    $ifNull: ['$dealValue', 0],
                                 },
                                 0,
                             ],
@@ -288,24 +232,15 @@ export const getReportsService = async ({
                                 {
                                     $and: [
                                         {
-                                            $ne: [
-                                                '$stage',
-                                                'won',
-                                            ],
+                                            $ne: ['$stage', 'won'],
                                         },
                                         {
-                                            $ne: [
-                                                '$stage',
-                                                'lost',
-                                            ],
+                                            $ne: ['$stage', 'lost'],
                                         },
                                     ],
                                 },
                                 {
-                                    $ifNull: [
-                                        '$dealValue',
-                                        0,
-                                    ],
+                                    $ifNull: ['$dealValue', 0],
                                 },
                                 0,
                             ],
@@ -351,10 +286,7 @@ export const getReportsService = async ({
             {
                 $project: {
                     onTime: {
-                        $lte: [
-                            '$completedAt',
-                            '$dueDate',
-                        ],
+                        $lte: ['$completedAt', '$dueDate'],
                     },
                 },
             },
@@ -398,19 +330,13 @@ export const getReportsService = async ({
 
                     totalDuration: {
                         $sum: {
-                            $ifNull: [
-                                '$durationSeconds',
-                                0,
-                            ],
+                            $ifNull: ['$durationSeconds', 0],
                         },
                     },
 
                     averageDuration: {
                         $avg: {
-                            $ifNull: [
-                                '$durationSeconds',
-                                0,
-                            ],
+                            $ifNull: ['$durationSeconds', 0],
                         },
                     },
                 },
@@ -422,15 +348,7 @@ export const getReportsService = async ({
     // STAGE MAP
     // ============================================================
 
-    const stages = [
-        'new',
-        'contacted',
-        'qualified',
-        'proposal_sent',
-        'negotiation',
-        'won',
-        'lost',
-    ];
+    const stages = ['new', 'contacted', 'qualified', 'proposal_sent', 'negotiation', 'won', 'lost'];
 
     const pipeline = {};
 
@@ -500,23 +418,9 @@ export const getReportsService = async ({
         }
     });
 
-    const meaningfulCalls =
-        callStatus.completed +
-        callStatus.missed +
-        callStatus.busy +
-        callStatus.no_answer +
-        callStatus.failed;
+    const meaningfulCalls = callStatus.completed + callStatus.missed + callStatus.busy + callStatus.no_answer + callStatus.failed;
 
-    const connectionRate =
-        meaningfulCalls > 0
-            ? Number(
-                  (
-                      (callStatus.completed /
-                          meaningfulCalls) *
-                      100
-                  ).toFixed(1)
-              )
-            : 0;
+    const connectionRate = meaningfulCalls > 0 ? Number(((callStatus.completed / meaningfulCalls) * 100).toFixed(1)) : 0;
 
     // ============================================================
     // LEAD SUMMARY
@@ -524,15 +428,7 @@ export const getReportsService = async ({
 
     const wonLeads = pipeline.won.count;
 
-    const conversionRate =
-        totalLeads > 0
-            ? Number(
-                  (
-                      (wonLeads / totalLeads) *
-                      100
-                  ).toFixed(1)
-              )
-            : 0;
+    const conversionRate = totalLeads > 0 ? Number(((wonLeads / totalLeads) * 100).toFixed(1)) : 0;
 
     const deal = leadValue[0] || {
         totalValue: 0,
@@ -570,8 +466,7 @@ export const getReportsService = async ({
             totalValue: deal.totalValue || 0,
             wonValue: deal.wonValue || 0,
             lostValue: deal.lostValue || 0,
-            openPipelineValue:
-                deal.openPipelineValue || 0,
+            openPipelineValue: deal.openPipelineValue || 0,
         },
 
         tasks: {
@@ -594,9 +489,7 @@ export const getReportsService = async ({
             ...callStatus,
             connectionRate,
             totalDuration: call.totalDuration || 0,
-            averageDuration: Number(
-                call.averageDuration || 0
-            ).toFixed(1),
+            averageDuration: Number(call.averageDuration || 0).toFixed(1),
         },
     };
 };

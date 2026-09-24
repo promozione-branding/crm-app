@@ -5,32 +5,21 @@ import { NextResponse } from 'next/server';
 import { connectDB } from '@/config/db';
 import { getCurrentUser } from '@/utils/auth';
 
-import {
-    createLeadService,
-} from '@/controllers/user/leadsController';
+import { createLeadService } from '@/controllers/user/leadsController';
 
-import {
-    sendNewLeadEmail,
-} from '@/lib/mail/reminderMail';
+import { sendNewLeadEmail } from '@/lib/mail/reminderMail';
 
 export async function POST(request) {
     console.log('🔥🔥🔥 LEAD POST ROUTE HIT 🔥🔥🔥');
     try {
         await connectDB();
 
-        const user =
-            await getCurrentUser(request);
+        const user = await getCurrentUser(request);
 
-        const body =
-            await request.json();
+        const body = await request.json();
 
         // Create lead
-        const lead =
-            await createLeadService(
-                user._id,
-                user.companyId,
-                body
-            );
+        const lead = await createLeadService(user._id, user.companyId, body);
 
         console.log('========================================');
         console.log('🟢 LEAD CREATED');
@@ -45,42 +34,29 @@ export async function POST(request) {
                 lead,
             });
         } else {
-            console.log(
-                '⚠️ No email found on lead. Client email skipped.'
-            );
+            console.log('⚠️ No email found on lead. Client email skipped.');
         }
 
         return NextResponse.json(
             {
                 success: true,
-                message:
-                    'Lead created successfully.',
+                message: 'Lead created successfully.',
                 data: lead,
             },
             {
                 status: 201,
             }
         );
-
     } catch (error) {
-        console.error(
-            'CREATE LEAD ERROR:',
-            error
-        );
+        console.error('CREATE LEAD ERROR:', error);
 
         return NextResponse.json(
             {
                 success: false,
-                message:
-                    error.message ||
-                    'Failed to create lead.',
+                message: error.message || 'Failed to create lead.',
             },
             {
-                status:
-                    error.message ===
-                    'Not authenticated'
-                        ? 401
-                        : 400,
+                status: error.message === 'Not authenticated' ? 401 : 400,
             }
         );
     }

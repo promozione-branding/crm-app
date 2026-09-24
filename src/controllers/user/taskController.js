@@ -5,9 +5,7 @@ import User from '@/models/user.model.js';
 import Lead from '@/models/leads.model.js';
 import LeadTask from '@/models/task.model.js';
 import Role from '@/models/role.model.js';
-import {
-    sendTaskAssignedEmail,
-} from '@/lib/mail/notificationMail.js';
+import { sendTaskAssignedEmail } from '@/lib/mail/notificationMail.js';
 
 // CREATE TASK
 export const createTaskService = async (user, body) => {
@@ -85,24 +83,16 @@ export const createTaskService = async (user, body) => {
     // ============================================================
 
     try {
-        console.log(
-            `[EMAIL FLOW] 📋 New task assigned: ${task._id}`
-        );
+        console.log(`[EMAIL FLOW] 📋 New task assigned: ${task._id}`);
 
-        const assignedUser = await User.findById(body.assignedTo)
-            .select('name email');
+        const assignedUser = await User.findById(body.assignedTo).select('name email');
 
         if (!assignedUser) {
-            console.error(
-                `[EMAIL FLOW] ❌ Task assigned user not found: ${body.assignedTo}`
-            );
+            console.error(`[EMAIL FLOW] ❌ Task assigned user not found: ${body.assignedTo}`);
         } else if (!assignedUser.email) {
-            console.error(
-                `[EMAIL FLOW] ❌ Task assigned user has no email: ${assignedUser._id}`
-            );
+            console.error(`[EMAIL FLOW] ❌ Task assigned user has no email: ${assignedUser._id}`);
         } else {
-            const assignedBy = await User.findById(user._id)
-                .select('name email');
+            const assignedBy = await User.findById(user._id).select('name email');
 
             const emailTask = await LeadTask.findById(task._id)
                 .populate('assignedTo', 'name email phone role')
@@ -115,15 +105,10 @@ export const createTaskService = async (user, body) => {
                 assignedBy,
             });
 
-            console.log(
-                `[EMAIL FLOW] ✅ Task assignment email processing completed: ${task._id}`
-            );
+            console.log(`[EMAIL FLOW] ✅ Task assignment email processing completed: ${task._id}`);
         }
     } catch (error) {
-        console.error(
-            `[EMAIL FLOW] ❌ New task assignment email failed for ${task._id}:`,
-            error
-        );
+        console.error(`[EMAIL FLOW] ❌ New task assignment email failed for ${task._id}:`, error);
     }
 
     return await LeadTask.findById(task._id)
@@ -411,8 +396,7 @@ export const updateTaskService = async (user, taskId, body) => {
     // CAPTURE PREVIOUS ASSIGNEE
     // ============================================================
 
-    const previousAssignedTo =
-        task.assignedTo?.toString() || null;
+    const previousAssignedTo = task.assignedTo?.toString() || null;
 
     // Get related lead
     const lead = await Lead.findOne({ _id: task.leadId, companyId: user.companyId });

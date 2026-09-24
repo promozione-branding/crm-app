@@ -31,21 +31,23 @@ const columns = [
     },
 
     {
-    key: 'priority',
-    label: 'Priority',
-    sortable: true,
+        key: 'priority',
+        label: 'Priority',
+        sortable: true,
 
-    render: (task) => <PriorityBadge priority={task.priority} />,
-},,
+        render: (task) => <PriorityBadge priority={task.priority} />,
+    },
 
+    ,
     {
-    key: 'status',
-    label: 'Status',
-    sortable: true,
+        key: 'status',
+        label: 'Status',
+        sortable: true,
 
-    render: (task) => <StatusBadge status={task.status} />,
-},,
+        render: (task) => <StatusBadge status={task.status} />,
+    },
 
+    ,
     {
         key: 'createdBy.name',
         label: 'Created By',

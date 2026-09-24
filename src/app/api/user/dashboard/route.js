@@ -1,3 +1,5 @@
+// src/app/api/user/dashboard/route.js
+
 import { NextResponse } from 'next/server';
 
 import { connectDB } from '@/config/db';
@@ -46,9 +48,7 @@ export async function GET(request) {
         // ADMIN CHECK
         // ============================================================
 
-        const isAdmin =
-            user.roleId?.isSystemRole === true &&
-            user.roleId?.name?.toLowerCase() === 'admin';
+        const isAdmin = user.roleId?.isSystemRole === true && user.roleId?.name?.toLowerCase() === 'admin';
 
         // ============================================================
         // DASHBOARD VISIBILITY
@@ -94,21 +94,11 @@ export async function GET(request) {
 
         const now = new Date();
 
-        const startOfToday = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate()
-        );
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-        const startOfWeek = new Date(
-            now.getTime() -
-                7 * 24 * 60 * 60 * 1000
-        );
+        const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-        const startOfMonth = new Date(
-            now.getTime() -
-                30 * 24 * 60 * 60 * 1000
-        );
+        const startOfMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
         // ============================================================
         // DASHBOARD DATA
@@ -146,25 +136,19 @@ export async function GET(request) {
             // LEADS
             // ========================================================
 
-            Lead.countDocuments(
-                leadVisibilityFilter
-            ),
+            Lead.countDocuments(leadVisibilityFilter),
 
             // ========================================================
             // TASKS
             // ========================================================
 
-            LeadTask.countDocuments(
-                taskVisibilityFilter
-            ),
+            LeadTask.countDocuments(taskVisibilityFilter),
 
             // ========================================================
             // TOTAL CALLS
             // ========================================================
 
-            Call.countDocuments(
-                callVisibilityFilter
-            ),
+            Call.countDocuments(callVisibilityFilter),
 
             // ========================================================
             // WON DEALS
@@ -214,8 +198,7 @@ export async function GET(request) {
 
             Call.aggregate([
                 {
-                    $match:
-                        callVisibilityFilter,
+                    $match: callVisibilityFilter,
                 },
                 {
                     $group: {
@@ -233,8 +216,7 @@ export async function GET(request) {
 
             Call.aggregate([
                 {
-                    $match:
-                        callVisibilityFilter,
+                    $match: callVisibilityFilter,
                 },
                 {
                     $group: {
@@ -285,14 +267,8 @@ export async function GET(request) {
                     calledAt: -1,
                 })
                 .limit(5)
-                .populate(
-                    'callerId',
-                    'name email'
-                )
-                .populate(
-                    'refId',
-                    'name phone'
-                )
+                .populate('callerId', 'name email')
+                .populate('refId', 'name phone')
                 .lean(),
 
             // ========================================================
@@ -304,13 +280,8 @@ export async function GET(request) {
                     updatedAt: -1,
                 })
                 .limit(5)
-                .populate(
-                    'assignedTo',
-                    'name'
-                )
-                .select(
-                    'name phone companyName stage status assignedTo updatedAt createdAt'
-                )
+                .populate('assignedTo', 'name')
+                .select('name phone companyName stage status assignedTo updatedAt createdAt')
                 .lean(),
 
             // ========================================================
@@ -322,21 +293,10 @@ export async function GET(request) {
                     updatedAt: -1,
                 })
                 .limit(5)
-                .populate(
-                    'assignedTo',
-                    'name'
-                )
-                .populate(
-                    'leadId',
-                    'name phone'
-                )
-                .populate(
-                    'createdBy',
-                    'name'
-                )
-                .select(
-                    'title status priority assignedTo leadId createdBy dueDate updatedAt createdAt'
-                )
+                .populate('assignedTo', 'name')
+                .populate('leadId', 'name phone')
+                .populate('createdBy', 'name')
+                .select('title status priority assignedTo leadId createdBy dueDate updatedAt createdAt')
                 .lean(),
         ]);
 
@@ -344,16 +304,11 @@ export async function GET(request) {
         // CALL STATUS MAP
         // ============================================================
 
-        const statusMap =
-            callsByStatus.reduce(
-                (acc, item) => {
-                    acc[item._id] =
-                        item.count;
+        const statusMap = callsByStatus.reduce((acc, item) => {
+            acc[item._id] = item.count;
 
-                    return acc;
-                },
-                {}
-            );
+            return acc;
+        }, {});
 
         // ============================================================
         // RESPONSE
@@ -405,51 +360,33 @@ export async function GET(request) {
                     month: callsMonth,
 
                     byStatus: {
-                        initiated:
-                            statusMap.initiated ||
-                            0,
+                        initiated: statusMap.initiated || 0,
 
-                        completed:
-                            statusMap.completed ||
-                            0,
+                        completed: statusMap.completed || 0,
 
-                        missed:
-                            statusMap.missed ||
-                            0,
+                        missed: statusMap.missed || 0,
 
-                        busy:
-                            statusMap.busy ||
-                            0,
+                        busy: statusMap.busy || 0,
 
-                        no_answer:
-                            statusMap.no_answer ||
-                            0,
+                        no_answer: statusMap.no_answer || 0,
 
-                        failed:
-                            statusMap.failed ||
-                            0,
+                        failed: statusMap.failed || 0,
                     },
 
-                    byCaller:
-                        callsByCaller,
+                    byCaller: callsByCaller,
 
                     recent: recentCalls,
                 },
             },
         });
     } catch (error) {
-        console.error(
-            'GET DASHBOARD ERROR:',
-            error
-        );
+        console.error('GET DASHBOARD ERROR:', error);
 
         return NextResponse.json(
             {
                 success: false,
 
-                message:
-                    error.message ||
-                    'Failed to fetch dashboard data.',
+                message: error.message || 'Failed to fetch dashboard data.',
             },
             {
                 status: 400,

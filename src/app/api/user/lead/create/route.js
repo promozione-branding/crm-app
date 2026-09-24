@@ -12,38 +12,19 @@ export async function POST(request) {
     try {
         await connectDB();
 
-        const token =
-            request.cookies.get(
-                ENV.CLIENT_COOKIE_NAME
-            )?.value;
+        const token = request.cookies.get(ENV.CLIENT_COOKIE_NAME)?.value;
 
         if (!token) {
-            return NextResponse.json(
-                { message: 'Not authenticated' },
-                { status: 401 }
-            );
+            return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
         }
 
-        const decoded =
-            jwt.verify(
-                token,
-                ENV.JWT_CLIENT_SECRET
-            );
+        const decoded = jwt.verify(token, ENV.JWT_CLIENT_SECRET);
 
-        const user =
-            await User.findById(
-                decoded.id
-            ).select('-password');
+        const user = await User.findById(decoded.id).select('-password');
 
-        const body =
-            await request.json();
+        const body = await request.json();
 
-        const lead =
-            await createLeadService(
-                user?._id,
-                user?.companyId,
-                body
-            );
+        const lead = await createLeadService(user?._id, user?.companyId, body);
 
         console.log('========================================');
         console.log('🟢 LEAD CREATED');
@@ -56,9 +37,7 @@ export async function POST(request) {
         if (lead?.email) {
             await sendNewLeadEmail({ lead });
         } else {
-            console.log(
-                '⚠️ Lead has no email. Skipping email.'
-            );
+            console.log('⚠️ Lead has no email. Skipping email.');
         }
 
         return NextResponse.json(
@@ -69,12 +48,8 @@ export async function POST(request) {
             },
             { status: 201 }
         );
-
     } catch (error) {
-        console.error(
-            '❌ CREATE LEAD ERROR:',
-            error
-        );
+        console.error('❌ CREATE LEAD ERROR:', error);
 
         return NextResponse.json(
             {

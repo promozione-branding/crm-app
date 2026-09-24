@@ -1,3 +1,5 @@
+// src/app/api/user/reports/route.js
+
 import { NextResponse } from 'next/server';
 
 import { connectDB } from '@/config/db';
@@ -27,20 +29,12 @@ export async function GET(request) {
 
         const { searchParams } = new URL(request.url);
 
-        const range =
-            searchParams.get('range') || 'this_month';
+        const range = searchParams.get('range') || 'this_month';
 
         const from = searchParams.get('from');
         const to = searchParams.get('to');
 
-        const allowedRanges = [
-            'today',
-            'last_3_days',
-            'this_month',
-            'last_month',
-            'last_3_months',
-            'custom',
-        ];
+        const allowedRanges = ['today', 'last_3_days', 'this_month', 'last_month', 'last_3_months', 'custom'];
 
         if (!allowedRanges.includes(range)) {
             return NextResponse.json(
@@ -69,9 +63,7 @@ export async function GET(request) {
         return NextResponse.json(
             {
                 success: false,
-                message:
-                    error?.message ||
-                    'Failed to fetch reports.',
+                message: error?.message || 'Failed to fetch reports.',
             },
             { status: 500 }
         );

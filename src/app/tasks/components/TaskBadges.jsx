@@ -1,6 +1,5 @@
 // src/app/tasks/components/TaskBadges.jsx
 
-
 'use client';
 
 import React from 'react';

@@ -48,9 +48,7 @@ export async function GET(request) {
         // ADMIN
         // ============================================================
 
-        const isAdmin =
-            user.roleId?.isSystemRole === true &&
-            user.roleId?.name?.toLowerCase() === 'admin';
+        const isAdmin = user.roleId?.isSystemRole === true && user.roleId?.name?.toLowerCase() === 'admin';
 
         // ============================================================
         // VISIBILITY FILTERS
@@ -114,17 +112,9 @@ export async function GET(request) {
 
         const now = new Date();
 
-        const startOfToday = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate()
-        );
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-        const endOfToday = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() + 1
-        );
+        const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
         const dayOfWeek = now.getDay();
 
@@ -132,26 +122,13 @@ export async function GET(request) {
          * Monday = beginning of week.
          */
 
-        const daysFromMonday =
-            dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+        const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
-        const startOfWeek = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() - daysFromMonday
-        );
+        const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysFromMonday);
 
-        const endOfWeek = new Date(
-            startOfWeek.getFullYear(),
-            startOfWeek.getMonth(),
-            startOfWeek.getDate() + 7
-        );
+        const endOfWeek = new Date(startOfWeek.getFullYear(), startOfWeek.getMonth(), startOfWeek.getDate() + 7);
 
-        const startOfMonth = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            1
-        );
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
         // ============================================================
         // TASK STATUS FILTERS
@@ -339,10 +316,7 @@ export async function GET(request) {
                                         $eq: ['$stage', 'won'],
                                     },
                                     {
-                                        $ifNull: [
-                                            '$dealValue',
-                                            0,
-                                        ],
+                                        $ifNull: ['$dealValue', 0],
                                     },
                                     0,
                                 ],
@@ -355,24 +329,15 @@ export async function GET(request) {
                                     {
                                         $and: [
                                             {
-                                                $ne: [
-                                                    '$stage',
-                                                    'won',
-                                                ],
+                                                $ne: ['$stage', 'won'],
                                             },
                                             {
-                                                $ne: [
-                                                    '$stage',
-                                                    'lost',
-                                                ],
+                                                $ne: ['$stage', 'lost'],
                                             },
                                         ],
                                     },
                                     {
-                                        $ifNull: [
-                                            '$dealValue',
-                                            0,
-                                        ],
+                                        $ifNull: ['$dealValue', 0],
                                     },
                                     0,
                                 ],
@@ -403,10 +368,7 @@ export async function GET(request) {
                             $sum: {
                                 $cond: [
                                     {
-                                        $gte: [
-                                            '$calledAt',
-                                            startOfToday,
-                                        ],
+                                        $gte: ['$calledAt', startOfToday],
                                     },
                                     1,
                                     0,
@@ -418,10 +380,7 @@ export async function GET(request) {
                             $sum: {
                                 $cond: [
                                     {
-                                        $gte: [
-                                            '$calledAt',
-                                            startOfWeek,
-                                        ],
+                                        $gte: ['$calledAt', startOfWeek],
                                     },
                                     1,
                                     0,
@@ -433,10 +392,7 @@ export async function GET(request) {
                             $sum: {
                                 $cond: [
                                     {
-                                        $gte: [
-                                            '$calledAt',
-                                            startOfMonth,
-                                        ],
+                                        $gte: ['$calledAt', startOfMonth],
                                     },
                                     1,
                                     0,
@@ -477,9 +433,7 @@ export async function GET(request) {
                 })
                 .limit(5)
                 .populate('assignedTo', 'name')
-                .select(
-                    'name phone companyName stage status assignedTo dealValue source updatedAt createdAt'
-                )
+                .select('name phone companyName stage status assignedTo dealValue source updatedAt createdAt')
                 .lean(),
 
             // ========================================================
@@ -494,9 +448,7 @@ export async function GET(request) {
                 .populate('assignedTo', 'name')
                 .populate('leadId', 'name phone')
                 .populate('createdBy', 'name')
-                .select(
-                    'title status priority assignedTo leadId createdBy dueDate updatedAt createdAt'
-                )
+                .select('title status priority assignedTo leadId createdBy dueDate updatedAt createdAt')
                 .lean(),
 
             // ========================================================
@@ -611,46 +563,19 @@ export async function GET(request) {
             month: 0,
         };
 
-        const meaningfulCalls =
-            callStatusMap.completed +
-            callStatusMap.missed +
-            callStatusMap.busy +
-            callStatusMap.no_answer +
-            callStatusMap.failed;
+        const meaningfulCalls = callStatusMap.completed + callStatusMap.missed + callStatusMap.busy + callStatusMap.no_answer + callStatusMap.failed;
 
-        const connectionRate =
-            meaningfulCalls > 0
-                ? Number(
-                      (
-                          (callStatusMap.completed /
-                              meaningfulCalls) *
-                          100
-                      ).toFixed(1)
-                  )
-                : 0;
+        const connectionRate = meaningfulCalls > 0 ? Number(((callStatusMap.completed / meaningfulCalls) * 100).toFixed(1)) : 0;
 
         // ============================================================
         // LEAD SUMMARY
         // ============================================================
 
-        const totalLeads =
-            Object.values(pipelineMap).reduce(
-                (sum, value) => sum + value,
-                0
-            );
+        const totalLeads = Object.values(pipelineMap).reduce((sum, value) => sum + value, 0);
 
         const wonLeads = pipelineMap.won || 0;
 
-        const conversionRate =
-            totalLeads > 0
-                ? Number(
-                      (
-                          (wonLeads /
-                              totalLeads) *
-                          100
-                      ).toFixed(1)
-                  )
-                : 0;
+        const conversionRate = totalLeads > 0 ? Number(((wonLeads / totalLeads) * 100).toFixed(1)) : 0;
 
         // ============================================================
         // DEAL VALUE
@@ -688,10 +613,7 @@ export async function GET(request) {
 
                 type: 'task',
 
-                action:
-                    task.status === 'completed'
-                        ? 'Task completed'
-                        : 'Task updated',
+                action: task.status === 'completed' ? 'Task completed' : 'Task updated',
 
                 title: task.title,
 
@@ -717,10 +639,7 @@ export async function GET(request) {
 
                 action: 'Call made',
 
-                title:
-                    call.refId?.name ||
-                    call.phoneNumber ||
-                    'Call',
+                title: call.refId?.name || call.phoneNumber || 'Call',
 
                 status: call.status,
 
@@ -763,14 +682,9 @@ export async function GET(request) {
         // SORT ACTIVITY
         // ------------------------------------------------------------
 
-        recentActivity.sort(
-            (a, b) =>
-                new Date(b.date).getTime() -
-                new Date(a.date).getTime()
-        );
+        recentActivity.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-        const limitedRecentActivity =
-            recentActivity.slice(0, 8);
+        const limitedRecentActivity = recentActivity.slice(0, 8);
 
         // ============================================================
         // RESPONSE
@@ -808,15 +722,11 @@ export async function GET(request) {
                     won: wonLeads,
 
                     dealValue: {
-                        total:
-                            dealValue.totalValue || 0,
+                        total: dealValue.totalValue || 0,
 
-                        won:
-                            dealValue.wonValue || 0,
+                        won: dealValue.wonValue || 0,
 
-                        openPipeline:
-                            dealValue.openPipelineValue ||
-                            0,
+                        openPipeline: dealValue.openPipelineValue || 0,
                     },
 
                     sources: leadSourceMap,
@@ -844,8 +754,7 @@ export async function GET(request) {
                 // RECENT ACTIVITY
                 // ====================================================
 
-                recentActivity:
-                    limitedRecentActivity,
+                recentActivity: limitedRecentActivity,
 
                 // ====================================================
                 // RECENT DATA
@@ -857,18 +766,13 @@ export async function GET(request) {
             },
         });
     } catch (error) {
-        console.error(
-            'GET DASHBOARD ANALYTICS ERROR:',
-            error
-        );
+        console.error('GET DASHBOARD ANALYTICS ERROR:', error);
 
         return NextResponse.json(
             {
                 success: false,
 
-                message:
-                    error.message ||
-                    'Failed to fetch dashboard analytics.',
+                message: error.message || 'Failed to fetch dashboard analytics.',
             },
             {
                 status: 400,
