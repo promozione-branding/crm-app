@@ -427,6 +427,7 @@ export default function CallLog() {
                             <PhoneOff size={40} className="hidden text-green-500 sm:block" />
                         </div>
 
+
                         <h2 className="mb-2 text-lg font-semibold sm:text-xl">No Call Logs Found</h2>
 
                         <p className="mx-auto text-xs leading-5 opacity-70 sm:text-sm sm:leading-6">
