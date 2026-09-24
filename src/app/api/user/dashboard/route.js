@@ -6,6 +6,7 @@ import { connectDB } from '@/config/db';
 import { getCurrentUser } from '@/utils/auth';
 
 import User from '@/models/user.model';
+import Role from '@/models/role.model';
 import Lead from '@/models/leads.model';
 import LeadTask from '@/models/task.model';
 import Call from '@/models/call.model';
@@ -87,7 +88,6 @@ export async function GET(request) {
               }
             : {
                   companyId,
-
                   assignedTo: userId,
               };
 
@@ -97,7 +97,6 @@ export async function GET(request) {
               }
             : {
                   companyId,
-
                   $or: [
                       {
                           createdBy: userId,
@@ -114,7 +113,6 @@ export async function GET(request) {
               }
             : {
                   companyId,
-
                   callerId: userId,
               };
 
@@ -131,13 +129,11 @@ export async function GET(request) {
         );
 
         const startOfWeek = new Date(
-            now.getTime() -
-                7 * 24 * 60 * 60 * 1000
+            now.getTime() - 7 * 24 * 60 * 60 * 1000
         );
 
         const startOfMonth = new Date(
-            now.getTime() -
-                30 * 24 * 60 * 60 * 1000
+            now.getTime() - 30 * 24 * 60 * 60 * 1000
         );
 
         // ============================================================
@@ -146,27 +142,16 @@ export async function GET(request) {
 
         const [
             usersCount,
-
             leadsCount,
-
             tasksCount,
-
             callsTotal,
-
             callsToday,
-
             callsWeek,
-
             callsMonth,
-
             callsByStatus,
-
             callsByCaller,
-
             recentCalls,
-
             recentLeads,
-
             recentTasks,
         ] = await Promise.all([
             // ========================================================
@@ -187,7 +172,6 @@ export async function GET(request) {
                   })
                 : User.countDocuments({
                       companyId,
-
                       _id: userId,
                   }),
 
@@ -195,25 +179,19 @@ export async function GET(request) {
             // LEADS
             // ========================================================
 
-            Lead.countDocuments(
-                leadVisibilityFilter
-            ),
+            Lead.countDocuments(leadVisibilityFilter),
 
             // ========================================================
             // TASKS
             // ========================================================
 
-            LeadTask.countDocuments(
-                taskVisibilityFilter
-            ),
+            LeadTask.countDocuments(taskVisibilityFilter),
 
             // ========================================================
             // TOTAL CALLS
             // ========================================================
 
-            Call.countDocuments(
-                callVisibilityFilter
-            ),
+            Call.countDocuments(callVisibilityFilter),
 
             // ========================================================
             // CALLS TODAY
@@ -221,7 +199,6 @@ export async function GET(request) {
 
             Call.countDocuments({
                 ...callVisibilityFilter,
-
                 calledAt: {
                     $gte: startOfToday,
                 },
@@ -233,7 +210,6 @@ export async function GET(request) {
 
             Call.countDocuments({
                 ...callVisibilityFilter,
-
                 calledAt: {
                     $gte: startOfWeek,
                 },
@@ -245,7 +221,6 @@ export async function GET(request) {
 
             Call.countDocuments({
                 ...callVisibilityFilter,
-
                 calledAt: {
                     $gte: startOfMonth,
                 },
@@ -342,14 +317,8 @@ export async function GET(request) {
                     calledAt: -1,
                 })
                 .limit(5)
-                .populate(
-                    'callerId',
-                    'name email'
-                )
-                .populate(
-                    'refId',
-                    'name phone'
-                )
+                .populate('callerId', 'name email')
+                .populate('refId', 'name phone')
                 .lean(),
 
             // ========================================================
@@ -361,10 +330,7 @@ export async function GET(request) {
                     updatedAt: -1,
                 })
                 .limit(5)
-                .populate(
-                    'assignedTo',
-                    'name'
-                )
+                .populate('assignedTo', 'name')
                 .select(
                     'name phone companyName stage status assignedTo updatedAt createdAt'
                 )
@@ -379,18 +345,9 @@ export async function GET(request) {
                     updatedAt: -1,
                 })
                 .limit(5)
-                .populate(
-                    'assignedTo',
-                    'name'
-                )
-                .populate(
-                    'leadId',
-                    'name phone'
-                )
-                .populate(
-                    'createdBy',
-                    'name'
-                )
+                .populate('assignedTo', 'name')
+                .populate('leadId', 'name phone')
+                .populate('createdBy', 'name')
                 .select(
                     'title status priority assignedTo leadId createdBy dueDate updatedAt createdAt'
                 )
@@ -452,23 +409,17 @@ export async function GET(request) {
                     month: callsMonth,
 
                     byStatus: {
-                        initiated:
-                            statusMap.initiated || 0,
+                        initiated: statusMap.initiated || 0,
 
-                        completed:
-                            statusMap.completed || 0,
+                        completed: statusMap.completed || 0,
 
-                        missed:
-                            statusMap.missed || 0,
+                        missed: statusMap.missed || 0,
 
-                        busy:
-                            statusMap.busy || 0,
+                        busy: statusMap.busy || 0,
 
-                        no_answer:
-                            statusMap.no_answer || 0,
+                        no_answer: statusMap.no_answer || 0,
 
-                        failed:
-                            statusMap.failed || 0,
+                        failed: statusMap.failed || 0,
                     },
 
                     byCaller: callsByCaller,
@@ -478,10 +429,7 @@ export async function GET(request) {
             },
         });
     } catch (error) {
-        console.error(
-            'GET DASHBOARD ERROR:',
-            error
-        );
+        console.error('GET DASHBOARD ERROR:', error);
 
         return NextResponse.json(
             {

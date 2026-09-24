@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 import { connectDB } from '@/config/db';
 import { getCurrentUser } from '@/utils/auth';
 
+import Role from '@/models/role.model';
 import Lead from '@/models/leads.model';
 import LeadTask from '@/models/task.model';
 import Call from '@/models/call.model';
@@ -130,6 +131,7 @@ export async function GET(request) {
         /*
          * Monday = beginning of week.
          */
+
         const daysFromMonday =
             dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
@@ -176,35 +178,20 @@ export async function GET(request) {
 
         const [
             totalTasks,
-
             pendingTasks,
-
             completedTasks,
-
             cancelledTasks,
-
             overdueTasks,
-
             dueTodayTasks,
-
             dueThisWeekTasks,
-
             leadPipeline,
-
             leadStatus,
-
             leadSources,
-
             leadValue,
-
             callStats,
-
             callsByStatus,
-
             recentLeads,
-
             recentTasks,
-
             recentCalls,
         ] = await Promise.all([
             // ========================================================
@@ -489,10 +476,7 @@ export async function GET(request) {
                     updatedAt: -1,
                 })
                 .limit(5)
-                .populate(
-                    'assignedTo',
-                    'name'
-                )
+                .populate('assignedTo', 'name')
                 .select(
                     'name phone companyName stage status assignedTo dealValue source updatedAt createdAt'
                 )
@@ -507,18 +491,9 @@ export async function GET(request) {
                     updatedAt: -1,
                 })
                 .limit(5)
-                .populate(
-                    'assignedTo',
-                    'name'
-                )
-                .populate(
-                    'leadId',
-                    'name phone'
-                )
-                .populate(
-                    'createdBy',
-                    'name'
-                )
+                .populate('assignedTo', 'name')
+                .populate('leadId', 'name phone')
+                .populate('createdBy', 'name')
                 .select(
                     'title status priority assignedTo leadId createdBy dueDate updatedAt createdAt'
                 )
@@ -533,14 +508,8 @@ export async function GET(request) {
                     calledAt: -1,
                 })
                 .limit(5)
-                .populate(
-                    'callerId',
-                    'name'
-                )
-                .populate(
-                    'refId',
-                    'name phone'
-                )
+                .populate('callerId', 'name')
+                .populate('refId', 'name phone')
                 .lean(),
         ]);
 
@@ -653,10 +622,11 @@ export async function GET(request) {
             meaningfulCalls > 0
                 ? Number(
                       (
-                          callStatusMap.completed /
-                          meaningfulCalls
-                      ) * 100
-                  ).toFixed(1)
+                          (callStatusMap.completed /
+                              meaningfulCalls) *
+                          100
+                      ).toFixed(1)
+                  )
                 : 0;
 
         // ============================================================
@@ -675,10 +645,11 @@ export async function GET(request) {
             totalLeads > 0
                 ? Number(
                       (
-                          wonLeads /
-                          totalLeads
-                      ) * 100
-                  ).toFixed(1)
+                          (wonLeads /
+                              totalLeads) *
+                          100
+                      ).toFixed(1)
+                  )
                 : 0;
 
         // ============================================================
