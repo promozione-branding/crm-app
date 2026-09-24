@@ -1,16 +1,20 @@
-// src/app/dashboard/components/DashboardStats.jsx
-
 'use client';
 
-import { Users, UserPlus, Phone, ClipboardList } from 'lucide-react';
+import {
+    Users,
+    UserPlus,
+    Phone,
+    ClipboardList,
+    Trophy,
+} from 'lucide-react';
 
 import StatCard from './StatCard';
 
 // ============================================================
-// STATS CONFIG
+// ADMIN STATS
 // ============================================================
 
-const statsConfig = [
+const adminStatsConfig = [
     {
         key: 'users',
         title: 'Users',
@@ -33,7 +37,38 @@ const statsConfig = [
         key: 'tasks',
         title: 'Tasks',
         icon: ClipboardList,
-        color: 'text-orange-500', 
+        color: 'text-orange-500',
+    },
+];
+
+// ============================================================
+// NORMAL USER STATS
+// ============================================================
+
+const userStatsConfig = [
+    {
+        key: 'leads',
+        title: 'My Leads',
+        icon: UserPlus,
+        color: 'text-green-500',
+    },
+    {
+        key: 'calls',
+        title: 'My Calls',
+        icon: Phone,
+        color: 'text-purple-500',
+    },
+    {
+        key: 'tasks',
+        title: 'My Tasks',
+        icon: ClipboardList,
+        color: 'text-orange-500',
+    },
+    {
+        key: 'wonDeals',
+        title: 'Won Deals',
+        icon: Trophy,
+        color: 'text-yellow-500',
     },
 ];
 
@@ -41,15 +76,41 @@ const statsConfig = [
 // COMPONENT
 // ============================================================
 
-export default function DashboardStats({ stats, loading }) {
+export default function DashboardStats({
+    stats,
+    loading,
+}) {
+    const config = stats?.isAdmin
+        ? adminStatsConfig
+        : userStatsConfig;
+
     return (
         <div className="grid w-full grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:grid-cols-4 lg:gap-6">
-            {statsConfig.map((item) => {
+            {config.map((item) => {
                 const Icon = item.icon;
 
                 return (
-                    <div key={item.key} className="w-full min-w-0">
-                        <StatCard title={item.title} value={stats[item.key]} icon={Icon} color={item.color} loading={loading} />
+                    <div
+                        key={item.key}
+                        className="w-full min-w-0"
+                    >
+                        <StatCard
+                            title={
+                                item.title
+                            }
+                            value={
+                                stats?.[
+                                    item.key
+                                ] ?? 0
+                            }
+                            icon={Icon}
+                            color={
+                                item.color
+                            }
+                            loading={
+                                loading
+                            }
+                        />
                     </div>
                 );
             })}
