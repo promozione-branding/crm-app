@@ -512,7 +512,7 @@ export default function DashboardAnalytics({
 
                         <div>
                             <h3 className="text-sm font-semibold sm:text-base">
-                                Lead Value
+                                Deal Value
                             </h3>
 
                             <p className="text-[11px] opacity-60 sm:text-xs">
