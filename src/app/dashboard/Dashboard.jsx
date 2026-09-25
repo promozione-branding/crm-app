@@ -122,7 +122,7 @@ export default function Dashboard() {
 
 
             <DashboardAnalytics analytics={analytics} loading={analyticsLoading} />
-            {/* <DashboardAIInsights /> */}
+            <DashboardAIInsights />
         </div>
     );
 }
