@@ -120,6 +120,7 @@ export default function Dashboard() {
                 ANALYTICS
             ================================================== */}
 
+
             <DashboardAnalytics analytics={analytics} loading={analyticsLoading} />
             {/* <DashboardAIInsights /> */}
         </div>
