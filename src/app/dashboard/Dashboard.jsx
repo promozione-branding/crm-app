@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import DashboardStats from './components/DashboardStats';
 import DashboardAnalytics from './components/DashboardAnalytics';
 import DashboardAIInsights from './components/DashboardAIInsights';
- import DashboardAIChat from './components/DashboardAIChat';
+import DashboardAIChat from './components/DashboardAIChat';
 // ============================================================
 // DEFAULT STATS
 // ============================================================
@@ -121,10 +121,9 @@ export default function Dashboard() {
                 ANALYTICS
             ================================================== */}
 
-
             <DashboardAnalytics analytics={analytics} loading={analyticsLoading} />
             <DashboardAIInsights />
-             <DashboardAIChat />
+            <DashboardAIChat />
         </div>
     );
 }

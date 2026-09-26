@@ -60,10 +60,7 @@ export async function GET(request) {
         const user = await getCurrentUser(request);
 
         if (!user) {
-            return NextResponse.json(
-                { success: false, message: 'User not found.' },
-                { status: 401 }
-            );
+            return NextResponse.json({ success: false, message: 'User not found.' }, { status: 401 });
         }
 
         const companyId = user.companyId;
@@ -74,17 +71,13 @@ export async function GET(request) {
             select: 'name isSystemRole',
         });
 
-        const isAdmin =
-            user.roleId?.isSystemRole === true &&
-            user.roleId?.name?.toLowerCase() === 'admin';
+        const isAdmin = user.roleId?.isSystemRole === true && user.roleId?.name?.toLowerCase() === 'admin';
 
         // ========================================================
         // VISIBILITY FILTERS (same rules as your other routes)
         // ========================================================
 
-        const leadFilter = isAdmin
-            ? { companyId }
-            : { companyId, assignedTo: userId };
+        const leadFilter = isAdmin ? { companyId } : { companyId, assignedTo: userId };
 
         const taskFilter = isAdmin
             ? { companyId }
@@ -93,9 +86,7 @@ export async function GET(request) {
                   $or: [{ createdBy: userId }, { assignedTo: userId }],
               };
 
-        const callFilter = isAdmin
-            ? { companyId }
-            : { companyId, callerId: userId };
+        const callFilter = isAdmin ? { companyId } : { companyId, callerId: userId };
 
         // ========================================================
         // GATHER MINIMAL, RELEVANT DATA
@@ -103,22 +94,9 @@ export async function GET(request) {
 
         const now = new Date();
 
-        const [
-            pipelineAgg,
-            totalLeads,
-            wonLeads,
-            openTasks,
-            overdueTasks,
-            dueTodayTasks,
-            recentCalls,
-            staleLeads,
-            hotLeads,
-        ] = await Promise.all([
+        const [pipelineAgg, totalLeads, wonLeads, openTasks, overdueTasks, dueTodayTasks, recentCalls, staleLeads, hotLeads] = await Promise.all([
             // Pipeline counts per stage
-            Lead.aggregate([
-                { $match: leadFilter },
-                { $group: { _id: '$stage', count: { $sum: 1 } } },
-            ]),
+            Lead.aggregate([{ $match: leadFilter }, { $group: { _id: '$stage', count: { $sum: 1 } } }]),
 
             Lead.countDocuments(leadFilter),
 
@@ -142,12 +120,7 @@ export async function GET(request) {
             }),
 
             // Last 10 calls
-            Call.find(callFilter)
-                .sort({ calledAt: -1 })
-                .limit(10)
-                .select('status calledAt phoneNumber refId')
-                .populate('refId', 'name')
-                .lean(),
+            Call.find(callFilter).sort({ calledAt: -1 }).limit(10).select('status calledAt phoneNumber refId').populate('refId', 'name').lean(),
 
             // Leads not touched in 7+ days, still open
             Lead.find({
@@ -186,10 +159,7 @@ export async function GET(request) {
             totals: {
                 leads: totalLeads,
                 won: wonLeads,
-                conversion_rate_pct:
-                    totalLeads > 0
-                        ? Number(((wonLeads / totalLeads) * 100).toFixed(1))
-                        : 0,
+                conversion_rate_pct: totalLeads > 0 ? Number(((wonLeads / totalLeads) * 100).toFixed(1)) : 0,
             },
             pipeline,
             tasks: {
@@ -206,9 +176,7 @@ export async function GET(request) {
                 name: l.name,
                 stage: l.stage,
                 value: l.dealValue || 0,
-                days_since_update: Math.floor(
-                    (now - new Date(l.updatedAt)) / (1000 * 60 * 60 * 24)
-                ),
+                days_since_update: Math.floor((now - new Date(l.updatedAt)) / (1000 * 60 * 60 * 24)),
             })),
             high_value_open_leads: hotLeads.map((l) => ({
                 name: l.name,
@@ -227,11 +195,7 @@ export async function GET(request) {
                 { role: 'system', content: SYSTEM_PROMPT },
                 {
                     role: 'user',
-                    content: `Here is the CRM data:\n${JSON.stringify(
-                        payload,
-                        null,
-                        2
-                    )}\n\nReturn JSON only.`,
+                    content: `Here is the CRM data:\n${JSON.stringify(payload, null, 2)}\n\nReturn JSON only.`,
                 },
             ],
             store: false,
@@ -250,10 +214,7 @@ export async function GET(request) {
             insights = JSON.parse(raw);
         } catch (parseErr) {
             console.error('AI JSON parse failed:', parseErr, completion.output_text);
-            return NextResponse.json(
-                { success: false, message: 'AI returned invalid JSON.' },
-                { status: 502 }
-            );
+            return NextResponse.json({ success: false, message: 'AI returned invalid JSON.' }, { status: 502 });
         }
 
         // ========================================================

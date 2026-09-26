@@ -1,17 +1,16 @@
 // src/utils/integrations/syncLeads.js
 //2
-import Integration from "@/models/integration.model";
-import Lead from "@/models/leads.model";
+import Integration from '@/models/integration.model';
+import Lead from '@/models/leads.model';
 
-const BRAND_BNALO_API =
-    "https://brandbnalo.com/api/form/get-forms";
+const BRAND_BNALO_API = 'https://brandbnalo.com/api/form/get-forms';
 
 export async function syncBrandBnaloLeads(companyId) {
-    console.log("🔄 Website lead sync started:", String(companyId));
+    console.log('🔄 Website lead sync started:', String(companyId));
 
     try {
         if (!companyId) {
-            return emptyResult("companyId is required");
+            return emptyResult('companyId is required');
         }
 
         // ====================================================
@@ -20,26 +19,24 @@ export async function syncBrandBnaloLeads(companyId) {
 
         const integration = await Integration.findOne({
             companyId,
-            provider: "website",
-            status: "connected",
+            provider: 'website',
+            status: 'connected',
         });
 
         if (!integration) {
-            return emptyResult("Website integration is not connected");
+            return emptyResult('Website integration is not connected');
         }
 
         // The vendor's sellerId (e.g. 6a19599b...)
         const sellerId = integration.metadata?.brandBnaloSellerId;
         if (!sellerId) {
-            return emptyResult(
-                "BrandBnalo seller ID missing. Reconnect from the Integrations page."
-            );
+            return emptyResult('BrandBnalo seller ID missing. Reconnect from the Integrations page.');
         }
 
         // We only import leads created AFTER the connection time
         const connectedAt = integration.connectedAt;
         if (!connectedAt) {
-            return emptyResult("Integration connectedAt is missing");
+            return emptyResult('Integration connectedAt is missing');
         }
 
         // ====================================================
@@ -49,12 +46,12 @@ export async function syncBrandBnaloLeads(companyId) {
         const url = `${BRAND_BNALO_API}/${encodeURIComponent(sellerId)}`;
 
         const response = await fetch(url, {
-            method: "GET",
-            cache: "no-store",
-            headers: { Accept: "application/json" },
+            method: 'GET',
+            cache: 'no-store',
+            headers: { Accept: 'application/json' },
         });
 
-        console.log("📡 Vendor API status:", response.status);
+        console.log('📡 Vendor API status:', response.status);
 
         if (!response.ok) {
             throw new Error(`Vendor API returned ${response.status}`);
@@ -63,7 +60,7 @@ export async function syncBrandBnaloLeads(companyId) {
         const result = await response.json();
 
         if (!result?.success) {
-            throw new Error(result?.message || "Vendor API request failed");
+            throw new Error(result?.message || 'Vendor API request failed');
         }
 
         const leads = Array.isArray(result?.data) ? result.data : [];
@@ -119,11 +116,7 @@ export async function syncBrandBnaloLeads(companyId) {
                 }
 
                 let priceRange;
-                if (
-                    item.priceRange !== undefined &&
-                    item.priceRange !== null &&
-                    item.priceRange !== ""
-                ) {
+                if (item.priceRange !== undefined && item.priceRange !== null && item.priceRange !== '') {
                     const p = Number(item.priceRange);
                     if (!Number.isNaN(p)) priceRange = p;
                 }
@@ -131,7 +124,7 @@ export async function syncBrandBnaloLeads(companyId) {
                 // ---- Duplicate check (scoped to companyId) ----
                 const dupQuery = {
                     companyId,
-                    source: "website",
+                    source: 'website',
                 };
                 if (phone) dupQuery.phone = phone;
                 dupQuery.createdAt = {
@@ -148,8 +141,8 @@ export async function syncBrandBnaloLeads(companyId) {
                 // ---- Create lead (companyId, not userId) ----
                 await Lead.create({
                     companyId,
-                    source: "website",
-                    name: name || "Website Lead",
+                    source: 'website',
+                    name: name || 'Website Lead',
                     phone,
                     email: email || undefined,
                     companyName,
@@ -159,14 +152,14 @@ export async function syncBrandBnaloLeads(companyId) {
                     message,
                     priceRange,
                     dealValue: 0,
-                    stage: "new",
-                    status: "open",
+                    stage: 'new',
+                    status: 'open',
                     createdAt: leadCreatedAt,
                     updatedAt: leadUpdatedAt,
                     activities: [
                         {
-                            type: "lead_created",
-                            description: "Lead imported from BrandBnalo website",
+                            type: 'lead_created',
+                            description: 'Lead imported from BrandBnalo website',
                         },
                     ],
                 });
@@ -174,12 +167,12 @@ export async function syncBrandBnaloLeads(companyId) {
                 imported++;
             } catch (err) {
                 failed++;
-                console.error("❌ Lead import failed:", err?.message);
+                console.error('❌ Lead import failed:', err?.message);
                 errors.push({
                     id: item?._id || null,
                     name: item?.name || null,
                     phone: item?.phone || null,
-                    error: err?.message || "Unknown error",
+                    error: err?.message || 'Unknown error',
                 });
             }
         }
@@ -188,18 +181,13 @@ export async function syncBrandBnaloLeads(companyId) {
         // 4. UPDATE LAST SYNC TIME
         // ====================================================
 
-        await Integration.updateOne(
-            { _id: integration._id },
-            { $set: { lastSyncAt: new Date(), errorMessage: null } }
-        );
+        await Integration.updateOne({ _id: integration._id }, { $set: { lastSyncAt: new Date(), errorMessage: null } });
 
-        console.log(
-            `✅ Sync done — API: ${leads.length}, Imported: ${imported}, Skipped: ${skipped}, Failed: ${failed}`
-        );
+        console.log(`✅ Sync done — API: ${leads.length}, Imported: ${imported}, Skipped: ${skipped}, Failed: ${failed}`);
 
         return {
             success: true,
-            message: "Latest website leads synced successfully",
+            message: 'Latest website leads synced successfully',
             total: leads.length,
             imported,
             skipped,
@@ -207,27 +195,24 @@ export async function syncBrandBnaloLeads(companyId) {
             errors,
         };
     } catch (error) {
-        console.error("❌ Website lead sync error:", error);
+        console.error('❌ Website lead sync error:', error);
 
         // Record error on the integration
         try {
             await Integration.updateOne(
-                { companyId, provider: "website" },
+                { companyId, provider: 'website' },
                 {
                     $set: {
                         lastSyncAt: new Date(),
-                        errorMessage:
-                            error?.message || "Website lead sync failed",
+                        errorMessage: error?.message || 'Website lead sync failed',
                     },
                 }
             );
         } catch (updateErr) {
-            console.error("❌ Failed to update integration:", updateErr);
+            console.error('❌ Failed to update integration:', updateErr);
         }
 
-        return emptyResult(
-            error?.message || "Website lead sync failed"
-        );
+        return emptyResult(error?.message || 'Website lead sync failed');
     }
 }
 
@@ -236,7 +221,7 @@ export async function syncBrandBnaloLeads(companyId) {
 // ============================================================
 
 function trim(v) {
-    return typeof v === "string" ? v.trim() : "";
+    return typeof v === 'string' ? v.trim() : '';
 }
 
 function emptyResult(message) {

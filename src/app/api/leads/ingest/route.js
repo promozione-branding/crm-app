@@ -1,12 +1,12 @@
 // src/app/api/leads/ingest/route.js
 
-import { NextResponse } from "next/server";
-import { connectDB } from "@/config/db";
+import { NextResponse } from 'next/server';
+import { connectDB } from '@/config/db';
 
-import Company from "@/models/company.model";
-import Lead from "@/models/leads.model";
+import Company from '@/models/company.model';
+import Lead from '@/models/leads.model';
 
-export const runtime = "nodejs";
+export const runtime = 'nodejs';
 
 export async function POST(request) {
     try {
@@ -28,42 +28,22 @@ export async function POST(request) {
 
         // -------- VALIDATION --------
         if (!userId) {
-            return NextResponse.json(
-                { success: false, message: "userId is required" },
-                { status: 400 }
-            );
+            return NextResponse.json({ success: false, message: 'userId is required' }, { status: 400 });
         }
 
         if (!name || !phone) {
-            return NextResponse.json(
-                { success: false, message: "name and phone are required" },
-                { status: 400 }
-            );
+            return NextResponse.json({ success: false, message: 'name and phone are required' }, { status: 400 });
         }
 
         // -------- RESOLVE COMPANY --------
-        const company = await Company.findById(userId).select("_id").lean();
+        const company = await Company.findById(userId).select('_id').lean();
         if (!company) {
-            return NextResponse.json(
-                { success: false, message: "Invalid userId" },
-                { status: 404 }
-            );
+            return NextResponse.json({ success: false, message: 'Invalid userId' }, { status: 404 });
         }
 
         // -------- NORMALISE SOURCE --------
-        const ALLOWED_SOURCES = [
-            "facebook",
-            "google",
-            "website",
-            "whatsapp",
-            "manual",
-            "indiamart",
-            "tradeindia",
-            "other",
-        ];
-        const finalSource = ALLOWED_SOURCES.includes(source)
-            ? source
-            : "website";
+        const ALLOWED_SOURCES = ['facebook', 'google', 'website', 'whatsapp', 'manual', 'indiamart', 'tradeindia', 'other'];
+        const finalSource = ALLOWED_SOURCES.includes(source) ? source : 'website';
 
         // -------- CREATE LEAD --------
         const lead = await Lead.create({
@@ -79,12 +59,12 @@ export async function POST(request) {
             product: product || undefined,
             message: message || undefined,
 
-            stage: "new",
-            status: "open",
+            stage: 'new',
+            status: 'open',
 
             activities: [
                 {
-                    type: "lead_created",
+                    type: 'lead_created',
                     description: `Lead received from ${platform || finalSource}`,
                 },
             ],
@@ -92,15 +72,15 @@ export async function POST(request) {
 
         return NextResponse.json({
             success: true,
-            message: "Lead created",
+            message: 'Lead created',
             leadId: lead._id,
         });
     } catch (error) {
-        console.error("Lead ingest error:", error);
+        console.error('Lead ingest error:', error);
         return NextResponse.json(
             {
                 success: false,
-                message: error?.message || "Failed to ingest lead",
+                message: error?.message || 'Failed to ingest lead',
             },
             { status: 500 }
         );

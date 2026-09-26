@@ -15,9 +15,7 @@ export default function Websites() {
                 </div>
                 <div>
                     <h2 className="text-app text-base font-semibold">Websites</h2>
-                    <p className="text-muted mt-0.5 text-xs">
-                        Connect your website to capture leads and inquiries automatically.
-                    </p>
+                    <p className="text-muted mt-0.5 text-xs">Connect your website to capture leads and inquiries automatically.</p>
                 </div>
             </div>
 

@@ -1,8 +1,10 @@
+// src/instrumentation.js
+
 // instrumentation.js
 
 export async function register() {
     // Only run in Node.js runtime
-    if (process.env.NEXT_RUNTIME !== "nodejs") {
+    if (process.env.NEXT_RUNTIME !== 'nodejs') {
         return;
     }
 
@@ -15,19 +17,16 @@ export async function register() {
     //   "both"        → run in both environments
     // ============================================================
 
-    const activate = "both";
+    const activate = 'both';
 
     // ============================================================
     // Decide whether to run
     // ============================================================
 
-    const isProd = process.env.NODE_ENV === "production";
-    const isDev = process.env.NODE_ENV === "development";
+    const isProd = process.env.NODE_ENV === 'production';
+    const isDev = process.env.NODE_ENV === 'development';
 
-    const shouldRun =
-        activate === "both" ||
-        (activate === "production" && isProd) ||
-        (activate === "development" && isDev);
+    const shouldRun = activate === 'both' || (activate === 'production' && isProd) || (activate === 'development' && isDev);
 
     if (!shouldRun) {
         console.log(`⏭️  Crons skipped (activate = "${activate}")`);
@@ -41,14 +40,12 @@ export async function register() {
     // ============================================================
 
     try {
-        const { startReminderCron } = await import(
-            "./lib/cron/reminderCron.js"
-        );
+        const { startReminderCron } = await import('./lib/cron/reminderCron.js');
 
         startReminderCron();
-        console.log("✅ Reminder cron started");
+        console.log('✅ Reminder cron started');
     } catch (error) {
-        console.error("❌ Reminder cron failed:", error);
+        console.error('❌ Reminder cron failed:', error);
     }
 
     // ============================================================
@@ -56,13 +53,11 @@ export async function register() {
     // ============================================================
 
     try {
-        const { startBrandBnaloSyncCron } = await import(
-            "./lib/cron/brandBnaloCron.js"
-        );
+        const { startBrandBnaloSyncCron } = await import('./lib/cron/brandBnaloCron.js');
 
         startBrandBnaloSyncCron();
-        console.log("✅ BrandBnalo cron started");
+        console.log('✅ BrandBnalo cron started');
     } catch (error) {
-        console.error("❌ BrandBnalo cron failed:", error);
+        console.error('❌ BrandBnalo cron failed:', error);
     }
 }

@@ -19,7 +19,8 @@ const openai = new OpenAI({
 // SYSTEM PROMPT
 // ============================================================
 
-const buildSystemPrompt = ({ scopeLabel, contextJson }) => `
+const buildSystemPrompt = ({ scopeLabel, contextJson }) =>
+    `
 You are "CRM Copilot" — a helpful assistant inside a CRM dashboard.
 
 You are chatting with: ${scopeLabel}.
@@ -80,10 +81,7 @@ export async function POST(request) {
         const user = await getCurrentUser(request);
 
         if (!user) {
-            return NextResponse.json(
-                { success: false, message: 'User not found.' },
-                { status: 401 }
-            );
+            return NextResponse.json({ success: false, message: 'User not found.' }, { status: 401 });
         }
 
         // ====================================================
@@ -95,10 +93,7 @@ export async function POST(request) {
         const messages = Array.isArray(body?.messages) ? body.messages : [];
 
         if (messages.length === 0) {
-            return NextResponse.json(
-                { success: false, message: 'No messages provided.' },
-                { status: 400 }
-            );
+            return NextResponse.json({ success: false, message: 'No messages provided.' }, { status: 400 });
         }
 
         // Keep the last 10 turns, cap each at 2000 chars
@@ -119,21 +114,15 @@ export async function POST(request) {
             select: 'name isSystemRole',
         });
 
-        const isAdmin =
-            user.roleId?.isSystemRole === true &&
-            user.roleId?.name?.toLowerCase() === 'admin';
+        const isAdmin = user.roleId?.isSystemRole === true && user.roleId?.name?.toLowerCase() === 'admin';
 
-        const scopeLabel = isAdmin
-            ? 'an ADMIN — you can see the whole company'
-            : 'a SALES REP — you can only see your own assigned leads/tasks/calls/meetings';
+        const scopeLabel = isAdmin ? 'an ADMIN — you can see the whole company' : 'a SALES REP — you can only see your own assigned leads/tasks/calls/meetings';
 
         // ====================================================
         // FILTERS
         // ====================================================
 
-        const leadFilter = isAdmin
-            ? { companyId }
-            : { companyId, assignedTo: userId };
+        const leadFilter = isAdmin ? { companyId } : { companyId, assignedTo: userId };
 
         const taskFilter = isAdmin
             ? { companyId }
@@ -142,9 +131,7 @@ export async function POST(request) {
                   $or: [{ createdBy: userId }, { assignedTo: userId }],
               };
 
-        const callFilter = isAdmin
-            ? { companyId }
-            : { companyId, callerId: userId };
+        const callFilter = isAdmin ? { companyId } : { companyId, callerId: userId };
 
         const meetingFilter = isAdmin
             ? { companyId }
@@ -158,20 +145,10 @@ export async function POST(request) {
         // ====================================================
 
         const now = new Date();
-        const todayStart = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate()
-        );
-        const todayEnd = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() + 1
-        );
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
         const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        const staleCutoff = new Date(
-            now.getTime() - 7 * 24 * 60 * 60 * 1000
-        );
+        const staleCutoff = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
         const [
             pipelineAgg,
@@ -195,10 +172,7 @@ export async function POST(request) {
             meetingsList,
         ] = await Promise.all([
             // ---------- LEAD COUNTS ----------
-            Lead.aggregate([
-                { $match: leadFilter },
-                { $group: { _id: '$stage', count: { $sum: 1 } } },
-            ]),
+            Lead.aggregate([{ $match: leadFilter }, { $group: { _id: '$stage', count: { $sum: 1 } } }]),
 
             Lead.countDocuments(leadFilter),
 
@@ -213,10 +187,7 @@ export async function POST(request) {
 
             Lead.countDocuments({
                 ...leadFilter,
-                $or: [
-                    { assignedTo: null },
-                    { assignedTo: { $exists: false } },
-                ],
+                $or: [{ assignedTo: null }, { assignedTo: { $exists: false } }],
             }),
 
             // ---------- TASK COUNTS ----------
@@ -251,9 +222,7 @@ export async function POST(request) {
             Lead.find(leadFilter)
                 .sort({ updatedAt: -1 })
                 .limit(30)
-                .select(
-                    'name phone email companyName stage status source dealValue assignedTo notes updatedAt createdAt'
-                )
+                .select('name phone email companyName stage status source dealValue assignedTo notes updatedAt createdAt')
                 .populate('assignedTo', 'name')
                 .lean(),
 
@@ -261,9 +230,7 @@ export async function POST(request) {
             LeadTask.find(taskFilter)
                 .sort({ dueDate: 1, updatedAt: -1 })
                 .limit(30)
-                .select(
-                    'title description status priority dueDate assignedTo leadId createdBy updatedAt createdAt'
-                )
+                .select('title description status priority dueDate assignedTo leadId createdBy updatedAt createdAt')
                 .populate('assignedTo', 'name')
                 .populate('leadId', 'name phone')
                 .populate('createdBy', 'name')
@@ -273,9 +240,7 @@ export async function POST(request) {
             Call.find(callFilter)
                 .sort({ calledAt: -1 })
                 .limit(30)
-                .select(
-                    'status calledAt phoneNumber duration notes refId callerId'
-                )
+                .select('status calledAt phoneNumber duration notes refId callerId')
                 .populate('refId', 'name phone')
                 .populate('callerId', 'name')
                 .lean(),
@@ -284,9 +249,7 @@ export async function POST(request) {
             Meeting.find(meetingFilter)
                 .sort({ startAt: 1 })
                 .limit(20)
-                .select(
-                    'title description metPersonName assignedTo leadId startAt endAt status meetingType location meetingLink phoneNo notes'
-                )
+                .select('title description metPersonName assignedTo leadId startAt endAt status meetingType location meetingLink phoneNo notes')
                 .populate('assignedTo', 'name')
                 .populate('leadId', 'name phone')
                 .lean(),
@@ -303,9 +266,7 @@ export async function POST(request) {
 
         const daysAgo = (d) => {
             if (!d) return null;
-            return Math.floor(
-                (now - new Date(d)) / (1000 * 60 * 60 * 24)
-            );
+            return Math.floor((now - new Date(d)) / (1000 * 60 * 60 * 24));
         };
 
         const leadRecords = leadsList.map((l) => ({
@@ -326,21 +287,12 @@ export async function POST(request) {
 
         const taskRecords = tasksList.map((t) => ({
             title: t.title || 'Untitled task',
-            description: t.description
-                ? String(t.description).slice(0, 200)
-                : null,
+            description: t.description ? String(t.description).slice(0, 200) : null,
             status: t.status || null,
             priority: t.priority || null,
             due_date: t.dueDate || null,
-            due_in_days: t.dueDate
-                ? Math.ceil(
-                      (new Date(t.dueDate) - now) / (1000 * 60 * 60 * 24)
-                  )
-                : null,
-            is_overdue:
-                t.dueDate &&
-                new Date(t.dueDate) < now &&
-                !['completed', 'cancelled'].includes(t.status),
+            due_in_days: t.dueDate ? Math.ceil((new Date(t.dueDate) - now) / (1000 * 60 * 60 * 24)) : null,
+            is_overdue: t.dueDate && new Date(t.dueDate) < now && !['completed', 'cancelled'].includes(t.status),
             assigned_to: t.assignedTo?.name || 'Unassigned',
             related_lead: t.leadId?.name || null,
             created_by: t.createdBy?.name || null,
@@ -365,9 +317,7 @@ export async function POST(request) {
 
             return {
                 title: m.title || 'Meeting',
-                description: m.description
-                    ? String(m.description).slice(0, 200)
-                    : null,
+                description: m.description ? String(m.description).slice(0, 200) : null,
                 met_person: m.metPersonName || null,
                 with_lead: m.leadId?.name || null,
                 lead_phone: m.leadId?.phone || null,
@@ -392,12 +342,7 @@ export async function POST(request) {
                 won: wonLeads,
                 lost: lostLeads,
                 unassigned_leads: unassignedLeads,
-                conversion_rate_pct:
-                    totalLeads > 0
-                        ? Number(
-                              ((wonLeads / totalLeads) * 100).toFixed(1)
-                          )
-                        : 0,
+                conversion_rate_pct: totalLeads > 0 ? Number(((wonLeads / totalLeads) * 100).toFixed(1)) : 0,
                 calls_total: callsTotal,
                 calls_today: callsToday,
                 calls_last_7_days: callsWeek,
