@@ -1,4 +1,5 @@
 // src/app/profile/page.jsx
+//
 
 'use client';
 
