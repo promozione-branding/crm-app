@@ -4,7 +4,7 @@ import Google from '@/components/user/integrations/Google';
 import MarketPlaces from '@/components/user/integrations/MarketPlaces';
 import Meta from '@/components/user/integrations/Meta';
 import WebhookApi from '@/components/user/integrations/WebhookApi';
-import Websites from '@/components/user/integrations/Websites';
+import Websites from '@/components/user/integrations/WebsiteIntegration';
 import { ArrowLeft, Globe, Search, Share2, ShoppingBag, Webhook } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState } from 'react';

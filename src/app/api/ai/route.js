@@ -1,3 +1,5 @@
+// src/app/api/ai/route.js
+
 // app/api/ai/route.js
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
