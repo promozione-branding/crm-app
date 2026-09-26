@@ -297,13 +297,13 @@ export default function WebsiteIntegration({ integration: initialIntegration }) 
                         <CheckCircle2 size={18} className="shrink-0 text-green-600" />
                         <div className="min-w-0 flex-1">
                             <p className="text-sm font-medium text-green-700">Website connection is active</p>
-                            <p className="mt-0.5 text-xs text-green-600/90">Leads from your BrandBnalo website are syncing into this CRM automatically.</p>
+                            <p className="mt-0.5 text-xs text-green-600/90">Leads from your website are syncing into this CRM automatically.</p>
                         </div>
                     </div>
 
                     {/* BRANDBNAO SELLER ID (mapped) */}
                     <div>
-                        <p className="text-app text-sm font-medium">BrandBnalo Seller ID</p>
+                        <p className="text-app text-sm font-medium">Seller ID</p>
                         <p className="text-muted mt-0.5 text-xs">The seller account whose forms we pull leads from.</p>
 
                         <div className="mt-2 flex gap-2">
@@ -407,7 +407,7 @@ export default function WebsiteIntegration({ integration: initialIntegration }) 
                         <summary className="text-app cursor-pointer px-4 py-3 text-xs font-medium select-none">Custom integration? See payload format</summary>
                         <div className="border-app border-t px-4 py-3">
                             <div className="mb-2 flex items-center justify-between">
-                                <p className="text-muted text-[11px]">If you have a custom website (not BrandBnalo), POST leads directly to:</p>
+                                <p className="text-muted text-[11px]">If you have a custom website (if not contact Inquiry Bazaar), POST leads directly to:</p>
                                 <button
                                     onClick={() => copyText(endpoint, 'endpoint')}
                                     className="border-app text-muted hover-app inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[10px]"
