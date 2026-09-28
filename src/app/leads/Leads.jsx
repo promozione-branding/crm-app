@@ -2,11 +2,11 @@
 
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
-import { Search, Plus, EllipsisVertical, Upload, Download } from 'lucide-react';
+import { Search, Plus, EllipsisVertical, Upload, Download, ArrowUpDown, ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import DynamicTable from '@/components/user/ui/DynamicTable';
@@ -18,54 +18,100 @@ import LeadsFilter, { stageOptions, dateOptions } from './components/LeadsFilter
 import Dashboarddata from '../dashboard/components/Dashboarddata';
 
 // ============================================================
+// SORT HELPERS (inline — no separate file)
+// ============================================================
+
+function isLeadOverdue(lead) {
+    if (!lead?.expectedClosureDate) return false;
+
+    const closedStatuses = ['won', 'lost', 'closed', 'cancelled', 'canceled'];
+    const stage = String(lead?.stage || '').toLowerCase();
+    const status = String(lead?.status || '').toLowerCase();
+
+    if (closedStatuses.includes(stage) || closedStatuses.includes(status)) return false;
+
+    const due = new Date(lead.expectedClosureDate);
+    if (Number.isNaN(due.getTime())) return false;
+
+    return due < new Date();
+}
+
+function sortLeads(leads = [], sortBy) {
+    if (!Array.isArray(leads)) return [];
+
+    const sorted = [...leads];
+
+    // Due Date → overdue first, then earliest
+    if (sortBy === 'dueDateAsc') {
+        sorted.sort((a, b) => {
+            const aOverdue = isLeadOverdue(a) ? 0 : 1;
+            const bOverdue = isLeadOverdue(b) ? 0 : 1;
+
+            if (aOverdue !== bOverdue) return aOverdue - bOverdue;
+
+            const aDate = new Date(a?.expectedClosureDate || 0).getTime();
+            const bDate = new Date(b?.expectedClosureDate || 0).getTime();
+            return aDate - bDate;
+        });
+
+        return sorted;
+    }
+
+    // Other sorts — pure
+    sorted.sort((a, b) => {
+        switch (sortBy) {
+            case 'createdAtDesc': {
+                const aDate = new Date(a?.createdAt || 0).getTime();
+                const bDate = new Date(b?.createdAt || 0).getTime();
+                return bDate - aDate;
+            }
+
+            case 'createdAtAsc': {
+                const aDate = new Date(a?.createdAt || 0).getTime();
+                const bDate = new Date(b?.createdAt || 0).getTime();
+                return aDate - bDate;
+            }
+
+            case 'updatedAtDesc': {
+                const aDate = new Date(a?.updatedAt || 0).getTime();
+                const bDate = new Date(b?.updatedAt || 0).getTime();
+                return bDate - aDate;
+            }
+
+            default:
+                return 0;
+        }
+    });
+
+    return sorted;
+}
+
+const SORT_OPTIONS = [
+    { value: '', label: 'Sort By' },
+    { value: 'dueDateAsc', label: 'Due Date' },
+    { value: 'createdAtDesc', label: 'Created — New First' },
+    { value: 'createdAtAsc', label: 'Created — Old First' },
+    { value: 'updatedAtDesc', label: 'Recent Modified' },
+];
+
+// ============================================================
 // DESKTOP TABLE COLUMNS
 // ============================================================
 
 const columns = [
-    {
-        key: 'assignedTo.name',
-        label: 'Assigned To',
-        sortable: true,
-    },
-    {
-        key: 'name',
-        label: 'Contact Name',
-        sortable: true,
-    },
-    {
-        key: 'phone',
-        label: 'Phone',
-        sortable: true,
-    },
+    { key: 'assignedTo.name', label: 'Assigned To', sortable: true },
+    { key: 'name', label: 'Contact Name', sortable: true },
+    { key: 'phone', label: 'Phone', sortable: true },
     {
         key: 'stage',
         label: 'Stage',
         sortable: true,
         render: (lead) => <LeadStageBadge stage={lead.stage} />,
     },
-    ,
-    {
-        key: 'dealValue',
-        label: 'Deal Value',
-        sortable: true,
-    },
-    {
-        key: 'source',
-        label: 'Lead Source',
-        sortable: true,
-    },
-    {
-        key: 'createdAt',
-        type: 'date',
-        label: 'Created At',
-        sortable: true,
-    },
-    {
-        key: 'updatedAt',
-        type: 'date',
-        label: 'Last Modified',
-        sortable: true,
-    },
+    { key: 'dealValue', label: 'Deal Value', sortable: true },
+    { key: 'source', label: 'Lead Source', sortable: true },
+    { key: 'createdAt', type: 'date', label: 'Created At', sortable: true },
+    { key: 'updatedAt', type: 'date', label: 'Last Modified', sortable: true },
 ];
 
 // ============================================================
@@ -75,10 +121,7 @@ const columns = [
 export default function Leads() {
     const router = useRouter();
 
-    // ========================================================
     // STATE
-    // ========================================================
-
     const [leads, setLeads] = useState([]);
     const [page, setPage] = useState(1);
     const [total, setTotal] = useState(0);
@@ -86,10 +129,9 @@ export default function Leads() {
 
     const [search, setSearch] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(25);
+    const [sortBy, setSortBy] = useState('');
 
-    // 👇 ARRAY — multi-select
     const [selectedStage, setSelectedStage] = useState([]);
-
     const [selectedDate, setSelectedDate] = useState('');
     const [customStartDate, setCustomStartDate] = useState('');
     const [customEndDate, setCustomEndDate] = useState('');
@@ -98,27 +140,20 @@ export default function Leads() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [showImportModal, setShowImportModal] = useState(false);
 
-    // ========================================================
-    // REFS
-    // ========================================================
-
     const filterRef = useRef(null);
     const menuRef = useRef(null);
 
-    // ========================================================
-    // SELECTED LABELS
-    // ========================================================
+    // SORTED LEADS (instant)
+    const sortedLeads = useMemo(() => sortLeads(leads, sortBy), [leads, sortBy]);
 
+    // LABELS
     const selectedStageLabels = (Array.isArray(selectedStage) ? selectedStage : [])
         .map((val) => stageOptions.find((option) => option.value === val)?.label)
         .filter(Boolean);
 
     const selectedDateLabel = dateOptions.find((option) => option.value === selectedDate)?.label;
 
-    // ========================================================
     // GET LEADS
-    // ========================================================
-
     const getLeads = async () => {
         try {
             setLoading(true);
@@ -129,14 +164,11 @@ export default function Leads() {
                 search: search,
             });
 
-            // 👇 append each stage separately
             if (Array.isArray(selectedStage) && selectedStage.length > 0) {
                 selectedStage.forEach((stage) => params.append('stage', stage));
             }
 
-            if (selectedDate) {
-                params.append('date', selectedDate);
-            }
+            if (selectedDate) params.append('date', selectedDate);
 
             if (selectedDate === 'custom' && customStartDate && customEndDate) {
                 params.append('startDate', customStartDate);
@@ -151,17 +183,13 @@ export default function Leads() {
             setTotal(res.data?.pagination?.total || 0);
         } catch (error) {
             console.error('Get leads error:', error);
-
             toast.error(error.response?.data?.message || 'Failed to load leads');
         } finally {
             setLoading(false);
         }
     };
 
-    // ========================================================
-    // FETCH LEADS
-    // ========================================================
-
+    // FETCH
     useEffect(() => {
         const timer = setTimeout(() => {
             getLeads();
@@ -170,10 +198,7 @@ export default function Leads() {
         return () => clearTimeout(timer);
     }, [page, rowsPerPage, search, selectedStage, selectedDate, customStartDate, customEndDate]);
 
-    // ========================================================
-    // CLOSE DROPDOWNS
-    // ========================================================
-
+    // OUTSIDE CLICK
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (filterRef.current && !filterRef.current.contains(event.target)) {
@@ -187,40 +212,28 @@ export default function Leads() {
 
         document.addEventListener('mousedown', handleClickOutside);
 
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // ========================================================
     // CLEAR FILTER
-    // ========================================================
-
     const clearFilter = () => {
         setSelectedStage([]);
         setSelectedDate('');
         setCustomStartDate('');
         setCustomEndDate('');
+        setSortBy('');
         setPage(1);
         setFilterOpen(false);
     };
 
-    // ========================================================
-    // IMPORT
-    // ========================================================
-
+    // IMPORT / EXPORT
     const handleImport = () => {
         setMenuOpen(false);
         setShowImportModal(true);
     };
 
-    // ========================================================
-    // EXPORT
-    // ========================================================
-
     const handleExport = () => {
         setMenuOpen(false);
-
         console.log('Export leads');
     };
 
@@ -251,6 +264,31 @@ export default function Leads() {
                                 }}
                                 placeholder="Search all leads..."
                                 className="border-app bg-app h-10 w-full rounded-xl border pr-3 pl-10 text-sm transition-all outline-none focus:ring-2 focus:ring-blue-500/30"
+                            />
+                        </div>
+
+                        {/* SORT — inline dropdown (desktop only) */}
+                        <div className="relative hidden shrink-0 sm:block">
+                            <ArrowUpDown
+                                size={15}
+                                className="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 opacity-60"
+                            />
+
+                            <select
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value)}
+                                className="border-app bg-app h-10 appearance-none rounded-xl border pr-8 pl-9 text-sm outline-none focus:ring-2 focus:ring-blue-500/30"
+                            >
+                                {SORT_OPTIONS.map((opt) => (
+                                    <option key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <ChevronDown
+                                size={15}
+                                className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 opacity-60"
                             />
                         </div>
 
@@ -342,7 +380,7 @@ export default function Leads() {
                 <DynamicTable
                     loading={loading}
                     columns={columns}
-                    data={leads}
+                    data={sortedLeads}
                     page={page}
                     setPage={setPage}
                     total={total}
@@ -351,6 +389,7 @@ export default function Leads() {
                     onAction={(lead) => {
                         router.push(`/leads/edit/${lead._id}`);
                     }}
+                    isRowOverdue={isLeadOverdue}
                 />
             </div>
 
@@ -358,13 +397,14 @@ export default function Leads() {
             <div className="md:hidden">
                 <MobileLeadsTable
                     loading={loading}
-                    leads={leads}
+                    leads={sortedLeads}
                     router={router}
                     page={page}
                     setPage={setPage}
                     total={total}
                     rowsPerPage={rowsPerPage}
                     setRowsPerPage={setRowsPerPage}
+                    isRowOverdue={isLeadOverdue}
                 />
             </div>
 
