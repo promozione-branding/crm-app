@@ -78,7 +78,7 @@ export async function GET(request) {
         const callerId = searchParams.get('callerId'); // optional
         const search = searchParams.get('search'); // free text
         const from = searchParams.get('from'); // optional ISO date
-        const to = searchParams.get('to'); // optional ISO date
+        const to = searchParams.get('to'); // optional ISO date 
 
         const filter = { companyId: user.companyId };
 

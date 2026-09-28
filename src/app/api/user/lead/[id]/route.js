@@ -6,6 +6,7 @@ import { connectDB } from '@/config/db';
 import { ENV } from '@/config/env';
 import User from '@/models/user.model';
 import Lead from '@/models/leads.model';
+import Call from '@/models/call.model';
 import Notification from '@/models/notification.model';
 import { getLeadByIdService, updateLeadService } from '@/controllers/user/leadsController';
 
@@ -27,7 +28,21 @@ export async function GET(request, { params }) {
         }
 
         const lead = await getLeadByIdService(user, id);
-        return NextResponse.json({ success: true, data: lead });
+
+        // ---------------------------------------------
+        // Attach call count for this lead
+        // ---------------------------------------------
+        const callCount = await Call.countDocuments({
+            companyId: lead.companyId,
+            refId: lead._id,
+        });
+
+        const leadData =
+            typeof lead.toObject === 'function'
+                ? { ...lead.toObject(), callCount }
+                : { ...lead, callCount };
+
+        return NextResponse.json({ success: true, data: leadData });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 400 });
     }

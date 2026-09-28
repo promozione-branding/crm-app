@@ -245,11 +245,11 @@ export default function Edit() {
         },
 
         {
-            id: 'calls',
-            label: 'Call History',
-            icon: Phone,
-            badge: lead?.call?.length || '0',
-        },
+    id: 'calls',
+    label: 'Call History',
+    icon: Phone,
+    badge: lead?.callCount || '0',
+},,
 
         {
             id: 'stage',
@@ -817,10 +817,10 @@ export default function Edit() {
             ===================================================== */}
 
             {active === 'calls' && (
-                <div className="mx-auto max-w-4xl space-y-4 px-2 py-5 md:py-10">
-                    <Call />
-                </div>
-            )}
+    <div className="mx-auto max-w-4xl space-y-4 px-2 py-5 md:py-10">
+        <Call leadId={id} />
+    </div>
+)}
 
             {/* =====================================================
                 STAGE

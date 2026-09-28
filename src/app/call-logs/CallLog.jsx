@@ -230,7 +230,7 @@ function MobilePagination({ page, setPage, total, rowsPerPage, setRowsPerPage })
 
             <div className="flex items-center justify-between gap-2">
                 {setRowsPerPage && (
-                    <select
+                    <select 
                         value={rowsPerPage}
                         onChange={(e) => {
                             setRowsPerPage?.(Number(e.target.value));
