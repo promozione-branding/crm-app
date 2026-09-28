@@ -89,7 +89,7 @@ const SORT_OPTIONS = [
     { value: 'dueDateAsc', label: 'Due Date' },
     { value: 'createdAtDesc', label: 'New First' },
     { value: 'createdAtAsc', label: 'Old First' },
-    { value: 'updatedAtDesc', label: 'Modified' },
+    { value: 'updatedAtDesc', label: 'Recent Edited' },
 ];
 
 // ============================================================
