@@ -8,10 +8,6 @@ import { Search } from 'lucide-react';
 import TaskCard from './TaskCard';
 
 export default function TaskMobileList({ tasks, loading, onAction, page, rowsPerPage }) {
-    // ============================================================
-    // LOADING
-    // ============================================================
-
     if (loading) {
         return (
             <div className="space-y-2">
@@ -21,10 +17,6 @@ export default function TaskMobileList({ tasks, loading, onAction, page, rowsPer
             </div>
         );
     }
-
-    // ============================================================
-    // EMPTY
-    // ============================================================
 
     if (!tasks?.length) {
         return (
@@ -40,14 +32,15 @@ export default function TaskMobileList({ tasks, loading, onAction, page, rowsPer
         );
     }
 
-    // ============================================================
-    // TASK LIST
-    // ============================================================
-
     return (
         <div className="w-full space-y-2">
             {tasks.map((task, index) => (
-                <TaskCard key={task._id} task={task} onAction={onAction} sno={(page - 1) * rowsPerPage + index + 1} />
+                <TaskCard
+                    key={task._id}
+                    task={task}
+                    onAction={onAction}
+                    sno={(page - 1) * rowsPerPage + index + 1}
+                />
             ))}
         </div>
     );

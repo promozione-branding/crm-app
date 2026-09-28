@@ -76,6 +76,10 @@ export default function Edit() {
             {active === 'stage' && (
                 <Wrap><Stage stage={lead?.stageHistory || []} /></Wrap>
             )}
+             {active === 'nostage' && (
+                <Wrap><Stage nostage={lead?.stageHistory || []} /></Wrap>
+            )}
+
 
             {active === 'task' && (
                 <Wrap>

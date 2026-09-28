@@ -1,5 +1,8 @@
 // src/app/leads/edit/[id]/components/InsightTab.jsx
+
 'use client';
+
+
 
 import {
     BriefcaseBusiness, Building2, CalendarDays, Copy, FileText,
@@ -10,6 +13,7 @@ import { FaWhatsapp } from 'react-icons/fa';
 // ---------- small local helpers (kept in same file on purpose) ----------
 
 const fmtDate = (d) =>
+  
     d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
 
 const fmtCurrency = (v) => (v ? `₹${Number(v).toLocaleString('en-IN')}` : '-');
