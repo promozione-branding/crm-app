@@ -24,16 +24,16 @@ import Dashboarddata from '../dashboard/components/Dashboarddata';
 function isLeadOverdue(lead) {
     if (!lead?.expectedClosureDate) return false;
 
-    const closedStatuses = ['won', 'lost', 'closed', 'cancelled', 'canceled'];
-    const stage = String(lead?.stage || '').toLowerCase();
-    const status = String(lead?.status || '').toLowerCase();
-
-    if (closedStatuses.includes(stage) || closedStatuses.includes(status)) return false;
-
     const due = new Date(lead.expectedClosureDate);
     if (Number.isNaN(due.getTime())) return false;
 
-    return due < new Date();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const dueDate = new Date(due);
+    dueDate.setHours(0, 0, 0, 0);
+
+    return dueDate <= today;
 }
 
 function sortLeads(leads = [], sortBy) {
@@ -41,7 +41,6 @@ function sortLeads(leads = [], sortBy) {
 
     const sorted = [...leads];
 
-    // Due Date → overdue first, then earliest
     if (sortBy === 'dueDateAsc') {
         sorted.sort((a, b) => {
             const aOverdue = isLeadOverdue(a) ? 0 : 1;
@@ -57,7 +56,6 @@ function sortLeads(leads = [], sortBy) {
         return sorted;
     }
 
-    // Other sorts — pure
     sorted.sort((a, b) => {
         switch (sortBy) {
             case 'createdAtDesc': {
@@ -87,11 +85,11 @@ function sortLeads(leads = [], sortBy) {
 }
 
 const SORT_OPTIONS = [
-    { value: '', label: 'Sort By' },
+    { value: '', label: 'Sort' },
     { value: 'dueDateAsc', label: 'Due Date' },
-    { value: 'createdAtDesc', label: 'Created — New First' },
-    { value: 'createdAtAsc', label: 'Created — Old First' },
-    { value: 'updatedAtDesc', label: 'Recent Modified' },
+    { value: 'createdAtDesc', label: 'New First' },
+    { value: 'createdAtAsc', label: 'Old First' },
+    { value: 'updatedAtDesc', label: 'Modified' },
 ];
 
 // ============================================================
@@ -121,7 +119,6 @@ const columns = [
 export default function Leads() {
     const router = useRouter();
 
-    // STATE
     const [leads, setLeads] = useState([]);
     const [page, setPage] = useState(1);
     const [total, setTotal] = useState(0);
@@ -143,17 +140,14 @@ export default function Leads() {
     const filterRef = useRef(null);
     const menuRef = useRef(null);
 
-    // SORTED LEADS (instant)
     const sortedLeads = useMemo(() => sortLeads(leads, sortBy), [leads, sortBy]);
 
-    // LABELS
     const selectedStageLabels = (Array.isArray(selectedStage) ? selectedStage : [])
         .map((val) => stageOptions.find((option) => option.value === val)?.label)
         .filter(Boolean);
 
     const selectedDateLabel = dateOptions.find((option) => option.value === selectedDate)?.label;
 
-    // GET LEADS
     const getLeads = async () => {
         try {
             setLoading(true);
@@ -189,7 +183,6 @@ export default function Leads() {
         }
     };
 
-    // FETCH
     useEffect(() => {
         const timer = setTimeout(() => {
             getLeads();
@@ -198,7 +191,6 @@ export default function Leads() {
         return () => clearTimeout(timer);
     }, [page, rowsPerPage, search, selectedStage, selectedDate, customStartDate, customEndDate]);
 
-    // OUTSIDE CLICK
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (filterRef.current && !filterRef.current.contains(event.target)) {
@@ -215,7 +207,6 @@ export default function Leads() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // CLEAR FILTER
     const clearFilter = () => {
         setSelectedStage([]);
         setSelectedDate('');
@@ -226,7 +217,6 @@ export default function Leads() {
         setFilterOpen(false);
     };
 
-    // IMPORT / EXPORT
     const handleImport = () => {
         setMenuOpen(false);
         setShowImportModal(true);
@@ -237,10 +227,6 @@ export default function Leads() {
         console.log('Export leads');
     };
 
-    // ========================================================
-    // RENDER
-    // ========================================================
-
     return (
         <div className="bg-surface text-app min-h-[calc(100vh-64px)] p-3 sm:p-4 md:p-6">
             {/* HEADER */}
@@ -250,116 +236,124 @@ export default function Leads() {
                 </div>
 
                 <div className="mt-3 w-full sm:mt-4">
-                    <div className="flex w-full items-center gap-2 sm:gap-3">
-                        {/* SEARCH */}
-                        <div className="relative min-w-0 flex-1">
-                            <Search size={17} className="absolute top-1/2 left-3 -translate-y-1/2 opacity-50" />
+                    {/* MOBILE — 2 rows / DESKTOP — 1 row */}
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                        {/* ROW 1 — SEARCH + SORT */}
+                        <div className="flex w-full items-center gap-2 sm:flex-1 sm:gap-3">
+                            {/* SEARCH */}
+                            <div className="relative min-w-0 flex-1">
+                                <Search size={17} className="absolute top-1/2 left-3 -translate-y-1/2 opacity-50" />
 
-                            <input
-                                type="text"
-                                value={search}
-                                onChange={(e) => {
-                                    setSearch(e.target.value);
-                                    setPage(1);
-                                }}
-                                placeholder="Search all leads..."
-                                className="border-app bg-app h-10 w-full rounded-xl border pr-3 pl-10 text-sm transition-all outline-none focus:ring-2 focus:ring-blue-500/30"
-                            />
+                                <input
+                                    type="text"
+                                    value={search}
+                                    onChange={(e) => {
+                                        setSearch(e.target.value);
+                                        setPage(1);
+                                    }}
+                                    placeholder="Search all leads..."
+                                    className="border-app bg-app h-10 w-full rounded-xl border pr-3 pl-10 text-sm transition-all outline-none focus:ring-2 focus:ring-blue-500/30"
+                                />
+                            </div>
+
+                            {/* SORT */}
+                            <div className="relative shrink-0">
+                                <ArrowUpDown
+                                    size={15}
+                                    className="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 opacity-60"
+                                />
+
+                                <select
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                    className="border-app bg-app h-10 w-28 appearance-none rounded-xl border pr-7 pl-9 text-sm outline-none focus:ring-2 focus:ring-blue-500/30 sm:w-auto sm:pr-8"
+                                >
+                                    {SORT_OPTIONS.map((opt) => (
+                                        <option key={opt.value} value={opt.value}>
+                                            {opt.label}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                <ChevronDown
+                                    size={15}
+                                    className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 opacity-60"
+                                />
+                            </div>
                         </div>
+{/* ROW 2 — ADD + FILTER + MENU */}
+<div className="flex w-full items-center justify-evenly gap-2 sm:w-auto sm:justify-start sm:gap-3">
+    {/* ADD LEAD — DESKTOP */}
+    <Link
+        href="/leads/new"
+        className="btn-primary hidden h-10 shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:flex"
+    >
+        <Plus size={17} />
+        Add Lead
+    </Link>
 
-                        {/* SORT — inline dropdown (desktop only) */}
-                        <div className="relative hidden shrink-0 sm:block">
-                            <ArrowUpDown
-                                size={15}
-                                className="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 opacity-60"
-                            />
+    {/* ADD LEAD — MOBILE */}
+    <Link
+        href="/leads/new"
+        className="btn-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm sm:hidden"
+        aria-label="Add Lead"
+    >
+        <Plus size={18} />
+    </Link>
 
-                            <select
-                                value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
-                                className="border-app bg-app h-10 appearance-none rounded-xl border pr-8 pl-9 text-sm outline-none focus:ring-2 focus:ring-blue-500/30"
-                            >
-                                {SORT_OPTIONS.map((opt) => (
-                                    <option key={opt.value} value={opt.value}>
-                                        {opt.label}
-                                    </option>
-                                ))}
-                            </select>
+  
 
-                            <ChevronDown
-                                size={15}
-                                className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 opacity-60"
-                            />
-                        </div>
+    {/* MORE MENU */}
+    <div className="relative shrink-0" ref={menuRef}>
+        <button
+            type="button"
+            onClick={() => setMenuOpen((prev) => !prev)}
+            className="border-app bg-app flex h-10 w-10 items-center justify-center rounded-xl border shadow-sm transition-all hover:shadow-md"
+            aria-label="More options"
+        >
+            <EllipsisVertical size={18} />
+        </button>
 
-                        {/* ADD LEAD — DESKTOP */}
-                        <Link
-                            href="/leads/new"
-                            className="btn-primary hidden h-10 shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:flex"
-                        >
-                            <Plus size={17} />
-                            Add Lead
-                        </Link>
+        {menuOpen && (
+            <div className="border-app bg-app absolute top-12 right-0 z-50 w-44 overflow-hidden rounded-xl border shadow-lg">
+                <button
+                    type="button"
+                    onClick={handleExport}
+                    className="hover:bg-surface flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors"
+                >
+                    <Download size={17} className="opacity-70" />
+                    <span>Export Leads</span>
+                </button>
 
-                        {/* ADD LEAD — MOBILE */}
-                        <Link
-                            href="/leads/new"
-                            className="btn-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm sm:hidden"
-                            aria-label="Add Lead"
-                        >
-                            <Plus size={18} />
-                        </Link>
-
-                        {/* FILTER */}
-                        <div ref={filterRef} className="relative shrink-0">
-                            <LeadsFilter
-                                selectedStage={selectedStage}
-                                setSelectedStage={setSelectedStage}
-                                selectedDate={selectedDate}
-                                setSelectedDate={setSelectedDate}
-                                customStartDate={customStartDate}
-                                setCustomStartDate={setCustomStartDate}
-                                customEndDate={customEndDate}
-                                setCustomEndDate={setCustomEndDate}
-                                filterOpen={filterOpen}
-                                setFilterOpen={setFilterOpen}
-                                setPage={setPage}
-                            />
-                        </div>
-
-                        {/* MORE MENU */}
-                        <div className="relative shrink-0" ref={menuRef}>
-                            <button
-                                type="button"
-                                onClick={() => setMenuOpen((prev) => !prev)}
-                                className="border-app bg-app flex h-10 w-10 items-center justify-center rounded-xl border shadow-sm transition-all hover:shadow-md"
-                                aria-label="More options"
-                            >
-                                <EllipsisVertical size={18} />
-                            </button>
-
-                            {menuOpen && (
-                                <div className="border-app bg-app absolute top-12 right-0 z-50 w-44 overflow-hidden rounded-xl border shadow-lg">
-                                    <button
-                                        type="button"
-                                        onClick={handleExport}
-                                        className="hover:bg-surface flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors"
-                                    >
-                                        <Download size={17} className="opacity-70" />
-                                        <span>Export Leads</span>
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        onClick={handleImport}
-                                        className="hover:bg-surface flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors"
-                                    >
-                                        <Upload size={17} className="opacity-70" />
-                                        <span>Import Leads</span>
-                                    </button>
-                                </div>
-                            )}
-                        </div>
+                <button
+                    type="button"
+                    onClick={handleImport}
+                    className="hover:bg-surface flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors"
+                >
+                    <Upload size={17} className="opacity-70" />
+                    <span>Import Leads</span>
+                </button>
+            </div>
+        )}
+    </div>
+      {/* FILTER */}
+    <div ref={filterRef} className="relative shrink-0">
+        <LeadsFilter
+            selectedStage={selectedStage}
+            setSelectedStage={setSelectedStage}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            customStartDate={customStartDate}
+            setCustomStartDate={setCustomStartDate}
+            customEndDate={customEndDate}
+            setCustomEndDate={setCustomEndDate}
+            filterOpen={filterOpen}
+            setFilterOpen={setFilterOpen}
+            setPage={setPage}
+        />
+    </div>
+</div>
+                        
                     </div>
                 </div>
             </div>
