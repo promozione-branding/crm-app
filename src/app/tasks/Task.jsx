@@ -81,7 +81,7 @@ export default function Task() {
     const [relatedTo, setRelatedTo] = useState('');
     const [assignedTo, setAssignedTo] = useState('');
     const [priority, setPriority] = useState('');
-    const [stage, setStage] = useState([]);           // multi-select
+    const [stage, setStage] = useState([]); // multi-select
 
     const [sortBy, setSortBy] = useState('');
 

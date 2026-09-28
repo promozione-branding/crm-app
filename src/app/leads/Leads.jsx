@@ -258,10 +258,7 @@ export default function Leads() {
 
                             {/* SORT */}
                             <div className="relative shrink-0">
-                                <ArrowUpDown
-                                    size={15}
-                                    className="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 opacity-60"
-                                />
+                                <ArrowUpDown size={15} className="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 opacity-60" />
 
                                 <select
                                     value={sortBy}
@@ -275,85 +272,79 @@ export default function Leads() {
                                     ))}
                                 </select>
 
-                                <ChevronDown
-                                    size={15}
-                                    className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 opacity-60"
+                                <ChevronDown size={15} className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 opacity-60" />
+                            </div>
+                        </div>
+                        {/* ROW 2 — ADD + FILTER + MENU */}
+                        <div className="flex w-full items-center justify-evenly gap-2 sm:w-auto sm:justify-start sm:gap-3">
+                            {/* ADD LEAD — DESKTOP */}
+                            <Link
+                                href="/leads/new"
+                                className="btn-primary hidden h-10 shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:flex"
+                            >
+                                <Plus size={17} />
+                                Add Lead
+                            </Link>
+
+                            {/* ADD LEAD — MOBILE */}
+                            <Link
+                                href="/leads/new"
+                                className="btn-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm sm:hidden"
+                                aria-label="Add Lead"
+                            >
+                                <Plus size={18} />
+                            </Link>
+
+                            {/* MORE MENU */}
+                            <div className="relative shrink-0" ref={menuRef}>
+                                <button
+                                    type="button"
+                                    onClick={() => setMenuOpen((prev) => !prev)}
+                                    className="border-app bg-app flex h-10 w-10 items-center justify-center rounded-xl border shadow-sm transition-all hover:shadow-md"
+                                    aria-label="More options"
+                                >
+                                    <EllipsisVertical size={18} />
+                                </button>
+
+                                {menuOpen && (
+                                    <div className="border-app bg-app absolute top-12 right-0 z-50 w-44 overflow-hidden rounded-xl border shadow-lg">
+                                        <button
+                                            type="button"
+                                            onClick={handleExport}
+                                            className="hover:bg-surface flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors"
+                                        >
+                                            <Download size={17} className="opacity-70" />
+                                            <span>Export Leads</span>
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={handleImport}
+                                            className="hover:bg-surface flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors"
+                                        >
+                                            <Upload size={17} className="opacity-70" />
+                                            <span>Import Leads</span>
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            {/* FILTER */}
+                            <div ref={filterRef} className="relative shrink-0">
+                                <LeadsFilter
+                                    selectedStage={selectedStage}
+                                    setSelectedStage={setSelectedStage}
+                                    selectedDate={selectedDate}
+                                    setSelectedDate={setSelectedDate}
+                                    customStartDate={customStartDate}
+                                    setCustomStartDate={setCustomStartDate}
+                                    customEndDate={customEndDate}
+                                    setCustomEndDate={setCustomEndDate}
+                                    filterOpen={filterOpen}
+                                    setFilterOpen={setFilterOpen}
+                                    setPage={setPage}
                                 />
                             </div>
                         </div>
-{/* ROW 2 — ADD + FILTER + MENU */}
-<div className="flex w-full items-center justify-evenly gap-2 sm:w-auto sm:justify-start sm:gap-3">
-    {/* ADD LEAD — DESKTOP */}
-    <Link
-        href="/leads/new"
-        className="btn-primary hidden h-10 shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:flex"
-    >
-        <Plus size={17} />
-        Add Lead
-    </Link>
-
-    {/* ADD LEAD — MOBILE */}
-    <Link
-        href="/leads/new"
-        className="btn-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm sm:hidden"
-        aria-label="Add Lead"
-    >
-        <Plus size={18} />
-    </Link>
-
-  
-
-    {/* MORE MENU */}
-    <div className="relative shrink-0" ref={menuRef}>
-        <button
-            type="button"
-            onClick={() => setMenuOpen((prev) => !prev)}
-            className="border-app bg-app flex h-10 w-10 items-center justify-center rounded-xl border shadow-sm transition-all hover:shadow-md"
-            aria-label="More options"
-        >
-            <EllipsisVertical size={18} />
-        </button>
-
-        {menuOpen && (
-            <div className="border-app bg-app absolute top-12 right-0 z-50 w-44 overflow-hidden rounded-xl border shadow-lg">
-                <button
-                    type="button"
-                    onClick={handleExport}
-                    className="hover:bg-surface flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors"
-                >
-                    <Download size={17} className="opacity-70" />
-                    <span>Export Leads</span>
-                </button>
-
-                <button
-                    type="button"
-                    onClick={handleImport}
-                    className="hover:bg-surface flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors"
-                >
-                    <Upload size={17} className="opacity-70" />
-                    <span>Import Leads</span>
-                </button>
-            </div>
-        )}
-    </div>
-      {/* FILTER */}
-    <div ref={filterRef} className="relative shrink-0">
-        <LeadsFilter
-            selectedStage={selectedStage}
-            setSelectedStage={setSelectedStage}
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-            customStartDate={customStartDate}
-            setCustomStartDate={setCustomStartDate}
-            customEndDate={customEndDate}
-            setCustomEndDate={setCustomEndDate}
-            filterOpen={filterOpen}
-            setFilterOpen={setFilterOpen}
-            setPage={setPage}
-        />
-    </div>
-</div>
-                        
                     </div>
                 </div>
             </div>

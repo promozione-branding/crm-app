@@ -37,10 +37,7 @@ export async function GET(request, { params }) {
             refId: lead._id,
         });
 
-        const leadData =
-            typeof lead.toObject === 'function'
-                ? { ...lead.toObject(), callCount }
-                : { ...lead, callCount };
+        const leadData = typeof lead.toObject === 'function' ? { ...lead.toObject(), callCount } : { ...lead, callCount };
 
         return NextResponse.json({ success: true, data: leadData });
     } catch (error) {

@@ -5,14 +5,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Check, ChevronDown, X } from 'lucide-react';
 
-export default function MultiSelect({
-    label = 'Select',
-    options = [],
-    selected = [],
-    onChange,
-    placeholder = 'All',
-    width = 'w-56',
-}) {
+export default function MultiSelect({ label = 'Select', options = [], selected = [], onChange, placeholder = 'All', width = 'w-56' }) {
     const [open, setOpen] = useState(false);
     const wrapperRef = useRef(null);
 
@@ -29,9 +22,7 @@ export default function MultiSelect({
     }, []);
 
     const toggleValue = (value) => {
-        const next = selected.includes(value)
-            ? selected.filter((v) => v !== value)
-            : [...selected, value];
+        const next = selected.includes(value) ? selected.filter((v) => v !== value) : [...selected, value];
 
         onChange?.(next);
     };

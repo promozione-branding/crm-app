@@ -2,10 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import {
-    Activity, ArrowLeft, ClipboardCheck, FileText,
-    LaptopMinimalCheck, Phone, TrendingUp, User,
-} from 'lucide-react';
+import { Activity, ArrowLeft, ClipboardCheck, FileText, LaptopMinimalCheck, Phone, TrendingUp, User } from 'lucide-react';
 
 export default function EditHeader({ lead, loading, onEdit, active, setActive }) {
     const tabs = [
@@ -57,17 +54,17 @@ export default function EditHeader({ lead, loading, onEdit, active, setActive })
                             key={tab.id}
                             onClick={() => setActive(tab.id)}
                             className={`relative flex h-11 min-w-max items-center justify-center gap-2 border-b-2 px-5 text-sm font-medium whitespace-nowrap transition-all duration-200 ${
-                                isActive
-                                    ? 'border-blue-600 bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                                    : 'text-app hover-app border-transparent'
+                                isActive ? 'border-blue-600 bg-blue-500/10 text-blue-600 dark:text-blue-400' : 'text-app hover-app border-transparent'
                             }`}
                         >
                             <Icon size={16} />
                             <span>{tab.label}</span>
                             {tab.badge && (
-                                <span className={`flex h-5 min-w-5 items-center justify-center rounded-full text-[10px] ${
-                                    isActive ? 'bg-blue-600 text-white' : 'bg-app border-app text-app border'
-                                }`}>
+                                <span
+                                    className={`flex h-5 min-w-5 items-center justify-center rounded-full text-[10px] ${
+                                        isActive ? 'bg-blue-600 text-white' : 'bg-app border-app text-app border'
+                                    }`}
+                                >
                                     {tab.badge}
                                 </span>
                             )}

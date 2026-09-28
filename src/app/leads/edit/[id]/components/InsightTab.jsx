@@ -2,24 +2,20 @@
 
 'use client';
 
-
-
-import {
-    BriefcaseBusiness, Building2, CalendarDays, Copy, FileText,
-    IndianRupee, Mail, MapPin, Phone, Tag, TrendingUp, User,
-} from 'lucide-react';
+import { BriefcaseBusiness, Building2, CalendarDays, Copy, FileText, IndianRupee, Mail, MapPin, Phone, Tag, TrendingUp, User } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 
 // ---------- small local helpers (kept in same file on purpose) ----------
 
-const fmtDate = (d) =>
-  
-    d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+const fmtDate = (d) => (d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-');
 
 const fmtCurrency = (v) => (v ? `₹${Number(v).toLocaleString('en-IN')}` : '-');
 
 const Btn = ({ children, ...props }) => (
-    <a {...props} className="border-app bg-surface hover-app text-app flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition">
+    <a
+        {...props}
+        className="border-app bg-surface hover-app text-app flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition"
+    >
         {children}
     </a>
 );
@@ -30,7 +26,9 @@ const Row = ({ icon: Icon, iconClass, label, value, href, copyable }) => (
         <div className="min-w-0 flex-1">
             <p className="text-muted text-xs">{label}</p>
             {href && value ? (
-                <a href={href} className="text-app text-sm font-medium break-all hover:text-blue-500">{value}</a>
+                <a href={href} className="text-app text-sm font-medium break-all hover:text-blue-500">
+                    {value}
+                </a>
             ) : (
                 <p className="text-app text-sm font-medium">{value || '-'}</p>
             )}
@@ -62,18 +60,17 @@ const Card = ({ icon: Icon, iconClass, label, children }) => (
 
 export default function InsightTab({ lead, onSchedule }) {
     const initials = (lead?.name || 'L')
-        .split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+        .split(' ')
+        .map((w) => w[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase();
 
-    const waNumber = lead?.phone
-        ? lead.phone.replace(/\D/g, '').length === 10
-            ? `91${lead.phone.replace(/\D/g, '')}`
-            : lead.phone.replace(/\D/g, '')
-        : '';
+    const waNumber = lead?.phone ? (lead.phone.replace(/\D/g, '').length === 10 ? `91${lead.phone.replace(/\D/g, '')}` : lead.phone.replace(/\D/g, '')) : '';
 
     return (
         <div className="mx-auto max-w-5xl px-3 py-5 sm:px-5 md:px-8 md:py-8">
             <div className="bg-app border-app overflow-hidden rounded-2xl border">
-
                 {/* PROFILE + ACTIONS */}
                 <div className="p-4 sm:p-6">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -100,17 +97,22 @@ export default function InsightTab({ lead, onSchedule }) {
                             <span className="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1.5 text-xs font-semibold text-blue-600 capitalize dark:text-blue-400">
                                 {lead?.stage?.replace(/_/g, ' ') || '-'}
                             </span>
-                            <span className={`rounded-full border px-3 py-1.5 text-xs font-semibold capitalize ${
-                                lead?.status === 'open'
-                                    ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                                    : lead?.status === 'closed'
-                                      ? 'border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                                      : 'border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400'
-                            }`}>
+                            <span
+                                className={`rounded-full border px-3 py-1.5 text-xs font-semibold capitalize ${
+                                    lead?.status === 'open'
+                                        ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                                        : lead?.status === 'closed'
+                                          ? 'border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                                          : 'border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400'
+                                }`}
+                            >
                                 {lead?.status || '-'}
                             </span>
                             {lead?.product && (
-                                <span className="max-w-[180px] truncate rounded-full border border-purple-500/20 bg-purple-500/10 px-3 py-1.5 text-xs font-semibold text-purple-600 dark:text-purple-400" title={lead.product}>
+                                <span
+                                    className="max-w-[180px] truncate rounded-full border border-purple-500/20 bg-purple-500/10 px-3 py-1.5 text-xs font-semibold text-purple-600 dark:text-purple-400"
+                                    title={lead.product}
+                                >
                                     {lead.product}
                                 </span>
                             )}
@@ -161,10 +163,22 @@ export default function InsightTab({ lead, onSchedule }) {
                     </div>
 
                     <div className="space-y-1">
-                        <Row icon={Phone} iconClass="text-blue-500" label="Phone" value={lead?.phone}
-                             href={lead?.phone ? `tel:${lead.phone}` : undefined} copyable />
-                        <Row icon={Mail} iconClass="text-orange-500" label="Email" value={lead?.email}
-                             href={lead?.email ? `mailto:${lead.email}` : undefined} copyable />
+                        <Row
+                            icon={Phone}
+                            iconClass="text-blue-500"
+                            label="Phone"
+                            value={lead?.phone}
+                            href={lead?.phone ? `tel:${lead.phone}` : undefined}
+                            copyable
+                        />
+                        <Row
+                            icon={Mail}
+                            iconClass="text-orange-500"
+                            label="Email"
+                            value={lead?.email}
+                            href={lead?.email ? `mailto:${lead.email}` : undefined}
+                            copyable
+                        />
                         <Row icon={Building2} iconClass="text-indigo-500" label="Company" value={lead?.companyName} />
                         <Row icon={MapPin} iconClass="text-red-500" label="Location" value={lead?.place} />
                         <Row icon={BriefcaseBusiness} iconClass="text-purple-500" label="Product" value={lead?.product} />

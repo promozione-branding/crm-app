@@ -3,19 +3,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {
-    Phone,
-    PhoneOff,
-    PhoneCall,
-    PhoneIncoming,
-    PhoneOutgoing,
-    Clock,
-    User as UserIcon,
-    Calendar,
-    ChevronDown,
-    ChevronUp,
-    Loader2,
-} from 'lucide-react';
+import { Phone, PhoneOff, PhoneCall, PhoneIncoming, PhoneOutgoing, Clock, User as UserIcon, Calendar, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -70,8 +58,7 @@ export default function Call({ leadId }) {
     const [loading, setLoading] = useState(true);
     const [expanded, setExpanded] = useState({});
 
-    const toggle = (id) =>
-        setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+    const toggle = (id) => setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
 
     // ========================================================
     // FETCH CALLS FOR THIS LEAD
@@ -95,9 +82,7 @@ export default function Call({ leadId }) {
                 setCalls(res.data?.data?.calls || []);
             } catch (error) {
                 console.error('Fetch lead calls error:', error);
-                toast.error(
-                    error.response?.data?.message || 'Failed to load calls.'
-                );
+                toast.error(error.response?.data?.message || 'Failed to load calls.');
             } finally {
                 setLoading(false);
             }
@@ -114,14 +99,8 @@ export default function Call({ leadId }) {
         <div className="bg-card border-app rounded-2xl border p-5">
             <div className="mb-4 flex items-center justify-between">
                 <div>
-                    <h3 className="text-muted text-xs font-semibold tracking-widest uppercase">
-                        Call Log
-                    </h3>
-                    <p className="text-muted mt-0.5 text-[11px]">
-                        {loading
-                            ? 'Loading…'
-                            : `${calls.length} call${calls.length === 1 ? '' : 's'} recorded`}
-                    </p>
+                    <h3 className="text-muted text-xs font-semibold tracking-widest uppercase">Call Log</h3>
+                    <p className="text-muted mt-0.5 text-[11px]">{loading ? 'Loading…' : `${calls.length} call${calls.length === 1 ? '' : 's'} recorded`}</p>
                 </div>
             </div>
 
@@ -141,13 +120,9 @@ export default function Call({ leadId }) {
                         <Phone size={24} className="opacity-80" />
                     </div>
 
-                    <h4 className="text-app mt-4 text-sm font-medium">
-                        No Call Log Found
-                    </h4>
+                    <h4 className="text-app mt-4 text-sm font-medium">No Call Log Found</h4>
 
-                    <p className="text-muted mt-1 text-xs">
-                        Call history will appear here.
-                    </p>
+                    <p className="text-muted mt-1 text-xs">Call history will appear here.</p>
                 </div>
             )}
 
@@ -156,15 +131,10 @@ export default function Call({ leadId }) {
                 <div className="space-y-2">
                     {calls.map((call) => {
                         const isOpen = !!expanded[call._id];
-                        const statusClass =
-                            STATUS_STYLES[call.status?.toLowerCase()] ||
-                            'bg-gray-500/10 text-gray-600';
+                        const statusClass = STATUS_STYLES[call.status?.toLowerCase()] || 'bg-gray-500/10 text-gray-600';
 
                         return (
-                            <div
-                                key={call._id}
-                                className="border-app bg-app overflow-hidden rounded-xl border"
-                            >
+                            <div key={call._id} className="border-app bg-app overflow-hidden rounded-xl border">
                                 {/* MAIN ROW */}
                                 <button
                                     type="button"
@@ -194,9 +164,7 @@ export default function Call({ leadId }) {
                                     <div className="min-w-0 flex-1">
                                         <p className="text-app truncate text-sm font-medium">
                                             {call.callerId?.name || 'Unknown'}
-                                            {call.callerRole
-                                                ? ` · ${call.callerRole}`
-                                                : ''}
+                                            {call.callerRole ? ` · ${call.callerRole}` : ''}
                                         </p>
                                         <div className="text-muted mt-0.5 flex items-center gap-2 text-[11px]">
                                             <span className="flex items-center gap-1">
@@ -206,30 +174,20 @@ export default function Call({ leadId }) {
                                             {call.durationSeconds > 0 && (
                                                 <>
                                                     <span>·</span>
-                                                    <span>
-                                                        {formatDuration(
-                                                            call.durationSeconds
-                                                        )}
-                                                    </span>
+                                                    <span>{formatDuration(call.durationSeconds)}</span>
                                                 </>
                                             )}
                                         </div>
                                     </div>
 
                                     {/* STATUS BADGE */}
-                                    <span
-                                        className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${statusClass}`}
-                                    >
+                                    <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${statusClass}`}>
                                         {formatLabel(call.status)}
                                     </span>
 
                                     {/* EXPAND CHEVRON */}
                                     <div className="text-muted flex w-4 shrink-0 justify-center">
-                                        {isOpen ? (
-                                            <ChevronUp size={14} />
-                                        ) : (
-                                            <ChevronDown size={14} />
-                                        )}
+                                        {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                                     </div>
                                 </button>
 
@@ -241,10 +199,7 @@ export default function Call({ leadId }) {
                                             label="Number"
                                             value={
                                                 call.phoneNumber ? (
-                                                    <a
-                                                        href={`tel:${call.phoneNumber}`}
-                                                        className="text-blue-500 hover:underline"
-                                                    >
+                                                    <a href={`tel:${call.phoneNumber}`} className="text-blue-500 hover:underline">
                                                         {call.phoneNumber}
                                                     </a>
                                                 ) : (
@@ -253,44 +208,18 @@ export default function Call({ leadId }) {
                                             }
                                         />
 
-                                        <Row
-                                            icon={Calendar}
-                                            label="Called At"
-                                            value={
-                                                call.calledAt
-                                                    ? new Date(
-                                                          call.calledAt
-                                                      ).toLocaleString('en-IN')
-                                                    : '—'
-                                            }
-                                        />
+                                        <Row icon={Calendar} label="Called At" value={call.calledAt ? new Date(call.calledAt).toLocaleString('en-IN') : '—'} />
 
-                                        <Row
-                                            icon={UserIcon}
-                                            label="Outcome"
-                                            value={formatLabel(call.outcome)}
-                                        />
+                                        <Row icon={UserIcon} label="Outcome" value={formatLabel(call.outcome)} />
 
-                                        <Row
-                                            label="Duration"
-                                            value={formatDuration(
-                                                call.durationSeconds
-                                            )}
-                                        />
+                                        <Row label="Duration" value={formatDuration(call.durationSeconds)} />
 
-                                        <Row
-                                            label="Source"
-                                            value={formatLabel(call.source)}
-                                        />
+                                        <Row label="Source" value={formatLabel(call.source)} />
 
                                         {call.notes && (
                                             <div className="pt-1">
-                                                <p className="text-muted mb-1 text-[11px]">
-                                                    Notes
-                                                </p>
-                                                <p className="text-app text-xs leading-5 whitespace-pre-wrap">
-                                                    {call.notes}
-                                                </p>
+                                                <p className="text-muted mb-1 text-[11px]">Notes</p>
+                                                <p className="text-app text-xs leading-5 whitespace-pre-wrap">{call.notes}</p>
                                             </div>
                                         )}
                                     </div>
@@ -315,9 +244,7 @@ function Row({ icon: Icon, label, value }) {
                 {Icon && <Icon size={11} />}
                 {label}
             </span>
-            <span className="text-app max-w-[65%] text-right text-xs break-words">
-                {value || '—'}
-            </span>
+            <span className="text-app max-w-[65%] text-right text-xs break-words">{value || '—'}</span>
         </div>
     );
 }

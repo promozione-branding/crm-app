@@ -27,11 +27,7 @@ export default function TaskCard({ task, onAction, sno }) {
     return (
         <div className="border-app bg-app mb-3 overflow-hidden rounded-lg border last:mb-0">
             {/* COMPACT TASK ROW */}
-            <button
-                type="button"
-                onClick={handleToggle}
-                className="hover:bg-surface flex w-full items-center gap-3 px-3 py-2.5 text-left transition"
-            >
+            <button type="button" onClick={handleToggle} className="hover:bg-surface flex w-full items-center gap-3 px-3 py-2.5 text-left transition">
                 {/* TASK INFO */}
                 <div className="min-w-0 flex-1">
                     <div className="flex min-w-0 items-center gap-2">
@@ -53,11 +49,7 @@ export default function TaskCard({ task, onAction, sno }) {
                 </div>
 
                 {/* DUE DATE — DESKTOP */}
-                <div
-                    className={`hidden min-w-[90px] shrink-0 items-center gap-1 rounded-md px-1.5 py-0.5 sm:flex ${
-                        overdue ? 'bg-red-500/10' : ''
-                    }`}
-                >
+                <div className={`hidden min-w-[90px] shrink-0 items-center gap-1 rounded-md px-1.5 py-0.5 sm:flex ${overdue ? 'bg-red-500/10' : ''}`}>
                     <Calendar size={11} className={overdue ? 'text-red-500' : 'opacity-40'} />
 
                     <span className={`truncate text-[10px] ${overdue ? 'font-semibold text-red-600 dark:text-red-400' : 'opacity-60'}`}>
@@ -72,22 +64,14 @@ export default function TaskCard({ task, onAction, sno }) {
             </button>
 
             {/* MOBILE DUE DATE */}
-            <div
-                className={`border-app flex items-center justify-between border-t px-3 py-1.5 sm:hidden ${
-                    overdue ? 'bg-red-500/10' : ''
-                }`}
-            >
+            <div className={`border-app flex items-center justify-between border-t px-3 py-1.5 sm:hidden ${overdue ? 'bg-red-500/10' : ''}`}>
                 <div className="flex items-center gap-1">
                     <Calendar size={11} className={overdue ? 'text-red-500' : 'opacity-40'} />
 
-                    <span className={`text-[12px] ${overdue ? 'font-semibold text-red-600 dark:text-red-400' : 'opacity-80'}`}>
-                        Due
-                    </span>
+                    <span className={`text-[12px] ${overdue ? 'font-semibold text-red-600 dark:text-red-400' : 'opacity-80'}`}>Due</span>
                 </div>
 
-                <span className={`text-[10px] font-medium ${overdue ? 'text-red-600 dark:text-red-400' : 'opacity-70'}`}>
-                    {formatDueDate(task?.dueDate)}
-                </span>
+                <span className={`text-[10px] font-medium ${overdue ? 'text-red-600 dark:text-red-400' : 'opacity-70'}`}>{formatDueDate(task?.dueDate)}</span>
             </div>
 
             {/* EXPANDED */}
@@ -113,9 +97,7 @@ export default function TaskCard({ task, onAction, sno }) {
                                 <span className="text-[11px] opacity-60">Created By</span>
                             </div>
 
-                            <span className="max-w-[55%] truncate text-right text-[11px] font-medium">
-                                {task?.createdBy?.name || '-'}
-                            </span>
+                            <span className="max-w-[55%] truncate text-right text-[11px] font-medium">{task?.createdBy?.name || '-'}</span>
                         </div>
 
                         {/* ASSIGNED TO */}
@@ -126,9 +108,7 @@ export default function TaskCard({ task, onAction, sno }) {
                                 <span className="text-[11px] opacity-60">Assigned To</span>
                             </div>
 
-                            <span className="max-w-[55%] truncate text-right text-[11px] font-medium">
-                                {task?.assignedTo?.name || '-'}
-                            </span>
+                            <span className="max-w-[55%] truncate text-right text-[11px] font-medium">{task?.assignedTo?.name || '-'}</span>
                         </div>
                     </div>
 

@@ -17,15 +17,10 @@ import useLeadEdit from './hooks/useLeadEdit';
 import EditHeader from './components/EditHeader';
 import InsightTab from './components/InsightTab';
 
-const Wrap = ({ children }) => (
-    <div className="mx-auto max-w-4xl space-y-4 px-2 py-5 md:py-10">{children}</div>
-);
+const Wrap = ({ children }) => <div className="mx-auto max-w-4xl space-y-4 px-2 py-5 md:py-10">{children}</div>;
 
 export default function Edit() {
-    const {
-        id, active, setActive, loading, leadLoading, usersLoading,
-        lead, users, form, handleChange, handleEdit, getLead,
-    } = useLeadEdit();
+    const { id, active, setActive, loading, leadLoading, usersLoading, lead, users, form, handleChange, handleEdit, getLead } = useLeadEdit();
 
     if (leadLoading) {
         return (
@@ -37,17 +32,9 @@ export default function Edit() {
 
     return (
         <div className="bg-surface min-h-screen">
-            <EditHeader
-                lead={lead}
-                loading={loading}
-                onEdit={handleEdit}
-                active={active}
-                setActive={setActive}
-            />
+            <EditHeader lead={lead} loading={loading} onEdit={handleEdit} active={active} setActive={setActive} />
 
-            {active === 'Insight' && (
-                <InsightTab lead={lead} onSchedule={() => setActive('meeting')} />
-            )}
+            {active === 'Insight' && <InsightTab lead={lead} onSchedule={() => setActive('meeting')} />}
 
             {active === 'overview' && (
                 <Wrap>
@@ -62,24 +49,33 @@ export default function Edit() {
             {active === 'meeting' && <Meetings leadId={id} users={users} usersLoading={usersLoading} />}
 
             {active === 'notes' && (
-                <Wrap><Notes notes={lead?.notes || []} leadId={id} getLead={getLead} /></Wrap>
+                <Wrap>
+                    <Notes notes={lead?.notes || []} leadId={id} getLead={getLead} />
+                </Wrap>
             )}
 
             {active === 'activities' && (
-                <Wrap><Activities activities={lead?.activities || []} /></Wrap>
+                <Wrap>
+                    <Activities activities={lead?.activities || []} />
+                </Wrap>
             )}
 
             {active === 'calls' && (
-                <Wrap><Call leadId={id} /></Wrap>
+                <Wrap>
+                    <Call leadId={id} />
+                </Wrap>
             )}
 
             {active === 'stage' && (
-                <Wrap><Stage stage={lead?.stageHistory || []} /></Wrap>
+                <Wrap>
+                    <Stage stage={lead?.stageHistory || []} />
+                </Wrap>
             )}
-             {active === 'nostage' && (
-                <Wrap><Stage nostage={lead?.stageHistory || []} /></Wrap>
+            {active === 'nostage' && (
+                <Wrap>
+                    <Stage nostage={lead?.stageHistory || []} />
+                </Wrap>
             )}
-
 
             {active === 'task' && (
                 <Wrap>

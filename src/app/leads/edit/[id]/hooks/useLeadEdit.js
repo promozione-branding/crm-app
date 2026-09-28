@@ -7,11 +7,22 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const EMPTY_FORM = {
-    name: '', email: '', phone: '', place: '', source: '',
-    companyName: '', gstNumber: '',
-    assignedTo: '', stage: 'new', priceRange: '', dealValue: '', expectedClosureDate: '',
-    campaignId: '', campaignName: '',
-    product: '', message: '',
+    name: '',
+    email: '',
+    phone: '',
+    place: '',
+    source: '',
+    companyName: '',
+    gstNumber: '',
+    assignedTo: '',
+    stage: 'new',
+    priceRange: '',
+    dealValue: '',
+    expectedClosureDate: '',
+    campaignId: '',
+    campaignName: '',
+    product: '',
+    message: '',
 };
 
 export default function useLeadEdit() {
@@ -61,9 +72,7 @@ export default function useLeadEdit() {
                 stage: data.stage || 'new',
                 priceRange: data.priceRange || '',
                 dealValue: data.dealValue || '',
-                expectedClosureDate: data.expectedClosureDate
-                    ? data.expectedClosureDate.slice(0, 10)
-                    : '',
+                expectedClosureDate: data.expectedClosureDate ? data.expectedClosureDate.slice(0, 10) : '',
                 campaignId: data.campaignId || '',
                 campaignName: data.campaignName || '',
                 product: data.product || '',
@@ -98,7 +107,17 @@ export default function useLeadEdit() {
     }, [id, form, getLead]);
 
     return {
-        id, active, setActive, loading, leadLoading, usersLoading,
-        lead, users, form, handleChange, handleEdit, getLead,
+        id,
+        active,
+        setActive,
+        loading,
+        leadLoading,
+        usersLoading,
+        lead,
+        users,
+        form,
+        handleChange,
+        handleEdit,
+        getLead,
     };
 }

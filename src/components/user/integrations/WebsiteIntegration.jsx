@@ -380,27 +380,21 @@ export default function WebsiteIntegration({ integration: initialIntegration }) 
                         <summary className="text-app cursor-pointer px-4 py-3 text-xs font-medium select-none">How does this work?</summary>
                         <div className="border-app border-t px-4 py-3">
                             <ol className="text-muted space-y-2 text-[11px] leading-5">
-    <li className="flex gap-2">
-        <span className="font-bold text-blue-600">1.</span>
-        <span>
-            Your website forms automatically collect leads from visitors.
-        </span>
-    </li>
-    <li className="flex gap-2">
-        <span className="font-bold text-blue-600">2.</span>
-        <span>
-            Every minute, this CRM fetches new form submissions using your
-            Website ID.
-        </span>
-    </li>
-    <li className="flex gap-2">
-        <span className="font-bold text-blue-600">3.</span>
-        <span>
-            New leads appear in your <b>Leads list</b> 
-        </span>
-    </li>
-    
-</ol>
+                                <li className="flex gap-2">
+                                    <span className="font-bold text-blue-600">1.</span>
+                                    <span>Your website forms automatically collect leads from visitors.</span>
+                                </li>
+                                <li className="flex gap-2">
+                                    <span className="font-bold text-blue-600">2.</span>
+                                    <span>Every minute, this CRM fetches new form submissions using your Website ID.</span>
+                                </li>
+                                <li className="flex gap-2">
+                                    <span className="font-bold text-blue-600">3.</span>
+                                    <span>
+                                        New leads appear in your <b>Leads list</b>
+                                    </span>
+                                </li>
+                            </ol>
                         </div>
                     </details>
 
