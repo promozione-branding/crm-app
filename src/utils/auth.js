@@ -3,7 +3,7 @@
 import jwt from 'jsonwebtoken';
 import { ENV } from '@/config/env';
 import User from '@/models/user.model.js';
-
+import '@/models/index.js';
 export async function getCurrentUser(request) {
     const token = request.cookies.get(ENV.CLIENT_COOKIE_NAME)?.value;
 
