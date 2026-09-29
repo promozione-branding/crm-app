@@ -210,6 +210,7 @@ export default function WebsiteIntegration({ integration: initialIntegration }) 
                     </div>
                 </div>
 
+
                 <div
                     className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium ${
                         isConnected ? 'bg-green-500/10 text-green-600' : 'bg-gray-500/10 text-gray-600'
