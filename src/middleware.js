@@ -37,6 +37,22 @@ export function middleware(request) {
     // CLIENT DOMAIN
     const isClientDomain = hostname.startsWith('crm.') && hostname !== 'crm.inquirybazaar.com';
 
+    // Helper: build a /login URL that carries ?next=<current path+search>
+    // ← NEW
+    const loginUrlWithNext = () => {
+        const url = new URL('/login', request.url);
+        url.searchParams.set('next', pathname + (request.nextUrl.search || ''));
+        return url;
+    };
+
+    // Helper: build an /admin/login URL that carries ?next=<current path+search>
+    // ← NEW
+    const adminLoginUrlWithNext = () => {
+        const url = new URL('/admin/login', request.url);
+        url.searchParams.set('next', pathname + (request.nextUrl.search || ''));
+        return url;
+    };
+
     // ======================================================
     // LOCALHOST
     // ======================================================
@@ -54,7 +70,7 @@ export function middleware(request) {
 
         if (pathname.startsWith('/admin')) {
             if (!adminToken) {
-                return NextResponse.redirect(new URL('/admin/login', request.url));
+                return NextResponse.redirect(adminLoginUrlWithNext()); // ← NEW
             }
 
             return NextResponse.next();
@@ -72,7 +88,7 @@ export function middleware(request) {
 
         if (isClientRoute) {
             if (!clientToken) {
-                return NextResponse.redirect(new URL('/login', request.url));
+                return NextResponse.redirect(loginUrlWithNext()); // ← NEW
             }
 
             return NextResponse.next();
@@ -102,7 +118,7 @@ export function middleware(request) {
 
         if (pathname.startsWith('/admin')) {
             if (!adminToken) {
-                return NextResponse.redirect(new URL('/admin/login', request.url));
+                return NextResponse.redirect(adminLoginUrlWithNext()); // ← NEW
             }
 
             return NextResponse.next();
@@ -122,7 +138,7 @@ export function middleware(request) {
 
         if (isClientRoute) {
             if (!clientToken) {
-                return NextResponse.redirect(new URL('/login', request.url));
+                return NextResponse.redirect(loginUrlWithNext()); // ← NEW
             }
 
             return NextResponse.next();
@@ -164,7 +180,7 @@ export function middleware(request) {
 
         if (isClientRoute) {
             if (!clientToken) {
-                return NextResponse.redirect(new URL('/login', request.url));
+                return NextResponse.redirect(loginUrlWithNext()); // ← NEW
             }
 
             return NextResponse.next();

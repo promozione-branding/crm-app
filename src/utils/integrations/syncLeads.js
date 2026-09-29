@@ -3,7 +3,7 @@
 import Integration from '@/models/integration.model';
 import Lead from '@/models/leads.model';
 
-const BRAND_BNALO_API = 'https://brandbnalo.com/api/form/get-forms';
+const BRAND_BNALO_API = process.env.BRAND_BNALO_API;
 
 export async function syncBrandBnaloLeads(companyId) {
     console.log('🔄 Website lead sync started:', String(companyId));
