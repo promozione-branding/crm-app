@@ -1,6 +1,5 @@
 // src/instrumentation.js
 
-// instrumentation.js
 
 export async function register() {
     // Only run in Node.js runtime

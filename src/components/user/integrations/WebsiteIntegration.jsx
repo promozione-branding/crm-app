@@ -397,6 +397,7 @@ export default function WebsiteIntegration({ integration: initialIntegration }) 
                             </ol>
                         </div>
                     </details>
+                    
 
                     {/* OPTIONAL: SAMPLE PAYLOAD (for custom integrations) */}
                     <details className="border-app rounded-xl border">
