@@ -83,45 +83,9 @@ export default function SearchAndFilterTask({
             ============================================================ */}
 
             <div className="flex w-full items-center gap-2 sm:w-auto sm:gap-3">
-                {/* PRIORITY FILTER */}
-                <div className="relative min-w-0 flex-1 sm:flex-none">
-                    <Filter size={15} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 opacity-60" />
 
-                    <select value={priority} onChange={(e) => setPriority(e.target.value)} className={`${selectClass} w-full pr-8 pl-9 sm:w-auto`}>
-                        <option value="">All Priorities</option>
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                        <option value="urgent">Urgent</option>
-                    </select>
-                </div>
 
-                {/* STAGE MULTI-SELECT */}
-                <div className="relative min-w-0 flex-1 sm:flex-none">
-                    <MultiSelect label="Stage" placeholder="All Stages" options={STAGE_OPTIONS} selected={stage} onChange={setStage} width="w-full sm:w-52" />
-                </div>
-            </div>
-
-            {/* ============================================================
-                ROW 2 — Sort + Search Type + Search Input
-            ============================================================ */}
-
-            <div className="flex w-full items-center gap-2 sm:w-auto sm:gap-3">
-                {/* SORT BY */}
-                <div className="relative min-w-0 flex-1 sm:flex-none">
-                    <ArrowUpDown size={15} className="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 opacity-60" />
-
-                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={`${selectClass} w-full pr-8 pl-9 sm:w-56`}>
-                        <option value="">Sort By</option>
-                        <option value="leadCreatedAtAsc">Old First</option>
-                        <option value="leadCreatedAtDesc">New First</option>
-                        <option value="dueDate">Due Date</option>
-                    </select>
-
-                    <ChevronDown size={15} className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 opacity-60" />
-                </div>
-
-                {/* SEARCH TYPE */}
+                   {/* SEARCH TYPE */}
                 <div className="relative min-w-0 flex-1 sm:flex-none">
                     <Search size={15} className="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 opacity-60" />
 
@@ -146,6 +110,44 @@ export default function SearchAndFilterTask({
                         className="border-app bg-app h-9 w-full rounded-lg border pr-3 pl-10 text-sm outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
+             
+            </div>
+
+            {/* ============================================================
+                ROW 2 — Sort + Search Type + Search Input
+            ============================================================ */}
+
+            <div className="flex w-full items-center gap-2 sm:w-auto sm:gap-3">
+                {/* SORT BY */}
+                <div className="relative min-w-0 flex-1 sm:flex-none">
+                    <ArrowUpDown size={15} className="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 opacity-60" />
+
+                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={`${selectClass} w-full pr-8 pl-9 sm:w-56`}>
+                        <option value="">Sort By</option>
+                        <option value="leadCreatedAtAsc">Old First</option>
+                        <option value="leadCreatedAtDesc">New First</option>
+                        <option value="dueDate">Due Date</option>
+                    </select>
+
+                    <ChevronDown size={15} className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 opacity-60" />
+                </div>
+   {/* PRIORITY FILTER */}
+                <div className="relative min-w-0 flex-1 sm:flex-none">
+                    <Filter size={15} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 opacity-60" />
+
+                    <select value={priority} onChange={(e) => setPriority(e.target.value)} className={`${selectClass} w-full pr-8 pl-9 sm:w-auto`}>
+                        <option value="">All Priorities</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
+
+
+
+
+
             </div>
         </div>
     );
