@@ -2,7 +2,7 @@
 
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
-
+import '@/models/index.js';
 import { connectDB } from '@/config/db';
 import { getCurrentUser } from '@/utils/auth';
 
