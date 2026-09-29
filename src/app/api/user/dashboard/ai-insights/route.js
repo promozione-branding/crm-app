@@ -14,9 +14,9 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-// ============================================================
+// =========================================================
 // SYSTEM PROMPT
-// ============================================================
+// =========================================================
 
 const SYSTEM_PROMPT = `
 You are a senior CRM sales coach. You receive structured JSON data
