@@ -3,14 +3,7 @@
 import Lead from '@/models/leads.model.js';
 import LeadTask from '@/models/task.model.js';
 import Call from '@/models/call.model.js';
-
-const RANGE_DAYS = {
-    today: 0,
-    last_3_days: 3,
-    this_month: null,
-    last_month: null,
-    last_3_months: 90,
-};
+import User from '@/models/user.model.js';
 
 function getDateRange(range, from, to) {
     const now = new Date();
@@ -28,6 +21,7 @@ function getDateRange(range, from, to) {
             throw new Error('Invalid custom date range.');
         }
 
+        start.setHours(0, 0, 0, 0);
         end.setHours(23, 59, 59, 999);
 
         if (start > end) {
@@ -40,29 +34,24 @@ function getDateRange(range, from, to) {
     // TODAY
     if (range === 'today') {
         const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
         const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
         return { start, end };
     }
 
-    // LAST 3 DAYS
+    // LAST 3 DAYS (includes today)
     if (range === 'last_3_days') {
-        const start = new Date(now);
-        start.setDate(start.getDate() - 2);
-        start.setHours(0, 0, 0, 0);
+        const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 2);
+        const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
-        return {
-            start,
-            end: now,
-        };
+        return { start, end };
     }
 
     // THIS MONTH
     if (range === 'this_month') {
         return {
             start: new Date(now.getFullYear(), now.getMonth(), 1),
-            end: now,
+            end: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1),
         };
     }
 
@@ -80,14 +69,14 @@ function getDateRange(range, from, to) {
 
         return {
             start,
-            end: now,
+            end: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1),
         };
     }
 
     // DEFAULT
     return {
         start: new Date(now.getFullYear(), now.getMonth(), 1),
-        end: now,
+        end: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1),
     };
 }
 
@@ -99,7 +88,9 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
     const companyId = user.companyId;
     const userId = user._id;
 
-    const isAdmin = user.roleId?.isSystemRole === true && user.roleId?.name?.toLowerCase() === 'admin';
+    const isAdmin =
+        user.roleId?.isSystemRole === true &&
+        user.roleId?.name?.toLowerCase() === 'admin';
 
     const { start, end } = getDateRange(range, from, to);
 
@@ -109,24 +100,15 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
 
     const leadFilter = isAdmin
         ? { companyId }
-        : {
-              companyId,
-              assignedTo: userId,
-          };
+        : { companyId, assignedTo: userId };
 
     const taskFilter = isAdmin
         ? { companyId }
-        : {
-              companyId,
-              $or: [{ createdBy: userId }, { assignedTo: userId }],
-          };
+        : { companyId, $or: [{ createdBy: userId }, { assignedTo: userId }] };
 
     const callFilter = isAdmin
         ? { companyId }
-        : {
-              companyId,
-              callerId: userId,
-          };
+        : { companyId, callerId: userId };
 
     // ============================================================
     // DATE FILTERS
@@ -134,114 +116,81 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
 
     const leadDateFilter = {
         ...leadFilter,
-        createdAt: {
-            $gte: start,
-            $lt: end,
-        },
+        createdAt: { $gte: start, $lt: end },
     };
 
     const taskDateFilter = {
         ...taskFilter,
-        createdAt: {
-            $gte: start,
-            $lt: end,
-        },
+        createdAt: { $gte: start, $lt: end },
     };
 
     const callDateFilter = {
         ...callFilter,
-        calledAt: {
-            $gte: start,
-            $lt: end,
-        },
+        calledAt: { $gte: start, $lt: end },
     };
 
     // ============================================================
-    // REPORT QUERIES
+    // REPORT QUERIES (existing)
     // ============================================================
 
-    const [totalLeads, leadsByStage, leadValue, totalTasks, tasksByStatus, taskTiming, totalCalls, callsByStatus, callStats] = await Promise.all([
-        // --------------------------------------------------------
-        // LEADS
-        // --------------------------------------------------------
-
+    const [
+        totalLeads,
+        leadsByStage,
+        leadValue,
+        totalTasks,
+        tasksByStatus,
+        taskTiming,
+        totalCalls,
+        callsByStatus,
+        callStats,
+    ] = await Promise.all([
         Lead.countDocuments(leadDateFilter),
 
         Lead.aggregate([
-            {
-                $match: leadDateFilter,
-            },
+            { $match: leadDateFilter },
             {
                 $group: {
                     _id: '$stage',
                     count: { $sum: 1 },
-                    value: {
-                        $sum: {
-                            $ifNull: ['$dealValue', 0],
-                        },
-                    },
+                    value: { $sum: { $ifNull: ['$dealValue', 0] } },
                 },
             },
         ]),
 
-        // --------------------------------------------------------
-        // DEAL VALUE
-        // --------------------------------------------------------
-
         Lead.aggregate([
-            {
-                $match: leadDateFilter,
-            },
+            { $match: leadDateFilter },
             {
                 $group: {
                     _id: null,
-
-                    totalValue: {
-                        $sum: {
-                            $ifNull: ['$dealValue', 0],
-                        },
-                    },
-
+                    totalValue: { $sum: { $ifNull: ['$dealValue', 0] } },
                     wonValue: {
                         $sum: {
                             $cond: [
                                 { $eq: ['$stage', 'won'] },
-                                {
-                                    $ifNull: ['$dealValue', 0],
-                                },
+                                { $ifNull: ['$dealValue', 0] },
                                 0,
                             ],
                         },
                     },
-
                     lostValue: {
                         $sum: {
                             $cond: [
                                 { $eq: ['$stage', 'lost'] },
-                                {
-                                    $ifNull: ['$dealValue', 0],
-                                },
+                                { $ifNull: ['$dealValue', 0] },
                                 0,
                             ],
                         },
                     },
-
                     openPipelineValue: {
                         $sum: {
                             $cond: [
                                 {
                                     $and: [
-                                        {
-                                            $ne: ['$stage', 'won'],
-                                        },
-                                        {
-                                            $ne: ['$stage', 'lost'],
-                                        },
+                                        { $ne: ['$stage', 'won'] },
+                                        { $ne: ['$stage', 'lost'] },
                                     ],
                                 },
-                                {
-                                    $ifNull: ['$dealValue', 0],
-                                },
+                                { $ifNull: ['$dealValue', 0] },
                                 0,
                             ],
                         },
@@ -250,95 +199,39 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
             },
         ]),
 
-        // --------------------------------------------------------
-        // TASKS
-        // --------------------------------------------------------
-
         LeadTask.countDocuments(taskDateFilter),
 
         LeadTask.aggregate([
-            {
-                $match: taskDateFilter,
-            },
-            {
-                $group: {
-                    _id: '$status',
-                    count: { $sum: 1 },
-                },
-            },
+            { $match: taskDateFilter },
+            { $group: { _id: '$status', count: { $sum: 1 } } },
         ]),
-
-        // --------------------------------------------------------
-        // TASK TIMING
-        // --------------------------------------------------------
 
         LeadTask.aggregate([
             {
                 $match: {
                     ...taskFilter,
                     status: 'completed',
-                    completedAt: {
-                        $gte: start,
-                        $lt: end,
-                    },
+                    completedAt: { $gte: start, $lt: end },
                 },
             },
-            {
-                $project: {
-                    onTime: {
-                        $lte: ['$completedAt', '$dueDate'],
-                    },
-                },
-            },
-            {
-                $group: {
-                    _id: '$onTime',
-                    count: { $sum: 1 },
-                },
-            },
+            { $project: { onTime: { $lte: ['$completedAt', '$dueDate'] } } },
+            { $group: { _id: '$onTime', count: { $sum: 1 } } },
         ]),
-
-        // --------------------------------------------------------
-        // CALLS
-        // --------------------------------------------------------
 
         Call.countDocuments(callDateFilter),
 
         Call.aggregate([
-            {
-                $match: callDateFilter,
-            },
-            {
-                $group: {
-                    _id: '$status',
-                    count: { $sum: 1 },
-                },
-            },
+            { $match: callDateFilter },
+            { $group: { _id: '$status', count: { $sum: 1 } } },
         ]),
 
-        // --------------------------------------------------------
-        // CALL STATS
-        // --------------------------------------------------------
-
         Call.aggregate([
-            {
-                $match: callDateFilter,
-            },
+            { $match: callDateFilter },
             {
                 $group: {
                     _id: null,
-
-                    totalDuration: {
-                        $sum: {
-                            $ifNull: ['$durationSeconds', 0],
-                        },
-                    },
-
-                    averageDuration: {
-                        $avg: {
-                            $ifNull: ['$durationSeconds', 0],
-                        },
-                    },
+                    totalDuration: { $sum: { $ifNull: ['$durationSeconds', 0] } },
+                    averageDuration: { $avg: { $ifNull: ['$durationSeconds', 0] } },
                 },
             },
         ]),
@@ -353,10 +246,7 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
     const pipeline = {};
 
     stages.forEach((stage) => {
-        pipeline[stage] = {
-            count: 0,
-            value: 0,
-        };
+        pipeline[stage] = { count: 0, value: 0 };
     });
 
     leadsByStage.forEach((item) => {
@@ -372,11 +262,7 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
     // TASK MAP
     // ============================================================
 
-    const taskStatus = {
-        pending: 0,
-        completed: 0,
-        cancelled: 0,
-    };
+    const taskStatus = { pending: 0, completed: 0, cancelled: 0 };
 
     tasksByStatus.forEach((item) => {
         if (item._id in taskStatus) {
@@ -384,16 +270,12 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
         }
     });
 
-    const taskTimingMap = {
-        completedOnTime: 0,
-        completedLate: 0,
-    };
+    const taskTimingMap = { completedOnTime: 0, completedLate: 0 };
 
     taskTiming.forEach((item) => {
         if (item._id === true) {
             taskTimingMap.completedOnTime = item.count;
         }
-
         if (item._id === false) {
             taskTimingMap.completedLate = item.count;
         }
@@ -418,9 +300,17 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
         }
     });
 
-    const meaningfulCalls = callStatus.completed + callStatus.missed + callStatus.busy + callStatus.no_answer + callStatus.failed;
+    const meaningfulCalls =
+        callStatus.completed +
+        callStatus.missed +
+        callStatus.busy +
+        callStatus.no_answer +
+        callStatus.failed;
 
-    const connectionRate = meaningfulCalls > 0 ? Number(((callStatus.completed / meaningfulCalls) * 100).toFixed(1)) : 0;
+    const connectionRate =
+        meaningfulCalls > 0
+            ? Number(((callStatus.completed / meaningfulCalls) * 100).toFixed(1))
+            : 0;
 
     // ============================================================
     // LEAD SUMMARY
@@ -428,7 +318,10 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
 
     const wonLeads = pipeline.won.count;
 
-    const conversionRate = totalLeads > 0 ? Number(((wonLeads / totalLeads) * 100).toFixed(1)) : 0;
+    const conversionRate =
+        totalLeads > 0
+            ? Number(((wonLeads / totalLeads) * 100).toFixed(1))
+            : 0;
 
     const deal = leadValue[0] || {
         totalValue: 0,
@@ -437,10 +330,166 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
         openPipelineValue: 0,
     };
 
-    const call = callStats[0] || {
-        totalDuration: 0,
-        averageDuration: 0,
-    };
+    const call = callStats[0] || { totalDuration: 0, averageDuration: 0 };
+
+    // ============================================================
+    // OVERDUE TASKS
+    // ============================================================
+
+    const overdueTasks = await LeadTask.countDocuments({
+        ...taskFilter,
+        dueDate: { $lt: end },
+        status: 'pending',
+    });
+
+    // ============================================================
+    // PER-USER PERFORMANCE
+    // ============================================================
+
+    // Cap the per-user table to 25 users for performance.
+// Sorted later by leads desc, so top performers always appear.
+const PER_USER_LIMIT = 25;
+
+const usersToReport = isAdmin
+    ? await User.find({ companyId, status: 'active' })
+          .select('_id name email')
+          .limit(PER_USER_LIMIT)
+          .lean()
+    : await User.find({ _id: userId })
+          .select('_id name email')
+          .lean();
+
+    const userIds = usersToReport.map((u) => u._id);
+
+    // 2. Aggregate per-user metrics (in parallel)
+    const [leadsByUser, tasksByUser, callsByUser] = await Promise.all([
+        Lead.aggregate([
+            { $match: { ...leadDateFilter, assignedTo: { $in: userIds } } },
+            {
+                $group: {
+                    _id: '$assignedTo',
+                    leads: { $sum: 1 },
+                    won: {
+                        $sum: { $cond: [{ $eq: ['$stage', 'won'] }, 1, 0] },
+                    },
+                    wonValue: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ['$stage', 'won'] },
+                                { $ifNull: ['$dealValue', 0] },
+                                0,
+                            ],
+                        },
+                    },
+                    pipelineValue: {
+                        $sum: {
+                            $cond: [
+                                {
+                                    $and: [
+                                        { $ne: ['$stage', 'won'] },
+                                        { $ne: ['$stage', 'lost'] },
+                                    ],
+                                },
+                                { $ifNull: ['$dealValue', 0] },
+                                0,
+                            ],
+                        },
+                    },
+                },
+            },
+        ]),
+
+        LeadTask.aggregate([
+            {
+                $match: {
+                    ...taskDateFilter,
+                    $or: [
+                        { assignedTo: { $in: userIds } },
+                        { createdBy: { $in: userIds } },
+                    ],
+                },
+            },
+            {
+                $group: {
+                    _id: { $ifNull: ['$assignedTo', '$createdBy'] },
+                    tasks: { $sum: 1 },
+                    completed: {
+                        $sum: { $cond: [{ $eq: ['$status', 'completed'] }, 1, 0] },
+                    },
+                    pending: {
+                        $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] },
+                    },
+                },
+            },
+        ]),
+
+        Call.aggregate([
+            { $match: { ...callDateFilter, callerId: { $in: userIds } } },
+            {
+                $group: {
+                    _id: '$callerId',
+                    calls: { $sum: 1 },
+                    connected: {
+                        $sum: { $cond: [{ $eq: ['$status', 'completed'] }, 1, 0] },
+                    },
+                    duration: {
+                        $sum: { $ifNull: ['$durationSeconds', 0] },
+                    },
+                },
+            },
+        ]),
+    ]);
+
+    // 3. Build lookup maps
+    const leadsMap = leadsByUser.reduce((acc, item) => {
+        acc[String(item._id)] = item;
+        return acc;
+    }, {});
+
+    const tasksMap = tasksByUser.reduce((acc, item) => {
+        acc[String(item._id)] = item;
+        return acc;
+    }, {});
+
+    const callsMap = callsByUser.reduce((acc, item) => {
+        acc[String(item._id)] = item;
+        return acc;
+    }, {});
+
+    // 4. Merge per-user metrics
+    const perUser = usersToReport.map((u) => {
+        const key = String(u._id);
+        const leadData = leadsMap[key] || {};
+        const taskData = tasksMap[key] || {};
+        const callData = callsMap[key] || {};
+
+        const leads = leadData.leads || 0;
+        const won = leadData.won || 0;
+
+        return {
+            userId: u._id,
+            name: u.name || '—',
+            email: u.email || '—',
+
+            leads,
+            won,
+            conversionRate:
+                leads > 0 ? Number(((won / leads) * 100).toFixed(1)) : 0,
+            wonValue: leadData.wonValue || 0,
+            pipelineValue: leadData.pipelineValue || 0,
+
+            tasks: taskData.tasks || 0,
+            tasksCompleted: taskData.completed || 0,
+            tasksPending: taskData.pending || 0,
+
+            calls: callData.calls || 0,
+            callsConnected: callData.connected || 0,
+            callDuration: callData.duration || 0,
+        };
+    });
+
+    // Sort by leads desc so top performers appear first
+    perUser.sort((a, b) => b.leads - a.leads);
 
     // ============================================================
     // RETURN
@@ -474,13 +523,7 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
             pending: taskStatus.pending,
             completed: taskStatus.completed,
             cancelled: taskStatus.cancelled,
-            overdue: await LeadTask.countDocuments({
-                ...taskFilter,
-                dueDate: {
-                    $lt: end,
-                },
-                status: 'pending',
-            }),
+            overdue: overdueTasks,
             ...taskTimingMap,
         },
 
@@ -491,5 +534,10 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
             totalDuration: call.totalDuration || 0,
             averageDuration: Number(call.averageDuration || 0).toFixed(1),
         },
+
+        // ========================================================
+        // NEW: per-user performance
+        // ========================================================
+        perUser,
     };
 };

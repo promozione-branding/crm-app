@@ -254,7 +254,7 @@ export default function Reports() {
                                         <span className="text-sm capitalize">{stage.replace(/_/g, ' ')}</span>
 
                                         <div className="flex items-center gap-4 text-sm">
-                                            <span>{value.count} leads</span>
+                                            <span>{value.count} leads</span> 
 
                                             <span className="font-medium">{money(value.value)}</span>
                                         </div>
@@ -347,8 +347,105 @@ export default function Reports() {
 
                                 <p className="mt-1 font-semibold">{tasks.completedLate}</p>
                             </div>
+                        
                         </div>
                     </Section>
+
+                    {/* ==============================================
+                        TEAM PERFORMANCE (per-user)
+                    ============================================== */}
+                    {Array.isArray(data?.perUser) && data.perUser.length > 0 && (
+                        <Section
+                            title={
+                                data.isAdmin
+                                    ? 'Team Performance'
+                                    : 'My Performance'
+                            }
+                        >
+                            <div className="bg-app border-app overflow-hidden rounded-xl border">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full min-w-[720px] text-sm">
+                                        <thead className="border-app border-b text-left">
+                                            <tr className="text-muted text-xs uppercase tracking-wide">
+                                                <th className="px-4 py-3 font-medium">
+                                                    User
+                                                </th>
+                                                <th className="px-4 py-3 text-right font-medium">
+                                                    Leads
+                                                </th>
+                                                <th className="px-4 py-3 text-right font-medium">
+                                                    Won
+                                                </th>
+                                                <th className="px-4 py-3 text-right font-medium">
+                                                    Conv. Rate
+                                                </th>
+                                                <th className="px-4 py-3 text-right font-medium">
+                                                    Pipeline Value
+                                                </th>
+                                                <th className="px-4 py-3 text-right font-medium">
+                                                    Tasks
+                                                </th>
+                                                <th className="px-4 py-3 text-right font-medium">
+                                                    Completed
+                                                </th>
+                                                <th className="px-4 py-3 text-right font-medium">
+                                                    Calls
+                                                </th>
+                                                <th className="px-4 py-3 text-right font-medium">
+                                                    Connected
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {data.perUser.map((u) => (
+                                                <tr
+                                                    key={String(u.userId)}
+                                                    className="border-app hover-app border-b last:border-b-0"
+                                                >
+                                                    <td className="px-4 py-3">
+                                                        <div className="flex flex-col">
+                                                            <span className="font-medium">
+                                                                {u.name}
+                                                            </span>
+                                                            {u.email && (
+                                                                <span className="text-muted text-[11px]">
+                                                                    {u.email}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-4 py-3 text-right">
+                                                        {u.leads || 0}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-right">
+                                                        {u.won || 0}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-right">
+                                                        {u.conversionRate || 0}%
+                                                    </td>
+                                                    <td className="px-4 py-3 text-right">
+                                                        {money(u.pipelineValue)}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-right">
+                                                        {u.tasks || 0}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-right">
+                                                        {u.tasksCompleted || 0}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-right">
+                                                        {u.calls || 0}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-right">
+                                                        {u.callsConnected || 0}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </Section>
+                    )}
                 </>
             )}
         </div>
