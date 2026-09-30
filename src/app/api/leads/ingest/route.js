@@ -10,7 +10,7 @@ export const runtime = 'nodejs';
 
 export async function POST(request) {
     try {
-        await connectDB();  
+        await connectDB();
 
         const body = await request.json().catch(() => ({}));
 

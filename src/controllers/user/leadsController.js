@@ -17,47 +17,47 @@ export const createLeadService = async (userId, companyId, body) => {
 
     console.log(`[EMAIL FLOW] 🆕 Creating lead. User: ${userId}, Company: ${companyId}`);
 
-   // AUTO-ASSIGN LEAD BY SOURCE
-let assignedTo = body.assignedTo || null;
+    // AUTO-ASSIGN LEAD BY SOURCE
+    let assignedTo = body.assignedTo || null;
 
-if (!assignedTo && body.source) {
-    const source = String(body.source).trim().toLowerCase();
+    if (!assignedTo && body.source) {
+        const source = String(body.source).trim().toLowerCase();
 
-    const sourceOwner = await User.findOne({
-        companyId,
-        status: 'active',
-        leadSources: source,
-    }).select('_id');
+        const sourceOwner = await User.findOne({
+            companyId,
+            status: 'active',
+            leadSources: source,
+        }).select('_id');
 
-    if (sourceOwner) {
-        assignedTo = sourceOwner._id;
+        if (sourceOwner) {
+            assignedTo = sourceOwner._id;
+        }
     }
-}
 
-const lead = await Lead.create({
-    ...body,
+    const lead = await Lead.create({
+        ...body,
 
-    companyId,
+        companyId,
 
-    assignedTo,
-    assignedAt: assignedTo ? new Date() : null,
+        assignedTo,
+        assignedAt: assignedTo ? new Date() : null,
 
-    activities: [
-        {
-            type: 'lead_created',
-            description: 'Lead created.',
-            createdBy: userId,
-        },
-    ],
+        activities: [
+            {
+                type: 'lead_created',
+                description: 'Lead created.',
+                createdBy: userId,
+            },
+        ],
 
-    stageHistory: [
-        {
-            stage: body.stage || 'new',
-            description: 'Lead created',
-            updatedBy: userId,
-        },
-    ],
-});
+        stageHistory: [
+            {
+                stage: body.stage || 'new',
+                description: 'Lead created',
+                updatedBy: userId,
+            },
+        ],
+    });
 
     console.log(`[EMAIL FLOW] ✅ Lead created: ${lead._id}`);
 
@@ -83,10 +83,10 @@ const lead = await Lead.create({
     if (lead.assignedTo) {
         try {
             const assignedUser = await User.findOne({
-    _id: lead.assignedTo,
-    companyId,
-    status: 'active',
-}).select('name email');
+                _id: lead.assignedTo,
+                companyId,
+                status: 'active',
+            }).select('name email');
 
             if (!assignedUser) {
                 console.error(`[EMAIL FLOW] ❌ Assigned user not found: ${body.assignedTo}`);

@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 
 import { connectDB } from '@/config/db';
 import { getCurrentUser } from '@/utils/auth';
-import '@/models/index.js'; 
+import '@/models/index.js';
 import User from '@/models/user.model';
 import Lead from '@/models/leads.model';
 import LeadTask from '@/models/task.model';

@@ -1,3 +1,5 @@
+// src/services/leadAutoAssignment.js
+
 import mongoose from 'mongoose';
 import User from '@/models/user.model.js';
 import Lead from '@/models/leads.model.js';
@@ -6,11 +8,7 @@ import Lead from '@/models/leads.model.js';
  * Assign all existing leads from the selected sources to a user.
  * A lead source can belong to only one user per company.
  */
-export const syncLeadSourceAssignments = async ({
-    userId,
-    companyId,
-    leadSources = [],
-}) => {
+export const syncLeadSourceAssignments = async ({ userId, companyId, leadSources = [] }) => {
     if (!userId || !companyId) {
         throw new Error('User ID and company ID are required.');
     }
@@ -19,13 +17,7 @@ export const syncLeadSourceAssignments = async ({
         throw new Error('Invalid user ID.');
     }
 
-    const sources = [
-        ...new Set(
-            leadSources
-                .map((source) => String(source).trim().toLowerCase())
-                .filter(Boolean)
-        ),
-    ];
+    const sources = [...new Set(leadSources.map((source) => String(source).trim().toLowerCase()).filter(Boolean))];
 
     // Verify that the user belongs to this company.
     const user = await User.findOne({

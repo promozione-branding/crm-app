@@ -88,9 +88,7 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
     const companyId = user.companyId;
     const userId = user._id;
 
-    const isAdmin =
-        user.roleId?.isSystemRole === true &&
-        user.roleId?.name?.toLowerCase() === 'admin';
+    const isAdmin = user.roleId?.isSystemRole === true && user.roleId?.name?.toLowerCase() === 'admin';
 
     const { start, end } = getDateRange(range, from, to);
 
@@ -98,17 +96,11 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
     // DATA VISIBILITY
     // ============================================================
 
-    const leadFilter = isAdmin
-        ? { companyId }
-        : { companyId, assignedTo: userId };
+    const leadFilter = isAdmin ? { companyId } : { companyId, assignedTo: userId };
 
-    const taskFilter = isAdmin
-        ? { companyId }
-        : { companyId, $or: [{ createdBy: userId }, { assignedTo: userId }] };
+    const taskFilter = isAdmin ? { companyId } : { companyId, $or: [{ createdBy: userId }, { assignedTo: userId }] };
 
-    const callFilter = isAdmin
-        ? { companyId }
-        : { companyId, callerId: userId };
+    const callFilter = isAdmin ? { companyId } : { companyId, callerId: userId };
 
     // ============================================================
     // DATE FILTERS
@@ -133,17 +125,7 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
     // REPORT QUERIES (existing)
     // ============================================================
 
-    const [
-        totalLeads,
-        leadsByStage,
-        leadValue,
-        totalTasks,
-        tasksByStatus,
-        taskTiming,
-        totalCalls,
-        callsByStatus,
-        callStats,
-    ] = await Promise.all([
+    const [totalLeads, leadsByStage, leadValue, totalTasks, tasksByStatus, taskTiming, totalCalls, callsByStatus, callStats] = await Promise.all([
         Lead.countDocuments(leadDateFilter),
 
         Lead.aggregate([
@@ -165,30 +147,19 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
                     totalValue: { $sum: { $ifNull: ['$dealValue', 0] } },
                     wonValue: {
                         $sum: {
-                            $cond: [
-                                { $eq: ['$stage', 'won'] },
-                                { $ifNull: ['$dealValue', 0] },
-                                0,
-                            ],
+                            $cond: [{ $eq: ['$stage', 'won'] }, { $ifNull: ['$dealValue', 0] }, 0],
                         },
                     },
                     lostValue: {
                         $sum: {
-                            $cond: [
-                                { $eq: ['$stage', 'lost'] },
-                                { $ifNull: ['$dealValue', 0] },
-                                0,
-                            ],
+                            $cond: [{ $eq: ['$stage', 'lost'] }, { $ifNull: ['$dealValue', 0] }, 0],
                         },
                     },
                     openPipelineValue: {
                         $sum: {
                             $cond: [
                                 {
-                                    $and: [
-                                        { $ne: ['$stage', 'won'] },
-                                        { $ne: ['$stage', 'lost'] },
-                                    ],
+                                    $and: [{ $ne: ['$stage', 'won'] }, { $ne: ['$stage', 'lost'] }],
                                 },
                                 { $ifNull: ['$dealValue', 0] },
                                 0,
@@ -201,10 +172,7 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
 
         LeadTask.countDocuments(taskDateFilter),
 
-        LeadTask.aggregate([
-            { $match: taskDateFilter },
-            { $group: { _id: '$status', count: { $sum: 1 } } },
-        ]),
+        LeadTask.aggregate([{ $match: taskDateFilter }, { $group: { _id: '$status', count: { $sum: 1 } } }]),
 
         LeadTask.aggregate([
             {
@@ -220,10 +188,7 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
 
         Call.countDocuments(callDateFilter),
 
-        Call.aggregate([
-            { $match: callDateFilter },
-            { $group: { _id: '$status', count: { $sum: 1 } } },
-        ]),
+        Call.aggregate([{ $match: callDateFilter }, { $group: { _id: '$status', count: { $sum: 1 } } }]),
 
         Call.aggregate([
             { $match: callDateFilter },
@@ -300,17 +265,9 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
         }
     });
 
-    const meaningfulCalls =
-        callStatus.completed +
-        callStatus.missed +
-        callStatus.busy +
-        callStatus.no_answer +
-        callStatus.failed;
+    const meaningfulCalls = callStatus.completed + callStatus.missed + callStatus.busy + callStatus.no_answer + callStatus.failed;
 
-    const connectionRate =
-        meaningfulCalls > 0
-            ? Number(((callStatus.completed / meaningfulCalls) * 100).toFixed(1))
-            : 0;
+    const connectionRate = meaningfulCalls > 0 ? Number(((callStatus.completed / meaningfulCalls) * 100).toFixed(1)) : 0;
 
     // ============================================================
     // LEAD SUMMARY
@@ -318,10 +275,7 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
 
     const wonLeads = pipeline.won.count;
 
-    const conversionRate =
-        totalLeads > 0
-            ? Number(((wonLeads / totalLeads) * 100).toFixed(1))
-            : 0;
+    const conversionRate = totalLeads > 0 ? Number(((wonLeads / totalLeads) * 100).toFixed(1)) : 0;
 
     const deal = leadValue[0] || {
         totalValue: 0,
@@ -347,17 +301,12 @@ export const getReportsService = async ({ user, range = 'this_month', from, to }
     // ============================================================
 
     // Cap the per-user table to 25 users for performance.
-// Sorted later by leads desc, so top performers always appear.
-const PER_USER_LIMIT = 25;
+    // Sorted later by leads desc, so top performers always appear.
+    const PER_USER_LIMIT = 25;
 
-const usersToReport = isAdmin
-    ? await User.find({ companyId, status: 'active' })
-          .select('_id name email')
-          .limit(PER_USER_LIMIT)
-          .lean()
-    : await User.find({ _id: userId })
-          .select('_id name email')
-          .lean();
+    const usersToReport = isAdmin
+        ? await User.find({ companyId, status: 'active' }).select('_id name email').limit(PER_USER_LIMIT).lean()
+        : await User.find({ _id: userId }).select('_id name email').lean();
 
     const userIds = usersToReport.map((u) => u._id);
 
@@ -374,21 +323,14 @@ const usersToReport = isAdmin
                     },
                     wonValue: {
                         $sum: {
-                            $cond: [
-                                { $eq: ['$stage', 'won'] },
-                                { $ifNull: ['$dealValue', 0] },
-                                0,
-                            ],
+                            $cond: [{ $eq: ['$stage', 'won'] }, { $ifNull: ['$dealValue', 0] }, 0],
                         },
                     },
                     pipelineValue: {
                         $sum: {
                             $cond: [
                                 {
-                                    $and: [
-                                        { $ne: ['$stage', 'won'] },
-                                        { $ne: ['$stage', 'lost'] },
-                                    ],
+                                    $and: [{ $ne: ['$stage', 'won'] }, { $ne: ['$stage', 'lost'] }],
                                 },
                                 { $ifNull: ['$dealValue', 0] },
                                 0,
@@ -403,10 +345,7 @@ const usersToReport = isAdmin
             {
                 $match: {
                     ...taskDateFilter,
-                    $or: [
-                        { assignedTo: { $in: userIds } },
-                        { createdBy: { $in: userIds } },
-                    ],
+                    $or: [{ assignedTo: { $in: userIds } }, { createdBy: { $in: userIds } }],
                 },
             },
             {
@@ -473,8 +412,7 @@ const usersToReport = isAdmin
 
             leads,
             won,
-            conversionRate:
-                leads > 0 ? Number(((won / leads) * 100).toFixed(1)) : 0,
+            conversionRate: leads > 0 ? Number(((won / leads) * 100).toFixed(1)) : 0,
             wonValue: leadData.wonValue || 0,
             pipelineValue: leadData.pipelineValue || 0,
 

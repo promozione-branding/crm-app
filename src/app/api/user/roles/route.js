@@ -11,14 +11,14 @@ export async function GET(req) {
     try {
         await connectDB();
 
-        const user = await getCurrentUser(req); 
+        const user = await getCurrentUser(req);
 
         if (!user) {
             return NextResponse.json(
                 {
                     success: false,
                     message: 'User not found',
-                }, 
+                },
                 {
                     status: 404,
                 }

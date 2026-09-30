@@ -2,7 +2,7 @@
 
 import { NextResponse } from 'next/server';
 import * as XLSX from 'xlsx';
-import '@/models/index.js';      
+import '@/models/index.js';
 import { connectDB } from '@/config/db.js';
 import Lead from '@/models/leads.model.js';
 import { getCurrentUser } from '@/utils/auth.js';

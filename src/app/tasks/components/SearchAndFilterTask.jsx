@@ -83,9 +83,7 @@ export default function SearchAndFilterTask({
             ============================================================ */}
 
             <div className="flex w-full items-center gap-2 sm:w-auto sm:gap-3">
-
-
-                   {/* SEARCH TYPE */}
+                {/* SEARCH TYPE */}
                 <div className="relative min-w-0 flex-1 sm:flex-none">
                     <Search size={15} className="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 opacity-60" />
 
@@ -110,7 +108,6 @@ export default function SearchAndFilterTask({
                         className="border-app bg-app h-9 w-full rounded-lg border pr-3 pl-10 text-sm outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
-             
             </div>
 
             {/* ============================================================
@@ -131,7 +128,7 @@ export default function SearchAndFilterTask({
 
                     <ChevronDown size={15} className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 opacity-60" />
                 </div>
-   {/* PRIORITY FILTER */}
+                {/* PRIORITY FILTER */}
                 <div className="relative min-w-0 flex-1 sm:flex-none">
                     <Filter size={15} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 opacity-60" />
 
@@ -143,11 +140,6 @@ export default function SearchAndFilterTask({
                         <option value="urgent">Urgent</option>
                     </select>
                 </div>
-
-
-
-
-
             </div>
         </div>
     );

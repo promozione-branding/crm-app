@@ -57,7 +57,7 @@ export async function PUT(request, { params }) {
                 success: true,
                 message: 'Role updated successfully.',
                 data: updatedRole,
-            }, 
+            },
             { status: 200 }
         );
     } catch (error) {

@@ -8,5 +8,4 @@ const res = await openai.responses.create({
     input: 'Say hello in one word.',
 });
 
-
 console.log(res.output_text);
