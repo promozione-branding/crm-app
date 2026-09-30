@@ -152,8 +152,7 @@ const builders = {
 // HELPERS
 // ============================================================
 
-const readPath = (obj, path) =>
-    path.split('.').reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
+const readPath = (obj, path) => path.split('.').reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
 
 // ============================================================
 // HOOK — fetch stats + expose isAdmin

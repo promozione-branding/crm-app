@@ -1,3 +1,5 @@
+// src/app/api/user/lead/stats/route.js
+
 // src/app/api/user/leads/stats/route.js
 
 import { NextResponse } from 'next/server';
@@ -41,11 +43,7 @@ export async function GET(request) {
                         },
                         openPipelineValue: {
                             $sum: {
-                                $cond: [
-                                    { $and: [{ $ne: ['$stage', 'won'] }, { $ne: ['$stage', 'lost'] }] },
-                                    { $ifNull: ['$dealValue', 0] },
-                                    0,
-                                ],
+                                $cond: [{ $and: [{ $ne: ['$stage', 'won'] }, { $ne: ['$stage', 'lost'] }] }, { $ifNull: ['$dealValue', 0] }, 0],
                             },
                         },
                     },
@@ -88,9 +86,6 @@ export async function GET(request) {
         });
     } catch (error) {
         console.error('GET LEADS STATS ERROR:', error);
-        return NextResponse.json(
-            { success: false, message: error.message || 'Failed to fetch lead stats.' },
-            { status: 500 }
-        );
+        return NextResponse.json({ success: false, message: error.message || 'Failed to fetch lead stats.' }, { status: 500 });
     }
 }

@@ -1,3 +1,5 @@
+// src/app/api/user/task/stats/route.js
+
 // src/app/api/user/tasks/stats/route.js
 
 import { NextResponse } from 'next/server';
@@ -24,9 +26,7 @@ export async function GET(request) {
 
         const isAdmin = user.roleId?.isSystemRole === true && user.roleId?.name?.toLowerCase() === 'admin';
 
-        const taskFilter = isAdmin
-            ? { companyId }
-            : { companyId, $or: [{ createdBy: userId }, { assignedTo: userId }] };
+        const taskFilter = isAdmin ? { companyId } : { companyId, $or: [{ createdBy: userId }, { assignedTo: userId }] };
 
         const now = new Date();
         const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -63,9 +63,6 @@ export async function GET(request) {
         });
     } catch (error) {
         console.error('GET TASKS STATS ERROR:', error);
-        return NextResponse.json(
-            { success: false, message: error.message || 'Failed to fetch task stats.' },
-            { status: 500 }
-        );
+        return NextResponse.json({ success: false, message: error.message || 'Failed to fetch task stats.' }, { status: 500 });
     }
 }

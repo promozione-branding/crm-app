@@ -1,3 +1,5 @@
+// src/app/api/user/call/stats/route.js
+
 // src/app/api/user/call-logs/stats/route.js
 
 import { NextResponse } from 'next/server';
@@ -81,9 +83,6 @@ export async function GET(request) {
         });
     } catch (error) {
         console.error('GET CALL LOGS STATS ERROR:', error);
-        return NextResponse.json(
-            { success: false, message: error.message || 'Failed to fetch call stats.' },
-            { status: 500 }
-        );
+        return NextResponse.json({ success: false, message: error.message || 'Failed to fetch call stats.' }, { status: 500 });
     }
 }
