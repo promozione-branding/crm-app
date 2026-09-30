@@ -27,17 +27,18 @@ export const NAV_ITEMS = [
         href: '/tasks',
         icon: ClipboardList,
     },
-    {
-        module: 'reports',
-        name: 'Reports',
-        href: '/reports',
-        icon: BarChart3,
-    },
+    
     {
         module: 'call_logs',
         name: 'Call Logs',
         href: '/call-logs',
         icon: PhoneCall,
+    },
+    {
+        module: 'reports',
+        name: 'Reports',
+        href: '/reports',
+        icon: BarChart3,
     },
     {
         module: 'settings',
@@ -51,4 +52,4 @@ export const NAV_ITEMS = [
  * Short label for the mobile sticky footer
  * (slightly different from the sidebar).
  */
-export const MOBILE_NAV_ITEMS = NAV_ITEMS.filter((item) => ['dashboard', 'leads', 'tasks', 'reports', 'call_logs'].includes(item.module));
+export const MOBILE_NAV_ITEMS = NAV_ITEMS.filter((item) => ['dashboard', 'leads', 'tasks',  'call_logs', 'reports'].includes(item.module));
