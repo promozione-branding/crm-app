@@ -9,6 +9,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 import Dashboarddata from '../../app/dashboard/components/Dashboarddata';
+import PageStats, { usePageStats } from '../../app/dashboard/components/PageStats';
 import DynamicTable from '@/components/user/ui/DynamicTable';
 
 // ============================================================
@@ -115,7 +116,6 @@ function MobileCallCard({ call, router }) {
 
     return (
         <div className="border-app bg-app overflow-hidden rounded-xl border shadow-sm">
-            {/* MAIN ROW */}
             <div
                 role="button"
                 tabIndex={0}
@@ -129,7 +129,6 @@ function MobileCallCard({ call, router }) {
                 className="hover-app w-full cursor-pointer px-4 py-3.5 text-left transition"
             >
                 <div className="flex min-w-0 items-center gap-3">
-                    {/* LEAD + CALLER */}
                     <div className="min-w-0 flex-1">
                         <div className="flex h-6 min-w-0 items-center gap-2">
                             <h3 className="min-w-0 truncate text-sm font-semibold">{call.refId?.name || 'Unknown Lead'}</h3>
@@ -144,7 +143,6 @@ function MobileCallCard({ call, router }) {
                         </div>
                     </div>
 
-                    {/* STATUS + EXPAND */}
                     <div className="flex shrink-0 items-center gap-2">
                         <CallStatusBadge status={call.status} />
 
@@ -153,7 +151,6 @@ function MobileCallCard({ call, router }) {
                 </div>
             </div>
 
-            {/* EXPANDED */}
             {expanded && (
                 <div className="border-app bg-surface border-t">
                     <div className="space-y-3 p-4">
@@ -292,6 +289,9 @@ export default function CallLog() {
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
 
+    // ---------- PAGE STATS (admin vs non-admin) ----------
+    const { data: statsData, isAdmin, loading: statsLoading } = usePageStats('calls');
+
     // ========================================================
     // FETCH
     // ========================================================
@@ -328,7 +328,6 @@ export default function CallLog() {
         fetchCalls();
     }, [fetchCalls]);
 
-    // Debounced search
     useEffect(() => {
         const t = setTimeout(() => {
             setPage(1);
@@ -356,13 +355,12 @@ export default function CallLog() {
             {/* ---------- HEADER (stats) ---------- */}
             <div className="mb-4 sm:mb-5 md:mb-6">
                 <div className="border-app bg-app w-full overflow-hidden rounded-xl border px-2 py-2 shadow-sm sm:rounded-2xl sm:px-4 sm:py-3">
-                    <Dashboarddata />
+                    {isAdmin ? <Dashboarddata /> : <PageStats type="calls" data={statsData} loading={statsLoading} />}
                 </div>
             </div>
 
             {/* ---------- FILTERS ---------- */}
             <div className="border-app bg-app mb-4 flex flex-col gap-3 rounded-xl border p-3 sm:flex-row sm:flex-wrap sm:items-center sm:p-4">
-                {/* SEARCH */}
                 <div className="relative w-full flex-1 sm:min-w-[200px]">
                     <Search size={16} className="text-muted absolute top-1/2 left-3 -translate-y-1/2" />
                     <input
@@ -374,7 +372,6 @@ export default function CallLog() {
                     />
                 </div>
 
-                {/* STATUS */}
                 <div className="flex w-full items-center gap-2 sm:w-auto">
                     <Filter size={14} className="text-muted shrink-0" />
                     <select
@@ -447,7 +444,6 @@ export default function CallLog() {
             {/* ---------- DATA ---------- */}
             {!loading && calls.length > 0 && (
                 <>
-                    {/* MOBILE / TABLET */}
                     <div className="space-y-3 md:hidden">
                         {calls.map((call) => (
                             <MobileCallCard key={call._id} call={call} router={router} />
@@ -456,7 +452,6 @@ export default function CallLog() {
                         <MobilePagination page={page} setPage={setPage} total={total} rowsPerPage={rowsPerPage} setRowsPerPage={setRowsPerPage} />
                     </div>
 
-                    {/* DESKTOP */}
                     <div className="hidden md:block">
                         <DynamicTable
                             loading={false}

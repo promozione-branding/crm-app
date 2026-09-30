@@ -16,6 +16,7 @@ import MobileLeadsTable from './components/MobileLeadsTable';
 import LeadsActiveFilter from './components/LeadsActiveFilter';
 import LeadsFilter, { stageOptions, dateOptions } from './components/LeadsFilter';
 import Dashboarddata from '../dashboard/components/Dashboarddata';
+import PageStats, { usePageStats } from '../dashboard/components/PageStats';
 
 // ============================================================
 // SORT HELPERS (inline — no separate file)
@@ -140,6 +141,9 @@ export default function Leads() {
     const filterRef = useRef(null);
     const menuRef = useRef(null);
 
+    // ---------- PAGE STATS (admin vs non-admin) ----------
+    const { data: statsData, isAdmin, loading: statsLoading } = usePageStats('leads');
+
     const sortedLeads = useMemo(() => sortLeads(leads, sortBy), [leads, sortBy]);
 
     const selectedStageLabels = (Array.isArray(selectedStage) ? selectedStage : [])
@@ -232,7 +236,7 @@ export default function Leads() {
             {/* HEADER */}
             <div className="mb-5">
                 <div className="border-app bg-app w-full rounded-xl border px-2 py-2 shadow-sm sm:rounded-2xl sm:px-4 sm:py-3">
-                    <Dashboarddata />
+                    {isAdmin ? <Dashboarddata /> : <PageStats type="leads" data={statsData} loading={statsLoading} />}
                 </div>
 
                 <div className="mt-3 w-full sm:mt-4">

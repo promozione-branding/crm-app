@@ -8,6 +8,7 @@ import DynamicTable from '@/components/user/ui/DynamicTable';
 import TaskMobileList from './components/TaskMobileList';
 import SearchAndFilterTask from './components/SearchAndFilterTask';
 import Dashboarddata from '../dashboard/components/Dashboarddata';
+import PageStats, { usePageStats } from '../dashboard/components/PageStats';
 import { PriorityBadge, StatusBadge } from './components/TaskBadges';
 import { formatDueDate, isOverdue, sortTasks } from './components/TaskUtils';
 import toast from 'react-hot-toast';
@@ -86,6 +87,9 @@ export default function Task() {
     const [sortBy, setSortBy] = useState('');
 
     const [rowsPerPage, setRowsPerPage] = useState(25);
+
+    // ---------- PAGE STATS (admin vs non-admin) ----------
+    const { data: statsData, isAdmin, loading: statsLoading } = usePageStats('tasks');
 
     // ========================================================
     // SORTED TASKS (instant, no refetch)
@@ -189,7 +193,7 @@ export default function Task() {
             {/* HEADER */}
             <div className="mb-5 md:mb-6">
                 <div className="border-app bg-app w-full rounded-xl border px-2 py-2 shadow-sm sm:rounded-2xl sm:px-4 sm:py-3">
-                    <Dashboarddata />
+                    {isAdmin ? <Dashboarddata /> : <PageStats type="tasks" data={statsData} loading={statsLoading} />}
                 </div>
 
                 <div className="mt-3 w-full sm:mt-4">
