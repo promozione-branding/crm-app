@@ -281,7 +281,15 @@ export default function DashboardAnalytics({ analytics, loading }) {
 
                             <p className="text-[11px] opacity-60 sm:text-xs">Your call activity</p>
                         </div>
+                         <Link
+    href="/call-logs"
+    className="text-muted hover-app ml-auto mr-0.5 flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium"
+>
+    View all
+    <ArrowRight size={13} />
+</Link>
                     </div>
+                   
 
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                         <SmallStat label="Today" value={calls.today || 0} />
