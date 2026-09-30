@@ -87,35 +87,61 @@ export default function User() {
 
     // UPDATE USER
     const handleUpdateUser = async () => {
-        try {
-            setSaving(true);
-            const payload = {
-                name: form.name,
-                email: form.email,
-                phone: form.phone,
-                roleId: form.roleId,
-                status: form.status,
-                leadSources: form.leadSources,
-            };
+    try {
+        setSaving(true);
 
-            // Only send password if entered
-            if (form.password.trim()) {
-                payload.password = form.password;
-            }
+        const payload = {
+            name: form.name.trim(),
+            email: form.email.trim(),
+            phone: form.phone.trim(),
+            roleId: form.roleId,
+            status: form.status,
 
-            const res = await axios.put(`/api/user/${id}`, payload);
-            if (res.data.success) {
-                toast.success(res.data.message || 'User updated successfully');
-                // Optional:
-                // router.push("/team-management");
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error(error.response?.data?.message || 'Failed to update user');
-        } finally {
-            setSaving(false);
+            // Lead sources configured for this user
+            leadSources: [...new Set(form.leadSources || [])],
+        };
+
+        // Only send password if entered
+        if (form.password.trim()) {
+            payload.password = form.password;
         }
-    };
+
+        const res = await axios.put(`/api/user/${id}`, payload);
+
+        if (res.data.success) {
+            toast.success(
+                res.data.message || 'User updated successfully'
+            );
+
+            // Show automatic lead assignment results, if returned by the API
+            if (res.data.assignment) {
+                const { matchedLeads, modifiedLeads } = res.data.assignment;
+
+                toast.success(
+                    `${modifiedLeads ?? matchedLeads ?? 0} existing leads assigned to this user`
+                );
+            }
+
+            // Clear password field after successful update
+            setForm((prev) => ({
+                ...prev,
+                password: '',
+            }));
+
+            // Optional: redirect after updating
+            // router.push('/team-management');
+        }
+    } catch (error) {
+        console.error('Update user error:', error);
+
+        toast.error(
+            error.response?.data?.message ||
+            'Failed to update user'
+        );
+    } finally {
+        setSaving(false);
+    }
+};
 
     const handleDeleteUser = async () => {
         try {

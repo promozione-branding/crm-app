@@ -17,29 +17,47 @@ export const createLeadService = async (userId, companyId, body) => {
 
     console.log(`[EMAIL FLOW] 🆕 Creating lead. User: ${userId}, Company: ${companyId}`);
 
-    const lead = await Lead.create({
-        ...body,
+   // AUTO-ASSIGN LEAD BY SOURCE
+let assignedTo = body.assignedTo || null;
 
-        companyId: companyId,
-        assignedTo: body.assignedTo || null,
-        assignedAt: body.assignedTo ? new Date() : null,
+if (!assignedTo && body.source) {
+    const source = String(body.source).trim().toLowerCase();
 
-        activities: [
-            {
-                type: 'lead_created',
-                description: 'Lead created.',
-                createdBy: userId,
-            },
-        ],
+    const sourceOwner = await User.findOne({
+        companyId,
+        status: 'active',
+        leadSources: source,
+    }).select('_id');
 
-        stageHistory: [
-            {
-                stage: body.stage || 'new',
-                description: 'Lead created',
-                updatedBy: userId,
-            },
-        ],
-    });
+    if (sourceOwner) {
+        assignedTo = sourceOwner._id;
+    }
+}
+
+const lead = await Lead.create({
+    ...body,
+
+    companyId,
+
+    assignedTo,
+    assignedAt: assignedTo ? new Date() : null,
+
+    activities: [
+        {
+            type: 'lead_created',
+            description: 'Lead created.',
+            createdBy: userId,
+        },
+    ],
+
+    stageHistory: [
+        {
+            stage: body.stage || 'new',
+            description: 'Lead created',
+            updatedBy: userId,
+        },
+    ],
+});
 
     console.log(`[EMAIL FLOW] ✅ Lead created: ${lead._id}`);
 
@@ -62,13 +80,13 @@ export const createLeadService = async (userId, companyId, body) => {
     // NEW LEAD ASSIGNED → ASSIGNED USER
     // --------------------------------------------------------
 
-    if (body.assignedTo) {
+    if (lead.assignedTo) {
         try {
             const assignedUser = await User.findOne({
-                _id: body.assignedTo,
-                companyId,
-                status: 'active',
-            }).select('name email');
+    _id: lead.assignedTo,
+    companyId,
+    status: 'active',
+}).select('name email');
 
             if (!assignedUser) {
                 console.error(`[EMAIL FLOW] ❌ Assigned user not found: ${body.assignedTo}`);
