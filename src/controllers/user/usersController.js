@@ -183,9 +183,9 @@ export const createUserService = async (currentUser, body) => {
 
     const hashedPassword = await hashPassword(password);
 
-    // ---------------------------------------
+    // -----------------------------------
     // CREATE USER
-    // ---------------------------------------
+    // -----------------------------------
 
     const newUser = await User.create({
         companyId: currentUser.companyId,
