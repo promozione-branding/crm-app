@@ -11,7 +11,7 @@ import Lead from '@/models/leads.model.js';
 export const syncLeadSourceAssignments = async ({ userId, companyId, leadSources = [] }) => {
     if (!userId || !companyId) {
         throw new Error('User ID and company ID are required.');
-    }
+    } 
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
         throw new Error('Invalid user ID.');
