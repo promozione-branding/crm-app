@@ -55,6 +55,7 @@ const sections = [
             },
             {
                 icon: Mail,
+                href: '/email',
                 color: 'text-purple-500 bg-purple-500/10',
                 title: 'Email',
                 description: 'Configure email templates, alerts, and tracking options.',
