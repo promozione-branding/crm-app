@@ -62,6 +62,7 @@ const sections = [
             },
             {
                 icon: Bell,
+                href: '/notifications',
                 color: 'text-orange-500 bg-orange-500/10',
                 title: 'Notification',
                 description: 'Manage notifications across web, mobile, and email.',
