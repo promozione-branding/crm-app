@@ -1,3 +1,4 @@
+// src/models/reminderCenter.model.js
 
 import mongoose from 'mongoose';
 
@@ -19,11 +20,7 @@ const ReminderCenterSchema = new mongoose.Schema(
 
         type: {
             type: String,
-            enum: [
-                'task_reminder',
-                'meeting_reminder',
-                'overdue_task',
-            ],
+            enum: ['task_reminder', 'meeting_reminder', 'overdue_task'],
             required: true,
         },
 
@@ -83,5 +80,4 @@ ReminderCenterSchema.index({
     createdAt: -1,
 });
 
-export default mongoose.models.ReminderCenter ||
-    mongoose.model('ReminderCenter', ReminderCenterSchema);
+export default mongoose.models.ReminderCenter || mongoose.model('ReminderCenter', ReminderCenterSchema);

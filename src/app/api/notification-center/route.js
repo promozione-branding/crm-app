@@ -1,3 +1,4 @@
+// src/app/api/notification-center/route.js
 
 import { NextResponse } from 'next/server';
 
@@ -53,36 +54,35 @@ export async function GET(request) {
             .lean();
 
         // Only fetch tasks belonging to this company and assigned to this user.
-        const [overdueTasks, dueTaskReminders, dueMeetingReminders] =
-            await Promise.all([
-                LeadTask.find({
-                    companyId,
-                    assignedTo: userId,
-                    status: 'pending',
-                    dueDate: { $lt: now },
-                })
-                    .select('_id title dueDate leadId reminderAt')
-                    .lean(),
+        const [overdueTasks, dueTaskReminders, dueMeetingReminders] = await Promise.all([
+            LeadTask.find({
+                companyId,
+                assignedTo: userId,
+                status: 'pending',
+                dueDate: { $lt: now },
+            })
+                .select('_id title dueDate leadId reminderAt')
+                .lean(),
 
-                LeadTask.find({
-                    companyId,
-                    assignedTo: userId,
-                    status: 'pending',
-                    reminderAt: { $ne: null, $lte: now },
-                    dueDate: { $gte: now },
-                })
-                    .select('_id title dueDate leadId reminderAt')
-                    .lean(),
+            LeadTask.find({
+                companyId,
+                assignedTo: userId,
+                status: 'pending',
+                reminderAt: { $ne: null, $lte: now },
+                dueDate: { $gte: now },
+            })
+                .select('_id title dueDate leadId reminderAt')
+                .lean(),
 
-                Meeting.find({
-                    companyId,
-                    assignedTo: userId,
-                    status: 'scheduled',
-                    reminderAt: { $ne: null, $lte: now },
-                })
-                    .select('_id title startAt leadId reminderAt')
-                    .lean(),
-            ]);
+            Meeting.find({
+                companyId,
+                assignedTo: userId,
+                status: 'scheduled',
+                reminderAt: { $ne: null, $lte: now },
+            })
+                .select('_id title startAt leadId reminderAt')
+                .lean(),
+        ]);
 
         const reminderRecords = [];
 
@@ -116,11 +116,7 @@ export async function GET(request) {
                 recipient: userId,
                 type: 'meeting_reminder',
                 title: 'Meeting reminder',
-                message: `${meeting.title} is scheduled for ${
-                    meeting.startAt
-                        ? new Date(meeting.startAt).toLocaleString()
-                        : 'an upcoming time'
-                }.`,
+                message: `${meeting.title} is scheduled for ${meeting.startAt ? new Date(meeting.startAt).toLocaleString() : 'an upcoming time'}.`,
                 refModel: 'Meeting',
                 refId: meeting._id,
             });
@@ -149,15 +145,9 @@ export async function GET(request) {
             );
         }
 
-        const activeReminderIds = reminderRecords.map((item) =>
-            getId(item.refId)
-        );
+        const activeReminderIds = reminderRecords.map((item) => getId(item.refId));
 
-        const activeKeys = new Set(
-            reminderRecords.map(
-                (item) => `${item.type}:${item.refModel}:${getId(item.refId)}`
-            )
-        );
+        const activeKeys = new Set(reminderRecords.map((item) => `${item.type}:${item.refModel}:${getId(item.refId)}`));
 
         // Return only reminders that are still relevant to active items.
         const reminders = await ReminderCenter.find({
@@ -168,14 +158,9 @@ export async function GET(request) {
             .sort({ isRead: 1, createdAt: -1 })
             .lean();
 
-        const activeTaskIds = new Set([
-            ...overdueTasks.map((item) => getId(item._id)),
-            ...dueTaskReminders.map((item) => getId(item._id)),
-        ]);
+        const activeTaskIds = new Set([...overdueTasks.map((item) => getId(item._id)), ...dueTaskReminders.map((item) => getId(item._id))]);
 
-        const activeMeetingIds = new Set(
-            dueMeetingReminders.map((item) => getId(item._id))
-        );
+        const activeMeetingIds = new Set(dueMeetingReminders.map((item) => getId(item._id)));
 
         const filteredReminders = reminders.filter((item) => {
             const refId = getId(item.refId);
@@ -188,9 +173,7 @@ export async function GET(request) {
                 return activeTaskIds.has(refId);
             }
 
-            return activeKeys.has(
-                `${item.type}:${item.refModel}:${refId}`
-            );
+            return activeKeys.has(`${item.type}:${item.refModel}:${refId}`);
         });
 
         const normalizedAssignments = assignments.map((item) => ({
@@ -203,14 +186,9 @@ export async function GET(request) {
             createdAt: item.createdAt,
             actor: item.actor
                 ? {
-                    _id: getId(item.actor),
-                    name:
-                        item.actor.name ||
-                        [item.actor.firstName, item.actor.lastName]
-                            .filter(Boolean)
-                            .join(' ') ||
-                        'Team member',
-                }
+                      _id: getId(item.actor),
+                      name: item.actor.name || [item.actor.firstName, item.actor.lastName].filter(Boolean).join(' ') || 'Team member',
+                  }
                 : null,
             refModel: item.refModel,
             refId: getId(item.refId),
@@ -229,10 +207,7 @@ export async function GET(request) {
             refId: getId(item.refId),
         }));
 
-        const notifications = [
-            ...normalizedAssignments,
-            ...normalizedReminders,
-        ].sort((a, b) => {
+        const notifications = [...normalizedAssignments, ...normalizedReminders].sort((a, b) => {
             const priority = (item) => {
                 if (item.type === 'overdue_task') return 0;
                 if (!item.isRead) return 1;
@@ -243,10 +218,7 @@ export async function GET(request) {
 
             if (difference !== 0) return difference;
 
-            return (
-                new Date(b.createdAt).getTime() -
-                new Date(a.createdAt).getTime()
-            );
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         });
 
         return NextResponse.json({
@@ -257,10 +229,7 @@ export async function GET(request) {
     } catch (error) {
         console.error('Notification center GET error:', error);
 
-        return errorResponse(
-            'Unable to load notifications.',
-            500
-        );
+        return errorResponse('Unable to load notifications.', 500);
     }
 }
 
@@ -309,10 +278,7 @@ export async function PATCH(request) {
             });
         }
 
-        const update =
-            action === 'dismiss'
-                ? { $set: { dismissedAt: new Date(), isRead: true } }
-                : { $set: { isRead: true } };
+        const update = action === 'dismiss' ? { $set: { dismissedAt: new Date(), isRead: true } } : { $set: { isRead: true } };
 
         const updated = await ReminderCenter.findOneAndUpdate(
             {
@@ -330,17 +296,11 @@ export async function PATCH(request) {
 
         return NextResponse.json({
             success: true,
-            message:
-                action === 'dismiss'
-                    ? 'Reminder dismissed.'
-                    : 'Reminder marked as read.',
+            message: action === 'dismiss' ? 'Reminder dismissed.' : 'Reminder marked as read.',
         });
     } catch (error) {
         console.error('Notification center PATCH error:', error);
 
-        return errorResponse(
-            'Unable to update notification.',
-            500
-        );
+        return errorResponse('Unable to update notification.', 500);
     }
 }

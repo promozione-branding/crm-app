@@ -1,3 +1,5 @@
+// src/app/email/page.jsx
+
 // src/app/reports/page.jsx
 
 'use client';

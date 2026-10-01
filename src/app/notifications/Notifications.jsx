@@ -1,3 +1,5 @@
+// src/app/notifications/Notifications.jsx
+
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -75,12 +77,14 @@ function formatDate(value) {
 }
 
 function getTypeConfig(type) {
-    return TYPE_CONFIG[type] || {
-        label: 'Notification',
-        icon: Bell,
-        color: 'text-blue-500',
-        bg: 'bg-blue-500/10',
-    };
+    return (
+        TYPE_CONFIG[type] || {
+            label: 'Notification',
+            icon: Bell,
+            color: 'text-blue-500',
+            bg: 'bg-blue-500/10',
+        }
+    );
 }
 
 export default function Notifications() {
@@ -122,22 +126,20 @@ export default function Notifications() {
         loadNotifications();
     }, [loadNotifications]);
 
-    const unreadCount = useMemo(
-        () => notifications.filter((item) => !item.isRead).length,
-        [notifications]
-    );
+    const unreadCount = useMemo(() => notifications.filter((item) => !item.isRead).length, [notifications]);
     const readCount = notifications.length - unreadCount;
-    const overdueCount = useMemo(
-        () => notifications.filter((item) => item.type === 'overdue_task').length,
-        [notifications]
-    );
+    const overdueCount = useMemo(() => notifications.filter((item) => item.type === 'overdue_task').length, [notifications]);
 
-    const filteredNotifications = useMemo(() => notifications.filter((item) => {
-        if (activeFilter === 'unread') return !item.isRead;
-        if (activeFilter === 'assignment') return item.source === 'assignment';
-        if (activeFilter === 'reminder') return item.source === 'reminder';
-        return true;
-    }), [notifications, activeFilter]);
+    const filteredNotifications = useMemo(
+        () =>
+            notifications.filter((item) => {
+                if (activeFilter === 'unread') return !item.isRead;
+                if (activeFilter === 'assignment') return item.source === 'assignment';
+                if (activeFilter === 'reminder') return item.source === 'reminder';
+                return true;
+            }),
+        [notifications, activeFilter]
+    );
 
     const updateNotification = async (item, action) => {
         const key = `${item.source}:${item._id}`;
@@ -159,16 +161,14 @@ export default function Notifications() {
             }
 
             if (action === 'dismiss' && item.source === 'reminder') {
-                setNotifications((current) => current.filter((notification) => !(
-                    notification._id === item._id && notification.source === item.source
-                )));
+                setNotifications((current) => current.filter((notification) => !(notification._id === item._id && notification.source === item.source)));
                 setNotice('Reminder dismissed.');
             } else {
-                setNotifications((current) => current.map((notification) => (
-                    notification._id === item._id && notification.source === item.source
-                        ? { ...notification, isRead: true }
-                        : notification
-                )));
+                setNotifications((current) =>
+                    current.map((notification) =>
+                        notification._id === item._id && notification.source === item.source ? { ...notification, isRead: true } : notification
+                    )
+                );
                 setNotice('Notification marked as read.');
             }
         } catch (err) {
@@ -188,9 +188,7 @@ export default function Notifications() {
     };
 
     const clearReadReminders = async () => {
-        const readReminders = notifications.filter(
-            (item) => item.source === 'reminder' && item.isRead
-        );
+        const readReminders = notifications.filter((item) => item.source === 'reminder' && item.isRead);
         if (!readReminders.length || busyKey) return;
 
         for (const item of readReminders) {
@@ -206,7 +204,7 @@ export default function Notifications() {
     ];
 
     return (
-        <main className="bg-surface text-app min-h-[calc(100vh-64px)] w-full min-w-0 max-w-full overflow-x-clip p-3 sm:p-4 md:p-6">
+        <main className="bg-surface text-app min-h-[calc(100vh-64px)] w-full max-w-full min-w-0 overflow-x-clip p-3 sm:p-4 md:p-6">
             {/* Header */}
             <div className="mb-6 flex min-w-0 flex-wrap items-center justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
@@ -217,14 +215,10 @@ export default function Notifications() {
                         <div className="flex flex-wrap items-center gap-2">
                             <h1 className="text-2xl font-bold sm:text-3xl">Notifications</h1>
                             {unreadCount > 0 && (
-                                <span className="rounded-full bg-blue-500/10 px-2.5 py-1 text-xs font-semibold text-blue-500">
-                                    {unreadCount} new
-                                </span>
+                                <span className="rounded-full bg-blue-500/10 px-2.5 py-1 text-xs font-semibold text-blue-500">{unreadCount} new</span>
                             )}
                         </div>
-                        <p className="text-muted mt-1 text-xs sm:text-sm">
-                            Stay updated with your CRM activities.
-                        </p>
+                        <p className="text-muted mt-1 text-xs sm:text-sm">Stay updated with your CRM activities.</p>
                     </div>
                 </div>
 
@@ -271,7 +265,10 @@ export default function Notifications() {
                 </div>
             )}
             {notice && (
-                <div className="mb-4 flex items-start gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-emerald-600" role="status">
+                <div
+                    className="mb-4 flex items-start gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-emerald-600"
+                    role="status"
+                >
                     <CheckCircle2 size={18} className="mt-0.5 shrink-0" />
                     <span className="min-w-0 flex-1">{notice}</span>
                     <button type="button" onClick={() => setNotice('')} aria-label="Dismiss message" className="rounded p-1 hover:bg-emerald-500/10">
@@ -287,7 +284,7 @@ export default function Notifications() {
                     return (
                         <div key={stat.label} className="bg-app border-app min-w-0 rounded-xl border p-3 shadow-sm sm:p-4">
                             <div className="flex items-center justify-between gap-2">
-                                <p className="text-muted min-w-0 break-words text-xs sm:text-sm">{stat.label}</p>
+                                <p className="text-muted min-w-0 text-xs break-words sm:text-sm">{stat.label}</p>
                                 <Icon size={19} className={`${stat.color} shrink-0`} />
                             </div>
                             <p className="mt-2 text-2xl font-bold sm:text-3xl">{stat.value}</p>
@@ -301,29 +298,27 @@ export default function Notifications() {
                 <div className="border-app flex min-w-0 flex-col gap-3 border-b p-3 sm:p-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="min-w-0">
                         <h2 className="font-semibold">Your activity</h2>
-                        <p className="text-muted mt-1 text-xs sm:text-sm">
-                            Assignments, reminders and items that need your attention.
-                        </p>
+                        <p className="text-muted mt-1 text-xs sm:text-sm">Assignments, reminders and items that need your attention.</p>
                     </div>
                     <div className="flex min-w-0 items-center gap-2">
                         <Filter size={17} className="text-muted shrink-0" />
-                        <div className="bg-surface border-app flex min-w-0 max-w-full gap-1 overflow-x-auto rounded-lg border p-1">
+                        <div className="bg-surface border-app flex max-w-full min-w-0 gap-1 overflow-x-auto rounded-lg border p-1">
                             {FILTERS.map((filter) => (
                                 <button
                                     key={filter.value}
                                     type="button"
                                     onClick={() => setActiveFilter(filter.value)}
                                     className={`shrink-0 rounded-md px-3 py-2 text-xs font-medium transition sm:text-sm ${
-                                        activeFilter === filter.value
-                                            ? 'bg-blue-500 text-white shadow-sm'
-                                            : 'text-muted hover:text-app hover:bg-blue-500/5'
+                                        activeFilter === filter.value ? 'bg-blue-500 text-white shadow-sm' : 'text-muted hover:text-app hover:bg-blue-500/5'
                                     }`}
                                 >
                                     {filter.label}
                                     {filter.value === 'unread' && unreadCount > 0 && (
-                                        <span className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[10px] ${
-                                            activeFilter === filter.value ? 'bg-white/20 text-white' : 'bg-blue-500/10 text-blue-500'
-                                        }`}>
+                                        <span
+                                            className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[10px] ${
+                                                activeFilter === filter.value ? 'bg-white/20 text-white' : 'bg-blue-500/10 text-blue-500'
+                                            }`}
+                                        >
                                             {unreadCount}
                                         </span>
                                     )}
@@ -345,9 +340,7 @@ export default function Notifications() {
                                 <BellOff size={28} />
                             </div>
                             <h3 className="font-semibold">No notifications found</h3>
-                            <p className="text-muted mt-1 max-w-sm text-sm">
-                                You&apos;re all caught up. New updates will appear here.
-                            </p>
+                            <p className="text-muted mt-1 max-w-sm text-sm">You&apos;re all caught up. New updates will appear here.</p>
                             {activeFilter !== 'all' && (
                                 <button
                                     type="button"
@@ -372,23 +365,25 @@ export default function Notifications() {
                                         !item.isRead ? 'bg-blue-500/[0.035]' : 'hover:bg-blue-500/[0.025]'
                                     }`}
                                 >
-                                    <div className={`relative mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:h-11 sm:w-11 ${config.bg} ${config.color}`}>
+                                    <div
+                                        className={`relative mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:h-11 sm:w-11 ${config.bg} ${config.color}`}
+                                    >
                                         <Icon size={20} />
                                         {!item.isRead && (
-                                            <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full border-2 border-[var(--notification-border,#fff)] bg-blue-500" />
+                                            <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full border-2 border-[var(--notification-border,#fff)] bg-blue-500" />
                                         )}
                                     </div>
 
                                     <div className="min-w-0 flex-1">
                                         <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-                                            <h3 className={`min-w-0 break-words text-sm ${!item.isRead ? 'font-bold' : 'font-semibold'}`}>
+                                            <h3 className={`min-w-0 text-sm break-words ${!item.isRead ? 'font-bold' : 'font-semibold'}`}>
                                                 {item.title || 'Notification'}
                                             </h3>
                                             <span className={`rounded-md px-2 py-0.5 text-[10px] font-medium ${config.bg} ${config.color}`}>
                                                 {config.label}
                                             </span>
                                         </div>
-                                        <p className="text-muted mt-1 break-words text-xs leading-5 sm:text-sm">
+                                        <p className="text-muted mt-1 text-xs leading-5 break-words sm:text-sm">
                                             {item.message || 'There is an update in your CRM.'}
                                         </p>
                                         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -431,7 +426,9 @@ export default function Notifications() {
                 </div>
 
                 <div className="border-app text-muted mt-auto flex flex-wrap items-center justify-between gap-2 border-t px-3 py-3 text-xs sm:px-4">
-                    <span>Showing {filteredNotifications.length} of {notifications.length} notifications</span>
+                    <span>
+                        Showing {filteredNotifications.length} of {notifications.length} notifications
+                    </span>
                     <button
                         type="button"
                         onClick={clearReadReminders}
