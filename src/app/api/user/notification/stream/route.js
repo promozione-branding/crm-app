@@ -30,18 +30,46 @@ export async function GET(request) {
     }
 
     const userId = user._id.toString();
-
     const encoder = new TextEncoder();
 
     let lastCheck = new Date();
+    let interval = null;
+    let closed = false;
+
+    const cleanup = () => {
+        if (closed) return;
+        closed = true;
+
+        if (interval) {
+            clearInterval(interval);
+            interval = null;
+        }
+    };
 
     const stream = new ReadableStream({
-        async start(controller) {
-            // Send initial ping so client knows it's connected
-            controller.enqueue(encoder.encode(`event: connected\ndata: {}\n\n`));
+        start(controller) {
+            const safeEnqueue = (chunk) => {
+                if (closed) return false;
+                try {
+                    controller.enqueue(encoder.encode(chunk));
+                    return true;
+                } catch {
+                    // Stream is gone — stop everything.
+                    cleanup();
+                    return false;
+                }
+            };
 
-            // Poll every 5 seconds for new notifications
-            const interval = setInterval(async () => {
+            // Initial handshake
+            safeEnqueue(`event: connected\ndata: {}\n\n`);
+
+            // Guard against overlapping polls
+            let inFlight = false;
+
+            const tick = async () => {
+                if (closed || inFlight) return;
+                inFlight = true;
+
                 try {
                     const newItems = await Notification.find({
                         recipient: userId,
@@ -49,6 +77,8 @@ export async function GET(request) {
                     })
                         .sort({ createdAt: -1 })
                         .lean();
+
+                    if (closed) return;
 
                     if (newItems.length > 0) {
                         lastCheck = new Date();
@@ -58,29 +88,39 @@ export async function GET(request) {
                             isRead: false,
                         });
 
+                        if (closed) return;
+
                         const payload = JSON.stringify({
                             leads: newItems.filter((n) => n.refModel === 'Lead'),
                             tasks: newItems.filter((n) => n.refModel === 'LeadTask'),
                             unreadCount,
                         });
 
-                        controller.enqueue(encoder.encode(`event: new-notifications\ndata: ${payload}\n\n`));
+                        safeEnqueue(`event: new-notifications\ndata: ${payload}\n\n`);
                     } else {
-                        // keepalive ping every 5s
-                        controller.enqueue(encoder.encode(`: ping\n\n`));
+                        safeEnqueue(`: ping\n\n`);
                     }
                 } catch (err) {
                     console.error('SSE ERROR:', err);
+                } finally {
+                    inFlight = false;
                 }
-            }, 5000);
+            };
 
-            // Cleanup when client disconnects
+            interval = setInterval(tick, 5000);
+
+            // Cleanup on client disconnect
             request.signal.addEventListener('abort', () => {
-                clearInterval(interval);
+                cleanup();
                 try {
                     controller.close();
                 } catch {}
             });
+        },
+
+        cancel() {
+            // Fires if the consumer cancels (e.g. response body closed)
+            cleanup();
         },
     });
 
